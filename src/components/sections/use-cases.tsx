@@ -1,14 +1,26 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { findArt } from "@/components/layout/tile-backdrop"
 import { UseCaseStory } from "@/components/sections/use-case-story"
 import { useCases } from "@/content/platform"
 
-/**
- * What teams use agents for: large cards that play a call through to its
- * result. A gradient at public/art/gradients/<visual>.(webp|png|jpg) becomes
- * that card's stage background.
- */
+/** Same painted colour textures as the Listen panel (sage, dusk blue, ochre, terracotta). */
+const TEXTURE = {
+  sage: { src: "/art/backdrops/home-deploy.png" },
+  dusk: { src: "/art/backdrops/home-measure.png" },
+  terracotta: { src: "/art/backdrops/home-deploy.png", filter: "hue-rotate(-75deg) saturate(1.15)" },
+  ochre: { src: "/art/backdrops/home-deploy.png", filter: "hue-rotate(-40deg) saturate(1.2) brightness(1.05)" },
+}
+
+const BACKGROUND: Record<(typeof useCases)[number]["visual"], { src: string; filter?: string }> = {
+  collections: TEXTURE.sage,
+  booking: TEXTURE.dusk,
+  leads: TEXTURE.ochre,
+  support: TEXTURE.terracotta,
+  renewals: TEXTURE.dusk,
+  surveys: TEXTURE.sage,
+}
+
+/** What teams use agents for: one result per card on a painted texture; the call shows on hover. */
 export function UseCases() {
   return (
     <Section id="product-use-cases">
@@ -20,7 +32,7 @@ export function UseCases() {
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {useCases.map((u) => (
             <li key={u.title} className="flex">
-              <UseCaseStory useCase={u} background={findArt("gradients", u.visual)} />
+              <UseCaseStory useCase={u} background={BACKGROUND[u.visual]} />
             </li>
           ))}
         </ul>
