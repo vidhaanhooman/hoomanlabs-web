@@ -20,7 +20,7 @@ type UseCase = (typeof useCases)[number]
 
 // Step 0: empty. 1-2: call lines. 3: action. 4: result.
 const LAST = 4
-const STEP_MS = 450
+const STEP_MS = 650
 
 const WAVE = [5, 9, 7, 11, 6, 10, 8]
 
