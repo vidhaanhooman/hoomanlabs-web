@@ -323,7 +323,7 @@ function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; 
                 i < lines.length - 1 ? "text-ink-muted" : "text-foreground"
               )}
             >
-              <span className="mr-2 text-small text-ink-muted">{l.speaker === "agent" ? call.agent : "Caller"}</span>
+              <span className="mr-2 text-small text-ink-muted">{l.speaker === "agent" ? "Agent" : "User"}</span>
               {l.text}
             </p>
           ))
