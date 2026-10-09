@@ -168,7 +168,7 @@ function Renewals() {
         <Row k="Plan" v="Gold · 12 months" />
         <Row k="Status" v={<Done>Renewed</Done>} />
       </Card>
-      <Card className="absolute right-0 bottom-0 w-48 rotate-2 p-2.5">
+      <Card className="absolute right-0 bottom-0 w-48 p-2.5">
         <span className="text-ink-muted">Flagged at risk</span>
         <span className="mt-0.5 font-medium">2 accounts · callback set</span>
       </Card>
