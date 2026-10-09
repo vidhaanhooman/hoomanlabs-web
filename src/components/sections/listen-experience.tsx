@@ -335,13 +335,13 @@ function Stage({
 }
 
 /** India first: it's the default. Flags are SVG icons (no emoji). */
-const COUNTRIES = [
+export const COUNTRIES = [
   { code: "+91", name: "India", Flag: IN },
   { code: "+44", name: "United Kingdom", Flag: GB },
   { code: "+1", name: "United States", Flag: US },
   { code: "+34", name: "Spain", Flag: ES },
 ]
-const flagFor = (code: string) => COUNTRIES.find((c) => c.code === code)?.Flag
+export const flagFor = (code: string) => COUNTRIES.find((c) => c.code === code)?.Flag
 
 /**
  * Callback form (light, on the panel). Posts to /api/callback, which creates

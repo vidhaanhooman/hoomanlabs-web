@@ -1,21 +1,23 @@
 import Link from "next/link"
 
-import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { UseCasesScreen } from "@/components/product/use-cases-screen"
 import { FeaturePanel } from "@/components/sections/feature-panel"
 import { Impact, Security, StartPaths } from "@/components/sections/landing"
-import { ListenExperience } from "@/components/sections/listen-experience"
+import { ConversationScreen } from "@/components/product/conversation-screen"
+import { HeroCall } from "@/components/sections/hero-call"
+import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero"
+import { HeroParallaxStage } from "@/components/sections/hero-parallax-stage"
 import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
-import { ctas, hero, panels } from "@/content/draft"
-import { chapters } from "@/content/landing"
+import { ctas, panels } from "@/content/draft"
+import { chapters, heroCall } from "@/content/landing"
 
 /**
  * Proposed homepage (/lab/home), in the order a buyer's questions come:
- * 1 Hero with the listen / call-me experience, then logos
+ * 1 Hero: headline, call-me box, parallax with a live call, then logos
  * 2 Business impact (numbers)
  * 3 Use cases
  * 4 Platform overview: six component tiles, detail on /platform
@@ -25,22 +27,44 @@ import { chapters } from "@/content/landing"
 export function LandingPage() {
   return (
     <>
-      {/* 1 Hero: headline, then hear an agent / get a call */}
+      {/* 1 Hero: centred headline, the call box, then the parallax with a live call */}
       <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
-        <Container>
-          <h1 className="reveal max-w-[30ch] text-display font-normal">{hero.headline}</h1>
-          <div className="reveal mt-8 flex flex-wrap gap-2" style={{ "--i": 1 } as React.CSSProperties}>
-            <Link href={ctas.demo.href} className={buttonVariants()}>
-              {ctas.demo.label}
+        <Container className="flex flex-col items-center text-center">
+          <h1 className="reveal text-display font-normal">
+            {heroCall.title}
+            <span className="block text-ink-secondary">{heroCall.aside}</span>
+          </h1>
+          <p
+            className="reveal mt-5 max-w-[56ch] text-body-lg text-ink-secondary"
+            style={{ "--i": 1 } as React.CSSProperties}
+          >
+            {heroCall.body}
+          </p>
+          <div id="listen" className="reveal mt-8 w-full scroll-mt-24" style={{ "--i": 2 } as React.CSSProperties}>
+            <HeroCall />
+          </div>
+          <p
+            className="reveal mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-small text-ink-secondary"
+            style={{ "--i": 3 } as React.CSSProperties}
+          >
+            {heroCall.proof.map((p) => (
+              <span key={p} className="flex items-center gap-3">
+                {p}
+                <span aria-hidden className="text-ink-muted">·</span>
+              </span>
+            ))}
+            <Link href={ctas.demo.href} className="font-medium text-foreground hover:underline">
+              {ctas.demo.label} →
             </Link>
-            <Link href="#listen" className={buttonVariants({ variant: "secondary" })}>
-              {ctas.talk.label}
-            </Link>
+          </p>
+          <div className="reveal mt-12 w-full md:mt-16" style={{ "--i": 4 } as React.CSSProperties}>
+            <HeroParallaxStage className={STAGE_CLASS}>
+              <ConversationScreen
+                className={`${FRAME_CLASS} rounded-md border border-black/10 text-left shadow-[0_24px_60px_-24px_oklch(0.25_0.03_150/0.55)]`}
+              />
+            </HeroParallaxStage>
           </div>
         </Container>
-        <div id="listen" className="reveal mt-12 scroll-mt-24 md:mt-16" style={{ "--i": 2 } as React.CSSProperties}>
-          <ListenExperience />
-        </div>
       </Section>
       <Logos />
 
