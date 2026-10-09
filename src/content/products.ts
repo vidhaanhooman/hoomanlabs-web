@@ -33,6 +33,9 @@ export type StageVisual =
   | "campaign"
   | { placeholder: string }
 
+/** One row of a small UI snippet on a stage card. */
+export type MiniRow = { k: string; v?: string; tone?: "live" | "warn" | "muted"; mono?: boolean }
+
 export type ProductStage = {
   id: "build" | "ship" | "improve"
   label: string
@@ -40,7 +43,9 @@ export type ProductStage = {
   body: string
   /** Painted backdrop behind the screen. */
   backdrop: string
-  items: { title: string; body: string; beta?: boolean; visual: StageVisual }[]
+  /** Main screen for the big image (bento layout). */
+  hero: StageVisual
+  items: { title: string; body: string; beta?: boolean; visual: StageVisual; mini: MiniRow[] }[]
 }
 
 export const productList: Product[] = [
@@ -82,6 +87,7 @@ export const productList: Product[] = [
     stages: [
       {
         id: "build",
+        hero: "agent-config",
         label: "Build",
         headline: "An agent that sounds like you, configured in an afternoon.",
         body: "Start with a single prompt or a full node-based flow. Pull live context before every call, connect tools that take real action, then feed structured outcomes straight into your stack.",
@@ -92,28 +98,33 @@ export const productList: Product[] = [
             title: "Prompt & flow",
             body: "Write a single prompt, or design a node-based flow with branches, conditions and handoffs.",
             visual: "agent-config",
+            mini: [{ k: "Greet", v: "Start" }, { k: "Verify identity", v: "Step 2" }, { k: "Resolve or hand off", v: "Step 3" }],
           },
           {
             title: "Context & memory",
             body: "Pull live context before the call connects: pre-call APIs, your CRM, past-conversation history, and indexed knowledge libraries the agent can cite.",
             visual: "knowledge",
+            mini: [{ k: "CRM account HE-48213", v: "Loaded", tone: "live" }, { k: "Past calls", v: "3" }, { k: "Billing FAQ", v: "Cited" }],
           },
           {
             // draft
             title: "Tools",
             body: "Connect the systems your agent acts in, so it can look up accounts, book slots and send confirmations mid-call.",
             visual: "tools",
+            mini: [{ k: "Look up account", v: "On", tone: "live" }, { k: "Send SMS", v: "On", tone: "live" }, { k: "Book callback", v: "Off", tone: "muted" }],
           },
           {
             // draft
             title: "Analysis",
             body: "Turn every call into structured outcomes and send them straight into your stack.",
             visual: "analytics",
+            mini: [{ k: "outcome", v: "resolved", mono: true }, { k: "payment_moved", v: "true", mono: true }, { k: "sentiment", v: "calm", mono: true }],
           },
         ],
       },
       {
         id: "ship",
+        hero: "simulation",
         label: "Ship",
         headline: "Prove it works, put it on a line, and go, inbound or outbound.",
         body: "Stress-test against real scenarios and personas before anything goes live. Provision a number or connect your own carrier with SIP trunking, then take inbound or launch outbound campaigns at scale.",
@@ -124,29 +135,34 @@ export const productList: Product[] = [
             body: "Stress-test against real scenarios and personas, code-switching, refusals, edge cases, and hear the difference between versions before anything reaches a customer.",
             beta: true,
             visual: "simulation",
+            mini: [{ k: "Frustrated caller", v: "Passed", tone: "live" }, { k: "Code-switching", v: "Passed", tone: "live" }, { k: "Asks for a human", v: "Review", tone: "warn" }],
           },
           {
             // draft
             title: "Telephony",
             body: "Provision a number in minutes, or bring your own carrier with SIP trunking.",
             visual: { placeholder: "Numbers + SIP trunk UI" },
+            mini: [{ k: "+44 20 7946 0018", v: "Inbound" }, { k: "+91 80 4718 2290", v: "Outbound" }, { k: "SIP trunk", v: "Connected", tone: "live" }],
           },
           {
             // draft
             title: "Webhooks",
             body: "Send call events and outcomes to your systems the moment they happen.",
             visual: { placeholder: "Webhook events UI" },
+            mini: [{ k: "call.started", v: "200", mono: true }, { k: "call.ended", v: "200", mono: true }, { k: "outcome.ready", v: "200", mono: true }],
           },
           {
             // draft
             title: "Go live",
             body: "Take inbound calls or launch outbound campaigns at scale, with schedules and retries.",
             visual: "campaign",
+            mini: [{ k: "Inbound line", v: "Live", tone: "live" }, { k: "March reminders", v: "Running", tone: "live" }, { k: "Retries", v: "1" }],
           },
         ],
       },
       {
         id: "improve",
+        hero: "analytics",
         label: "Improve",
         headline: "Measure everything objective and subjective, break nothing.",
         body: "Track hard numbers and human judgment on every call. Build dashboards, set alerts, and improve on a new version, A/B tested against the live one, promoting only the winner.",
@@ -157,24 +173,28 @@ export const productList: Product[] = [
             title: "Objective metrics",
             body: "Track resolution, handle time, transfers and drop-offs on every call.",
             visual: "analytics",
+            mini: [{ k: "Resolution", v: "71.4%" }, { k: "Avg handle time", v: "2m 41s" }, { k: "Transfers", v: "9.1%" }],
           },
           {
             // draft
             title: "Subjective metrics",
             body: "Score tone, empathy and accuracy on every conversation with automated QA.",
             visual: { placeholder: "QA scorecard UI" },
+            mini: [{ k: "Empathy", v: "4.6 / 5" }, { k: "Accuracy", v: "4.8 / 5" }, { k: "Tone", v: "4.5 / 5" }],
           },
           {
             title: "Dashboards & alerts",
             body: "Build the dashboards you need and set threshold or ratio alerts on the metrics that matter, routed to Slack or on-call.",
             beta: true,
             visual: { placeholder: "Dashboard + alert rules UI" },
+            mini: [{ k: "Resolution below 65%", v: "Slack" }, { k: "Transfers above 15%", v: "On-call" }, { k: "Status", v: "Quiet", tone: "live" }],
           },
           {
             // draft
             title: "Branch, A/B, promote",
             body: "Branch a new version, A/B test it against the live one, and promote only the winner.",
             visual: { placeholder: "Version A/B comparison UI" },
+            mini: [{ k: "v4 (live)", v: "87.9" }, { k: "v5 (testing)", v: "91.6", tone: "live" }, { k: "Promote v5", v: "Ready" }],
           },
         ],
       },

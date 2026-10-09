@@ -50,10 +50,10 @@ export function MobileNav() {
           </ul>
         </nav>
         <div className="mt-auto flex flex-col gap-2 p-(--gutter)">
-          <Link href={nav.signIn.href} onClick={close} className={buttonVariants({ variant: "outline", size: "lg" })}>
+          <Link href={nav.signIn.href} onClick={close} className={buttonVariants({ variant: "outline" })}>
             {nav.signIn.label}
           </Link>
-          <Link href={ctas.demo.href} onClick={close} className={buttonVariants({ size: "lg" })}>
+          <Link href={ctas.demo.href} onClick={close} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
         </div>

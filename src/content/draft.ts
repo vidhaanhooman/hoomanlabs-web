@@ -16,7 +16,8 @@ export const nav = {
 
 /** One label per intent, reused everywhere it appears. */
 export const ctas = {
-  demo: { label: "Book a demo", href: "#book-demo" },
+  /** Platform (core.hoomanlabs.com, as linked from the current site). */
+  demo: { label: "Book a demo", href: "https://core.hoomanlabs.com" },
   talk: { label: "Talk to an agent", href: "#" },
 }
 

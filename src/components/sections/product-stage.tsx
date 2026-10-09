@@ -21,10 +21,11 @@ import { cn } from "@/lib/utils"
 const WINDOW = "absolute inset-x-[7%] top-[9%] bottom-[12%] z-10"
 const CHROME = "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]"
 
-function Visual({ visual }: { visual: StageVisual }) {
-  const cls = `${WINDOW} ${CHROME}`
+/** Renders a stage visual (recreated screen or placeholder) at the given position. */
+export function StageScreen({ visual, className = WINDOW }: { visual: StageVisual; className?: string }) {
+  const cls = `${className} ${CHROME}`
   if (typeof visual === "object") {
-    return <Placeholder variant="frame" label={visual.placeholder} className={WINDOW} />
+    return <Placeholder variant="frame" label={visual.placeholder} className={className} />
   }
   switch (visual) {
     case "agent-config":
@@ -121,7 +122,7 @@ export function ProductStage({ stage, media = "end" }: { stage: Stage; media?: "
               className="-z-10 object-cover"
             />
             <div key={item.title} className="absolute inset-0 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300">
-              <Visual visual={item.visual} />
+              <StageScreen visual={item.visual} />
             </div>
           </div>
         </Panel>

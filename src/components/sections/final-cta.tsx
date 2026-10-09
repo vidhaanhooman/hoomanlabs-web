@@ -20,10 +20,10 @@ export function FinalCta({
       <Container id="book-demo" className="scroll-mt-24 flex flex-col items-center gap-8 text-center">
         <SectionHeader title={title} align="center" />
         <div className="flex flex-wrap justify-center gap-2">
-          <Link href={ctas.demo.href} className={buttonVariants({ size: "lg" })}>
+          <Link href={ctas.demo.href} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
-          <Link href={ctas.talk.href} className={buttonVariants({ size: "lg", variant: "secondary" })}>
+          <Link href={ctas.talk.href} className={buttonVariants({ variant: "secondary" })}>
             {ctas.talk.label}
           </Link>
         </div>

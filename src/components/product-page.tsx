@@ -10,6 +10,7 @@ import { TextLink } from "@/components/layout/text-link";
 import { FeaturePanel } from "@/components/sections/feature-panel";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ProductStage } from "@/components/sections/product-stage";
+import { ProductStageBento } from "@/components/sections/product-stage-bento";
 import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero";
 import { ctas } from "@/content/draft";
 import type { Product } from "@/content/products";
@@ -20,7 +21,14 @@ import type { Product } from "@/content/products";
  * Ship / Improve) OR the generic split, mirrored split, wide panel and "How it
  * works", then a single quote and the closing CTA.
  */
-export function ProductPage({ product }: { product: Product }) {
+export function ProductPage({
+  product,
+  stageLayout = "split",
+}: {
+  product: Product;
+  /** How lifecycle stages render: "split" (accordion + screen) or "bento" (big image + small cards). */
+  stageLayout?: "split" | "bento";
+}) {
   const [first, second, third] = product.features;
 
   return (
@@ -51,13 +59,13 @@ export function ProductPage({ product }: { product: Product }) {
           >
             <Link
               href={ctas.demo.href}
-              className={buttonVariants({ size: "lg" })}
+              className={buttonVariants()}
             >
               {ctas.demo.label}
             </Link>
             <Link
               href={ctas.talk.href}
-              className={buttonVariants({ size: "lg", variant: "secondary" })}
+              className={buttonVariants({ variant: "secondary" })}
             >
               {ctas.talk.label}
             </Link>
@@ -82,13 +90,17 @@ export function ProductPage({ product }: { product: Product }) {
 
       {product.stages ? (
         /* Lifecycle stages (e.g. Voice AI): Build, Ship, Improve, alternating sides */
-        product.stages.map((stage, i) => (
-          <ProductStage
-            key={stage.id}
-            stage={stage}
-            media={i % 2 === 0 ? "end" : "start"}
-          />
-        ))
+        product.stages.map((stage, i) =>
+          stageLayout === "bento" ? (
+            <ProductStageBento key={stage.id} stage={stage} />
+          ) : (
+            <ProductStage
+              key={stage.id}
+              stage={stage}
+              media={i % 2 === 0 ? "end" : "start"}
+            />
+          ),
+        )
       ) : (
         <>
           {/* Features 1 and 2: split, then mirrored split */}

@@ -18,8 +18,9 @@ const baseButtonVariants = cva(
       },
       size: {
         sm: "h-8 px-3.5 text-small",
-        default: "h-9 px-4 text-small",
-        lg: "h-11 px-5 text-body",
+        default: "h-10 px-[1.125rem] text-small",
+        // One CTA size site-wide (header, hero, sections): lg is kept as an alias.
+        lg: "h-10 px-[1.125rem] text-small",
         icon: "size-9",
       },
     },
