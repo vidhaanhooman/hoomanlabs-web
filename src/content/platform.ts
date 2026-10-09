@@ -62,7 +62,7 @@ export const flow = {
   ],
 }
 
-/** `image` is the file name (no extension) in public/art/use-cases/. */
+/** `image` picks the vignette in use-case-visuals.tsx. */
 export const useCases = [
   {
     title: "Payment collections",
