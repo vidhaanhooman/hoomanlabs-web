@@ -14,21 +14,21 @@ export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "r
 const B = "/art/backdrops"
 const L = "/art/listen"
 
-/** Which painting crop sits behind each tile, so neighbours never repeat. */
+/** Daylight crops only (one time of day), so the grid reads as one set. */
 const BACKDROP: Record<UseCaseVisual, Painting> = {
   collections: { src: `${B}/home-build.png`, position: "30% 60%" },
   booking: { src: `${L}/listen-morning.png`, position: "75% 30%" },
   leads: { src: `${B}/home-test.png`, position: "50% 40%" },
-  support: { src: `${L}/listen-evening.png`, position: "25% 20%" },
-  renewals: { src: `${L}/listen-midday.png`, position: "60% 55%" },
-  surveys: { src: `${L}/listen-night.png`, position: "50% 40%" },
+  support: { src: `${L}/listen-midday.png`, position: "20% 70%" },
+  renewals: { src: `${B}/home-test.png`, position: "85% 75%" },
+  surveys: { src: `${L}/listen-morning.png`, position: "15% 55%" },
 }
 
 export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
   return (
     <div
       aria-hidden
-      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-6 text-[11px] leading-snug"
+      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-8 text-[11px] leading-snug"
     >
       <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} />
       <UseCaseVignette kind={kind} />
@@ -40,7 +40,7 @@ export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
 export function UseCaseVignette({ kind }: { kind: UseCaseVisual }) {
   const Visual = VISUALS[kind]
   return (
-    <div className="dark origin-center scale-110 text-[11px] leading-snug text-foreground xl:scale-125">
+    <div className="dark text-[11px] leading-snug text-foreground">
       <Visual />
     </div>
   )

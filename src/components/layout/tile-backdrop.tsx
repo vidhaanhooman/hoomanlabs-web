@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
  * Painted background for an illustration tile, so every tile reads as a small
  * piece of the hero painting. Uses a dedicated painting at
  * public/art/<dir>/<name>.(webp|png|jpg) if one exists; otherwise a crop of
- * one of the existing gouache paintings.
+ * one of the existing gouache paintings. Slightly blurred and washed so the
+ * UI on top stays the focus.
  */
 
 export type Painting = { src: string; position: string }
@@ -36,13 +37,17 @@ export function TileBackdrop({
 }) {
   const own = art ? findArt(art[0], art[1]) : null
   return (
-    <Image
-      src={own ?? painting.src}
-      alt=""
-      fill
-      sizes="(min-width: 1024px) 560px, 100vw"
-      className={cn("-z-10 object-cover", !own && "scale-125", className)}
-      style={own ? undefined : { objectPosition: painting.position, transformOrigin: painting.position }}
-    />
+    <>
+      <Image
+        src={own ?? painting.src}
+        alt=""
+        fill
+        sizes="(min-width: 1024px) 560px, 100vw"
+        className={cn("-z-20 object-cover blur-[2px]", !own && "scale-125", className)}
+        style={own ? undefined : { objectPosition: painting.position, transformOrigin: painting.position }}
+      />
+      {/* Soft wash: the painting becomes atmosphere, not detail. */}
+      <span aria-hidden className="absolute inset-0 -z-10 bg-background/25" />
+    </>
   )
 }

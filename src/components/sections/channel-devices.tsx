@@ -22,10 +22,10 @@ function modesFor(surface: Surface) {
 
 /** Painting crop behind each device. */
 const BACKDROP: Record<Surface, Painting> = {
-  Phone: { src: "/art/listen/listen-evening.png", position: "80% 30%" },
+  Phone: { src: "/art/listen/listen-morning.png", position: "50% 25%" },
   Web: { src: "/art/backdrops/home-test.png", position: "20% 70%" },
   App: { src: "/art/backdrops/home-build.png", position: "80% 50%" },
-  WhatsApp: { src: "/art/listen/listen-morning.png", position: "20% 70%" },
+  WhatsApp: { src: "/art/listen/listen-midday.png", position: "85% 60%" },
 }
 
 const CAPTION: Record<Surface, string> = {
