@@ -10,11 +10,24 @@ import { cn } from "@/lib/utils"
 
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
-/** The result card for a use case. Light by default; "dark" for dark backdrops. */
-export function UseCaseVignette({ kind, theme = "light" }: { kind: UseCaseVisual; theme?: "light" | "dark" }) {
+/**
+ * Charcoal: the hero product screen's dark grey instead of pure black, with
+ * softer hairlines, so dark cards don't read as heavy slabs on a light page.
+ */
+const CHARCOAL =
+  "dark [--background:oklch(0.22_0.004_270)] [--surface:oklch(0.27_0.004_270)] [--line:oklch(1_0_0/8%)] [--line-strong:oklch(1_0_0/13%)]"
+
+/** The result card for a use case: charcoal by default, "light" or "dark" (pure) on request. */
+export function UseCaseVignette({
+  kind,
+  theme = "charcoal",
+}: {
+  kind: UseCaseVisual
+  theme?: "charcoal" | "light" | "dark"
+}) {
   const Visual = VISUALS[kind]
   return (
-    <div className={cn("text-[12px] leading-snug text-foreground", theme === "dark" && "dark")}>
+    <div className={cn("text-[12px] leading-snug text-foreground", theme === "charcoal" && CHARCOAL, theme === "dark" && "dark")}>
       <Visual />
     </div>
   )
@@ -22,7 +35,7 @@ export function UseCaseVignette({ kind, theme = "light" }: { kind: UseCaseVisual
 
 function Card({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={cn("flex flex-col rounded-lg border border-line-strong bg-background p-3 shadow-sm", className)}>
+    <div className={cn("flex flex-col rounded-lg border border-line-strong bg-linear-to-b from-surface to-background to-40% p-3 shadow-[inset_0_1px_0_oklch(1_0_0/0.07),0_14px_32px_-14px_oklch(0_0_0/0.35)]", className)}>
       {children}
     </div>
   )

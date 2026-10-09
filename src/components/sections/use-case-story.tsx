@@ -35,7 +35,7 @@ export function UseCaseStory({ useCase }: { useCase: UseCase }) {
             WebkitMaskImage: `radial-gradient(ellipse 75% 85% at ${FOCUS[useCase.visual]}, black 0%, transparent 100%)`,
           }}
         />
-        <div className="scale-110 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
+        <div className="scale-95 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
           <UseCaseVignette kind={useCase.visual} />
         </div>
 
