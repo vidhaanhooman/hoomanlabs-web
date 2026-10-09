@@ -42,26 +42,52 @@ export function LandingPage() {
       <Logos />
 
       {/* 2 Business impact */}
-      <Chapter {...chapters.impact} />
-      <Impact />
+      <PaintedChapter field="impact">
+        <Chapter {...chapters.impact} />
+        <Impact />
+      </PaintedChapter>
 
       {/* 3 Use cases */}
-      <Chapter {...chapters.useCases} />
-      <UseCases more={{ label: "See all use cases", href: "/platform#product-use-cases" }} />
+      <PaintedChapter field="usecases">
+        <Chapter {...chapters.useCases} />
+        <UseCases more={{ label: "See all use cases", href: "/platform#product-use-cases" }} />
+      </PaintedChapter>
 
       {/* 4 Platform: overview of all six components; detail lives on /platform */}
-      <Chapter {...chapters.platform} />
-      <PlatformOverview />
+      <PaintedChapter field="platform">
+        <Chapter {...chapters.platform} />
+        <PlatformOverview />
+      </PaintedChapter>
 
       {/* 5 Proof, then trust */}
       <Chapter {...chapters.proof} />
       <Testimonials />
       <Security />
 
-
       {/* 6 Ways to get started */}
-      <StartPaths />
+      <PaintedChapter field="start">
+        <StartPaths />
+      </PaintedChapter>
     </>
+  )
+}
+
+/**
+ * A chapter on its own painted colour field (public/art/fields/field-*.webp),
+ * full-bleed, fading into the page at top and bottom so chapters read like
+ * pages of one sketchbook. UI inside stays as is.
+ */
+function PaintedChapter({ field, children }: { field: "impact" | "usecases" | "platform" | "start"; children: React.ReactNode }) {
+  const fade = "linear-gradient(to bottom, transparent 0, black 7rem, black calc(100% - 7rem), transparent 100%)"
+  return (
+    <div className="relative isolate pb-(--section-gap)">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(/art/fields/field-${field}.webp)`, maskImage: fade, WebkitMaskImage: fade }}
+      />
+      {children}
+    </div>
   )
 }
 
