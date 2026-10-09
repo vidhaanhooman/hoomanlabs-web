@@ -5,9 +5,7 @@ import { Section } from "@/components/layout/section"
 import { UseCasesScreen } from "@/components/product/use-cases-screen"
 import { FeaturePanel } from "@/components/sections/feature-panel"
 import { Impact, Security, StartPaths } from "@/components/sections/landing"
-import { ConversationScreen } from "@/components/product/conversation-screen"
 import { HeroCall } from "@/components/sections/hero-call"
-import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero"
 import { HeroParallaxStage } from "@/components/sections/hero-parallax-stage"
 import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
@@ -17,7 +15,7 @@ import { chapters, heroCall } from "@/content/landing"
 
 /**
  * Proposed homepage (/lab/home), in the order a buyer's questions come:
- * 1 Hero: headline, call-me box, parallax with a live call, then logos
+ * 1 Hero: headline, then the call-me box floating on the parallax painting, then logos
  * 2 Business impact (numbers)
  * 3 Use cases
  * 4 Platform overview: six component tiles, detail on /platform
@@ -40,8 +38,13 @@ export function LandingPage() {
           >
             {heroCall.body}
           </p>
-          <div id="listen" className="reveal mt-8 w-full scroll-mt-24" style={{ "--i": 2 } as React.CSSProperties}>
-            <HeroCall />
+          <div id="listen" className="reveal mt-10 w-full scroll-mt-24 md:mt-12" style={{ "--i": 2 } as React.CSSProperties}>
+            {/* The call box floats on the painting. */}
+            <HeroParallaxStage className="aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]">
+              <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
+                <HeroCall glass />
+              </div>
+            </HeroParallaxStage>
           </div>
           <p
             className="reveal mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-small text-ink-secondary"
@@ -57,13 +60,6 @@ export function LandingPage() {
               {ctas.demo.label} →
             </Link>
           </p>
-          <div className="reveal mt-12 w-full md:mt-16" style={{ "--i": 4 } as React.CSSProperties}>
-            <HeroParallaxStage className={STAGE_CLASS}>
-              <ConversationScreen
-                className={`${FRAME_CLASS} rounded-md border border-black/10 text-left shadow-[0_24px_60px_-24px_oklch(0.25_0.03_150/0.55)]`}
-              />
-            </HeroParallaxStage>
-          </div>
         </Container>
       </Section>
       <Logos />

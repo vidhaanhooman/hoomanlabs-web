@@ -41,7 +41,7 @@ function group(digits: string, groups: number[]) {
 /** "9876543210" -> "98•••••210" for the calling card. */
 const mask = (d: string) => d.slice(0, 2) + "•".repeat(Math.max(0, d.length - 5)) + d.slice(-3)
 
-export function HeroCall() {
+export function HeroCall({ glass = false }: { glass?: boolean }) {
   const [index, setIndex] = useState(0)
   const [country, setCountry] = useState(COUNTRIES[0].code)
   const [digits, setDigits] = useState("")
@@ -97,8 +97,13 @@ export function HeroCall() {
     }
   }
 
-  const shell =
-    "relative mx-auto w-full max-w-xl rounded-[1.75rem] border border-line bg-surface p-2 text-left shadow-[0_10px_30px_-18px_oklch(0_0_0/0.25)]"
+  // `glass`: frosted, for sitting on the painted hero.
+  const shell = cn(
+    "relative mx-auto w-full max-w-xl rounded-[1.75rem] border p-2 text-left",
+    glass
+      ? "border-white/50 bg-background/80 shadow-[0_30px_80px_-30px_oklch(0.2_0.03_150/0.6)] backdrop-blur-xl"
+      : "border-line bg-surface shadow-[0_10px_30px_-18px_oklch(0_0_0/0.25)]"
+  )
 
   /* ------------------------------------------------ calling state */
   if (calling) {
@@ -239,7 +244,7 @@ export function HeroCall() {
           type="submit"
           disabled={sending || !valid}
           aria-busy={sending || undefined}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-primary px-5 text-small font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-40"
+          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 text-small sm:gap-2 sm:px-5 font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-40"
         >
           <PhoneCallIcon weight="fill" className="size-4" aria-hidden />
           {sending ? "Calling…" : "Call me"}
