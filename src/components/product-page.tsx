@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Placeholder } from "@/components/layout/placeholder";
 import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/layout/section-header";
 import { TextLink } from "@/components/layout/text-link";
+import { StageScreen } from "@/components/product/stage-screen";
 import { FeaturePanel } from "@/components/sections/feature-panel";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ProductResources } from "@/components/sections/product-resources";
@@ -16,6 +18,9 @@ import { StageIndex } from "@/components/sections/stage-index";
 import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero";
 import { ctas } from "@/content/draft";
 import type { Product } from "@/content/products";
+
+/** Hero painting for the lab variant (placeholder until a dedicated one is made). */
+const HERO_ART = "/art/backdrops/home-build.png";
 
 /**
  * Shared product page template (/voice-ai, /chat-agents, /qa, /telephony).
@@ -82,16 +87,37 @@ export function ProductPage({
             className={`${reveal} mt-12 md:mt-16`}
             style={{ "--i": 4 } as React.CSSProperties}
           >
-            <Placeholder
-              label="Backdrop: art or colour field"
-              className={STAGE_CLASS}
-            >
+            {fin && product.stages ? (
+              /* The one painted moment on the page; stages below stay plain. */
+              <div
+                className={`relative isolate overflow-hidden rounded-md ${STAGE_CLASS}`}
+              >
+                <Image
+                  src={HERO_ART}
+                  alt=""
+                  fill
+                  priority
+                  sizes="(min-width: 1300px) 1300px, 100vw"
+                  className="-z-10 object-cover"
+                />
+                <StageScreen
+                  visual="campaign"
+                  light
+                  className={FRAME_CLASS}
+                />
+              </div>
+            ) : (
               <Placeholder
-                variant="frame"
-                label={product.heroVisual}
-                className={FRAME_CLASS}
-              />
-            </Placeholder>
+                label="Backdrop: art or colour field"
+                className={STAGE_CLASS}
+              >
+                <Placeholder
+                  variant="frame"
+                  label={product.heroVisual}
+                  className={FRAME_CLASS}
+                />
+              </Placeholder>
+            )}
           </div>
         </Container>
       </Section>
@@ -106,7 +132,6 @@ export function ProductPage({
                 stage={stage}
                 start={starts[i]}
                 productName={product.name}
-                treatment={(["wash", "plain", "mono"] as const)[i % 3]}
               />
             ))}
             <StageIndex
