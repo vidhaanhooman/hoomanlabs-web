@@ -38,13 +38,17 @@ const CAPTION: Record<Surface, string> = {
 export function ChannelDevices({ className }: { className?: string }) {
   return (
     <ul className={cn("grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4", className)}>
-      {SURFACES.map((s) => (
+      {SURFACES.map((s, i) => (
         <li key={s} className="flex flex-col gap-3">
           <div
             aria-hidden
             className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md px-4 pt-6"
           >
-            <TileBackdrop painting={BACKDROP[s]} art={["channels", s.toLowerCase()]} />
+            <TileBackdrop
+              painting={BACKDROP[s]}
+              art={["channels", s.toLowerCase()]}
+              slice={{ cols: 4, rows: 1, col: i, row: 0 }}
+            />
             <div className="dark flex w-full justify-center text-foreground">
               {s === "Phone" && <PhoneCall />}
               {s === "Web" && <WebWidget />}

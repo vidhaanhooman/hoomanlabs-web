@@ -1,6 +1,6 @@
 import { ArrowRightIcon, CheckIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { TileBackdrop, type Painting } from "@/components/layout/tile-backdrop"
+import { TileBackdrop, type Painting, type Slice } from "@/components/layout/tile-backdrop"
 import { cn } from "@/lib/utils"
 
 /**
@@ -24,13 +24,13 @@ const BACKDROP: Record<UseCaseVisual, Painting> = {
   surveys: { src: `${L}/listen-morning.png`, position: "15% 55%" },
 }
 
-export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
+export function UseCaseTile({ kind, slice }: { kind: UseCaseVisual; slice?: Slice }) {
   return (
     <div
       aria-hidden
-      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-8 text-[11px] leading-snug"
+      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-8 text-[12px] leading-snug"
     >
-      <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} />
+      <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} slice={slice} />
       <UseCaseVignette kind={kind} />
     </div>
   )
@@ -40,7 +40,7 @@ export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
 export function UseCaseVignette({ kind }: { kind: UseCaseVisual }) {
   const Visual = VISUALS[kind]
   return (
-    <div className="dark text-[11px] leading-snug text-foreground">
+    <div className="dark text-[12px] leading-snug text-foreground">
       <Visual />
     </div>
   )
@@ -100,7 +100,7 @@ function Wave() {
 
 function Collections() {
   return (
-    <div className="flex w-56 flex-col items-start gap-2">
+    <div className="flex w-60 flex-col items-start gap-2">
       <Chip>
         <Wave /> Reminder call · 1:12
       </Chip>
@@ -117,7 +117,7 @@ function Collections() {
 function Booking() {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
   return (
-    <div className="flex w-60 flex-col gap-2">
+    <div className="flex w-64 flex-col gap-2">
       <Card className="w-full">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-medium">This week</span>
@@ -147,7 +147,7 @@ function Booking() {
 
 function Leads() {
   return (
-    <div className="flex w-60 flex-col gap-2">
+    <div className="flex w-64 flex-col gap-2">
       <div className="flex items-center gap-2">
         <Chip>New lead · 2 min ago</Chip>
         <ArrowRightIcon className="size-3 text-ink-muted" />
@@ -165,7 +165,7 @@ function Leads() {
 
 function Support() {
   return (
-    <Card className="w-60 gap-0 p-2">
+    <Card className="w-64 gap-0 p-2">
       <div className="flex items-baseline gap-2 px-1 pt-1 pb-2">
         <span className="text-[24px] leading-none font-normal tabular-nums">3</span>
         <span className="text-ink-muted">
@@ -188,13 +188,13 @@ function Support() {
 
 function Renewals() {
   return (
-    <div className="relative h-36 w-60">
-      <Card className="absolute top-0 left-0 w-48">
+    <div className="relative h-44 w-72">
+      <Card className="absolute top-0 left-0 w-52">
         <span className="mb-1 font-medium">Plan renewal</span>
         <Row k="Plan" v="Gold · 12 months" />
         <Row k="Status" v={<Done>Renewed</Done>} />
       </Card>
-      <Card className="absolute right-0 bottom-0 w-40 rotate-2 p-2.5">
+      <Card className="absolute right-0 bottom-0 w-48 rotate-2 p-2.5">
         <span className="text-ink-muted">Flagged at risk</span>
         <span className="mt-0.5 font-medium">2 accounts · callback set</span>
       </Card>
@@ -204,7 +204,7 @@ function Renewals() {
 
 function Surveys() {
   return (
-    <div className="flex w-60 flex-col gap-2">
+    <div className="flex w-64 flex-col gap-2">
       <Card className="w-full">
         <span className="mb-2 text-ink-muted">How likely are you to recommend us?</span>
         <div className="grid grid-cols-11 gap-0.5 text-center text-[9px]">
