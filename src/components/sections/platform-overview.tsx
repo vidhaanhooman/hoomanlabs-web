@@ -34,6 +34,19 @@ const COPY: Record<ComponentId, { title: string; body: string }> = {
 
 const CHROME = "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
 
+/** Painted texture per tile; sage and dusk alternate so neighbours differ. */
+const SAGE = { src: "/art/backdrops/home-deploy.png" }
+const DUSK = { src: "/art/backdrops/home-measure.png" }
+const OCHRE = { src: "/art/backdrops/home-deploy.png", filter: "hue-rotate(-40deg) saturate(1.1) brightness(1.05)" }
+const TEXTURE: Record<ComponentId, { src: string; filter?: string }> = {
+  agents: SAGE,
+  workflow: DUSK,
+  simulations: OCHRE,
+  qa: DUSK,
+  channels: OCHRE,
+  tools: SAGE,
+}
+
 function Tile({
   id,
   className,
@@ -49,7 +62,15 @@ function Tile({
         <h3 className="text-h4 font-normal">{COPY[id].title}</h3>
         <p className="max-w-[40ch] text-small text-ink-secondary">{COPY[id].body}</p>
       </div>
-      {children}
+      {/* The visual sits on a painted colour field (same textures as Listen). */}
+      <div className="relative isolate flex flex-1 items-center overflow-hidden rounded-md p-4 sm:p-5">
+        <span
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-cover bg-center"
+          style={{ backgroundImage: `url(${TEXTURE[id].src})`, filter: TEXTURE[id].filter }}
+        />
+        <div className="w-full">{children}</div>
+      </div>
       <TextLink href={componentHref(id)} className="mt-auto pt-1">
         Learn more
       </TextLink>
@@ -213,9 +234,7 @@ export function PlatformOverview() {
         <div className="grid gap-3 lg:grid-cols-12">
           {/* Agents: the large tile, same plain treatment as the rest */}
           <Tile id="agents" className="lg:col-span-7 lg:row-span-2">
-            <div aria-hidden className="flex flex-1 items-center">
-              <AgentConfigScreen className={cn("h-80 w-full lg:h-[25rem]", CHROME)} />
-            </div>
+            <AgentConfigScreen className={cn("h-80 w-full lg:h-[24rem]", CHROME)} />
           </Tile>
           <Tile id="workflow" className="lg:col-span-5">
             <WorkflowMini />
