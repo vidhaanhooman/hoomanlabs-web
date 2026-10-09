@@ -4,7 +4,7 @@ import { TextLink } from "@/components/layout/text-link"
 import { UseCaseStory } from "@/components/sections/use-case-story"
 import { useCases } from "@/content/platform"
 
-/** What teams use agents for: tiles like the platform overview (painted frame + result card); the call shows on hover. */
+/** What teams use agents for: one result per card on a plain surface; the call shows on hover. */
 export function UseCases({
   more,
   only,
@@ -26,10 +26,15 @@ export function UseCases({
           </div>
           {more && <TextLink href={more.href}>{more.label}</TextLink>}
         </div>
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((u) => (
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((u, i) => (
             <li key={u.title} className="flex">
-<UseCaseStory useCase={u} resultFirst={resultFirst} />
+              {/* Checkerboard: dark and light alternate, so no two dark cards touch. */}
+              <UseCaseStory
+                useCase={u}
+                resultFirst={resultFirst}
+                tone={((i % 3) + Math.floor(i / 3)) % 2 === 0 ? "charcoal" : "light"}
+              />
             </li>
           ))}
         </ul>

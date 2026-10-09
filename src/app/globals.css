@@ -261,25 +261,6 @@
   from { transform: translate(-3%, -2%) rotate(0deg); }
   to { transform: translate(3%, 2%) rotate(8deg); }
 }
-/* Painted frames (platform tiles, use cases): the painting drifts against the
-   pointer, a soft light follows it, the content lifts. */
-.painted-frame-art { transform: translate3d(0, 0, 0) scale(1); transition: transform 700ms var(--ease-out); }
-.painted-frame-light {
-  background: radial-gradient(28rem circle at var(--lx, 50%) var(--ly, 50%), oklch(1 0 0 / 0.28), transparent 60%);
-  opacity: 0;
-  transition: opacity 400ms var(--ease-out);
-}
-.painted-frame-content { transition: transform 500ms var(--ease-out); }
-@media (prefers-reduced-motion: no-preference) and (hover: hover) {
-  .painted-frame[data-active] .painted-frame-art {
-    transform: translate3d(calc(var(--px, 0) * -24px), calc(var(--py, 0) * -18px), 0) scale(1.06);
-  }
-  .painted-frame[data-active] .painted-frame-light { opacity: 1; }
-  .painted-frame[data-active] .painted-frame-content {
-    transform: translate3d(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 4px - 3px), 0);
-  }
-}
-
 @keyframes flow-x {
   from { left: 0; }
   to { left: calc(100% - 6px); }
