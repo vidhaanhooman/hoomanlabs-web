@@ -10,7 +10,7 @@ import {
 import { Listen } from "@/components/sections/listen"
 import { Logos } from "@/components/sections/logos"
 import { Testimonials } from "@/components/sections/testimonials"
-import { UseCases } from "@/components/sections/use-cases"
+import { UseCasesScroll } from "@/components/sections/use-cases-scroll"
 
 /**
  * Proposed homepage structure (/lab/home). Proof first (logos, hear it,
@@ -24,7 +24,7 @@ export function LandingPage() {
       <Logos />
       <Listen />
       <Impact />
-      <UseCases />
+      <UseCasesScroll />
       <HowItWorks />
       <HomeChannels />
       <Testimonials />
