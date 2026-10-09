@@ -56,7 +56,7 @@ export function MainNav() {
             Platform
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid w-[36rem] grid-cols-2 gap-2 p-2" onMouseLeave={() => setHovered(null)}>
+            <div className="grid w-[44rem] grid-cols-2 gap-2 p-2" onMouseLeave={() => setHovered(null)}>
               {GROUPS.map((group) => (
                 <div key={group} className="flex flex-col">
                   <p className="px-3 pt-2 pb-1 text-label text-ink-muted">{group}</p>
