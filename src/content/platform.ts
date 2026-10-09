@@ -62,34 +62,41 @@ export const flow = {
   ],
 }
 
+/** `image` is the file name (no extension) in public/art/use-cases/. */
 export const useCases = [
   {
     title: "Payment collections",
+    image: "collections",
     body: "Remind customers before and after due dates, take promises to pay and set up plans.",
     result: "More on-time payments",
   },
   {
     title: "Appointment booking",
+    image: "booking",
     body: "Book, confirm and reschedule appointments straight into your calendar.",
     result: "Fewer no-shows",
   },
   {
     title: "Lead qualification",
+    image: "leads",
     body: "Reach new leads within minutes, ask your qualifying questions and book the sales call.",
     result: "Faster speed to lead",
   },
   {
     title: "Support triage",
+    image: "support",
     body: "Answer common questions, look up orders and route the rest with a full summary.",
     result: "Shorter queues",
   },
   {
     title: "Renewals and retention",
+    image: "renewals",
     body: "Reach customers before renewal, handle objections and flag the ones at risk.",
     result: "Higher renewal rate",
   },
   {
     title: "Surveys and feedback",
+    image: "surveys",
     body: "Run NPS and post-service conversations in the customer's language and log every answer.",
     result: "More responses",
   },
@@ -274,10 +281,51 @@ export const tools = {
       body: "Index your documents and policies so answers come from your sources, with citations.",
     },
   ],
+  // DRAFT: confirm which integrations are real before launch. `logo` keys map
+  // to monochrome brand marks in IntegrationGroups; items without one show
+  // their name only.
   groups: [
-    { label: "CRM & helpdesk", count: 4 },
-    { label: "Calendars", count: 3 },
-    { label: "Telephony", count: 4 },
-    { label: "Developer", items: ["HoomanLabs MCP", "Webhooks", "REST API", "CEL"] },
-  ],
+    {
+      label: "CRM & helpdesk",
+      items: [
+        { name: "HubSpot", logo: "hubspot" },
+        { name: "Zendesk", logo: "zendesk" },
+        { name: "Zoho", logo: "zoho" },
+        { name: "Intercom", logo: "intercom" },
+        { name: "Salesforce" },
+      ],
+    },
+    {
+      label: "Calendars",
+      items: [
+        { name: "Google Calendar", logo: "googlecalendar" },
+        { name: "Calendly", logo: "calendly" },
+        { name: "Cal.com", logo: "caldotcom" },
+      ],
+    },
+    {
+      label: "Telephony",
+      items: [
+        { name: "Vonage", logo: "vonage" },
+        { name: "WhatsApp", logo: "whatsapp" },
+        { name: "Twilio" },
+        { name: "Plivo" },
+        { name: "Any SIP trunk" },
+      ],
+    },
+    {
+      label: "Automation & data",
+      items: [
+        { name: "Zapier", logo: "zapier" },
+        { name: "Make", logo: "make" },
+        { name: "n8n", logo: "n8n" },
+        { name: "Google Sheets", logo: "googlesheets" },
+        { name: "Shopify", logo: "shopify" },
+      ],
+    },
+    {
+      label: "Developer",
+      items: [{ name: "HoomanLabs MCP" }, { name: "Webhooks" }, { name: "REST API" }, { name: "CEL" }],
+    },
+  ] as { label: string; items: { name: string; logo?: string }[] }[],
 }

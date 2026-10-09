@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { SectionHeader } from "@/components/layout/section-header"
 import { TextLink } from "@/components/layout/text-link"
-import { ChannelsMatrix } from "@/components/sections/channels"
+import { ChannelDevices } from "@/components/sections/channel-devices"
 import { IntegrationGroups } from "@/components/sections/tools-integrations"
 import { howItWorks, security, startPaths } from "@/content/landing"
 import { channels, flow, tools } from "@/content/platform"
@@ -72,7 +72,7 @@ export function HomeChannels() {
     <Section id="channels">
       <Container>
         <Header title={channels.headline} body={channels.body} />
-        <ChannelsMatrix className="mt-10" />
+        <ChannelDevices className="mt-10" />
       </Container>
     </Section>
   )

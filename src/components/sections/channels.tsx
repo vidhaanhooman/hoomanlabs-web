@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
+import { ChannelDevices } from "@/components/sections/channel-devices";
 import { pad, StageHeader } from "@/components/sections/product-stage-list";
 import { channels, onTheCall, type OnTheCallVisual } from "@/content/platform";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,7 @@ export function Channels({
           body={channels.body}
         />
 
-        <ChannelsMatrix className="mt-10" />
+        <ChannelDevices className="mt-10" />
 
         <h3 className="mt-14 text-h4 font-medium">{onTheCall.label}</h3>
         <ol className="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -45,45 +46,6 @@ export function Channels({
         </ol>
       </Container>
     </Section>
-  );
-}
-
-/** Voice and chat, by surface. Also used on the homepage. */
-export function ChannelsMatrix({ className }: { className?: string }) {
-  return (
-    <div className={cn("grid gap-4 md:grid-cols-2", className)}>
-      {channels.modes.map((m) => (
-        <div
-          key={m.name}
-          className="rounded-md border border-line bg-surface p-2"
-        >
-          <p className="px-3 pt-2 pb-3 text-body font-medium">{m.name}</p>
-          <ul className="flex flex-col gap-1">
-            {m.surfaces.map((x) => (
-              <li
-                key={x.name}
-                className={cn(
-                  "flex items-center gap-3 rounded-md bg-background px-3 py-2.5",
-                  x.soon && "text-ink-muted",
-                )}
-              >
-                <span className="w-24 shrink-0 text-small font-medium">
-                  {x.name}
-                </span>
-                <span className="min-w-0 truncate text-small text-ink-secondary">
-                  {x.note}
-                </span>
-                {x.soon && (
-                  <span className="ml-auto rounded-full border border-line-strong px-1.5 py-px text-label text-ink-secondary">
-                    Coming soon
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
   );
 }
 
