@@ -1,28 +1,31 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { enterpriseGantt, type GanttKind } from "@/content/landing"
+import { enterpriseGantt, type GanttOwner } from "@/content/landing"
 import { cn } from "@/lib/utils"
 
 /**
- * Gantt chart of an enterprise rollout: a week grid, one row per phase,
- * grouped by flow, with a diamond for each sign-off gate. Scrolls sideways
- * inside its own frame on narrow screens.
+ * Gantt chart for one enterprise flow: numbered phases with their detail on
+ * the left, bars shaded by owner on an 8-week timeline, and labelled sign-off
+ * gates. Scrolls sideways inside its own frame on narrow screens.
  */
 
-const BAR: Record<GanttKind, string> = {
-  foundation: "bg-foreground",
-  access: "bg-[repeating-linear-gradient(135deg,var(--color-ink-muted)_0_4px,transparent_4px_8px)] ring-1 ring-ink-muted ring-inset",
-  build: "bg-ink-secondary",
-  test: "bg-line-strong",
-  live: "bg-[oklch(0.62_0.15_150)]",
-  run: "bg-surface ring-1 ring-line-strong ring-inset",
+const BAR: Record<GanttOwner, string> = {
+  us: "bg-foreground text-background",
+  joint: "bg-ink-muted text-background",
+  you: "bg-line-strong text-foreground",
 }
 
+const pct = (w: number) => `${(w / enterpriseGantt.weeks) * 100}%`
 
 export function EnterpriseGantt() {
-  const { weeks, groups, legend } = enterpriseGantt
-  // Label column, week columns, then a little room so the last gate isn't clipped.
-  const cols = `var(--gantt-label) repeat(${weeks}, minmax(2rem, 1fr)) 1rem`
+  const { weeks, rows, owners } = enterpriseGantt
+  const ownerLabel = Object.fromEntries(owners.map((o) => [o.owner, o.label])) as Record<GanttOwner, string>
+
+  // Vertical week dividers, drawn once per timeline cell.
+  const guides = {
+    backgroundImage: "linear-gradient(to right, var(--color-line) 1px, transparent 1px)",
+    backgroundSize: `${100 / weeks}% 100%`,
+  }
 
   return (
     <Section id="enterprise-timeline">
@@ -32,56 +35,79 @@ export function EnterpriseGantt() {
           <p className="text-body text-ink-secondary">{enterpriseGantt.body}</p>
         </div>
 
-        <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
-          {legend.map((l) => (
-            <li key={l.kind} className="flex items-center gap-2 text-small text-ink-secondary">
-              <span className={cn("h-2.5 w-5 rounded-sm", BAR[l.kind])} />
-              {l.label}
-            </li>
-          ))}
-          <li className="flex items-center gap-2 text-small text-ink-secondary">
-            <Gate />
-            Sign-off gate
-          </li>
-        </ul>
-
-        <div className="mt-6 overflow-x-auto rounded-md border border-line" role="figure" aria-label={enterpriseGantt.title}>
-          <div className="min-w-[48rem] [--gantt-label:8.5rem] sm:min-w-[56rem] sm:[--gantt-label:13rem]">
+        <div className="mt-8 overflow-x-auto rounded-md border border-line" role="figure" aria-label={enterpriseGantt.title}>
+          <div className="min-w-[46rem] [--label:14rem] sm:[--label:18rem]">
             {/* Week header */}
-            <div className="grid border-b border-line bg-surface" style={{ gridTemplateColumns: cols }}>
-              <span className="sticky left-0 z-10 bg-surface px-4 py-2.5 text-label text-ink-muted">Week</span>
-              {Array.from({ length: weeks }, (_, i) => (
-                <span key={i} className="border-l border-line py-2.5 text-center font-mono text-label text-ink-muted tabular-nums">
-                  {i + 1}
-                </span>
-              ))}
+            <div className="grid border-b border-line bg-surface" style={{ gridTemplateColumns: "var(--label) 1fr" }}>
+              <span className="sticky left-0 z-10 bg-surface px-4 py-2 text-label text-ink-muted">Phase</span>
+              <div className="grid" style={{ gridTemplateColumns: `repeat(${weeks}, 1fr)` }}>
+                {Array.from({ length: weeks }, (_, i) => (
+                  <span key={i} className="border-l border-line py-2 text-center font-mono text-label text-ink-muted">
+                    W{i + 1}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            {groups.map((g) => (
-              <div key={g.name} className="border-b border-line last:border-b-0">
-                <div className="sticky left-0 flex w-max items-baseline gap-2 px-4 pt-4 pb-1">
-                  <span className="text-small font-medium">{g.name}</span>
-                  {g.note && <span className="text-label text-ink-muted">{g.note}</span>}
+            {rows.map((r, i) => (
+              <div
+                key={r.name}
+                className="grid border-b border-line last:border-b-0"
+                style={{ gridTemplateColumns: "var(--label) 1fr" }}
+              >
+                <div className="sticky left-0 z-10 bg-background px-4 py-3">
+                  <p className="text-small font-medium">
+                    {i + 1}. {r.name}
+                  </p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-ink-muted">{r.detail}</p>
                 </div>
-                {g.rows.map((r) => (
-                  <div key={r.label} className="relative grid items-center" style={{ gridTemplateColumns: cols }}>
-                    <span className="sticky left-0 z-10 truncate bg-background px-4 py-2 text-small text-ink-secondary">{r.label}</span>
-                    {/* Week guides */}
-                    {Array.from({ length: weeks }, (_, i) => (
-                      <span key={i} aria-hidden className="h-full border-l border-line/60" style={{ gridColumn: i + 2, gridRow: 1 }} />
-                    ))}
+                <div className="relative min-h-16" style={guides}>
+                  {r.gateBefore && (
                     <span
-                      className="relative mx-1 flex h-4 items-center"
-                      style={{ gridColumn: `${r.start + 1} / ${r.end + 2}`, gridRow: 1 }}
+                      className="absolute top-1/2 z-10 flex -translate-x-full -translate-y-1/2 items-center gap-1.5 pr-1 text-[11px] font-medium whitespace-nowrap"
+                      style={{ left: pct(r.start) }}
                     >
-                      <span className={cn("h-full w-full rounded-sm", BAR[r.kind])} />
-                      {r.gate && <Gate className="absolute -right-2" />}
+                      {r.gateBefore}
+                      <Gate />
                     </span>
-                  </div>
-                ))}
-                <div className="h-3" />
+                  )}
+                  <span
+                    className={cn(
+                      "absolute top-1/2 flex h-7 -translate-y-1/2 items-center justify-center rounded-sm px-2 text-[11px] font-medium",
+                      BAR[r.owner]
+                    )}
+                    style={{ left: pct(r.start), width: pct(r.end - r.start) }}
+                  >
+                    <span className="truncate">{ownerLabel[r.owner]}</span>
+                  </span>
+                  {r.gate && (
+                    <span
+                      className="absolute top-1/2 z-10 flex -translate-x-1.5 -translate-y-1/2 items-center gap-1.5 text-[11px] font-medium whitespace-nowrap"
+                      style={{ left: pct(r.end) }}
+                    >
+                      <Gate />
+                      {r.gate}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
+
+            {/* Legend */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line bg-surface px-4 py-3">
+              <span className="text-label text-ink-muted">Owner</span>
+              {owners.map((o) => (
+                <span key={o.owner} className="flex items-center gap-2 text-small text-ink-secondary">
+                  <span className={cn("h-3 w-6 rounded-sm", BAR[o.owner])} />
+                  {o.label}
+                </span>
+              ))}
+              <span className="flex items-center gap-2 text-small text-ink-secondary">
+                <Gate />
+                Sign-off gate
+              </span>
+              <span className="ml-auto text-label text-ink-muted italic">{enterpriseGantt.note}</span>
+            </div>
           </div>
         </div>
       </Container>
@@ -89,11 +115,6 @@ export function EnterpriseGantt() {
   )
 }
 
-function Gate({ className }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={cn("size-2.5 shrink-0 rotate-45 rounded-[1px] border-2 border-background bg-foreground ring-1 ring-foreground", className)}
-    />
-  )
+function Gate() {
+  return <span aria-hidden className="size-2.5 shrink-0 rotate-45 rounded-[1px] bg-foreground ring-2 ring-background" />
 }
