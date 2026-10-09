@@ -26,7 +26,8 @@ export type Product = {
 }
 
 export type ProductResources = {
-  faqs: { label: string; href: string }[]
+  /** Answered inline as an accordion. */
+  faqs: { q: string; a: string }[]
   guides: { label: string; href: string }[]
   /** "See all" links for each column. */
   allFaqs: string
@@ -92,14 +93,29 @@ export const productList: Product[] = [
       { verb: "Go live", body: "Connect your numbers and start calling, with every conversation measured." },
     ],
     ctaTitle: "Hear a voice agent on your own use case.",
-    // Draft questions/guides; hrefs are placeholders until the pages exist.
+    // Draft FAQs (answers to confirm) and guides (hrefs are placeholders).
     resources: {
       faqs: [
-        { label: "How do voice agents handle interruptions?", href: "#" },
-        { label: "Which languages and accents are supported?", href: "#" },
-        { label: "Can I keep my existing phone numbers?", href: "#" },
-        { label: "How is customer data stored and protected?", href: "#" },
-        { label: "What happens when the agent can't help?", href: "#" },
+        {
+          q: "How do voice agents handle interruptions?",
+          a: "The agent stops speaking as soon as the caller talks over it, listens to what they said, and picks up from there, the way a person on the phone would.",
+        },
+        {
+          q: "Which languages and accents are supported?",
+          a: "Agents speak and understand many languages, including English, Hindi and Spanish, and can switch mid-call when the caller does. You choose the voice and accent per agent.",
+        },
+        {
+          q: "Can I keep my existing phone numbers?",
+          a: "Yes. Connect your current carrier over SIP trunking and keep your numbers, rates and caller ID, or buy new local numbers instead.",
+        },
+        {
+          q: "How is customer data stored and protected?",
+          a: "Conversations and customer data are encrypted in transit and at rest, and access is limited to your team. Contact us for our security documentation.",
+        },
+        {
+          q: "What happens when the agent can't help?",
+          a: "It hands the call to your team with the full context, books a callback, or follows the fallback you set, so no caller is left stuck.",
+        },
       ],
       guides: [
         { label: "What is a voice AI agent?", href: "#" },
