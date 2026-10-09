@@ -2,19 +2,18 @@ import Link from "next/link"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { UseCasesScreen } from "@/components/product/use-cases-screen"
-import { FeaturePanel } from "@/components/sections/feature-panel"
 import { Impact, Security, StartPaths } from "@/components/sections/landing"
-import { HeroScene } from "@/components/sections/hero-scene"
+import { ListenExperience } from "@/components/sections/listen-experience"
 import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
-import { ctas, panels } from "@/content/draft"
+import { UseCases } from "@/components/sections/use-cases"
+import { ctas } from "@/content/draft"
 import { chapters, heroCall } from "@/content/landing"
 
 /**
  * Proposed homepage (/lab/home), in the order a buyer's questions come:
- * 1 Hero: headline, then the call-me box floating on the parallax painting, then logos
+ * 1 Hero: headline, then the listen / call-me panel, then logos
  * 2 Business impact (numbers)
  * 3 Use cases
  * 4 Platform overview: six component tiles, detail on /platform
@@ -27,17 +26,16 @@ export function LandingPage() {
       {/* 1 Hero: centred headline, the call box, then the parallax with a live call */}
       <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
         <Container className="flex flex-col items-start text-left">
-          <h1 className="reveal max-w-[22ch] text-display font-normal">{heroCall.title}</h1>
+          <h1 className="reveal text-display font-normal">
+            AI employees for every customer conversation,
+            <span className="block">starting with the phone.</span>
+          </h1>
           <p
             className="reveal mt-5 max-w-[56ch] text-body-lg text-ink-secondary"
             style={{ "--i": 1 } as React.CSSProperties}
           >
             {heroCall.body}
           </p>
-          <div id="listen" className="reveal mt-10 w-full scroll-mt-24 md:mt-12" style={{ "--i": 2 } as React.CSSProperties}>
-            {/* The call box floats on the painting, among finished tasks. */}
-            <HeroScene />
-          </div>
           <p
             className="reveal mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-secondary"
             style={{ "--i": 3 } as React.CSSProperties}
@@ -53,6 +51,9 @@ export function LandingPage() {
             </Link>
           </p>
         </Container>
+        <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 4 } as React.CSSProperties}>
+          <ListenExperience />
+        </div>
       </Section>
       <Logos />
 
@@ -62,15 +63,7 @@ export function LandingPage() {
 
       {/* 3 Use cases */}
       <Chapter {...chapters.useCases} />
-      <FeaturePanel
-        id="use-cases"
-        {...panels.useCases}
-        visual="Use cases"
-        backdrop="/art/listen/listen-midday.png"
-        softBackdrop
-        screen={(className) => <UseCasesScreen className={className} />}
-        media="end"
-      />
+      <UseCases more={{ label: "See all use cases", href: "/platform#product-use-cases" }} />
 
       {/* 4 Platform: overview of all six components; detail lives on /platform */}
       <Chapter {...chapters.platform} />

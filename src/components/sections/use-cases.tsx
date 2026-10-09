@@ -1,10 +1,11 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { TextLink } from "@/components/layout/text-link"
 import { UseCaseStory } from "@/components/sections/use-case-story"
 import { useCases } from "@/content/platform"
 
 /** What teams use agents for: one result per card on a plain surface; the call shows on hover. */
-export function UseCases() {
+export function UseCases({ more }: { more?: { label: string; href: string } } = {}) {
   return (
     <Section id="product-use-cases">
       <Container>
@@ -20,6 +21,11 @@ export function UseCases() {
             </li>
           ))}
         </ul>
+        {more && (
+          <TextLink href={more.href} className="mt-8">
+            {more.label}
+          </TextLink>
+        )}
       </Container>
     </Section>
   )
