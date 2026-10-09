@@ -71,6 +71,17 @@
   --gray-900: oklch(0.96 0 0);
   --gray-950: oklch(0.985 0 0);
 }
+/* Graphite: a lighter dark for small UI cards on light sections, so several
+   dark cards don't read as heavy black blocks. Use with .dark. */
+.dark.graphite {
+  --gray-0: oklch(0.3 0.004 270);
+  --gray-50: oklch(0.35 0.004 270);
+  --gray-100: oklch(0.38 0.004 270);
+  --gray-200: oklch(1 0 0 / 9%);
+  --gray-300: oklch(1 0 0 / 14%);
+  --gray-500: oklch(0.74 0 0);
+  --gray-600: oklch(0.82 0 0);
+}
 
 @theme inline {
   --font-sans: var(--font-geist-sans);

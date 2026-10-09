@@ -11,11 +11,10 @@ import { cn } from "@/lib/utils"
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
 /**
- * Charcoal: the hero product screen's dark grey instead of pure black, with
+ * Graphite: a lighter dark grey instead of pure black, with
  * softer hairlines, so dark cards don't read as heavy slabs on a light page.
  */
-const CHARCOAL =
-  "dark [--background:oklch(0.22_0.004_270)] [--surface:oklch(0.27_0.004_270)] [--line:oklch(1_0_0/8%)] [--line-strong:oklch(1_0_0/13%)]"
+const CHARCOAL = "dark graphite"
 
 /** The result card for a use case: charcoal by default, "light" or "dark" (pure) on request. */
 export function UseCaseVignette({
