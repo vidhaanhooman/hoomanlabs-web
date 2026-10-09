@@ -4,17 +4,11 @@ import type { useCases } from "@/content/platform"
 type UseCase = (typeof useCases)[number]
 
 /**
- * One use-case card: a single, full-size result card on a painted texture, so
+ * One use-case card: a single, full-size result card on a plain surface, so
  * the outcome reads at a glance. Hover or focus reveals the one exchange from
  * the call that led to it.
  */
-export function UseCaseStory({
-  useCase,
-  background,
-}: {
-  useCase: UseCase
-  background?: { src: string; filter?: string }
-}) {
+export function UseCaseStory({ useCase }: { useCase: UseCase }) {
   const [first, second] = useCase.call
   return (
     <article
@@ -23,13 +17,6 @@ export function UseCaseStory({
     >
       {/* Stage */}
       <div aria-hidden className="relative isolate flex h-64 items-center justify-center overflow-hidden bg-surface p-6">
-        {background && (
-          <span
-            className="absolute inset-0 -z-10 bg-cover bg-center"
-            style={{ backgroundImage: `url(${background.src})`, filter: background.filter }}
-          />
-        )}
-
         <div className="transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
           <UseCaseVignette kind={useCase.visual} />
         </div>
