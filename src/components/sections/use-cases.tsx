@@ -1,9 +1,9 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { UseCaseTile, type UseCaseVisual } from "@/components/sections/use-case-visuals"
+import { UseCaseStory } from "@/components/sections/use-case-story"
 import { useCases } from "@/content/platform"
 
-/** What teams use agents for: the result the agent produced, the job, and what it drives. */
+/** What teams use agents for: large cards that play a call through to its result. */
 export function UseCases() {
   return (
     <Section id="product-use-cases">
@@ -12,13 +12,10 @@ export function UseCases() {
           <h2 className="text-h2 font-normal">What teams put agents on.</h2>
           <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
         </div>
-        <ul className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {useCases.map((u, i) => (
-            <li key={u.title} className="flex flex-col gap-2">
-              <UseCaseTile kind={u.image as UseCaseVisual} slice={{ cols: 3, rows: 2, col: i % 3, row: Math.floor(i / 3) }} />
-              <h3 className="mt-3 text-body font-medium">{u.title}</h3>
-              <p className="text-small text-ink-secondary">{u.body}</p>
-              <p className="mt-auto pt-1 font-mono text-label text-ink-muted">→ {u.result}</p>
+        <ul className="mt-10 grid gap-6 md:grid-cols-2">
+          {useCases.map((u) => (
+            <li key={u.title} className="flex">
+              <UseCaseStory useCase={u} />
             </li>
           ))}
         </ul>

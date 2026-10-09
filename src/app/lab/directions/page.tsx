@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/container"
 import { ColorField, StageField, VoiceField } from "@/components/lab/direction-backgrounds"
 import { ConversationScreen } from "@/components/product/conversation-screen"
 import { STAGE_CLASS } from "@/components/sections/hero"
-import { UseCaseVignette, type UseCaseVisual } from "@/components/sections/use-case-visuals"
+import { UseCaseVignette, type UseCaseVisual } from "@/components/sections/use-case-vignettes"
 import { hero } from "@/content/draft"
 
 export const metadata: Metadata = { title: "Lab: visual directions (draft)" }

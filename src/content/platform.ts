@@ -62,41 +62,81 @@ export const flow = {
   ],
 }
 
-/** `image` picks the vignette in use-case-visuals.tsx. */
-export const useCases = [
+/**
+ * `visual` picks the result card in use-case-vignettes.tsx; `call` and
+ * `action` play out above it in the use-case story.
+ */
+export const useCases: {
+  title: string
+  visual: "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
+  call: { who: "caller" | "agent"; text: string }[]
+  action: string
+  body: string
+  result: string
+}[] = [
   {
     title: "Payment collections",
-    image: "collections",
+    visual: "collections",
+    call: [
+      { who: "caller", text: "Can I pay on Friday instead?" },
+      { who: "agent", text: "Of course. I'll note Friday and text you a payment link." },
+    ],
+    action: "Promise to pay logged",
     body: "Remind customers before and after due dates, take promises to pay and set up plans.",
     result: "More on-time payments",
   },
   {
     title: "Appointment booking",
-    image: "booking",
+    visual: "booking",
+    call: [
+      { who: "caller", text: "I need to move my appointment." },
+      { who: "agent", text: "Dr. Rao is free Thursday at 10. Shall I book it?" },
+    ],
+    action: "Calendar updated",
     body: "Book, confirm and reschedule appointments straight into your calendar.",
     result: "Fewer no-shows",
   },
   {
     title: "Lead qualification",
-    image: "leads",
+    visual: "leads",
+    call: [
+      { who: "agent", text: "Thanks for signing up. When are you hoping to start?" },
+      { who: "caller", text: "This quarter, ideally next month." },
+    ],
+    action: "Lead scored and sales call booked",
     body: "Reach new leads within minutes, ask your qualifying questions and book the sales call.",
     result: "Faster speed to lead",
   },
   {
     title: "Support triage",
-    image: "support",
+    visual: "support",
+    call: [
+      { who: "caller", text: "Where's my order?" },
+      { who: "agent", text: "It's out for delivery and arrives today by 6pm." },
+    ],
+    action: "Order looked up",
     body: "Answer common questions, look up orders and route the rest with a full summary.",
     result: "Shorter queues",
   },
   {
     title: "Renewals and retention",
-    image: "renewals",
+    visual: "renewals",
+    call: [
+      { who: "agent", text: "Your Gold plan renews next week. Shall I keep it going?" },
+      { who: "caller", text: "Yes, another year please." },
+    ],
+    action: "Plan renewed",
     body: "Reach customers before renewal, handle objections and flag the ones at risk.",
     result: "Higher renewal rate",
   },
   {
     title: "Surveys and feedback",
-    image: "surveys",
+    visual: "surveys",
+    call: [
+      { who: "agent", text: "From 0 to 10, how likely are you to recommend us?" },
+      { who: "caller", text: "A nine. Quick and polite, and in Hindi." },
+    ],
+    action: "Answer logged to your CRM",
     body: "Run NPS and post-service conversations in the customer's language and log every answer.",
     result: "More responses",
   },

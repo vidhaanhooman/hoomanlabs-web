@@ -1,42 +1,16 @@
 import { ArrowRightIcon, CheckIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { TileBackdrop, type Painting, type Slice } from "@/components/layout/tile-backdrop"
 import { cn } from "@/lib/utils"
 
 /**
- * One small vignette per use case, in the same language as the channel
- * devices and the hero: dark UI cards on a crop of the gouache painting. Each shows the result
+ * One small result card per use case, in the same dark UI language as the
+ * hero: what the agent produced on the call. Each shows the result
  * the agent produced, not a person. Fictional demo data.
  */
 
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
-const B = "/art/backdrops"
-const L = "/art/listen"
-
-/** Daylight crops only (one time of day), so the grid reads as one set. */
-const BACKDROP: Record<UseCaseVisual, Painting> = {
-  collections: { src: `${B}/home-build.png`, position: "30% 60%" },
-  booking: { src: `${L}/listen-morning.png`, position: "75% 30%" },
-  leads: { src: `${B}/home-test.png`, position: "50% 40%" },
-  support: { src: `${L}/listen-midday.png`, position: "20% 70%" },
-  renewals: { src: `${B}/home-test.png`, position: "85% 75%" },
-  surveys: { src: `${L}/listen-morning.png`, position: "15% 55%" },
-}
-
-export function UseCaseTile({ kind, slice }: { kind: UseCaseVisual; slice?: Slice }) {
-  return (
-    <div
-      aria-hidden
-      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-8 text-[12px] leading-snug"
-    >
-      <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} slice={slice} />
-      <UseCaseVignette kind={kind} />
-    </div>
-  )
-}
-
-/** The dark UI vignette alone, for tiles that bring their own background. */
+/** The dark result card for a use case. */
 export function UseCaseVignette({ kind }: { kind: UseCaseVisual }) {
   const Visual = VISUALS[kind]
   return (
