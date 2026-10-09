@@ -5,18 +5,19 @@ import { ToolsScreen } from "@/components/product/tools-screen"
 import { VoicesScreen } from "@/components/product/voices-screen"
 import { Section } from "@/components/layout/section"
 import { SectionHeader } from "@/components/layout/section-header"
+import { TextLink } from "@/components/layout/text-link"
 import { platform } from "@/content/draft"
 
 /**
  * Three capabilities as an asymmetric bento (one tall lead cell, two stacked),
  * not three equal cards. Exactly three cells for three items.
  */
-export function Platform() {
+export function Platform({ title = platform.title, more }: { title?: string; more?: { label: string; href: string } } = {}) {
   const [lead, ...rest] = platform.items
   return (
     <Section id="platform">
       <Container>
-        <SectionHeader title={platform.title} />
+        <SectionHeader title={title} />
         <div className="mt-12 grid gap-3 lg:grid-cols-12 lg:grid-rows-2">
           <Panel className="flex flex-col gap-6 p-4 sm:p-6 lg:col-span-7 lg:row-span-2 lg:p-8">
             <h3 className="text-h3 font-normal">
@@ -39,6 +40,11 @@ export function Platform() {
             </Panel>
           ))}
         </div>
+        {more && (
+          <TextLink href={more.href} className="mt-8">
+            {more.label}
+          </TextLink>
+        )}
       </Container>
     </Section>
   )

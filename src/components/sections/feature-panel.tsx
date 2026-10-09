@@ -22,6 +22,7 @@ export function FeaturePanel({
   title,
   body,
   link,
+  linkHref = "#",
   visual,
   screen,
   backdrop,
@@ -31,6 +32,7 @@ export function FeaturePanel({
   title: string
   body: string
   link: string
+  linkHref?: string
   visual: string
   /** Optional recreated product screen; receives the window geometry classes. */
   screen?: (className: string) => React.ReactNode
@@ -52,7 +54,7 @@ export function FeaturePanel({
               {title}
               <span className="block text-ink-secondary">{body}</span>
             </h2>
-            <TextLink href="#">{link}</TextLink>
+            <TextLink href={linkHref}>{link}</TextLink>
           </div>
           <Placeholder
             label={backdrop ? "" : "Backdrop"}

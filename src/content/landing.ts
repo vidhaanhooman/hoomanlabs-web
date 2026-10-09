@@ -209,3 +209,20 @@ export const enterpriseGantt = {
   }[],
   note: "Weeks are indicative and set per flow at the Foundation gate.",
 }
+
+/** Homepage chapters (/lab/home): numbered labels over each group of sections. */
+export const chapters = {
+  impact: { n: "01", label: "Business impact", title: "Results you can measure from the first month." },
+  platform: { n: "02", label: "Platform", title: "One platform for the whole agent lifecycle." },
+  useCases: { n: "03", label: "Use cases and integrations", title: "Built for your busiest calls, connected to your stack." },
+  start: { n: "04", label: "Get started", title: "" },
+}
+
+/** Platform panels on the homepage, one per component. */
+export const homePlatform = {
+  agents: { title: "Agents", body: "Prompt or flow, context, voices and actions, with full control.", link: "Agents" },
+  workflow: { title: "Workflow", body: "Campaigns, triggers and follow-ups around every conversation.", link: "Workflow" },
+  simulations: { title: "Simulations", body: "Simulated customers test every version before it goes live.", link: "Simulations" },
+  qa: { title: "QA", body: "Every conversation scored, with dashboards, alerts and A/B tests.", link: "QA" },
+  tools: { title: "Tools & integrations", more: { label: "See everything on the platform", href: "/platform" } },
+}
