@@ -6,15 +6,15 @@ import { CheckIcon } from "@phosphor-icons/react"
 
 import { HeroCall } from "@/components/sections/hero-call"
 import { HeroParallaxStage } from "@/components/sections/hero-parallax-stage"
+import { SamplePlayer } from "@/components/sections/sample-player"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import type { CallLine } from "@/content/demo-calls"
+import { useCaseCalls } from "@/content/demo-calls"
 import { cn } from "@/lib/utils"
 
 /**
  * The hero scene: the parallax painting with agents' finished tasks floating
  * in it at different depths (a few at a time, cycling), the call box in the
- * middle, and sample captions in the sky while a sample plays. Fictional
- * demo data.
+ * middle with a glass sample player above it. Fictional demo data.
  */
 
 type Task = { key: string; who: string; what: string; x: string; y: string; depth: number }
@@ -36,7 +36,7 @@ export function HeroScene() {
   const inView = useInView(ref, { amount: 0.3 })
   const reduce = usePrefersReducedMotion()
   const [tick, setTick] = useState(0)
-  const [caption, setCaption] = useState<CallLine | null>(null)
+  const [useCase, setUseCase] = useState(0)
 
   useEffect(() => {
     if (!inView || reduce) return
@@ -66,24 +66,11 @@ export function HeroScene() {
 
   return (
     <div ref={ref}>
-      <HeroParallaxStage floats={floats} className="aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]">
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-4">
-          {/* Sample captions in the sky */}
-          <div className="flex min-h-14 w-full max-w-xl items-end justify-center" aria-live="polite">
-            {caption && (
-              <p
-                key={caption.text}
-                className="max-w-[46ch] rounded-2xl bg-background/70 px-4 py-2 text-center text-small backdrop-blur-md motion-safe:animate-[reveal-blur_400ms_var(--ease-out)_both]"
-              >
-                <span className="mr-1.5 text-ink-muted">{caption.speaker === "agent" ? "Agent" : "Caller"}</span>
-                {caption.text}
-              </p>
-            )}
-          </div>
+      <HeroParallaxStage floats={floats} className="min-h-[36rem] sm:aspect-[16/10] sm:min-h-0 lg:aspect-[16/8]">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 px-4">
+          <SamplePlayer call={useCaseCalls[useCase]} />
+          <HeroCall glass onUseCase={setUseCase} />
 
-          <HeroCall glass onCaption={setCaption} />
-
-          <div className="min-h-14" />
         </div>
       </HeroParallaxStage>
     </div>

@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { PauseIcon, PhoneCallIcon, PlayIcon } from "@phosphor-icons/react"
+import { PhoneCallIcon } from "@phosphor-icons/react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { COUNTRIES, flagFor } from "@/components/sections/listen-experience"
-import { useCaseCalls, type CallLine } from "@/content/demo-calls"
+import { useCaseCalls } from "@/content/demo-calls"
 import { cn } from "@/lib/utils"
 
 /**
@@ -44,13 +44,13 @@ const mask = (d: string) => d.slice(0, 2) + "•".repeat(Math.max(0, d.length - 
 export function HeroCall({
   glass = false,
   onCalling,
-  onCaption,
+  onUseCase,
 }: {
   glass?: boolean
   /** The agent's name while a demo call is on its way, else null. */
   onCalling?: (agent: string | null) => void
-  /** The current sample line while "Play sample" runs, else null. */
-  onCaption?: (line: CallLine | null) => void
+  /** The selected use case changed (index into useCaseCalls). */
+  onUseCase?: (index: number) => void
 }) {
   const [index, setIndex] = useState(0)
   const [country, setCountry] = useState(COUNTRIES[0].code)
@@ -60,47 +60,11 @@ export function HeroCall({
   const [sending, setSending] = useState(false)
   const [calling, setCalling] = useState<string | null>(null)
   const [late, setLate] = useState(false)
-  const [playing, setPlaying] = useState(false)
-  const stopRef = useRef<() => void>(() => {})
   const touchedCountry = useRef(false)
   const honeypot = useRef<HTMLInputElement>(null)
   const call = useCaseCalls[index]
   const fmt = FORMAT[country]
   const valid = digits.length === fmt.length
-
-  /**
-   * Plays the sample: the recording if one exists, otherwise a silent preview
-   * that steps through the timed transcript. Each line goes to onCaption.
-   */
-  function playSample() {
-    if (playing) return stopRef.current()
-    const lines = call.lines
-    const lineAt = (t: number) => [...lines].reverse().find((l) => l.t <= t) ?? null
-    let timer: ReturnType<typeof setInterval> | undefined
-    const audio = new Audio(call.src)
-    const stop = () => {
-      clearInterval(timer)
-      audio.pause()
-      setPlaying(false)
-      onCaption?.(null)
-    }
-    stopRef.current = stop
-    setPlaying(true)
-    const silent = () => {
-      const start = performance.now()
-      timer = setInterval(() => {
-        const t = (performance.now() - start) / 1000
-        if (t >= call.duration) return stop()
-        onCaption?.(lineAt(t))
-      }, 200)
-    }
-    audio.addEventListener("timeupdate", () => onCaption?.(lineAt(audio.currentTime)))
-    audio.addEventListener("ended", stop)
-    audio.play().catch(silent)
-  }
-
-  // Stop the sample when the use case changes or the box unmounts.
-  useEffect(() => () => stopRef.current(), [index])
 
   // Preselect the visitor's dialling code (only if they haven't picked one).
   useEffect(() => {
@@ -135,7 +99,6 @@ export function HeroCall({
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) return setError(data.error ?? "We couldn't place the call. Please try again.")
       setLate(false)
-      stopRef.current()
       setCalling(`${country} ${mask(digits)}`)
       onCalling?.(call.agent)
     } catch {
@@ -210,17 +173,7 @@ export function HeroCall({
 
       {/* Use case, with its language */}
       <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pr-1 pb-2 pl-4">
-        <button
-          type="button"
-          onClick={playSample}
-          aria-pressed={playing}
-          className="flex items-center gap-2 rounded-full text-small text-ink-secondary outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground/30"
-        >
-          <span className="grid size-6 place-items-center rounded-full bg-foreground text-background">
-            {playing ? <PauseIcon weight="fill" className="size-3" /> : <PlayIcon weight="fill" className="size-3" />}
-          </span>
-          {playing ? "Playing sample" : "Play a sample"}
-        </button>
+        <span className="text-small text-ink-secondary">Pick a use case</span>
         <div
           role="radiogroup"
           aria-label="Use case"
@@ -232,7 +185,10 @@ export function HeroCall({
               type="button"
               role="radio"
               aria-checked={i === index}
-              onClick={() => setIndex(i)}
+              onClick={() => {
+                setIndex(i)
+                onUseCase?.(i)
+              }}
               className={cn(
                 "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30",
                 i === index ? "bg-background text-foreground shadow-xs" : "text-ink-secondary hover:text-foreground"
@@ -301,16 +257,10 @@ export function HeroCall({
           aria-invalid={error ? true : undefined}
           className="min-w-0 flex-1 bg-transparent px-2 text-body tabular-nums outline-none placeholder:text-ink-muted"
         />
-        <button
-          type="submit"
-          disabled={sending || !valid}
-          aria-busy={sending || undefined}
-          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-3.5 text-small sm:gap-2 sm:px-5 font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-40"
-        >
-          <PhoneCallIcon weight="fill" className="size-4" aria-hidden />
-          {sending ? "Calling…" : "Call me"}
-        </button>
+        <CallButton className="hidden h-10 px-5 sm:inline-flex" sending={sending} disabled={!valid} />
       </div>
+      {/* Narrow screens: the button gets its own full-width row. */}
+      <CallButton className="mt-2 flex h-11 w-full sm:hidden" sending={sending} disabled={!valid} />
 
       {/* One line: consent (an error replaces the wording, the box stays) */}
       <label className="flex items-center gap-2 px-4 pt-2.5 pb-1.5 text-label text-ink-secondary">
@@ -330,5 +280,22 @@ export function HeroCall({
         )}
       </label>
     </form>
+  )
+}
+
+function CallButton({ className, sending, disabled }: { className?: string; sending: boolean; disabled: boolean }) {
+  return (
+    <button
+      type="submit"
+      disabled={sending || disabled}
+      aria-busy={sending || undefined}
+      className={cn(
+        "shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-small font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-40",
+        className
+      )}
+    >
+      <PhoneCallIcon weight="fill" className="size-4" aria-hidden />
+      {sending ? "Calling…" : "Call me"}
+    </button>
   )
 }
