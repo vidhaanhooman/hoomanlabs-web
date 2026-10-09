@@ -1,4 +1,3 @@
-import Image from "next/image"
 import {
   ChatCircleIcon,
   DeviceMobileIcon,
@@ -21,7 +20,7 @@ import { cn } from "@/lib/utils"
 /**
  * Home page platform overview: the six components as one bento, each with a
  * line, a small visual and a link to its detail on /platform. Agents is the
- * one painted, large tile; the rest stay clean.
+ * large tile; all share the same plain surface.
  */
 
 const COPY: Record<ComponentId, { title: string; body: string }> = {
@@ -212,18 +211,10 @@ export function PlatformOverview() {
     <Section id="platform-overview">
       <Container>
         <div className="grid gap-3 lg:grid-cols-12">
-          {/* Agents: the one painted, large tile */}
+          {/* Agents: the large tile, same plain treatment as the rest */}
           <Tile id="agents" className="lg:col-span-7 lg:row-span-2">
-            <div aria-hidden className="relative isolate min-h-72 flex-1 overflow-hidden rounded-md">
-              <Image
-                src="/art/backdrops/home-build.png"
-                alt=""
-                fill
-                sizes="(min-width: 1300px) 700px, (min-width: 1024px) 55vw, 100vw"
-                className="-z-20 scale-[1.02] object-cover blur-[1px]"
-              />
-              <span className="absolute inset-0 -z-10 bg-background/10" />
-              <AgentConfigScreen className={cn("absolute inset-x-[6%] top-[8%] bottom-[8%]", CHROME)} />
+            <div aria-hidden className="flex flex-1 items-center">
+              <AgentConfigScreen className={cn("h-80 w-full lg:h-[25rem]", CHROME)} />
             </div>
           </Tile>
           <Tile id="workflow" className="lg:col-span-5">
