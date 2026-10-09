@@ -213,9 +213,9 @@ export const enterpriseGantt = {
 /** Homepage chapters (/lab/home): numbered labels over each group of sections. */
 export const chapters = {
   impact: { n: "01", label: "Business impact", title: "Results you can measure from the first month." },
-  platform: { n: "02", label: "Platform", title: "One platform for the whole agent lifecycle." },
-  useCases: { n: "03", label: "Use cases and integrations", title: "Built for your busiest calls, connected to your stack." },
-  start: { n: "04", label: "Get started", title: "" },
+  useCases: { n: "02", label: "Use cases", title: "" },
+  platform: { n: "03", label: "Platform", title: "One platform for the whole agent lifecycle." },
+  proof: { n: "04", label: "Customers", title: "" },
 }
 
 /** Platform panels on the homepage, one per component. */

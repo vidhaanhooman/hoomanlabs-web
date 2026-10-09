@@ -9,7 +9,7 @@ import { CampaignScreen } from "@/components/product/campaign-screen"
 import { SimulationRunScreen } from "@/components/product/simulation-run-screen"
 import { UseCasesScreen } from "@/components/product/use-cases-screen"
 import { FeaturePanel } from "@/components/sections/feature-panel"
-import { HomeChannels, HomeIntegrations, Impact, StartPaths } from "@/components/sections/landing"
+import { HomeChannels, HomeIntegrations, Impact, Security, StartPaths } from "@/components/sections/landing"
 import { ListenExperience } from "@/components/sections/listen-experience"
 import { Logos } from "@/components/sections/logos"
 import { Platform } from "@/components/sections/platform"
@@ -19,12 +19,13 @@ import { chapters, homePlatform } from "@/content/landing"
 import { componentHref } from "@/content/platform"
 
 /**
- * Proposed homepage (/lab/home), in five parts:
- * 1 Hero with the listen / call-me experience as its visual, then logos
- * 2 Business impact: numbers, then customer quotes
- * 3 Platform: Agents, Workflow, Simulations, QA panels, Channels, Tools
- * 4 Use cases and integrations
- * 5 Ways to get started
+ * Proposed homepage (/lab/home), in the order a buyer's questions come:
+ * 1 Hero with the listen / call-me experience, then logos
+ * 2 Business impact (numbers)
+ * 3 Use cases
+ * 4 Platform: Agents, Workflow, Simulations, QA, Channels, Tools, integrations
+ * 5 Customer quotes, then a short security strip
+ * 6 Ways to get started
  */
 export function LandingPage() {
   return (
@@ -51,9 +52,19 @@ export function LandingPage() {
       {/* 2 Business impact */}
       <Chapter {...chapters.impact} />
       <Impact />
-      <Testimonials />
 
-      {/* 3 Platform */}
+      {/* 3 Use cases */}
+      <Chapter {...chapters.useCases} />
+      <FeaturePanel
+        id="use-cases"
+        {...panels.useCases}
+        visual="Use cases"
+        backdrop="/art/listen/listen-midday.png"
+        screen={(className) => <UseCasesScreen className={className} />}
+        media="end"
+      />
+
+      {/* 4 Platform, ending with integrations */}
       <Chapter {...chapters.platform} />
       <FeaturePanel
         id="product-agents"
@@ -93,20 +104,15 @@ export function LandingPage() {
       />
       <HomeChannels />
       <Platform title={homePlatform.tools.title} more={homePlatform.tools.more} />
-
-      {/* 4 Use cases and integrations */}
-      <Chapter {...chapters.useCases} />
-      <FeaturePanel
-        id="use-cases"
-        {...panels.useCases}
-        visual="Use cases"
-        backdrop="/art/listen/listen-midday.png"
-        screen={(className) => <UseCasesScreen className={className} />}
-        media="end"
-      />
       <HomeIntegrations />
 
-      {/* 5 Ways to get started */}
+      {/* 5 Proof, then trust */}
+      <Chapter {...chapters.proof} />
+      <Testimonials />
+      <Security />
+
+
+      {/* 6 Ways to get started */}
       <StartPaths />
     </>
   )
