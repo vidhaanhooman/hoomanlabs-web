@@ -237,6 +237,14 @@
   .ui-wave span:nth-child(5) { animation-delay: -600ms; }
   .ui-wave[data-idle] span { animation-play-state: paused; }
 }
+@keyframes flow-x {
+  from { left: 0; }
+  to { left: calc(100% - 6px); }
+}
+@keyframes flow-y {
+  from { top: 0; }
+  to { top: 100%; }
+}
 @keyframes ui-wave {
   0%, 100% { transform: scaleY(0.35); }
   50% { transform: scaleY(1); }

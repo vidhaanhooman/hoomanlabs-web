@@ -8,7 +8,7 @@ import { Placeholder } from "@/components/layout/placeholder";
 import { Section } from "@/components/layout/section";
 import { SectionHeader } from "@/components/layout/section-header";
 import { TextLink } from "@/components/layout/text-link";
-import { VoiceOverview } from "@/components/product/voice-overview";
+import { VoicePipeline } from "@/components/product/voice-pipeline";
 import { FeaturePanel } from "@/components/sections/feature-panel";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ProductResources } from "@/components/sections/product-resources";
@@ -89,7 +89,7 @@ export function ProductPage({
           >
             {fin && product.stages ? (
               /* The one painted moment on the page; stages below stay plain. */
-              <div className="relative isolate overflow-hidden rounded-md px-4 py-6 sm:px-8 sm:py-10 lg:flex lg:aspect-[16/9] lg:items-center lg:px-12">
+              <div className="relative isolate overflow-hidden rounded-md px-4 py-6 sm:px-8 sm:py-10 lg:flex lg:min-h-[44rem] lg:items-center lg:px-10 lg:py-12">
                 <Image
                   src={HERO_ART}
                   alt=""
@@ -98,7 +98,7 @@ export function ProductPage({
                   sizes="(min-width: 1300px) 1300px, 100vw"
                   className="-z-10 object-cover"
                 />
-                <VoiceOverview className="w-full" />
+                <VoicePipeline className="w-full" />
               </div>
             ) : (
               <Placeholder
