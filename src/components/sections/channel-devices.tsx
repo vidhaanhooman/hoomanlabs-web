@@ -1,6 +1,6 @@
 import { MicrophoneIcon, PhoneDisconnectIcon, MicrophoneSlashIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { TileBackdrop, type Tone } from "@/components/layout/tile-backdrop"
+import { TileBackdrop, type Painting } from "@/components/layout/tile-backdrop"
 import { channels } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
@@ -20,11 +20,12 @@ function modesFor(surface: Surface) {
   })
 }
 
-const BACKDROP: Record<Surface, { tone: Tone; focus: string }> = {
-  Phone: { tone: "sky", focus: "50% 0%" },
-  Web: { tone: "sand", focus: "0% 30%" },
-  App: { tone: "sage", focus: "100% 20%" },
-  WhatsApp: { tone: "ochre", focus: "50% 10%" },
+/** Painting crop behind each device. */
+const BACKDROP: Record<Surface, Painting> = {
+  Phone: { src: "/art/listen/listen-evening.png", position: "80% 30%" },
+  Web: { src: "/art/backdrops/home-test.png", position: "20% 70%" },
+  App: { src: "/art/backdrops/home-build.png", position: "80% 50%" },
+  WhatsApp: { src: "/art/listen/listen-morning.png", position: "20% 70%" },
 }
 
 const CAPTION: Record<Surface, string> = {
@@ -41,13 +42,15 @@ export function ChannelDevices({ className }: { className?: string }) {
         <li key={s} className="flex flex-col gap-3">
           <div
             aria-hidden
-            className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md border border-line px-4 pt-6"
+            className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md px-4 pt-6"
           >
-            <TileBackdrop {...BACKDROP[s]} art={["channels", s.toLowerCase()]} />
-            {s === "Phone" && <PhoneCall />}
-            {s === "Web" && <WebWidget />}
-            {s === "App" && <AppVoice />}
-            {s === "WhatsApp" && <WhatsAppChat />}
+            <TileBackdrop painting={BACKDROP[s]} art={["channels", s.toLowerCase()]} />
+            <div className="dark flex w-full justify-center text-foreground">
+              {s === "Phone" && <PhoneCall />}
+              {s === "Web" && <WebWidget />}
+              {s === "App" && <AppVoice />}
+              {s === "WhatsApp" && <WhatsAppChat />}
+            </div>
           </div>
           <div className="flex items-center justify-between gap-2">
             <h4 className="text-body font-medium">{s}</h4>

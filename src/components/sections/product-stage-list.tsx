@@ -43,7 +43,7 @@ const SCREEN = "absolute inset-x-[4%] top-[6%] bottom-[6%] z-10 sm:inset-x-[8%] 
 
 /**
  * Lighter stage block (Fin-inspired): mono corner labels, stacked heading,
- * one big plain panel with a LIGHT product screen, then the items as numbered text
+ * one big plain panel with the dark product screen, then the items as numbered text
  * columns separated by hairlines. No cards, no extra dark snippets.
  *
  * `start` is the number of the first item, so numbering runs 01-12 across
@@ -73,7 +73,7 @@ export function ProductStageList({
         <div className="relative isolate mt-10 aspect-[4/3] overflow-hidden rounded-md sm:aspect-[16/9] lg:aspect-[5/2]">
           {/* Imagery lives in the hero only; stages stay quiet on a plain panel. */}
           <div className="absolute inset-0 -z-10 rounded-md border border-line bg-surface" />
-          <StageScreen visual={stage.hero} light className={SCREEN} />
+          <StageScreen visual={stage.hero} className={SCREEN} />
         </div>
 
         <ol className={cn("mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2", COLS[stage.items.length] ?? "lg:grid-cols-4")}>

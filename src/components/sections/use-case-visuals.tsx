@@ -1,24 +1,27 @@
 import { ArrowRightIcon, CheckIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { TileBackdrop, type Tone } from "@/components/layout/tile-backdrop"
+import { TileBackdrop, type Painting } from "@/components/layout/tile-backdrop"
 import { cn } from "@/lib/utils"
 
 /**
  * One small vignette per use case, in the same language as the channel
- * devices: a light tile, white cards, black accents. Each shows the result
+ * devices and the hero: dark UI cards on a crop of the gouache painting. Each shows the result
  * the agent produced, not a person. Fictional demo data.
  */
 
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
-/** Colour and glow position per tile, so neighbours never repeat. */
-const BACKDROP: Record<UseCaseVisual, { tone: Tone; focus: string }> = {
-  collections: { tone: "sage", focus: "15% 20%" },
-  booking: { tone: "sky", focus: "85% 15%" },
-  leads: { tone: "ochre", focus: "80% 85%" },
-  support: { tone: "lavender", focus: "20% 85%" },
-  renewals: { tone: "terracotta", focus: "50% 0%" },
-  surveys: { tone: "sand", focus: "100% 50%" },
+const B = "/art/backdrops"
+const L = "/art/listen"
+
+/** Which painting crop sits behind each tile, so neighbours never repeat. */
+const BACKDROP: Record<UseCaseVisual, Painting> = {
+  collections: { src: `${B}/home-build.png`, position: "30% 60%" },
+  booking: { src: `${L}/listen-morning.png`, position: "75% 30%" },
+  leads: { src: `${B}/home-test.png`, position: "50% 40%" },
+  support: { src: `${L}/listen-evening.png`, position: "25% 20%" },
+  renewals: { src: `${L}/listen-midday.png`, position: "60% 55%" },
+  surveys: { src: `${L}/listen-night.png`, position: "50% 40%" },
 }
 
 export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
@@ -26,10 +29,10 @@ export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
   return (
     <div
       aria-hidden
-      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md border border-line p-6 text-[11px] leading-snug"
+      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-6 text-[11px] leading-snug"
     >
-      <TileBackdrop {...BACKDROP[kind]} art={["use-cases", kind]} />
-      <div className="origin-center scale-110 xl:scale-125">
+      <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} />
+      <div className="dark origin-center scale-110 text-foreground xl:scale-125">
         <Visual />
       </div>
     </div>
@@ -155,26 +158,24 @@ function Leads() {
 
 function Support() {
   return (
-    <div className="flex w-60 flex-col gap-2">
-      <div className="flex items-baseline gap-2">
-        <span className="text-[28px] leading-none font-normal tabular-nums">3</span>
+    <Card className="w-60 gap-0 p-2">
+      <div className="flex items-baseline gap-2 px-1 pt-1 pb-2">
+        <span className="text-[24px] leading-none font-normal tabular-nums">3</span>
         <span className="text-ink-muted">
           waiting, down from <span className="line-through">12</span>
         </span>
       </div>
-      <Card className="w-full gap-0 p-2">
-        {[
-          { t: "Where is my order?", done: true },
-          { t: "Change delivery address", done: true },
-          { t: "Damaged item, refund", done: false },
-        ].map((r) => (
-          <div key={r.t} className="flex items-center justify-between gap-2 border-t border-line px-1 py-1.5 first:border-0">
-            <span className="truncate">{r.t}</span>
-            {r.done ? <Done>Resolved</Done> : <Chip>To your team</Chip>}
-          </div>
-        ))}
-      </Card>
-    </div>
+      {[
+        { t: "Where is my order?", done: true },
+        { t: "Change delivery address", done: true },
+        { t: "Damaged item, refund", done: false },
+      ].map((r) => (
+        <div key={r.t} className="flex items-center justify-between gap-2 border-t border-line px-1 py-1.5">
+          <span className="truncate">{r.t}</span>
+          {r.done ? <Done>Resolved</Done> : <Chip>To your team</Chip>}
+        </div>
+      ))}
+    </Card>
   )
 }
 
