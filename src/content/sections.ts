@@ -46,6 +46,10 @@ export type SectionId =
   | "security"
   | "integrations"
   | "start"
+  | "enterprise-hero"
+  | "enterprise-steps"
+  | "enterprise-split"
+  | "enterprise-cta"
 
 export const sections: { id: SectionId; name: string; status: SectionStatus }[] = [
   { id: "hero", name: "Hero", status: "draft" },
@@ -92,6 +96,10 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "security", name: "Security & trust", status: "draft" },
   { id: "integrations", name: "Integrations", status: "draft" },
   { id: "start", name: "Two ways to start", status: "draft" },
+  { id: "enterprise-hero", name: "Enterprise: hero", status: "draft" },
+  { id: "enterprise-steps", name: "Enterprise: build steps", status: "draft" },
+  { id: "enterprise-split", name: "Enterprise: who brings what", status: "draft" },
+  { id: "enterprise-cta", name: "Enterprise: CTA", status: "draft" },
 ]
 
 export function sectionMeta(id: SectionId) {

@@ -53,7 +53,6 @@ export const security = {
 export const startPaths = {
   headline: "Two ways to get started.",
   body: "Build it yourself, or have our engineers build and run it with you.",
-  howLink: { label: "See the full process", href: "/how-it-works" },
   paths: [
     {
       name: "Self-serve",
@@ -64,6 +63,7 @@ export const startPaths = {
         { k: "Support", v: "Docs, MCP and email" },
       ],
       cta: { label: "Start building", href: "#" },
+      more: null,
     },
     {
       name: "Enterprise, built with our team",
@@ -74,8 +74,15 @@ export const startPaths = {
         { k: "Support", v: "Dedicated FDE, co-built with your team, full handover" },
       ],
       cta: { label: "Book a demo", href: "https://hoomanlabs.com/platform" },
+      more: { label: "How an enterprise build runs", href: "/enterprise" },
     },
-  ],
+  ] as {
+    name: string
+    for: string
+    rows: { k: string; v: string }[]
+    cta: { label: string; href: string }
+    more: { label: string; href: string } | null
+  }[],
 }
 
 /**
@@ -83,8 +90,10 @@ export const startPaths = {
  * client specifics). Every step ends at a sign-off gate.
  */
 export const enterpriseBuild = {
+  eyebrow: "Enterprise",
   headline: "How an enterprise build runs.",
-  body: "One flow at a time, co-built with your team, with a sign-off gate at every stage.",
+  body: "One flow at a time, co-built with your team, with a sign-off gate at every stage. Our forward-deployed engineers build it with you, then hand it over so you can run it yourselves.",
+  ctaTitle: "Plan your first flow with us.",
   steps: [
     {
       name: "Foundation",

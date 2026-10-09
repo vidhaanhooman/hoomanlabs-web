@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/layout/section-header"
 import { TextLink } from "@/components/layout/text-link"
 import { ChannelDevices } from "@/components/sections/channel-devices"
 import { IntegrationGroups } from "@/components/sections/tools-integrations"
-import { enterpriseBuild, howItWorks, security, startPaths } from "@/content/landing"
+import { howItWorks, security, startPaths } from "@/content/landing"
 import { channels, flow, tools } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
@@ -131,79 +131,16 @@ export function StartPaths() {
                   </div>
                 ))}
               </dl>
-              <Link
-                href={p.cta.href}
-                className={cn(buttonVariants({ variant: i === 0 ? "secondary" : "default" }), "mt-auto self-start")}
-              >
-                {p.cta.label}
-              </Link>
+              <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link href={p.cta.href} className={buttonVariants({ variant: i === 0 ? "secondary" : "default" })}>
+                  {p.cta.label}
+                </Link>
+                {p.more && <TextLink href={p.more.href}>{p.more.label}</TextLink>}
+              </div>
             </div>
           ))}
         </div>
-        <EnterpriseBuild />
       </Container>
     </Section>
-  )
-}
-
-/** The enterprise path in detail: five gated steps, notes, and who brings what. */
-function EnterpriseBuild() {
-  const { steps, notes, split } = enterpriseBuild
-  return (
-    <div className="mt-16 border-t border-line pt-10">
-      <div className="flex max-w-[44rem] flex-col gap-2">
-        <h3 className="text-h3 font-normal">{enterpriseBuild.headline}</h3>
-        <p className="text-body text-ink-secondary">{enterpriseBuild.body}</p>
-      </div>
-
-      <ol className="mt-10 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-5">
-        {steps.map((s, i) => (
-          <li key={s.name} className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-foreground font-mono text-label text-background tabular-nums">
-                {i + 1}
-              </span>
-              <span aria-hidden className="hidden h-px flex-1 bg-line-strong lg:block" />
-            </div>
-            <h4 className="mt-2 text-body font-medium">{s.name}</h4>
-            <p className="text-small text-ink-secondary">{s.body}</p>
-            <p className="mt-auto flex gap-2 pt-2 text-label text-ink-muted">
-              <span aria-hidden>◆</span>
-              <span>
-                <span className="font-medium text-ink-secondary">Gate: </span>
-                {s.gate}
-              </span>
-            </p>
-          </li>
-        ))}
-      </ol>
-
-      <ul className="mt-10 grid gap-3 md:grid-cols-2">
-        {notes.map((n) => (
-          <li key={n} className="rounded-md bg-surface px-4 py-3 text-small text-ink-secondary">
-            {n}
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-10 grid gap-8 md:grid-cols-2">
-        {[split.us, split.you].map((col) => (
-          <div key={col.title} className="flex flex-col gap-3">
-            <h4 className="border-b border-line pb-3 text-small font-medium">{col.title}</h4>
-            <ul className="flex flex-col gap-2">
-              {col.items.map((it) => (
-                <li key={it} className="text-small text-ink-secondary">
-                  {it}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <TextLink href={startPaths.howLink.href} className="mt-10">
-        {startPaths.howLink.label}
-      </TextLink>
-    </div>
   )
 }
