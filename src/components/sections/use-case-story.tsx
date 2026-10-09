@@ -24,7 +24,7 @@ const STEP_MS = 650
 
 const WAVE = [5, 9, 7, 11, 6, 10, 8]
 
-export function UseCaseStory({ useCase }: { useCase: UseCase }) {
+export function UseCaseStory({ useCase, background }: { useCase: UseCase; background?: string | null }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.5, once: true })
   const reduce = usePrefersReducedMotion()
@@ -66,7 +66,10 @@ export function UseCaseStory({ useCase }: { useCase: UseCase }) {
       className="group flex w-full flex-col overflow-hidden rounded-xl border border-line bg-surface outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
     >
       {/* Stage */}
-      <div aria-hidden className="dark relative flex h-[26rem] flex-col gap-3 overflow-hidden p-5 text-[12px] leading-snug text-foreground sm:p-6">
+      <div
+        aria-hidden
+        style={background ? { backgroundImage: `url(${background})` } : undefined}
+        className="dark relative flex h-[26rem] flex-col gap-3 overflow-hidden bg-cover bg-center p-5 text-[12px] leading-snug text-foreground sm:p-6">
         {/* The call */}
         <div className="w-full max-w-[22rem] rounded-lg border border-line-strong bg-background p-3 shadow-sm">
           <div className="mb-2 flex items-center gap-2 text-ink-muted">

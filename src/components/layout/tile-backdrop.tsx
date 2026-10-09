@@ -16,7 +16,8 @@ export type Painting = { src: string; position: string }
 
 const EXTS = ["webp", "png", "jpg", "jpeg"]
 
-function findArt(dir: string, name: string) {
+/** First file at public/art/<dir>/<name>.(webp|png|jpg), or null. */
+export function findArt(dir: string, name: string) {
   for (const ext of EXTS) {
     const file = dir ? `art/${dir}/${name}.${ext}` : `art/${name}.${ext}`
     if (fs.existsSync(path.join(process.cwd(), "public", file))) return `/${file}`
