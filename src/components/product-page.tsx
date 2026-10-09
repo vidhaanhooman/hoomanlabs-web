@@ -11,6 +11,8 @@ import { FeaturePanel } from "@/components/sections/feature-panel";
 import { FinalCta } from "@/components/sections/final-cta";
 import { ProductResources } from "@/components/sections/product-resources";
 import { ProductStageBento } from "@/components/sections/product-stage-bento";
+import { ProductStageList } from "@/components/sections/product-stage-list";
+import { StageIndex } from "@/components/sections/stage-index";
 import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero";
 import { ctas } from "@/content/draft";
 import type { Product } from "@/content/products";
@@ -21,8 +23,22 @@ import type { Product } from "@/content/products";
  * Ship / Improve) OR the generic split, mirrored split, wide panel and "How it
  * works", then a single quote and the closing CTA.
  */
-export function ProductPage({ product }: { product: Product }) {
+export function ProductPage({
+  product,
+  variant = "default",
+}: {
+  product: Product;
+  /** "fin": lab variant from FIN_REVIEW.md (lighter numbered stages, light UI,
+   *  sticky stage index, blur reveal, highlighted quote, Talk-to-agent wired). */
+  variant?: "default" | "fin";
+}) {
   const [first, second, third] = product.features;
+  const fin = variant === "fin";
+  const reveal = fin ? "reveal-blur" : "reveal";
+  const talkHref = fin ? "/#listen" : ctas.talk.href;
+  const starts = (product.stages ?? []).map((_, i, all) =>
+    all.slice(0, i).reduce((n, st) => n + st.items.length, 1),
+  );
 
   return (
     <>
@@ -33,35 +49,37 @@ export function ProductPage({ product }: { product: Product }) {
         className="pt-16 pb-(--section-pad) md:pt-24"
       >
         <Container>
-          <p className="reveal text-small text-ink-muted">{product.name}</p>
+          <p className={`${reveal} text-small text-ink-muted`}>
+            {product.name}
+          </p>
           <h1
-            className="reveal mt-3 max-w-[26ch] text-display font-normal"
+            className={`${reveal} mt-3 max-w-[26ch] text-display font-normal`}
             style={{ "--i": 1 } as React.CSSProperties}
           >
             {product.headline}
           </h1>
           <p
-            className="reveal mt-5 max-w-[52ch] text-body-lg text-ink-secondary"
+            className={`${reveal} mt-5 max-w-[52ch] text-body-lg text-ink-secondary`}
             style={{ "--i": 2 } as React.CSSProperties}
           >
             {product.subhead}
           </p>
           <div
-            className="reveal mt-8 flex flex-wrap gap-2"
+            className={`${reveal} mt-8 flex flex-wrap gap-2`}
             style={{ "--i": 3 } as React.CSSProperties}
           >
             <Link href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
             <Link
-              href={ctas.talk.href}
+              href={talkHref}
               className={buttonVariants({ variant: "secondary" })}
             >
               {ctas.talk.label}
             </Link>
           </div>
           <div
-            className="reveal mt-12 md:mt-16"
+            className={`${reveal} mt-12 md:mt-16`}
             style={{ "--i": 4 } as React.CSSProperties}
           >
             <Placeholder
@@ -80,9 +98,28 @@ export function ProductPage({ product }: { product: Product }) {
 
       {product.stages ? (
         /* Lifecycle stages (e.g. Voice AI): one big image + small cards each */
-        product.stages.map((stage) => (
-          <ProductStageBento key={stage.id} stage={stage} />
-        ))
+        fin ? (
+          <>
+            {product.stages.map((stage, i) => (
+              <ProductStageList
+                key={stage.id}
+                stage={stage}
+                start={starts[i]}
+                productName={product.name}
+              />
+            ))}
+            <StageIndex
+              stages={product.stages.map((st) => ({
+                id: st.id,
+                label: st.label,
+              }))}
+            />
+          </>
+        ) : (
+          product.stages.map((stage) => (
+            <ProductStageBento key={stage.id} stage={stage} />
+          ))
+        )
       ) : (
         <>
           {/* Features 1 and 2: split, then mirrored split */}
@@ -136,8 +173,14 @@ export function ProductPage({ product }: { product: Product }) {
           <Panel className="px-6 py-12 sm:px-12 lg:px-20 lg:py-16">
             <figure className="flex max-w-[56ch] flex-col gap-8">
               <blockquote className="text-h3 font-normal">
-                Customer quote about {product.name}. One to three lines on a
-                real, measurable result.
+                Customer quote about {product.name}. One to three lines on{" "}
+                {fin ? (
+                  <mark className="bg-line px-0.5 text-foreground">
+                    a real, measurable result.
+                  </mark>
+                ) : (
+                  "a real, measurable result."
+                )}
               </blockquote>
               <figcaption className="flex items-center gap-3">
                 <Placeholder
@@ -155,7 +198,6 @@ export function ProductPage({ product }: { product: Product }) {
           </Panel>
         </Container>
       </Section>
-
 
       {product.resources && <ProductResources resources={product.resources} />}
 

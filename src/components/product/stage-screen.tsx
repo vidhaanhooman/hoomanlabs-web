@@ -16,11 +16,14 @@ const CHROME =
 export function StageScreen({
   visual,
   className = WINDOW,
+  light = false,
 }: {
   visual: StageVisual;
   className?: string;
+  /** Use the light product-UI theme. */
+  light?: boolean;
 }) {
-  const cls = `${className} ${CHROME}`;
+  const cls = `${className} ${CHROME}${light ? " ui-light" : ""}`;
   if (typeof visual === "object") {
     return (
       <Placeholder

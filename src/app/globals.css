@@ -214,6 +214,18 @@
   background: var(--ui-bg);
 }
 
+/* Light variant of the product-UI recreations (opt-in: add `ui-light` next to
+   `ui-dark`). Lighter on a white page; dark stays for deliberate accents. */
+.ui-dark.ui-light {
+  --ui-bg: oklch(0.995 0 0);
+  --ui-panel: oklch(0.975 0 0);
+  --ui-raised: oklch(0.955 0 0);
+  --ui-line: oklch(0.2 0 0 / 9%);
+  --ui-text: oklch(0.2 0 0);
+  --ui-muted: oklch(0.5 0 0);
+  --ui-live: oklch(0.58 0.15 150);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .ui-wave span {
     animation: ui-wave 900ms ease-in-out infinite;
@@ -238,6 +250,20 @@
   .reveal {
     animation: reveal 600ms var(--ease-out) both;
     animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+/* Opt-in blur-fade variant of the reveal (blur masks the crossfade). */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-blur {
+    animation: reveal-blur 700ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+@keyframes reveal-blur {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(8px);
   }
 }
 @keyframes reveal {
