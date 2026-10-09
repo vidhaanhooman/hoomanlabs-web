@@ -52,7 +52,7 @@ export function HeroCall() {
     <form
       onSubmit={submit}
       noValidate
-      className="relative mx-auto w-full max-w-xl rounded-2xl border border-line bg-surface p-2 text-left shadow-[0_10px_30px_-18px_oklch(0_0_0/0.25)]"
+      className="relative mx-auto w-full max-w-xl rounded-[1.75rem] border border-line bg-surface p-2 text-left shadow-[0_10px_30px_-18px_oklch(0_0_0/0.25)]"
     >
       <input
         ref={honeypot}
@@ -65,7 +65,7 @@ export function HeroCall() {
       />
 
       {/* Use case */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-2 pt-1 pb-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pr-1 pb-2 pl-4">
         <span className="text-small text-ink-secondary">Hear it on your use case</span>
         <div role="radiogroup" aria-label="Use case" className="flex max-w-full gap-0.5 overflow-x-auto rounded-full bg-secondary p-0.5 [scrollbar-width:none]">
           {useCaseCalls.map((c, i) => (
@@ -90,11 +90,11 @@ export function HeroCall() {
       </div>
 
       {/* Number + call */}
-      <div className="flex h-12 items-center rounded-xl border border-line-strong bg-background pr-1 transition-colors focus-within:border-foreground/45">
+      <div className="flex h-12 items-center rounded-full border border-line-strong bg-background pr-1 transition-colors focus-within:border-foreground/45">
         <Select value={country} onValueChange={(v) => v && setCountry(v)}>
           <SelectTrigger
             aria-label="Country code"
-            className="shrink-0 rounded-none border-0 bg-transparent py-0 pr-1.5 pl-3 text-small focus-visible:ring-0 data-[size=default]:h-full"
+            className="shrink-0 rounded-none border-0 bg-transparent py-0 pr-1.5 pl-4 text-small focus-visible:ring-0 data-[size=default]:h-full"
           >
             <SelectValue>
               {(v: string) => {
@@ -134,14 +134,14 @@ export function HeroCall() {
           type="submit"
           disabled={sending}
           aria-busy={sending || undefined}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-primary px-4 text-small font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-70"
+          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-primary px-5 text-small font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-70"
         >
           <PhoneCallIcon weight="fill" className="size-4" aria-hidden />
           {sending ? "Calling…" : "Call me"}
         </button>
       </div>
 
-      <div className="flex flex-col gap-1 px-2 pt-2 pb-1">
+      <div className="flex flex-col gap-1 px-4 pt-2.5 pb-1.5">
         <label className="flex items-start gap-2 text-label text-ink-secondary">
           <input
             type="checkbox"
