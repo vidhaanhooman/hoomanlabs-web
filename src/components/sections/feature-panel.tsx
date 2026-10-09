@@ -69,10 +69,10 @@ export function FeaturePanel({
                 alt=""
                 fill
                 sizes="(min-width: 1300px) 860px, (min-width: 1024px) 66vw, 100vw"
-                className={cn("object-cover", softBackdrop && "scale-110 blur-[6px]")}
+                className={cn("object-cover", softBackdrop && "scale-105 blur-[2.5px]")}
               />
             ) : null}
-            {backdrop && softBackdrop ? <span aria-hidden className="absolute inset-0 bg-background/30" /> : null}
+            {backdrop && softBackdrop ? <span aria-hidden className="absolute inset-0 bg-background/20" /> : null}
             {screen ? (
               screen(
                 `${WINDOW_CLASS} z-10 rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]`
