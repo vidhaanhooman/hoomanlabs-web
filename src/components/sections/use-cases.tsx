@@ -5,7 +5,17 @@ import { UseCaseStory } from "@/components/sections/use-case-story"
 import { useCases } from "@/content/platform"
 
 /** What teams use agents for: one result per card on a plain surface; the call shows on hover. */
-export function UseCases({ more }: { more?: { label: string; href: string } } = {}) {
+export function UseCases({
+  more,
+  only,
+  resultFirst = false,
+}: {
+  more?: { label: string; href: string }
+  /** Show just these use cases (by visual id), in this order. */
+  only?: (typeof useCases)[number]["visual"][]
+  resultFirst?: boolean
+} = {}) {
+  const list = only ? only.map((v) => useCases.find((u) => u.visual === v)!).filter(Boolean) : useCases
   return (
     <Section id="product-use-cases">
       <Container>
@@ -14,10 +24,14 @@ export function UseCases({ more }: { more?: { label: string; href: string } } = 
           <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
         </div>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {useCases.map((u, i) => (
+          {list.map((u, i) => (
             <li key={u.title} className="flex">
               {/* Checkerboard: dark and light alternate, so no two dark cards touch. */}
-              <UseCaseStory useCase={u} tone={((i % 3) + Math.floor(i / 3)) % 2 === 0 ? "charcoal" : "light"} />
+              <UseCaseStory
+                useCase={u}
+                resultFirst={resultFirst}
+                tone={((i % 3) + Math.floor(i / 3)) % 2 === 0 ? "charcoal" : "light"}
+              />
             </li>
           ))}
         </ul>

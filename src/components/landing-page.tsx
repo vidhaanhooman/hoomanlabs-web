@@ -47,7 +47,11 @@ export function LandingPage() {
 
       {/* 3 Use cases */}
       <Chapter {...chapters.useCases} />
-      <UseCases more={{ label: "See all use cases", href: "/platform#product-use-cases" }} />
+      <UseCases
+        only={["collections", "booking", "support"]}
+        resultFirst
+        more={{ label: "See all use cases", href: "/platform#product-use-cases" }}
+      />
 
       {/* 4 Platform: overview of all six components; detail lives on /platform */}
       <Chapter {...chapters.platform} />

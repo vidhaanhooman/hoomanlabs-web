@@ -19,7 +19,16 @@ const FOCUS: Record<UseCase["visual"], string> = {
  * the outcome reads at a glance. Hover or focus reveals the one exchange from
  * the call that led to it.
  */
-export function UseCaseStory({ useCase, tone = "charcoal" }: { useCase: UseCase; tone?: "charcoal" | "light" }) {
+export function UseCaseStory({
+  useCase,
+  tone = "charcoal",
+  resultFirst = false,
+}: {
+  useCase: UseCase
+  tone?: "charcoal" | "light"
+  /** Lead with the business result in large type, title below. */
+  resultFirst?: boolean
+}) {
   const [first, second] = useCase.call
   return (
     <article
@@ -51,11 +60,19 @@ export function UseCaseStory({ useCase, tone = "charcoal" }: { useCase: UseCase;
       </div>
 
       {/* Copy */}
-      <div className="flex flex-1 flex-col gap-1.5 border-t border-line p-5">
-        <h3 className="text-body font-medium">{useCase.title}</h3>
-        <p className="text-small text-ink-secondary">{useCase.body}</p>
-        <p className="mt-auto pt-2 font-mono text-label text-ink-muted">→ {useCase.result}</p>
-      </div>
+      {resultFirst ? (
+        <div className="flex flex-1 flex-col gap-2 border-t border-line p-5">
+          <p className="text-h4 font-normal">{useCase.result}</p>
+          <h3 className="font-mono text-label text-ink-muted">{useCase.title}</h3>
+          <p className="text-small text-ink-secondary">{useCase.body}</p>
+        </div>
+      ) : (
+        <div className="flex flex-1 flex-col gap-1.5 border-t border-line p-5">
+          <h3 className="text-body font-medium">{useCase.title}</h3>
+          <p className="text-small text-ink-secondary">{useCase.body}</p>
+          <p className="mt-auto pt-2 font-mono text-label text-ink-muted">→ {useCase.result}</p>
+        </div>
+      )}
     </article>
   )
 }
