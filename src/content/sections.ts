@@ -30,6 +30,12 @@ export type SectionId =
   | "product-use-cases"
   | "product-call"
   | "product-integrations"
+  | "product-agents"
+  | "product-workflow"
+  | "product-simulations"
+  | "product-qa"
+  | "product-channels"
+  | "product-tools"
   | "product-resources"
   | "product-proof"
   | "product-cta"
@@ -60,6 +66,12 @@ export const productSections: { id: SectionId; name: string; status: SectionStat
   { id: "product-use-cases", name: "Use cases", status: "draft" },
   { id: "product-call", name: "Stage: On the call", status: "draft" },
   { id: "product-integrations", name: "Integrations", status: "draft" },
+  { id: "product-agents", name: "Platform: Agents", status: "draft" },
+  { id: "product-workflow", name: "Platform: Workflow", status: "draft" },
+  { id: "product-simulations", name: "Platform: Simulations", status: "draft" },
+  { id: "product-qa", name: "Platform: QA", status: "draft" },
+  { id: "product-channels", name: "Platform: Channels", status: "draft" },
+  { id: "product-tools", name: "Platform: Tools & Integrations", status: "draft" },
   { id: "product-resources", name: "FAQs and guides", status: "draft" },
   { id: "product-proof", name: "Proof", status: "draft" },
   { id: "product-cta", name: "Product CTA", status: "draft" },

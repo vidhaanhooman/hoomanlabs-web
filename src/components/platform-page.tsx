@@ -6,51 +6,60 @@ import { Panel } from "@/components/layout/panel"
 import { Placeholder } from "@/components/layout/placeholder"
 import { Section } from "@/components/layout/section"
 import { VoiceFlow } from "@/components/product/voice-flow"
+import { Channels } from "@/components/sections/channels"
 import { FinalCta } from "@/components/sections/final-cta"
-import { Integrations } from "@/components/sections/integrations"
-import { OnTheCall } from "@/components/sections/on-the-call"
 import { ProductResources } from "@/components/sections/product-resources"
 import { ProductStageList } from "@/components/sections/product-stage-list"
 import { StageIndex } from "@/components/sections/stage-index"
+import { ToolsIntegrations } from "@/components/sections/tools-integrations"
 import { UseCases } from "@/components/sections/use-cases"
 import { ctas } from "@/content/draft"
-import { getProduct } from "@/content/products"
-import { buildStage, onTheCall } from "@/content/voice-ai-lab"
+import {
+  agents,
+  components,
+  onTheCall,
+  platform,
+  qaCopy,
+  simulations,
+  workflow,
+} from "@/content/platform"
+import { getProduct, type ProductStage } from "@/content/products"
 
 /**
- * The next Voice AI page (lab). Hero pipeline, use cases, then numbered
- * stages: Build (full control), On the call, Ship, Improve. Then
- * integrations, one quote, FAQs and the closing CTA.
+ * /platform overview. Hero pipeline, use cases, then one numbered section per
+ * component (Agents, Workflow, Simulations, QA, Channels, Tools &
+ * Integrations), one quote, FAQs and the closing CTA.
  */
-export function VoiceAiLabPage() {
-  const product = getProduct("voice-ai")
-  const [, ship, improve] = product.stages ?? []
+export function PlatformPage() {
+  // FAQs and the QA metric items still live with the former Voice AI content.
+  const voice = getProduct("voice-ai")
+  const improve = voice.stages?.find((s) => s.id === "improve")
+  const qa: ProductStage = { ...qaCopy, id: "qa", backdrop: "", hero: "analytics", items: improve?.items ?? [] }
 
-  // Numbering runs straight through every stage.
-  const callStart = 1 + buildStage.items.length
-  const shipStart = callStart + onTheCall.items.length
-  const improveStart = shipStart + ship.items.length
-
-  const index = [
-    { id: "build", label: "Build" },
-    { id: "call", label: "On the call" },
-    { id: "ship", label: "Ship" },
-    { id: "improve", label: "Improve" },
-  ]
+  // Numbering runs straight through every component.
+  const stages = [agents, workflow, simulations, qa]
+  const starts: number[] = []
+  let n = 1
+  for (const s of stages) {
+    starts.push(n)
+    n += s.items.length
+  }
+  const channelsStart = n
+  const toolsStart = channelsStart + onTheCall.items.length
 
   return (
     <>
       <Section id="product-hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
         <Container>
-          <p className="reveal-blur text-small text-ink-muted">{product.name}</p>
+          <p className="reveal-blur text-small text-ink-muted">{platform.name}</p>
           <h1 className="reveal-blur mt-3 max-w-[26ch] text-display font-normal" style={{ "--i": 1 } as React.CSSProperties}>
-            {product.headline}
+            {platform.headline}
           </h1>
           <p
             className="reveal-blur mt-5 max-w-[52ch] text-body-lg text-ink-secondary"
             style={{ "--i": 2 } as React.CSSProperties}
           >
-            {product.subhead}
+            {platform.subhead}
           </p>
           <div className="reveal-blur mt-8 flex flex-wrap gap-2" style={{ "--i": 3 } as React.CSSProperties}>
             <Link href={ctas.demo.href} className={buttonVariants()}>
@@ -71,20 +80,19 @@ export function VoiceAiLabPage() {
 
       <UseCases />
 
-      <ProductStageList stage={buildStage} start={1} productName={product.name} />
-      <OnTheCall start={callStart} productName={product.name} />
-      <ProductStageList stage={ship} start={shipStart} productName={product.name} />
-      <ProductStageList stage={improve} start={improveStart} productName={product.name} />
-      <StageIndex stages={index} />
-
-      <Integrations />
+      {stages.map((s, i) => (
+        <ProductStageList key={s.id} stage={s} start={starts[i]} productName={platform.name} />
+      ))}
+      <Channels start={channelsStart} productName={platform.name} />
+      <ToolsIntegrations start={toolsStart} productName={platform.name} />
+      <StageIndex stages={components.map((c) => ({ id: c.id, label: c.name }))} />
 
       <Section id="product-proof" spacing="tight">
         <Container>
           <Panel className="px-6 py-12 sm:px-12 lg:px-20 lg:py-16">
             <figure className="flex max-w-[56ch] flex-col gap-8">
               <blockquote className="text-h3 font-normal">
-                Customer quote about {product.name}. One to three lines on{" "}
+                Customer quote about the platform. One to three lines on{" "}
                 <mark className="bg-line px-0.5 text-foreground">a real, measurable result.</mark>
               </blockquote>
               <figcaption className="flex items-center gap-3">
@@ -99,9 +107,9 @@ export function VoiceAiLabPage() {
         </Container>
       </Section>
 
-      {product.resources && <ProductResources resources={product.resources} />}
+      {voice.resources && <ProductResources resources={voice.resources} />}
 
-      <FinalCta id="product-cta" title={product.ctaTitle} />
+      <FinalCta id="product-cta" title={platform.ctaTitle} />
     </>
   )
 }

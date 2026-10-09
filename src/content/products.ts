@@ -48,7 +48,7 @@ export type StageVisual =
 export type MiniRow = { k: string; v?: string; tone?: "live" | "warn" | "muted"; mono?: boolean }
 
 export type ProductStage = {
-  id: "build" | "ship" | "improve"
+  id: string
   label: string
   headline: string
   body: string

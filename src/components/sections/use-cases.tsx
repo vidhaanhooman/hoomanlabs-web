@@ -1,14 +1,14 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { useCases } from "@/content/voice-ai-lab"
+import { useCases } from "@/content/platform"
 
-/** What teams use voice agents for, each with the result it drives. */
+/** What teams use agents for, each with the result it drives. */
 export function UseCases() {
   return (
     <Section id="product-use-cases">
       <Container>
         <div className="flex max-w-[44rem] flex-col gap-3">
-          <h2 className="text-h2 font-normal">What teams put voice agents on.</h2>
+          <h2 className="text-h2 font-normal">What teams put agents on.</h2>
           <p className="text-body text-ink-secondary">
             Start with one high-volume call type, then add the next.
           </p>

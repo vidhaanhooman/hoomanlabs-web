@@ -7,7 +7,7 @@ import { ListIcon } from "@phosphor-icons/react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ctas, nav } from "@/content/draft"
-import { productList } from "@/content/products"
+import { componentHref, components } from "@/content/platform"
 
 export function MobileNav() {
   const [open, setOpen] = useState(false)
@@ -25,12 +25,14 @@ export function MobileNav() {
           <SheetTitle className="text-small font-medium">Menu</SheetTitle>
         </div>
         <nav aria-label="Mobile" className="px-(--gutter)">
-          <p className="pb-1 text-small text-ink-muted">Product</p>
+          <Link href="/platform" onClick={close} className="flex h-8 items-center text-small text-ink-muted">
+            Platform
+          </Link>
           <ul className="flex flex-col border-b border-line pb-3">
-            {productList.map((product) => (
-              <li key={product.slug}>
-                <Link href={`/${product.slug}`} onClick={close} className="flex h-11 items-center text-body-lg">
-                  {product.name}
+            {components.map((c) => (
+              <li key={c.id}>
+                <Link href={componentHref(c.id)} onClick={close} className="flex h-11 items-center text-body-lg">
+                  {c.name}
                 </Link>
               </li>
             ))}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
 
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import { flow } from "@/content/voice-ai-lab"
+import { flow } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
 /**
@@ -70,8 +70,8 @@ function Agent() {
           <span key={i} className="w-[3px] rounded-full bg-foreground" style={{ height: h }} />
         ))}
       </span>
-      <span className="text-small font-medium">Voice agent</span>
-      <span className="text-label text-ink-muted">Context · tools · any language</span>
+      <span className="text-small font-medium">Your agent</span>
+      <span className="text-label text-ink-muted">Voice or chat · context · tools</span>
     </Node>
   )
 }

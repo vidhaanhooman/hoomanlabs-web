@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/container"
 import { FooterWordmark } from "@/components/layout/footer-wordmark"
 import { Wordmark } from "@/components/layout/wordmark"
 import { footer } from "@/content/draft"
-import { productList } from "@/content/products"
+import { componentHref, components } from "@/content/platform"
 
 const LINK = "text-small text-ink-muted transition-colors duration-150 hover:text-foreground"
 
@@ -16,8 +16,8 @@ const LINK = "text-small text-ink-muted transition-colors duration-150 hover:tex
 export function SiteFooter() {
   const columns = [
     {
-      title: "Product",
-      links: productList.map((p) => ({ label: p.name, href: `/${p.slug}` })),
+      title: "Platform",
+      links: components.map((c) => ({ label: c.name, href: componentHref(c.id) })),
     },
     ...footer.columns,
   ]

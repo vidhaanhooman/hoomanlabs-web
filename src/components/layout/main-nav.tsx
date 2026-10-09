@@ -4,10 +4,13 @@ import Link from "next/link"
 import { useState } from "react"
 import { motion } from "motion/react"
 import {
+  ArrowRightIcon,
   ChatsCircleIcon,
-  PhoneIcon,
+  FlaskIcon,
+  FlowArrowIcon,
+  PlugsConnectedIcon,
+  RobotIcon,
   ShieldCheckIcon,
-  WaveformIcon,
   type Icon,
 } from "@phosphor-icons/react"
 
@@ -20,71 +23,92 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { nav } from "@/content/draft"
-import { productList, type ProductSlug } from "@/content/products"
+import { componentHref, components, type ComponentId } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
 const ITEM =
   "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
 
-const ICONS: Record<ProductSlug, Icon> = {
-  "voice-ai": WaveformIcon,
-  "chat-agents": ChatsCircleIcon,
+const ICONS: Record<ComponentId, Icon> = {
+  agents: RobotIcon,
+  workflow: FlowArrowIcon,
+  simulations: FlaskIcon,
   qa: ShieldCheckIcon,
-  telephony: PhoneIcon,
+  channels: ChatsCircleIcon,
+  tools: PlugsConnectedIcon,
 }
 
+const GROUPS = ["Build & test", "Connect"] as const
+
 /**
- * Desktop nav. "Product" opens a 2x2 grid of products (icon, name, one line)
- * with a highlight that slides between items.
+ * Desktop nav. "Platform" opens the platform's components in two groups
+ * (Build & test, Connect), each with icon, name and one line, plus a link to
+ * the overview. A highlight slides between items.
  */
 export function MainNav() {
-  const [hovered, setHovered] = useState<ProductSlug | null>(null)
+  const [hovered, setHovered] = useState<ComponentId | null>(null)
 
   return (
     <NavigationMenu aria-label="Main" className="hidden flex-1 justify-start lg:flex">
       <NavigationMenuList className="justify-start gap-1">
         <NavigationMenuItem>
           <NavigationMenuTrigger className="h-9 rounded-full bg-transparent px-3 text-small font-normal text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent data-open:bg-transparent data-open:text-foreground data-popup-open:bg-transparent data-popup-open:text-foreground">
-            Product
+            Platform
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="w-[28rem] p-2">
-              <ul className="grid grid-cols-2 gap-0.5" onMouseLeave={() => setHovered(null)}>
-                {productList.map((product) => {
-                  const ProductIcon = ICONS[product.slug]
-                  return (
-                    <li key={product.slug} className="relative">
-                      {hovered === product.slug && (
-                        <motion.span
-                          layoutId="product-menu-highlight"
-                          aria-hidden
-                          className="absolute inset-0 rounded-md bg-secondary"
-                          transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-                        />
-                      )}
-                      <NavigationMenuLink
-                        render={<Link href={`/${product.slug}`} />}
-                        onMouseEnter={() => setHovered(product.slug)}
-                        onFocus={() => setHovered(product.slug)}
-                        className="relative z-10 h-full items-start gap-3 rounded-md px-3 py-3 hover:bg-transparent focus:bg-transparent data-active:bg-transparent"
-                      >
-                        <span
-                          className={cn(
-                            "grid size-8 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-150",
-                            hovered === product.slug ? "text-foreground" : "text-ink-secondary"
-                          )}
-                        >
-                          <ProductIcon className="size-4" aria-hidden />
-                        </span>
-                        <span className="flex flex-col gap-0.5">
-                          <span className="text-small font-medium text-foreground">{product.name}</span>
-                          <span className="text-small leading-snug text-ink-muted">{product.summary}</span>
-                        </span>
-                      </NavigationMenuLink>
-                    </li>
-                  )
-                })}
-              </ul>
+            <div className="grid w-[36rem] grid-cols-2 gap-2 p-2" onMouseLeave={() => setHovered(null)}>
+              {GROUPS.map((group) => (
+                <div key={group} className="flex flex-col">
+                  <p className="px-3 pt-2 pb-1 text-label text-ink-muted">{group}</p>
+                  <ul className="flex flex-col gap-0.5">
+                    {components
+                      .filter((c) => c.group === group)
+                      .map((c) => {
+                        const ItemIcon = ICONS[c.id]
+                        return (
+                          <li key={c.id} className="relative">
+                            {hovered === c.id && (
+                              <motion.span
+                                layoutId="product-menu-highlight"
+                                aria-hidden
+                                className="absolute inset-0 rounded-md bg-secondary"
+                                transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+                              />
+                            )}
+                            <NavigationMenuLink
+                              render={<Link href={componentHref(c.id)} />}
+                              onMouseEnter={() => setHovered(c.id)}
+                              onFocus={() => setHovered(c.id)}
+                              className="relative z-10 h-full items-start gap-3 rounded-md px-3 py-2.5 hover:bg-transparent focus:bg-transparent data-active:bg-transparent"
+                            >
+                              <span
+                                className={cn(
+                                  "grid size-8 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-150",
+                                  hovered === c.id ? "text-foreground" : "text-ink-secondary"
+                                )}
+                              >
+                                <ItemIcon className="size-4" aria-hidden />
+                              </span>
+                              <span className="flex flex-col gap-0.5">
+                                <span className="text-small font-medium text-foreground">{c.name}</span>
+                                <span className="text-small leading-snug text-ink-muted">{c.summary}</span>
+                              </span>
+                            </NavigationMenuLink>
+                          </li>
+                        )
+                      })}
+                  </ul>
+                  {group === "Connect" && (
+                    <NavigationMenuLink
+                      render={<Link href="/platform" />}
+                      className="mt-auto flex-row items-center gap-1.5 rounded-md px-3 py-2.5 text-small text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent"
+                    >
+                      Platform overview
+                      <ArrowRightIcon className="size-3.5" aria-hidden />
+                    </NavigationMenuLink>
+                  )}
+                </div>
+              ))}
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>

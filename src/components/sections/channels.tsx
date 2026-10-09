@@ -1,32 +1,61 @@
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { pad, StageHeader } from "@/components/sections/product-stage-list"
-import { onTheCall, type OnTheCallVisual } from "@/content/voice-ai-lab"
+import { channels, onTheCall, type OnTheCallVisual } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
 /**
- * How the agent behaves on a real phone line: turn detection, noise
- * reduction, voicemail detection, interruptions. Each item gets a tiny
- * diagram instead of a product screen.
+ * Channels: where one agent runs (voice and chat, by surface), then how voice
+ * agents behave on a real line (turn detection, noise, voicemail,
+ * interruptions), each with a tiny diagram instead of a product screen.
  */
-export function OnTheCall({ start, productName }: { start: number; productName: string }) {
+export function Channels({ start, productName }: { start: number; productName: string }) {
   const end = start + onTheCall.items.length - 1
   return (
-    <Section id="product-call" className="scroll-mt-32 lg:scroll-mt-16">
+    <Section id="product-channels" className="scroll-mt-32 lg:scroll-mt-16">
       <Container>
         <StageHeader
           productName={productName}
-          label={onTheCall.label}
+          label={channels.label}
           range={`${pad(start)}–${pad(end)}`}
-          headline={onTheCall.headline}
-          body={onTheCall.body}
+          headline={channels.headline}
+          body={channels.body}
         />
-        <ol className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div className="mt-10 grid gap-4 md:grid-cols-2">
+          {channels.modes.map((m) => (
+            <div key={m.name} className="rounded-md border border-line bg-surface p-2">
+              <p className="px-3 pt-2 pb-3 text-body font-medium">{m.name}</p>
+              <ul className="flex flex-col gap-1">
+                {m.surfaces.map((x) => (
+                  <li
+                    key={x.name}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md bg-background px-3 py-2.5",
+                      x.soon && "text-ink-muted"
+                    )}
+                  >
+                    <span className="w-24 shrink-0 text-small font-medium">{x.name}</span>
+                    <span className="min-w-0 truncate text-small text-ink-secondary">{x.note}</span>
+                    {x.soon && (
+                      <span className="ml-auto rounded-full border border-line-strong px-1.5 py-px text-label text-ink-secondary">
+                        Coming soon
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-14 text-h4 font-medium">{onTheCall.label}</h3>
+        <ol className="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {onTheCall.items.map((it, i) => (
             <li key={it.title} className="flex flex-col gap-2">
               <Diagram kind={it.visual} />
               <span className="mt-3 font-mono text-label text-ink-muted tabular-nums">{pad(start + i)}</span>
-              <h3 className="text-body font-medium">{it.title}</h3>
+              <h4 className="text-body font-medium">{it.title}</h4>
               <p className="text-small text-ink-secondary">{it.body}</p>
             </li>
           ))}
