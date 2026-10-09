@@ -16,6 +16,31 @@ export type Product = {
   features: { title: string; body: string; link: string; visual: string }[]
   how: { verb: string; body: string }[]
   ctaTitle: string
+  /**
+   * Optional lifecycle stages. When present, the product page shows these
+   * three stage sections instead of the generic features + "How it works".
+   */
+  stages?: ProductStage[]
+}
+
+/** Which recreated screen (or placeholder) a stage item shows. */
+export type StageVisual =
+  | "agent-config"
+  | "knowledge"
+  | "tools"
+  | "analytics"
+  | "simulation"
+  | "campaign"
+  | { placeholder: string }
+
+export type ProductStage = {
+  id: "build" | "ship" | "improve"
+  label: string
+  headline: string
+  body: string
+  /** Painted backdrop behind the screen. */
+  backdrop: string
+  items: { title: string; body: string; beta?: boolean; visual: StageVisual }[]
 }
 
 export const productList: Product[] = [
@@ -52,6 +77,108 @@ export const productList: Product[] = [
       { verb: "Go live", body: "Connect your numbers and start calling, with every conversation measured." },
     ],
     ctaTitle: "Hear a voice agent on your own use case.",
+    // Content from the product brief. Items marked "draft" have placeholder
+    // descriptions to confirm.
+    stages: [
+      {
+        id: "build",
+        label: "Build",
+        headline: "An agent that sounds like you, configured in an afternoon.",
+        body: "Start with a single prompt or a full node-based flow. Pull live context before every call, connect tools that take real action, then feed structured outcomes straight into your stack.",
+        backdrop: "/art/backdrops/home-build.png",
+        items: [
+          {
+            // draft
+            title: "Prompt & flow",
+            body: "Write a single prompt, or design a node-based flow with branches, conditions and handoffs.",
+            visual: "agent-config",
+          },
+          {
+            title: "Context & memory",
+            body: "Pull live context before the call connects: pre-call APIs, your CRM, past-conversation history, and indexed knowledge libraries the agent can cite.",
+            visual: "knowledge",
+          },
+          {
+            // draft
+            title: "Tools",
+            body: "Connect the systems your agent acts in, so it can look up accounts, book slots and send confirmations mid-call.",
+            visual: "tools",
+          },
+          {
+            // draft
+            title: "Analysis",
+            body: "Turn every call into structured outcomes and send them straight into your stack.",
+            visual: "analytics",
+          },
+        ],
+      },
+      {
+        id: "ship",
+        label: "Ship",
+        headline: "Prove it works, put it on a line, and go, inbound or outbound.",
+        body: "Stress-test against real scenarios and personas before anything goes live. Provision a number or connect your own carrier with SIP trunking, then take inbound or launch outbound campaigns at scale.",
+        backdrop: "/art/backdrops/home-test.png",
+        items: [
+          {
+            title: "Simulate",
+            body: "Stress-test against real scenarios and personas, code-switching, refusals, edge cases, and hear the difference between versions before anything reaches a customer.",
+            beta: true,
+            visual: "simulation",
+          },
+          {
+            // draft
+            title: "Telephony",
+            body: "Provision a number in minutes, or bring your own carrier with SIP trunking.",
+            visual: { placeholder: "Numbers + SIP trunk UI" },
+          },
+          {
+            // draft
+            title: "Webhooks",
+            body: "Send call events and outcomes to your systems the moment they happen.",
+            visual: { placeholder: "Webhook events UI" },
+          },
+          {
+            // draft
+            title: "Go live",
+            body: "Take inbound calls or launch outbound campaigns at scale, with schedules and retries.",
+            visual: "campaign",
+          },
+        ],
+      },
+      {
+        id: "improve",
+        label: "Improve",
+        headline: "Measure everything objective and subjective, break nothing.",
+        body: "Track hard numbers and human judgment on every call. Build dashboards, set alerts, and improve on a new version, A/B tested against the live one, promoting only the winner.",
+        backdrop: "/art/backdrops/home-measure.png",
+        items: [
+          {
+            // draft
+            title: "Objective metrics",
+            body: "Track resolution, handle time, transfers and drop-offs on every call.",
+            visual: "analytics",
+          },
+          {
+            // draft
+            title: "Subjective metrics",
+            body: "Score tone, empathy and accuracy on every conversation with automated QA.",
+            visual: { placeholder: "QA scorecard UI" },
+          },
+          {
+            title: "Dashboards & alerts",
+            body: "Build the dashboards you need and set threshold or ratio alerts on the metrics that matter, routed to Slack or on-call.",
+            beta: true,
+            visual: { placeholder: "Dashboard + alert rules UI" },
+          },
+          {
+            // draft
+            title: "Branch, A/B, promote",
+            body: "Branch a new version, A/B test it against the live one, and promote only the winner.",
+            visual: { placeholder: "Version A/B comparison UI" },
+          },
+        ],
+      },
+    ],
   },
   {
     slug: "chat-agents",
