@@ -137,8 +137,7 @@ export function HeroCallCard() {
   return (
     <div className="mx-auto w-full max-w-3xl rounded-[2rem] border border-white/50 bg-background/80 p-3 text-left shadow-[0_40px_100px_-40px_oklch(0.2_0.03_150/0.65)] backdrop-blur-xl sm:p-4">
       {/* 1 Pick */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-2 pt-1 pb-3">
-        <p className="text-body font-medium">Talk to an agent now</p>
+      <div className="flex justify-center px-2 pt-1 pb-3">
         <div
           role="radiogroup"
           aria-label="Use case"
@@ -274,39 +273,53 @@ export function HeroCallCard() {
 function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; playing: boolean; onToggle: () => void }) {
   const lines = playing ? call.lines.filter((l) => l.t <= t).slice(-2) : []
   const progress = playing ? t / call.duration : 0
+  const half = BARS.length / 2
+  const bar = (h: number, i: number) => (
+    <span
+      key={i}
+      className={cn(
+        "w-[2.5px] rounded-full transition-colors duration-200",
+        i / BARS.length < progress ? "bg-foreground" : "bg-foreground/20"
+      )}
+      style={{ height: h }}
+    />
+  )
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <span className="relative grid size-10 shrink-0 place-items-center">
-          {playing && <span className="absolute inset-0 rounded-full bg-foreground/10 motion-safe:animate-ping" />}
-          <span className="relative grid size-10 place-items-center rounded-full bg-secondary text-body font-medium">
-            {call.agent[0]}
-          </span>
+    <div className="flex flex-col items-center gap-4 text-center">
+      <p className="text-small text-ink-secondary">
+        <span className="font-medium text-foreground">{call.agent}</span> · {call.useCase} agent · {call.direction} ·{" "}
+        {call.language}
+      </p>
+
+      {/* Waveform split around a centred play button */}
+      <div className="flex w-full items-center gap-4">
+        <span aria-hidden className={cn("flex h-7 flex-1 items-center justify-between", playing && "ui-wave")}>
+          {BARS.slice(0, half).map((h, i) => bar(h, i))}
         </span>
-        <div className="flex min-w-0 flex-1 flex-col leading-tight">
-          <span className="text-body font-medium">{call.agent}</span>
-          <span className="text-small text-ink-secondary">
-            {call.useCase} agent · {call.direction} · {call.language}
-          </span>
-        </div>
-        <button
-          type="button"
-          onClick={onToggle}
-          aria-label={playing ? "Pause sample" : `Play a sample ${call.useCase.toLowerCase()} call`}
-          className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background outline-none transition-transform duration-150 ease-(--ease-out) hover:scale-105 focus-visible:ring-2 focus-visible:ring-foreground/30 active:scale-95"
-        >
-          {playing ? <PauseIcon weight="fill" className="size-4" /> : <PlayIcon weight="fill" className="size-4" />}
-        </button>
+        <span className="relative grid size-16 shrink-0 place-items-center">
+          {playing && <span className="absolute inset-0 rounded-full bg-foreground/10 motion-safe:animate-ping" />}
+          <button
+            type="button"
+            onClick={onToggle}
+            aria-label={playing ? "Pause sample" : `Play a sample ${call.useCase.toLowerCase()} call`}
+            className="relative grid size-16 place-items-center rounded-full bg-foreground text-background shadow-[0_10px_24px_-10px_oklch(0_0_0/0.5)] outline-none transition-transform duration-150 ease-(--ease-out) hover:scale-105 focus-visible:ring-2 focus-visible:ring-foreground/30 active:scale-95"
+          >
+            {playing ? <PauseIcon weight="fill" className="size-5" /> : <PlayIcon weight="fill" className="ml-0.5 size-5" />}
+          </button>
+        </span>
+        <span aria-hidden className={cn("flex h-7 flex-1 items-center justify-between", playing && "ui-wave")}>
+          {BARS.slice(half).map((h, i) => bar(h, i + half))}
+        </span>
       </div>
 
       {/* Transcript: the last two lines, or an idle cue */}
-      <div className="flex min-h-16 flex-col justify-end gap-1" aria-live="polite">
+      <div className="flex min-h-14 w-full flex-col items-center justify-end gap-1" aria-live="polite">
         {lines.length ? (
           lines.map((l, i) => (
             <p
               key={l.t}
               className={cn(
-                "text-[1.0625rem] leading-snug transition-opacity duration-300",
+                "max-w-[52ch] text-[1.0625rem] leading-snug transition-opacity duration-300",
                 i < lines.length - 1 ? "text-ink-muted" : "text-foreground"
               )}
             >
@@ -320,25 +333,9 @@ function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; 
           </p>
         )}
       </div>
-
-      {/* Waveform + time */}
-      <div className="flex items-center gap-3">
-        <span aria-hidden className={cn("flex h-6 flex-1 items-center justify-between", playing && "ui-wave")}>
-          {BARS.map((h, i) => (
-            <span
-              key={i}
-              className={cn(
-                "w-[2.5px] rounded-full transition-colors duration-200",
-                i / BARS.length < progress ? "bg-foreground" : "bg-foreground/20"
-              )}
-              style={{ height: h }}
-            />
-          ))}
-        </span>
-        <span className="shrink-0 font-mono text-label text-ink-muted tabular-nums">
-          {clock(playing ? t : 0)} / {clock(call.duration)}
-        </span>
-      </div>
+      <span className="font-mono text-label text-ink-muted tabular-nums">
+        {clock(playing ? t : 0)} / {clock(call.duration)}
+      </span>
     </div>
   )
 }
