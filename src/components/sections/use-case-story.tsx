@@ -1,45 +1,65 @@
-import { Halftone } from "@/components/layout/halftone"
 import { UseCaseVignette } from "@/components/sections/use-case-vignettes"
 import type { useCases } from "@/content/platform"
+import { cn } from "@/lib/utils"
 
 type UseCase = (typeof useCases)[number]
 
-/** Where the halftone dots are densest, so neighbouring cards don't repeat. */
-const FOCUS: Record<UseCase["visual"], string> = {
-  collections: "15% 20%",
-  booking: "85% 15%",
-  leads: "80% 85%",
-  support: "20% 85%",
-  renewals: "50% 0%",
-  surveys: "100% 50%",
+/** Painted textures (same family as the platform tiles and Listen). */
+const SAGE = { src: "/art/backdrops/home-deploy.png" }
+const DUSK = { src: "/art/backdrops/home-measure.png" }
+const OCHRE = { src: "/art/backdrops/home-deploy.png", filter: "hue-rotate(-40deg) saturate(1.1) brightness(1.05)" }
+const TEXTURE: Record<UseCase["visual"], { src: string; filter?: string }> = {
+  collections: SAGE,
+  booking: DUSK,
+  leads: OCHRE,
+  support: OCHRE,
+  renewals: SAGE,
+  surveys: DUSK,
 }
 
 /**
- * One use-case card: a single, full-size result card on a plain surface, so
- * the outcome reads at a glance. Hover or focus reveals the one exchange from
- * the call that led to it.
+ * One use-case card, built like the platform tiles: copy on the surface, then
+ * a dark result card on a painted frame. Hover or focus reveals the one
+ * exchange from the call that led to it.
  */
 export function UseCaseStory({
   useCase,
-  tone = "charcoal",
   resultFirst = false,
 }: {
   useCase: UseCase
-  tone?: "charcoal" | "light"
   /** Lead with the business result in large type, title below. */
   resultFirst?: boolean
 }) {
   const [first, second] = useCase.call
+  const texture = TEXTURE[useCase.visual]
   return (
     <article
       tabIndex={0}
-      className="group flex w-full flex-col overflow-hidden rounded-xl border border-line bg-background outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
+      className="group flex w-full flex-col gap-5 rounded-md bg-surface p-5 outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 sm:p-6"
     >
-      {/* Stage */}
-      <div aria-hidden className="relative isolate flex h-72 items-center justify-center overflow-hidden bg-surface p-6">
-        <Halftone focus={FOCUS[useCase.visual]} />
+      {/* Copy */}
+      {resultFirst ? (
+        <div className="flex flex-col gap-1.5">
+          <p className="text-h4 font-normal">{useCase.result}</p>
+          <h3 className="font-mono text-label text-ink-muted">{useCase.title}</h3>
+          <p className="text-small text-ink-secondary">{useCase.body}</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <h3 className="text-h4 font-normal">{useCase.title}</h3>
+          <p className="text-small text-ink-secondary">{useCase.body}</p>
+          <p className="pt-1 font-mono text-label text-ink-muted">→ {useCase.result}</p>
+        </div>
+      )}
+
+      {/* Painted frame with the result card */}
+      <div aria-hidden className="relative isolate mt-auto flex h-64 items-center justify-center overflow-hidden rounded-md p-4">
+        <span
+          className="absolute inset-0 -z-10 bg-cover bg-center"
+          style={{ backgroundImage: `url(${texture.src})`, filter: texture.filter }}
+        />
         <div className="scale-95 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
-          <UseCaseVignette kind={useCase.visual} theme={tone} />
+          <UseCaseVignette kind={useCase.visual} theme="charcoal" />
         </div>
 
         {/* The exchange behind the result, on hover / focus */}
@@ -47,32 +67,16 @@ export function UseCaseStory({
           {[first, second].map((l) => (
             <span
               key={l.text}
-              className={
-                l.who === "agent"
-                  ? "max-w-[85%] self-start rounded-md border border-line bg-background px-2.5 py-1.5 shadow-sm"
-                  : "max-w-[85%] self-end rounded-md bg-foreground px-2.5 py-1.5 text-background shadow-sm"
-              }
+              className={cn(
+                "max-w-[85%] rounded-md px-2.5 py-1.5 shadow-sm",
+                l.who === "agent" ? "self-start border border-line bg-background" : "self-end bg-foreground text-background"
+              )}
             >
               {l.text}
             </span>
           ))}
         </div>
       </div>
-
-      {/* Copy */}
-      {resultFirst ? (
-        <div className="flex flex-1 flex-col gap-2 border-t border-line p-5">
-          <p className="text-h4 font-normal">{useCase.result}</p>
-          <h3 className="font-mono text-label text-ink-muted">{useCase.title}</h3>
-          <p className="text-small text-ink-secondary">{useCase.body}</p>
-        </div>
-      ) : (
-        <div className="flex flex-1 flex-col gap-1.5 border-t border-line p-5">
-          <h3 className="text-body font-medium">{useCase.title}</h3>
-          <p className="text-small text-ink-secondary">{useCase.body}</p>
-          <p className="mt-auto pt-2 font-mono text-label text-ink-muted">→ {useCase.result}</p>
-        </div>
-      )}
     </article>
   )
 }
