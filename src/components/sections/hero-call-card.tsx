@@ -138,13 +138,13 @@ export function HeroCallCard() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/50 bg-background/80 p-3 text-left shadow-[0_40px_100px_-40px_oklch(0.2_0.03_150/0.65)] backdrop-blur-xl sm:p-4">
+    <div className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/40 bg-[oklch(0.99_0.01_85/0.42)] p-3 text-left shadow-[0_30px_80px_-40px_oklch(0.25_0.04_120/0.55),inset_0_1px_0_oklch(1_0_0/0.6)] backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
       {/* 1 Pick */}
       <div className="flex justify-center px-2 pt-1 pb-3">
         <div
           role="radiogroup"
           aria-label="Use case"
-          className="flex max-w-full gap-1 overflow-x-auto rounded-full bg-secondary p-1 [scrollbar-width:none]"
+          className="flex max-w-full gap-1 overflow-x-auto rounded-full bg-white/35 p-1 [scrollbar-width:none]"
         >
           {useCaseCalls.map((c, i) => (
             <button
@@ -158,7 +158,7 @@ export function HeroCallCard() {
               }}
               className={cn(
                 "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30",
-                i === index ? "bg-background text-foreground shadow-xs" : "text-ink-secondary hover:text-foreground"
+                i === index ? "bg-background/90 text-foreground shadow-xs" : "text-foreground/70 hover:text-foreground"
               )}
             >
               {c.useCase}
@@ -169,7 +169,7 @@ export function HeroCallCard() {
       </div>
 
       {/* 2 Listen (or the calling state) */}
-      <div className="rounded-[1.5rem] border border-line bg-background p-4 sm:p-5">
+      <div className="rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5">
         {calling ? (
           <Calling call={call} number={calling} late={late} onReset={() => setCalling(null)} />
         ) : (
@@ -189,10 +189,10 @@ export function HeroCallCard() {
             aria-hidden
             className="absolute -left-[9999px] size-px opacity-0"
           />
-          <p className="px-1 pb-2 text-small text-ink-secondary">Or get this call on your phone</p>
+          <p className="px-1 pb-2 text-small text-foreground/75">Or get this call on your phone</p>
           <div
             className={cn(
-              "flex h-14 items-center rounded-full border bg-background pr-1.5 transition-colors focus-within:border-foreground/45",
+              "flex h-14 items-center rounded-full border bg-background/75 pr-1.5 transition-colors focus-within:border-foreground/45",
               error && consent ? "border-destructive/60" : "border-line-strong"
             )}
           >
@@ -249,7 +249,7 @@ export function HeroCallCard() {
           </div>
           <CallButton className="mt-2 flex h-12 w-full sm:hidden" sending={sending} ready={valid} />
 
-          <label className="flex cursor-pointer items-center gap-2.5 px-2 pt-3 pb-1 text-small text-ink-secondary">
+          <label className="flex cursor-pointer items-center gap-2.5 px-2 pt-3 pb-1 text-small text-foreground/75">
             <input
               type="checkbox"
               checked={consent}

@@ -27,10 +27,7 @@ export function LandingPage() {
       {/* 1 Hero: centred headline, the call box, then the parallax with a live call */}
       <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
         <Container className="flex flex-col items-start text-left">
-          <h1 className="reveal text-display font-normal">
-            {heroCall.title}
-            <span className="block text-ink-secondary">{heroCall.aside}</span>
-          </h1>
+          <h1 className="reveal max-w-[22ch] text-display font-normal">{heroCall.title}</h1>
           <p
             className="reveal mt-5 max-w-[56ch] text-body-lg text-ink-secondary"
             style={{ "--i": 1 } as React.CSSProperties}

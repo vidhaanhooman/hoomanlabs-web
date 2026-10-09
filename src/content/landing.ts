@@ -229,8 +229,7 @@ export const homePlatform = {
 
 /** Hero copy for the proposed homepage. Proof figures are placeholders to confirm. */
 export const heroCall = {
-  title: "Every call answered.",
-  aside: "Every task done.",
-  body: "AI employees for every customer conversation, starting with the phone.",
+  title: "AI employees for every customer conversation, starting with the phone.",
+  body: "They answer, follow up and finish the job in your customers' language, with your CRM, payments and calendars updated before the call ends.",
   proof: ["10.66M+ calls handled", "4.6/5 from 12,000+ customer ratings"],
 }
