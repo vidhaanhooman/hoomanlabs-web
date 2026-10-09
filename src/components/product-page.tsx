@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -18,9 +17,6 @@ import { StageIndex } from "@/components/sections/stage-index";
 import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero";
 import { ctas } from "@/content/draft";
 import type { Product } from "@/content/products";
-
-/** Hero painting for the lab variant (placeholder until a dedicated one is made). */
-const HERO_ART = "/art/backdrops/home-build.png";
 
 /**
  * Shared product page template (/voice-ai, /chat-agents, /qa, /telephony).
@@ -88,16 +84,7 @@ export function ProductPage({
             style={{ "--i": 4 } as React.CSSProperties}
           >
             {fin && product.stages ? (
-              /* The one painted moment on the page; stages below stay plain. */
-              <div className="relative isolate overflow-hidden rounded-md px-4 py-6 sm:px-8 sm:py-10 lg:flex lg:min-h-[44rem] lg:items-center lg:px-10 lg:py-12">
-                <Image
-                  src={HERO_ART}
-                  alt=""
-                  fill
-                  priority
-                  sizes="(min-width: 1300px) 1300px, 100vw"
-                  className="-z-10 object-cover"
-                />
+              <div className="relative isolate overflow-hidden rounded-md border border-line bg-surface px-4 py-6 sm:px-8 sm:py-10 lg:flex lg:min-h-[44rem] lg:items-center lg:px-10 lg:py-12">
                 <VoicePipeline className="w-full" />
               </div>
             ) : (

@@ -197,9 +197,9 @@ function StepTag({ n, title }: { n: string; title: string }) {
 function Flow({ on, className }: { on: boolean; className?: string }) {
   return (
     <div aria-hidden className={cn("flex items-center justify-center", className)}>
-      <span className="relative h-6 w-px bg-background/70 lg:h-px lg:w-full">
+      <span className="relative h-6 w-px bg-line-strong lg:h-px lg:w-full">
         {on && (
-          <span className="absolute top-0 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background shadow-sm motion-safe:animate-[flow-y_1s_linear_infinite] lg:top-1/2 lg:left-0 lg:translate-x-0 lg:motion-safe:animate-[flow-x_1s_linear_infinite]" />
+          <span className="absolute top-0 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground motion-safe:animate-[flow-y_1s_linear_infinite] lg:top-1/2 lg:left-0 lg:translate-x-0 lg:motion-safe:animate-[flow-x_1s_linear_infinite]" />
         )}
       </span>
     </div>
