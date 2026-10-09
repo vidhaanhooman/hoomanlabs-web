@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   HoomanLabs tokens. Draft phase: black & white only. Colour comes later,
+   as a token swap here, never as one-off classes in components.
+
+   Shape rule (one system, used everywhere):
+     - interactive controls (buttons, pills)  -> fully rounded
+     - containers, panels, frames, placeholders -> --radius (6px)
+   ========================================================================== */
+
+:root {
+  /* Neutral scale, zero chroma (pure greys) */
+  --gray-0: oklch(0.995 0 0); /* page */
+  --gray-50: oklch(0.975 0 0); /* panel surface */
+  --gray-100: oklch(0.955 0 0); /* placeholder fill */
+  --gray-200: oklch(0.92 0 0); /* hairline */
+  --gray-300: oklch(0.87 0 0); /* strong hairline */
+  --gray-500: oklch(0.53 0 0); /* muted text, AA on page + panel */
+  --gray-600: oklch(0.45 0 0); /* secondary text */
+  --gray-900: oklch(0.2 0 0); /* ink */
+  --gray-950: oklch(0.16 0 0); /* primary fill */
+}
+
+/* Semantic tokens are declared on :root AND .dark, so inside a `.dark`
+   subtree they resolve against the dark grey scale (e.g. the footer). */
+:root,
+.dark {
+  --background: var(--gray-0);
+  --foreground: var(--gray-900);
+  --surface: var(--gray-50);
+  --placeholder: var(--gray-100);
+  --ink-secondary: var(--gray-600);
+  --ink-muted: var(--gray-500);
+  --line: var(--gray-200);
+  --line-strong: var(--gray-300);
+
+  /* shadcn contract, mapped onto the above */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--gray-0);
+  --popover-foreground: var(--foreground);
+  --primary: var(--gray-950);
+  --primary-foreground: var(--gray-0);
+  --secondary: var(--gray-100);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--gray-100);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--gray-100);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--gray-900);
+  --radius: 0.375rem;
+}
+
+/* Dark grey scale. Used by the footer (class="dark"); the page itself stays light. */
+.dark {
+  --gray-0: oklch(0.16 0 0);
+  --gray-50: oklch(0.2 0 0);
+  --gray-100: oklch(0.24 0 0);
+  --gray-200: oklch(0.29 0 0);
+  --gray-300: oklch(0.36 0 0);
+  --gray-500: oklch(0.68 0 0);
+  --gray-600: oklch(0.76 0 0);
+  --gray-900: oklch(0.96 0 0);
+  --gray-950: oklch(0.985 0 0);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-placeholder: var(--placeholder);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.66);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.33);
+}
+
+@theme {
+  /* Type scale. Restrained, Cursor-like: hierarchy from size and tone,
+     regular weight for display, tight tracking only on large sizes. */
+  --text-display: clamp(1.875rem, 1.35rem + 1.9vw, 2.75rem);
+  --text-display--line-height: 1.12;
+  --text-display--letter-spacing: -0.025em;
+
+  --text-h2: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.35;
+  --text-h3--letter-spacing: -0.012em;
+
+  --text-h4: 1rem;
+  --text-h4--line-height: 1.45;
+  --text-h4--letter-spacing: -0.006em;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.4;
+
+  /* Layout */
+  --container-page: 81.25rem; /* 1300px, Cursor's content width */
+  --container-prose: 40rem;
+
+  /* Motion (Emil Kowalski curves) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+:root {
+  /* Section rhythm and gutters */
+  /* Visible gap between any two sections: 40px phone -> 64px desktop.
+     Every section pads half of it top and bottom, so gaps never stack. */
+  --section-gap: clamp(2.5rem, 1.75rem + 2.5vw, 4rem);
+  --section-pad: calc(var(--section-gap) / 2);
+  --gutter: 1rem;
+}
+@media (min-width: 768px) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 2.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground text-body;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--gray-900);
+    color: var(--gray-0);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Product UI recreations (hero frame etc.). The platform is dark, so these
+   tokens are scoped to `.ui-dark` and never leak into the page theme.
+   Approximation until matched against real platform screenshots.
+   -------------------------------------------------------------------------- */
+.ui-dark {
+  --ui-bg: oklch(0.17 0.004 270);
+  --ui-panel: oklch(0.205 0.004 270);
+  --ui-raised: oklch(0.245 0.004 270);
+  --ui-line: oklch(1 0 0 / 8%);
+  --ui-text: oklch(0.95 0 0);
+  --ui-muted: oklch(0.68 0.004 270);
+  --ui-live: oklch(0.74 0.16 150);
+  color: var(--ui-text);
+  background: var(--ui-bg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ui-wave span {
+    animation: ui-wave 900ms ease-in-out infinite;
+    transform-origin: bottom;
+  }
+  .ui-wave span:nth-child(2) { animation-delay: -150ms; }
+  .ui-wave span:nth-child(3) { animation-delay: -300ms; }
+  .ui-wave span:nth-child(4) { animation-delay: -450ms; }
+  .ui-wave span:nth-child(5) { animation-delay: -600ms; }
+  .ui-wave[data-idle] span { animation-play-state: paused; }
+}
+@keyframes ui-wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+/* --------------------------------------------------------------------------
+   Entrance: one staggered reveal for the hero only (hierarchy, not decoration).
+   CSS so it runs off the main thread; set --i on each child for the stagger.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: reveal 600ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Request router: a signal draws along each connector (request -> agent ->
+   action) and the hub gives a small press as the request arrives.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .router-signal {
+    animation: router-signal 900ms var(--ease-out) both;
+  }
+  .router-hub {
+    animation: router-hub 500ms var(--ease-out) 350ms both;
+  }
+}
+.router-signal {
+  opacity: 0;
+}
+@keyframes router-signal {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@keyframes router-hub {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.97);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Listen section: the nearest window rings three times with a callback.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .listen-ringing .listen-ring-window {
+    animation: ring-window 900ms ease-in-out 3;
+  }
+}
+@keyframes ring-window {
+  50% {
+    opacity: 1;
+    scale: 2.4;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Footer wordmark spotlight. A soft circle of light follows the pointer and
+   reveals the bright wordmark over a dim copy. Touch devices get a slow
+   automatic sweep; reduced motion gets a static, evenly dimmed wordmark.
+   -------------------------------------------------------------------------- */
+@property --spot-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --spot-y {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+@property --spot-r {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+.footer-spot {
+  --spot-r: 0px;
+  transition: --spot-r 450ms var(--ease-out);
+}
+.footer-spot[data-active] {
+  --spot-r: 15rem;
+}
+.footer-spot-light {
+  mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y), #000 0%, #000 25%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle var(--spot-r) at var(--spot-x) var(--spot-y), #000 0%, #000 25%, transparent 100%);
+}
+@media (hover: none), (pointer: coarse) {
+  .footer-spot {
+    --spot-r: 9rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .footer-spot {
+      animation: spot-sweep 9s ease-in-out infinite alternate;
+    }
+  }
+}
+@keyframes spot-sweep {
+  from {
+    --spot-x: 0%;
+  }
+  to {
+    --spot-x: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-spot-light {
+    mask-image: none;
+    -webkit-mask-image: none;
+    opacity: 0.4;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Draft tooling: section outline overlay (toggled by the floating
+   "Sections" control; never visible unless switched on).
+   -------------------------------------------------------------------------- */
+[data-section-label] {
+  display: none;
+}
+html[data-outline="on"] [data-section-label] {
+  display: inline-flex;
+}
+html[data-outline="on"] [data-section] {
+  outline: 1px dashed var(--line-strong);
+  outline-offset: -1px;
+}
