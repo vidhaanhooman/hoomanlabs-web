@@ -5,8 +5,25 @@ import { Section } from "@/components/layout/section"
 import { StageScreen } from "@/components/product/stage-screen"
 import type { ProductStage } from "@/content/products"
 import type { SectionId } from "@/content/sections"
+import { cn } from "@/lib/utils"
 
 const pad = (n: number) => String(n).padStart(2, "0")
+
+/**
+ * How loud the stage imagery is (lab comparison, pick one later):
+ * - wash:  art desaturated under a white wash, shorter frame, bigger screen
+ * - plain: no art, screen on a quiet surface panel
+ * - mono:  art in greyscale under a white wash, shorter frame, bigger screen
+ */
+export type StageTreatment = "wash" | "plain" | "mono"
+
+const TREATMENT_LABEL: Record<StageTreatment, string> = {
+  wash: "A · Soft wash",
+  plain: "B · Plain panel",
+  mono: "C · Greyscale",
+}
+
+const SCREEN = "absolute inset-x-[4%] top-[6%] bottom-[6%] z-10 sm:inset-x-[8%] lg:inset-x-[12%]"
 
 /**
  * Lighter stage block (Fin-inspired): mono corner labels, stacked heading,
@@ -20,10 +37,12 @@ export function ProductStageList({
   stage,
   start,
   productName,
+  treatment = "wash",
 }: {
   stage: ProductStage
   start: number
   productName: string
+  treatment?: StageTreatment
 }) {
   const end = start + stage.items.length - 1
   return (
@@ -41,14 +60,24 @@ export function ProductStageList({
           <p className="text-body text-ink-secondary">{stage.body}</p>
         </div>
 
-        <div className="relative isolate mt-10 aspect-[4/3] overflow-hidden rounded-md sm:aspect-[16/9] lg:aspect-[21/9]">
-          <Image src={stage.backdrop} alt="" fill sizes="(min-width: 1300px) 1300px, 100vw" className="-z-10 object-cover" />
-          <StageScreen
-            visual={stage.hero}
-            light
-            className="absolute inset-x-[5%] top-[8%] bottom-[10%] z-10 sm:inset-x-[14%] lg:inset-x-[22%]"
-          />
+        <div className="relative isolate mt-10 aspect-[4/3] overflow-hidden rounded-md sm:aspect-[16/9] lg:aspect-[5/2]">
+          {treatment === "plain" ? (
+            <div className="absolute inset-0 -z-10 border border-line bg-surface" />
+          ) : (
+            <>
+              <Image
+                src={stage.backdrop}
+                alt=""
+                fill
+                sizes="(min-width: 1300px) 1300px, 100vw"
+                className={cn("-z-20 object-cover", treatment === "mono" ? "grayscale" : "saturate-50")}
+              />
+              <div className="absolute inset-0 -z-10 bg-background/45" />
+            </>
+          )}
+          <StageScreen visual={stage.hero} light className={SCREEN} />
         </div>
+        <p className="mt-2 font-mono text-label text-ink-muted">Draft treatment: {TREATMENT_LABEL[treatment]}</p>
 
         <ol className="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
           {stage.items.map((it, i) => (

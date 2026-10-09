@@ -106,6 +106,7 @@ export function ProductPage({
                 stage={stage}
                 start={starts[i]}
                 productName={product.name}
+                treatment={(["wash", "plain", "mono"] as const)[i % 3]}
               />
             ))}
             <StageIndex
