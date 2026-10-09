@@ -69,11 +69,61 @@ export const startPaths = {
       name: "Enterprise, built with our team",
       for: "For companies that want forward-deployed engineers to build and run it with them.",
       rows: [
-        { k: "How", v: "Discovery, design, build, test, pilot, scale" },
-        { k: "Time to live", v: "A few weeks, with a plan" },
-        { k: "Support", v: "Dedicated FDE, custom integrations, SLA" },
+        { k: "How", v: "Foundation, build, simulation, UAT, go live, one flow at a time" },
+        { k: "Time to live", v: "4–8 weeks per flow, faster after the first" },
+        { k: "Support", v: "Dedicated FDE, co-built with your team, full handover" },
       ],
       cta: { label: "Book a demo", href: "https://hoomanlabs.com/platform" },
     },
   ],
+}
+
+/**
+ * How an enterprise build runs (generalised from our delivery framework; no
+ * client specifics). Every step ends at a sign-off gate.
+ */
+export const enterpriseBuild = {
+  headline: "How an enterprise build runs.",
+  body: "One flow at a time, co-built with your team, with a sign-off gate at every stage.",
+  steps: [
+    {
+      name: "Foundation",
+      body: "Our forward-deployed engineer works with your process team to turn your SOPs, happy and unhappy paths, into an agent SOP. System access is set up in parallel.",
+      gate: "One north-star metric, 3–4 secondary metrics and go-live criteria agreed",
+    },
+    {
+      name: "Build",
+      body: "We build the agent and connect it to the APIs of the systems you already run: CRM, dialer, records and knowledge.",
+      gate: "Agent working end to end on your stack",
+    },
+    {
+      name: "Simulation testing",
+      body: "Simulated callers run every path, including edge cases and refusals, with QA scoring each conversation.",
+      gate: "Test report against the agreed metrics",
+    },
+    {
+      name: "UAT",
+      body: "Your team tests the agent on real scenarios before any customer hears it.",
+      gate: "Your sign-off",
+    },
+    {
+      name: "Go live",
+      body: "A pilot on 10–20% of calls for one line, with your existing IVR as the fallback. Once validated, it scales to 100%, then the next flow begins.",
+      gate: "Live on the full line",
+    },
+  ],
+  notes: [
+    "4–8 weeks per flow. The first takes longest; later flows reuse integrations and move faster.",
+    "Every build ends with a knowledge transfer, so your team can run and change agents on the platform themselves.",
+  ],
+  split: {
+    us: {
+      title: "HoomanLabs brings",
+      items: ["Agent build and integrations", "Testing, simulations and QA setup", "Guardrails, observability, reports and alerts"],
+    },
+    you: {
+      title: "Your team brings",
+      items: ["Process and domain knowledge, written SOPs", "Success criteria", "System access, API contracts, UAT and sign-off"],
+    },
+  },
 }
