@@ -1,4 +1,3 @@
-import Link from "next/link"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -8,7 +7,6 @@ import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
 import { UseCases } from "@/components/sections/use-cases"
-import { ctas } from "@/content/draft"
 import { chapters, heroCall } from "@/content/landing"
 
 /**
@@ -35,20 +33,6 @@ export function LandingPage() {
             style={{ "--i": 1 } as React.CSSProperties}
           >
             {heroCall.body}
-          </p>
-          <p
-            className="reveal mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-secondary"
-            style={{ "--i": 3 } as React.CSSProperties}
-          >
-            {heroCall.proof.map((p) => (
-              <span key={p} className="flex items-center gap-3">
-                {p}
-                <span aria-hidden className="text-ink-muted">·</span>
-              </span>
-            ))}
-            <Link href={ctas.demo.href} className="font-medium text-foreground hover:underline">
-              {ctas.demo.label} →
-            </Link>
           </p>
         </Container>
         <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 4 } as React.CSSProperties}>

@@ -346,12 +346,12 @@ export const flagFor = (code: string) => COUNTRIES.find((c) => c.code === code)?
 /**
  * Callback form (light, on the panel). Posts to /api/callback, which creates
  * a HoomanLabs task server-side so the demo agent calls the visitor back.
+ * Pressing "Call me" with a number is the request (and consent) for the call.
  * The ringing state only plays after the server confirms.
  */
 function Callback({ call, ringing, onCall }: { call: UseCaseCall; ringing: boolean; onCall: () => void }) {
   const [country, setCountry] = useState(COUNTRIES[0].code)
   const [phone, setPhone] = useState("")
-  const [consent, setConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const honeypot = useRef<HTMLInputElement>(null)
@@ -361,14 +361,13 @@ function Callback({ call, ringing, onCall }: { call: UseCaseCall; ringing: boole
     if (sending) return
     const digits = phone.replace(/\D/g, "")
     if (digits.length < 7 || digits.length > 15) return setError("Enter a valid phone number.")
-    if (!consent) return setError("Please agree to receive the call.")
     setError(null)
     setSending(true)
     try {
       const res = await fetch("/api/callback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ country, phone, useCase: call.id, consent, website: honeypot.current?.value ?? "" }),
+        body: JSON.stringify({ country, phone, useCase: call.id, consent: true, website: honeypot.current?.value ?? "" }),
       })
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) {
@@ -439,15 +438,6 @@ function Callback({ call, ringing, onCall }: { call: UseCaseCall; ringing: boole
           className="min-w-0 flex-1 bg-transparent px-2 text-body outline-none placeholder:text-ink-muted"
         />
       </div>
-      <label className="flex items-start gap-2 text-small text-ink-secondary">
-        <input
-          type="checkbox"
-          checked={consent}
-          onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 size-4 shrink-0 accent-foreground"
-        />
-        I agree to receive one automated demo call from HoomanLabs at this number.
-      </label>
       <button
         type="submit"
         disabled={sending}
