@@ -39,6 +39,13 @@ export type SectionId =
   | "product-resources"
   | "product-proof"
   | "product-cta"
+  // Landing (new homepage structure, /lab/home)
+  | "impact"
+  | "how"
+  | "channels"
+  | "security"
+  | "integrations"
+  | "start"
 
 export const sections: { id: SectionId; name: string; status: SectionStatus }[] = [
   { id: "hero", name: "Hero", status: "draft" },
@@ -77,8 +84,18 @@ export const productSections: { id: SectionId; name: string; status: SectionStat
   { id: "product-cta", name: "Product CTA", status: "draft" },
 ]
 
+/** New homepage sections (/lab/home), used alongside the existing ones. */
+export const landingSections: { id: SectionId; name: string; status: SectionStatus }[] = [
+  { id: "impact", name: "Impact numbers", status: "draft" },
+  { id: "how", name: "How it works", status: "draft" },
+  { id: "channels", name: "Channels", status: "draft" },
+  { id: "security", name: "Security & trust", status: "draft" },
+  { id: "integrations", name: "Integrations", status: "draft" },
+  { id: "start", name: "Two ways to start", status: "draft" },
+]
+
 export function sectionMeta(id: SectionId) {
-  const meta = [...sections, ...productSections].find((s) => s.id === id)
+  const meta = [...sections, ...productSections, ...landingSections].find((s) => s.id === id)
   if (!meta) throw new Error(`Unknown section: ${id}`)
   return meta
 }
