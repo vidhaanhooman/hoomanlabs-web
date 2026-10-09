@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { PhoneCallIcon } from "@phosphor-icons/react"
+import { PauseIcon, PhoneCallIcon, PlayIcon } from "@phosphor-icons/react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { COUNTRIES, flagFor } from "@/components/sections/listen-experience"
-import { useCaseCalls } from "@/content/demo-calls"
+import { useCaseCalls, type CallLine } from "@/content/demo-calls"
 import { cn } from "@/lib/utils"
 
 /**
@@ -41,7 +41,17 @@ function group(digits: string, groups: number[]) {
 /** "9876543210" -> "98•••••210" for the calling card. */
 const mask = (d: string) => d.slice(0, 2) + "•".repeat(Math.max(0, d.length - 5)) + d.slice(-3)
 
-export function HeroCall({ glass = false }: { glass?: boolean }) {
+export function HeroCall({
+  glass = false,
+  onCalling,
+  onCaption,
+}: {
+  glass?: boolean
+  /** The agent's name while a demo call is on its way, else null. */
+  onCalling?: (agent: string | null) => void
+  /** The current sample line while "Play sample" runs, else null. */
+  onCaption?: (line: CallLine | null) => void
+}) {
   const [index, setIndex] = useState(0)
   const [country, setCountry] = useState(COUNTRIES[0].code)
   const [digits, setDigits] = useState("")
@@ -50,11 +60,47 @@ export function HeroCall({ glass = false }: { glass?: boolean }) {
   const [sending, setSending] = useState(false)
   const [calling, setCalling] = useState<string | null>(null)
   const [late, setLate] = useState(false)
+  const [playing, setPlaying] = useState(false)
+  const stopRef = useRef<() => void>(() => {})
   const touchedCountry = useRef(false)
   const honeypot = useRef<HTMLInputElement>(null)
   const call = useCaseCalls[index]
   const fmt = FORMAT[country]
   const valid = digits.length === fmt.length
+
+  /**
+   * Plays the sample: the recording if one exists, otherwise a silent preview
+   * that steps through the timed transcript. Each line goes to onCaption.
+   */
+  function playSample() {
+    if (playing) return stopRef.current()
+    const lines = call.lines
+    const lineAt = (t: number) => [...lines].reverse().find((l) => l.t <= t) ?? null
+    let timer: ReturnType<typeof setInterval> | undefined
+    const audio = new Audio(call.src)
+    const stop = () => {
+      clearInterval(timer)
+      audio.pause()
+      setPlaying(false)
+      onCaption?.(null)
+    }
+    stopRef.current = stop
+    setPlaying(true)
+    const silent = () => {
+      const start = performance.now()
+      timer = setInterval(() => {
+        const t = (performance.now() - start) / 1000
+        if (t >= call.duration) return stop()
+        onCaption?.(lineAt(t))
+      }, 200)
+    }
+    audio.addEventListener("timeupdate", () => onCaption?.(lineAt(audio.currentTime)))
+    audio.addEventListener("ended", stop)
+    audio.play().catch(silent)
+  }
+
+  // Stop the sample when the use case changes or the box unmounts.
+  useEffect(() => () => stopRef.current(), [index])
 
   // Preselect the visitor's dialling code (only if they haven't picked one).
   useEffect(() => {
@@ -89,7 +135,9 @@ export function HeroCall({ glass = false }: { glass?: boolean }) {
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) return setError(data.error ?? "We couldn't place the call. Please try again.")
       setLate(false)
+      stopRef.current()
       setCalling(`${country} ${mask(digits)}`)
+      onCalling?.(call.agent)
     } catch {
       setError("We couldn't place the call. Please try again.")
     } finally {
@@ -134,7 +182,10 @@ export function HeroCall({ glass = false }: { glass?: boolean }) {
           <span>{late ? "Didn't get it?" : "It usually takes about 10 seconds."}</span>
           <button
             type="button"
-            onClick={() => setCalling(null)}
+            onClick={() => {
+              setCalling(null)
+              onCalling?.(null)
+            }}
             className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             {late ? "Try again" : "Use another number"}
@@ -159,7 +210,17 @@ export function HeroCall({ glass = false }: { glass?: boolean }) {
 
       {/* Use case, with its language */}
       <div className="flex flex-wrap items-center justify-between gap-2 pt-1 pr-1 pb-2 pl-4">
-        <span className="text-small text-ink-secondary">Hear it on your use case</span>
+        <button
+          type="button"
+          onClick={playSample}
+          aria-pressed={playing}
+          className="flex items-center gap-2 rounded-full text-small text-ink-secondary outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-foreground/30"
+        >
+          <span className="grid size-6 place-items-center rounded-full bg-foreground text-background">
+            {playing ? <PauseIcon weight="fill" className="size-3" /> : <PlayIcon weight="fill" className="size-3" />}
+          </span>
+          {playing ? "Playing sample" : "Play a sample"}
+        </button>
         <div
           role="radiogroup"
           aria-label="Use case"
@@ -173,7 +234,7 @@ export function HeroCall({ glass = false }: { glass?: boolean }) {
               aria-checked={i === index}
               onClick={() => setIndex(i)}
               className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-small whitespace-nowrap transition-colors duration-150",
+                "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30",
                 i === index ? "bg-background text-foreground shadow-xs" : "text-ink-secondary hover:text-foreground"
               )}
             >

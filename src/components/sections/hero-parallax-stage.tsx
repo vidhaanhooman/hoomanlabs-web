@@ -61,9 +61,12 @@ const SIZES = "(min-width: 1300px) 1460px, 112vw"
 
 export function HeroParallaxStage({
   className,
+  floats,
   children,
 }: {
   className?: string
+  /** Items that ride a parallax layer at the given depth (0 far, 1 near). */
+  floats?: { key: string; depth: number; node: React.ReactNode }[]
   children?: React.ReactNode
 }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -117,6 +120,11 @@ export function HeroParallaxStage({
           </Layer>
         ))}
       </div>
+      {floats?.map((f) => (
+        <Layer key={f.key} depth={f.depth} sx={sx} sy={sy} scroll={scroll} enabled={enabled}>
+          {f.node}
+        </Layer>
+      ))}
 
       {children}
     </div>

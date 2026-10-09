@@ -5,8 +5,7 @@ import { Section } from "@/components/layout/section"
 import { UseCasesScreen } from "@/components/product/use-cases-screen"
 import { FeaturePanel } from "@/components/sections/feature-panel"
 import { Impact, Security, StartPaths } from "@/components/sections/landing"
-import { HeroCall } from "@/components/sections/hero-call"
-import { HeroParallaxStage } from "@/components/sections/hero-parallax-stage"
+import { HeroScene } from "@/components/sections/hero-scene"
 import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
@@ -39,12 +38,8 @@ export function LandingPage() {
             {heroCall.body}
           </p>
           <div id="listen" className="reveal mt-10 w-full scroll-mt-24 md:mt-12" style={{ "--i": 2 } as React.CSSProperties}>
-            {/* The call box floats on the painting. */}
-            <HeroParallaxStage className="aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/8]">
-              <div className="absolute inset-0 z-10 flex items-center justify-center px-4">
-                <HeroCall glass />
-              </div>
-            </HeroParallaxStage>
+            {/* The call box floats on the painting, among finished tasks. */}
+            <HeroScene />
           </div>
           <p
             className="reveal mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-small text-ink-secondary"
