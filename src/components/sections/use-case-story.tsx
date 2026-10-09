@@ -18,7 +18,7 @@ const FOCUS: Record<UseCase["visual"], string> = {
  * the outcome reads at a glance. Hover or focus reveals the one exchange from
  * the call that led to it.
  */
-export function UseCaseStory({ useCase }: { useCase: UseCase }) {
+export function UseCaseStory({ useCase, tone = "charcoal" }: { useCase: UseCase; tone?: "charcoal" | "light" }) {
   const [first, second] = useCase.call
   return (
     <article
@@ -36,7 +36,7 @@ export function UseCaseStory({ useCase }: { useCase: UseCase }) {
           }}
         />
         <div className="scale-95 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
-          <UseCaseVignette kind={useCase.visual} />
+          <UseCaseVignette kind={useCase.visual} theme={tone} />
         </div>
 
         {/* The exchange behind the result, on hover / focus */}

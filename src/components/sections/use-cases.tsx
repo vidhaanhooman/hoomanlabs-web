@@ -13,9 +13,10 @@ export function UseCases() {
           <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
         </div>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {useCases.map((u) => (
+          {useCases.map((u, i) => (
             <li key={u.title} className="flex">
-              <UseCaseStory useCase={u} />
+              {/* Checkerboard: dark and light alternate, so no two dark cards touch. */}
+              <UseCaseStory useCase={u} tone={((i % 3) + Math.floor(i / 3)) % 2 === 0 ? "charcoal" : "light"} />
             </li>
           ))}
         </ul>
