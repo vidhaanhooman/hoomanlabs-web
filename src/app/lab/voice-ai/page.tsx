@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
 
-import { ProductPage } from "@/components/product-page"
-import { getProduct } from "@/content/products"
+import { VoiceAiLabPage } from "@/components/voice-ai-lab-page"
 
-export const metadata: Metadata = { title: "Lab: Voice AI, Fin review changes (draft)" }
+export const metadata: Metadata = { title: "Lab: Voice AI (draft)" }
 
-/** /voice-ai with the top 5 recommendations from FIN_REVIEW.md applied. */
+/** The next /voice-ai: pipeline hero, use cases, full-control stages, integrations. */
 export default function VoiceAiLab() {
-  return <ProductPage product={getProduct("voice-ai")} variant="fin" />
+  return <VoiceAiLabPage />
 }
