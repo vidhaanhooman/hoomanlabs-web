@@ -3,6 +3,7 @@ import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { EnterpriseGantt } from "@/components/sections/enterprise-gantt"
 import { FinalCta } from "@/components/sections/final-cta"
 import { ctas } from "@/content/draft"
 import { enterpriseBuild } from "@/content/landing"
@@ -65,6 +66,8 @@ export function EnterprisePage() {
           </ul>
         </Container>
       </Section>
+
+      <EnterpriseGantt />
 
       <Section id="enterprise-split">
         <Container>

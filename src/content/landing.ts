@@ -136,3 +136,70 @@ export const enterpriseBuild = {
     },
   },
 }
+
+/**
+ * Indicative Gantt for an enterprise rollout (weeks). Flow 1 is the longest;
+ * later flows reuse integrations, and the next flow's Foundation overlaps the
+ * previous flow's pilot. Exact weeks are set per flow at the Foundation gate.
+ */
+export type GanttKind = "foundation" | "access" | "build" | "test" | "live" | "run"
+
+export const enterpriseGantt = {
+  title: "The full rollout, week by week.",
+  body: "Indicative timeline for three flows. Exact weeks are set per flow at its Foundation gate.",
+  weeks: 18,
+  legend: [
+    { kind: "foundation", label: "Foundation" },
+    { kind: "access", label: "System access" },
+    { kind: "build", label: "Build" },
+    { kind: "test", label: "Simulation + UAT" },
+    { kind: "live", label: "Pilot → 100%" },
+    { kind: "run", label: "QA and monitoring" },
+  ] as { kind: GanttKind; label: string }[],
+  groups: [
+    {
+      name: "Flow 1",
+      note: "First flow, most iterative",
+      rows: [
+        { label: "Foundation", kind: "foundation", start: 1, end: 2, gate: true },
+        { label: "System access", kind: "access", start: 1, end: 3 },
+        { label: "Build", kind: "build", start: 3, end: 5, gate: true },
+        { label: "Simulation testing", kind: "test", start: 5, end: 6, gate: true },
+        { label: "UAT", kind: "test", start: 6, end: 7, gate: true },
+        { label: "Pilot 10–20%, then 100%", kind: "live", start: 7, end: 9, gate: true },
+      ],
+    },
+    {
+      name: "Flow 2",
+      note: "Reuses flow 1 integrations",
+      rows: [
+        { label: "Foundation", kind: "foundation", start: 8, end: 9, gate: true },
+        { label: "Build", kind: "build", start: 10, end: 11, gate: true },
+        { label: "Simulation + UAT", kind: "test", start: 11, end: 12, gate: true },
+        { label: "Pilot, then 100%", kind: "live", start: 13, end: 14, gate: true },
+      ],
+    },
+    {
+      name: "Flow 3",
+      note: "Faster again",
+      rows: [
+        { label: "Foundation", kind: "foundation", start: 13, end: 13, gate: true },
+        { label: "Build", kind: "build", start: 14, end: 15, gate: true },
+        { label: "Simulation + UAT", kind: "test", start: 15, end: 16, gate: true },
+        { label: "Pilot, then 100%", kind: "live", start: 17, end: 18, gate: true },
+      ],
+    },
+    {
+      name: "Across all flows",
+      note: "",
+      rows: [
+        { label: "QA, reports and alerts", kind: "run", start: 8, end: 18 },
+        { label: "Knowledge transfer", kind: "run", start: 9, end: 9, gate: true },
+      ],
+    },
+  ] as {
+    name: string
+    note: string
+    rows: { label: string; kind: GanttKind; start: number; end: number; gate?: boolean }[]
+  }[],
+}

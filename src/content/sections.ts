@@ -48,6 +48,7 @@ export type SectionId =
   | "start"
   | "enterprise-hero"
   | "enterprise-steps"
+  | "enterprise-timeline"
   | "enterprise-split"
   | "enterprise-cta"
 
@@ -98,6 +99,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "start", name: "Two ways to start", status: "draft" },
   { id: "enterprise-hero", name: "Enterprise: hero", status: "draft" },
   { id: "enterprise-steps", name: "Enterprise: build steps", status: "draft" },
+  { id: "enterprise-timeline", name: "Enterprise: Gantt timeline", status: "draft" },
   { id: "enterprise-split", name: "Enterprise: who brings what", status: "draft" },
   { id: "enterprise-cta", name: "Enterprise: CTA", status: "draft" },
 ]
