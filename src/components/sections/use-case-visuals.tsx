@@ -25,16 +25,23 @@ const BACKDROP: Record<UseCaseVisual, Painting> = {
 }
 
 export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
-  const Visual = VISUALS[kind]
   return (
     <div
       aria-hidden
       className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-6 text-[11px] leading-snug"
     >
       <TileBackdrop painting={BACKDROP[kind]} art={["use-cases", kind]} />
-      <div className="dark origin-center scale-110 text-foreground xl:scale-125">
-        <Visual />
-      </div>
+      <UseCaseVignette kind={kind} />
+    </div>
+  )
+}
+
+/** The dark UI vignette alone, for tiles that bring their own background. */
+export function UseCaseVignette({ kind }: { kind: UseCaseVisual }) {
+  const Visual = VISUALS[kind]
+  return (
+    <div className="dark origin-center scale-110 text-[11px] leading-snug text-foreground xl:scale-125">
+      <Visual />
     </div>
   )
 }

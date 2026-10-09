@@ -237,6 +237,19 @@
   .ui-wave span:nth-child(5) { animation-delay: -600ms; }
   .ui-wave[data-idle] span { animation-play-state: paused; }
 }
+/* Lab: visual directions (/lab/directions). */
+@media (prefers-reduced-motion: no-preference) {
+  .voice-col { animation: voice-col 1.6s ease-in-out infinite; }
+  .color-drift { animation: color-drift 18s ease-in-out infinite alternate; }
+}
+@keyframes voice-col {
+  0%, 100% { transform: scaleY(0.75); }
+  50% { transform: scaleY(1.08); }
+}
+@keyframes color-drift {
+  from { transform: translate(-3%, -2%) rotate(0deg); }
+  to { transform: translate(3%, 2%) rotate(8deg); }
+}
 @keyframes flow-x {
   from { left: 0; }
   to { left: calc(100% - 6px); }
