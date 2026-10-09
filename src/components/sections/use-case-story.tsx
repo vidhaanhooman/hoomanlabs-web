@@ -40,13 +40,13 @@ export function UseCaseStory({ useCase }: { useCase: UseCase }) {
         </div>
 
         {/* The exchange behind the result, on hover / focus */}
-        <div className="dark pointer-events-none absolute inset-x-4 bottom-4 flex translate-y-2 flex-col gap-1.5 text-[12px] leading-snug text-foreground opacity-0 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+        <div className="pointer-events-none absolute inset-x-4 bottom-4 flex translate-y-2 flex-col gap-1.5 text-[12px] leading-snug text-foreground opacity-0 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
           {[first, second].map((l) => (
             <span
               key={l.text}
               className={
                 l.who === "agent"
-                  ? "max-w-[85%] self-start rounded-md bg-background px-2.5 py-1.5 shadow-sm"
+                  ? "max-w-[85%] self-start rounded-md border border-line bg-background px-2.5 py-1.5 shadow-sm"
                   : "max-w-[85%] self-end rounded-md bg-foreground px-2.5 py-1.5 text-background shadow-sm"
               }
             >

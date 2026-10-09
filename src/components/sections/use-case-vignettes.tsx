@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils"
 
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
-/** The dark result card for a use case. */
-export function UseCaseVignette({ kind }: { kind: UseCaseVisual }) {
+/** The result card for a use case. Light by default; "dark" for dark backdrops. */
+export function UseCaseVignette({ kind, theme = "light" }: { kind: UseCaseVisual; theme?: "light" | "dark" }) {
   const Visual = VISUALS[kind]
   return (
-    <div className="dark text-[12px] leading-snug text-foreground">
+    <div className={cn("text-[12px] leading-snug text-foreground", theme === "dark" && "dark")}>
       <Visual />
     </div>
   )

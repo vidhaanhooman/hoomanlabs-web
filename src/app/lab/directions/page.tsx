@@ -76,7 +76,7 @@ export default function Directions() {
                   className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md p-6"
                 >
                   {d.tiles[i]}
-                  <UseCaseVignette kind={t} />
+                  <UseCaseVignette kind={t} theme="dark" />
                 </li>
               ))}
             </ul>
