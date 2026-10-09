@@ -40,6 +40,11 @@ export const panels = {
     body: "Simulated callers run every scenario against each version, with QA scores on every conversation.",
     link: "See how testing works",
   },
+  useCases: {
+    title: "Put agents on your busiest calls",
+    body: "Collections, bookings, lead qualification, support, renewals and surveys, each ending in a result you can count.",
+    link: "See all use cases",
+  },
   deploy: {
     title: "Run campaigns at scale",
     body: "Schedule outbound calls, manage phone numbers and track every task.",
