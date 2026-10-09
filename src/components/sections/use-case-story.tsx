@@ -1,3 +1,4 @@
+import { Halftone } from "@/components/layout/halftone"
 import { UseCaseVignette } from "@/components/sections/use-case-vignettes"
 import type { useCases } from "@/content/platform"
 
@@ -27,14 +28,7 @@ export function UseCaseStory({ useCase, tone = "charcoal" }: { useCase: UseCase;
     >
       {/* Stage */}
       <div aria-hidden className="relative isolate flex h-72 items-center justify-center overflow-hidden bg-surface p-6">
-        {/* Halftone: a dot grid fading out from one focal point. */}
-        <span
-          className="absolute inset-0 -z-10 bg-[radial-gradient(circle,var(--color-ink-muted)_0.9px,transparent_1.1px)] bg-size-[7px_7px] opacity-50"
-          style={{
-            maskImage: `radial-gradient(ellipse 75% 85% at ${FOCUS[useCase.visual]}, black 0%, transparent 100%)`,
-            WebkitMaskImage: `radial-gradient(ellipse 75% 85% at ${FOCUS[useCase.visual]}, black 0%, transparent 100%)`,
-          }}
-        />
+        <Halftone focus={FOCUS[useCase.visual]} />
         <div className="scale-95 transition-[transform,opacity] duration-300 ease-(--ease-out) group-hover:-translate-y-2 group-hover:opacity-30 group-focus-visible:-translate-y-2 group-focus-visible:opacity-30">
           <UseCaseVignette kind={useCase.visual} theme={tone} />
         </div>

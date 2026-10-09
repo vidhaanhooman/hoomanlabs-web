@@ -1,6 +1,6 @@
 import { MicrophoneIcon, PhoneDisconnectIcon, MicrophoneSlashIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { TileBackdrop, type Painting } from "@/components/layout/tile-backdrop"
+import { Halftone } from "@/components/layout/halftone"
 import { channels } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
@@ -20,12 +20,12 @@ function modesFor(surface: Surface) {
   })
 }
 
-/** Painting crop behind each device. */
-const BACKDROP: Record<Surface, Painting> = {
-  Phone: { src: "/art/listen/listen-morning.png", position: "50% 25%" },
-  Web: { src: "/art/backdrops/home-test.png", position: "20% 70%" },
-  App: { src: "/art/backdrops/home-build.png", position: "80% 50%" },
-  WhatsApp: { src: "/art/listen/listen-midday.png", position: "85% 60%" },
+/** Where the dots are densest, and which tiles are graphite vs light (alternating). */
+const TILE: Record<Surface, { focus: string; tone: "graphite" | "light" }> = {
+  Phone: { focus: "15% 15%", tone: "graphite" },
+  Web: { focus: "85% 20%", tone: "light" },
+  App: { focus: "20% 85%", tone: "graphite" },
+  WhatsApp: { focus: "85% 80%", tone: "light" },
 }
 
 const CAPTION: Record<Surface, string> = {
@@ -38,18 +38,19 @@ const CAPTION: Record<Surface, string> = {
 export function ChannelDevices({ className }: { className?: string }) {
   return (
     <ul className={cn("grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4", className)}>
-      {SURFACES.map((s, i) => (
+      {SURFACES.map((s) => (
         <li key={s} className="flex flex-col gap-3">
           <div
             aria-hidden
-            className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md px-4 pt-6"
+            className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md border border-line bg-surface px-4 pt-6"
           >
-            <TileBackdrop
-              painting={BACKDROP[s]}
-              art={["channels", s.toLowerCase()]}
-              slice={{ cols: 4, rows: 1, col: i, row: 0 }}
-            />
-            <div className="dark flex w-full justify-center text-foreground">
+            <Halftone focus={TILE[s].focus} />
+            <div
+              className={cn(
+                "flex w-full justify-center text-foreground",
+                TILE[s].tone === "graphite" && "dark graphite"
+              )}
+            >
               {s === "Phone" && <PhoneCall />}
               {s === "Web" && <WebWidget />}
               {s === "App" && <AppVoice />}
