@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
+import Image from "next/image"
 import { motion } from "motion/react"
 import {
   ArrowRightIcon,
@@ -23,7 +24,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { nav } from "@/content/draft"
-import { componentHref, components, type ComponentId } from "@/content/platform"
+import { componentHref, components, menuMedia, type ComponentId } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
 const ITEM =
@@ -98,6 +99,7 @@ export function MainNav() {
                         )
                       })}
                   </ul>
+                  {group === "Connect" && <MenuMediaSlot />}
                   {group === "Connect" && (
                     <NavigationMenuLink
                       render={<Link href="/platform" />}
@@ -122,5 +124,36 @@ export function MainNav() {
         ))}
       </NavigationMenuList>
     </NavigationMenu>
+  )
+}
+
+/** Image or video slot in the menu; a placeholder until `menuMedia` is set. */
+function MenuMediaSlot() {
+  const frame = "relative mx-3 mt-3 aspect-video overflow-hidden rounded-md border border-line bg-surface"
+  if (!menuMedia)
+    return (
+      <div className={cn(frame, "grid place-items-center text-label text-ink-muted")} role="img" aria-label="Placeholder: image or video">
+        Image or video, 16:9
+      </div>
+    )
+  if (menuMedia.type === "video")
+    return (
+      <div className={frame}>
+        <video
+          src={menuMedia.src}
+          poster={menuMedia.poster}
+          aria-label={menuMedia.alt}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="size-full object-cover motion-reduce:hidden"
+        />
+      </div>
+    )
+  return (
+    <div className={frame}>
+      <Image src={menuMedia.src} alt={menuMedia.alt} fill sizes="22rem" className="object-cover" />
+    </div>
   )
 }

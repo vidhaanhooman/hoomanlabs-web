@@ -33,6 +33,17 @@ export const components: {
   { id: "tools", name: "Tools & Integrations", summary: "Your CRM, calendars, APIs and MCP.", group: "Connect" },
 ]
 
+/**
+ * Media in the Platform menu (under Connect). Drop a file in public/ and set
+ * it here, e.g. { type: "video", src: "/media/platform.mp4", poster: "/media/platform.jpg" }.
+ * Null shows a placeholder slot. 16:9 works best.
+ */
+export type MenuMedia =
+  | { type: "image"; src: string; alt: string }
+  | { type: "video"; src: string; poster?: string; alt: string }
+
+export const menuMedia: MenuMedia | null = null
+
 export const componentHref = (id: ComponentId) => `/platform#product-${id}`
 
 /* Hero: calls in, results out. */
