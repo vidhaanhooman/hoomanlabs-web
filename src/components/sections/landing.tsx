@@ -31,7 +31,7 @@ export function Impact() {
   return (
     <Section id="impact" spacing="tight">
       <Container>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-8 border-y border-line py-10 lg:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-8 pt-2 lg:grid-cols-4">
           {flow.impact.map((m) => (
             <div key={m.label} className="flex flex-col gap-2">
               <dt className="order-2 max-w-[24ch] text-small text-ink-secondary">{m.label}</dt>
