@@ -69,9 +69,9 @@ export function UseCaseStory({ useCase, background }: { useCase: UseCase; backgr
       <div
         aria-hidden
         style={background ? { backgroundImage: `url(${background})` } : undefined}
-        className="dark relative flex h-[26rem] flex-col gap-3 overflow-hidden bg-cover bg-center p-5 text-[12px] leading-snug text-foreground sm:p-6">
+        className="dark relative flex h-[20rem] flex-col gap-2.5 overflow-hidden bg-cover bg-center p-4 text-[11px] leading-snug text-foreground">
         {/* The call */}
-        <div className="w-full max-w-[22rem] rounded-lg border border-line-strong bg-background p-3 shadow-sm">
+        <div className="w-full max-w-[18rem] rounded-lg border border-line-strong bg-background p-3 shadow-sm">
           <div className="mb-2 flex items-center gap-2 text-ink-muted">
             <span className={cn("ui-wave flex h-3 items-center gap-[2px]")} data-idle={talking ? undefined : ""}>
               {WAVE.map((h, i) => (
@@ -108,14 +108,14 @@ export function UseCaseStory({ useCase, background }: { useCase: UseCase; backgr
         </span>
 
         {/* The result */}
-        <div className={cn("mt-auto self-end", reveal(4))}>
+        <div className={cn("absolute right-3 bottom-3 origin-bottom-right scale-75", reveal(4))}>
           <UseCaseVignette kind={useCase.visual} />
         </div>
       </div>
 
       {/* Copy */}
-      <div className="flex flex-1 flex-col gap-2 border-t border-line bg-background p-5 sm:p-6">
-        <h3 className="text-h4 font-medium">{useCase.title}</h3>
+      <div className="flex flex-1 flex-col gap-1.5 border-t border-line bg-background p-4">
+        <h3 className="text-body font-medium">{useCase.title}</h3>
         <p className="text-small text-ink-secondary">{useCase.body}</p>
         <p className="mt-auto pt-2 font-mono text-label text-ink-muted">→ {useCase.result}</p>
       </div>

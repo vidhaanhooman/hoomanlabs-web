@@ -17,7 +17,7 @@ export function UseCases() {
           <h2 className="text-h2 font-normal">What teams put agents on.</h2>
           <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
         </div>
-        <ul className="mt-10 grid gap-6 md:grid-cols-2">
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {useCases.map((u) => (
             <li key={u.title} className="flex">
               <UseCaseStory useCase={u} background={findArt("gradients", u.visual)} />
