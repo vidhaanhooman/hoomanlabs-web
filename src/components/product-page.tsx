@@ -9,7 +9,7 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { TextLink } from "@/components/layout/text-link";
 import { FeaturePanel } from "@/components/sections/feature-panel";
 import { FinalCta } from "@/components/sections/final-cta";
-import { ProductStage } from "@/components/sections/product-stage";
+import { ProductResources } from "@/components/sections/product-resources";
 import { ProductStageBento } from "@/components/sections/product-stage-bento";
 import { FRAME_CLASS, STAGE_CLASS } from "@/components/sections/hero";
 import { ctas } from "@/content/draft";
@@ -21,14 +21,7 @@ import type { Product } from "@/content/products";
  * Ship / Improve) OR the generic split, mirrored split, wide panel and "How it
  * works", then a single quote and the closing CTA.
  */
-export function ProductPage({
-  product,
-  stageLayout = "split",
-}: {
-  product: Product;
-  /** How lifecycle stages render: "split" (accordion + screen) or "bento" (big image + small cards). */
-  stageLayout?: "split" | "bento";
-}) {
+export function ProductPage({ product }: { product: Product }) {
   const [first, second, third] = product.features;
 
   return (
@@ -57,10 +50,7 @@ export function ProductPage({
             className="reveal mt-8 flex flex-wrap gap-2"
             style={{ "--i": 3 } as React.CSSProperties}
           >
-            <Link
-              href={ctas.demo.href}
-              className={buttonVariants()}
-            >
+            <Link href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
             <Link
@@ -89,18 +79,10 @@ export function ProductPage({
       </Section>
 
       {product.stages ? (
-        /* Lifecycle stages (e.g. Voice AI): Build, Ship, Improve, alternating sides */
-        product.stages.map((stage, i) =>
-          stageLayout === "bento" ? (
-            <ProductStageBento key={stage.id} stage={stage} />
-          ) : (
-            <ProductStage
-              key={stage.id}
-              stage={stage}
-              media={i % 2 === 0 ? "end" : "start"}
-            />
-          ),
-        )
+        /* Lifecycle stages (e.g. Voice AI): one big image + small cards each */
+        product.stages.map((stage) => (
+          <ProductStageBento key={stage.id} stage={stage} />
+        ))
       ) : (
         <>
           {/* Features 1 and 2: split, then mirrored split */}
@@ -173,6 +155,9 @@ export function ProductPage({
           </Panel>
         </Container>
       </Section>
+
+
+      {product.resources && <ProductResources resources={product.resources} />}
 
       <FinalCta id="product-cta" title={product.ctaTitle} />
     </>
