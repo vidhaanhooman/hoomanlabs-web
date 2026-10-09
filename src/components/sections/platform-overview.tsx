@@ -13,10 +13,7 @@ import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { AgentConfigScreen } from "@/components/product/agent-config-screen"
-import { AnalyticsScreen } from "@/components/product/analytics-screen"
-import { CampaignScreen } from "@/components/product/campaign-screen"
-import { SimulationRunScreen } from "@/components/product/simulation-run-screen"
-import { ToolsScreen } from "@/components/product/tools-screen"
+import { Pill } from "@/components/product/ui-bits"
 import { LOGOS } from "@/components/sections/tools-integrations"
 import { channels, componentHref, type ComponentId } from "@/content/platform"
 import { cn } from "@/lib/utils"
@@ -54,87 +51,159 @@ function Tile({
         <p className="max-w-[40ch] text-small text-ink-secondary">{COPY[id].body}</p>
       </div>
       {children}
-      <TextLink href={componentHref(id)} className="mt-auto">
+      <TextLink href={componentHref(id)} className="mt-auto pt-1">
         Learn more
       </TextLink>
     </Panel>
   )
 }
 
-/** A product screen cropped to a short window (shows its top part). */
-function Crop({ children, className }: { children: React.ReactNode; className?: string }) {
+/* ------------------------------------------------------------ mini cards
+   Small, purpose-made dark cards: fully visible, same height in every tile. */
+
+function Mini({ title, aside, children }: { title: string; aside?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div aria-hidden className={cn("relative h-52 overflow-hidden rounded-md", className)}>
-      {children}
-      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-surface to-transparent" />
+    <div aria-hidden className={cn("ui-dark flex h-48 flex-col overflow-hidden text-[12px] leading-snug", CHROME)}>
+      <div className="flex h-10 shrink-0 items-center gap-2 border-b border-(--ui-line) px-3.5">
+        <span className="font-medium text-(--ui-text)">{title}</span>
+        <span className="ml-auto">{aside}</span>
+      </div>
+      <div className="flex flex-1 flex-col justify-center gap-0 px-3.5">{children}</div>
     </div>
+  )
+}
+
+function MiniRow({ k, v, last }: { k: string; v: React.ReactNode; last?: boolean }) {
+  return (
+    <div className={cn("flex items-center justify-between gap-3 py-2", !last && "border-b border-(--ui-line)")}>
+      <span className="truncate text-(--ui-text)">{k}</span>
+      {v}
+    </div>
+  )
+}
+
+function WorkflowMini() {
+  return (
+    <Mini title="March reminders" aside={<Pill tone="live">Running</Pill>}>
+      <MiniRow k="Priya Raman" v={<Pill tone="live">Completed</Pill>} />
+      <MiniRow k="Tom Hadley" v={<Pill tone="warn">Calling</Pill>} />
+      <MiniRow k="Ana Ferreira" v={<Pill>Queued</Pill>} last />
+    </Mini>
+  )
+}
+
+function SimulationsMini() {
+  return (
+    <Mini title="Simulation run" aside={<span className="font-mono text-[11px] text-(--ui-muted)">v5</span>}>
+      <MiniRow k="Frustrated caller" v={<Pill tone="live">Passed</Pill>} />
+      <MiniRow k="Code-switching" v={<Pill tone="live">Passed</Pill>} />
+      <MiniRow k="Asks for a human" v={<Pill tone="warn">Review</Pill>} last />
+    </Mini>
+  )
+}
+
+const OUTCOMES = [
+  { label: "Resolved", pct: 71, color: "bg-(--ui-live)" },
+  { label: "Callback", pct: 14, color: "bg-[oklch(0.8_0.14_80)]" },
+  { label: "Transferred", pct: 9, color: "bg-(--ui-muted)" },
+  { label: "Unresolved", pct: 6, color: "bg-[oklch(0.68_0.19_25)]" },
+]
+
+function QaMini() {
+  return (
+    <Mini title="Conversations" aside={<span className="text-[11px] text-(--ui-muted)">Last 7 days</span>}>
+      <div className="flex items-baseline gap-2">
+        <span className="text-[28px] leading-none font-normal text-(--ui-text) tabular-nums">4.6</span>
+        <span className="text-(--ui-muted)">/ 5 average QA score</span>
+      </div>
+      <div className="mt-3 flex h-1.5 overflow-hidden rounded-full">
+        {OUTCOMES.map((o) => (
+          <span key={o.label} className={o.color} style={{ width: `${o.pct}%` }} />
+        ))}
+      </div>
+      <div className="mt-2.5 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-(--ui-muted)">
+        {OUTCOMES.map((o) => (
+          <span key={o.label} className="flex items-center gap-1.5">
+            <span className={cn("size-1.5 rounded-full", o.color)} />
+            {o.label}
+            <span className="ml-auto font-mono tabular-nums">{o.pct}%</span>
+          </span>
+        ))}
+      </div>
+    </Mini>
   )
 }
 
 const CHANNEL_ICONS: Record<string, Icon> = { Phone: PhoneIcon, Web: GlobeIcon, App: DeviceMobileIcon, WhatsApp: WhatsappLogoIcon }
 
-function ChannelsVisual() {
+function ChannelsMini() {
   const surfaces = ["Phone", "Web", "App", "WhatsApp"]
-  const has = (mode: string, s: string) => channels.modes.find((m) => m.name === mode)?.surfaces.find((x) => x.name === s)
+  const find = (mode: string, s: string) => channels.modes.find((m) => m.name === mode)?.surfaces.find((x) => x.name === s)
+  const Mark = ({ on, soon, children }: { on: boolean; soon?: boolean; children: React.ReactNode }) => (
+    <span
+      className={cn(
+        "grid size-6 place-items-center rounded-md border",
+        !on && "border-transparent text-(--ui-line)",
+        on && !soon && "border-(--ui-line) bg-(--ui-raised) text-(--ui-text)",
+        on && soon && "border-dashed border-(--ui-muted)/50 text-(--ui-muted)"
+      )}
+    >
+      {children}
+    </span>
+  )
   return (
-    <ul className="grid grid-cols-2 gap-2">
-      {surfaces.map((s) => {
+    <Mini
+      title="Channels"
+      aside={
+        <span className="flex gap-3 text-[11px] text-(--ui-muted)">
+          <span>Voice</span>
+          <span>Chat</span>
+        </span>
+      }
+    >
+      {surfaces.map((s, i) => {
         const I = CHANNEL_ICONS[s]
-        const voice = has("Voice", s)
-        const chat = has("Chat", s)
+        const voice = find("Voice", s)
+        const chat = find("Chat", s)
+        const soon = !!voice && "soon" in voice && !!voice.soon
         return (
-          <li key={s} className="flex flex-col gap-2 rounded-md border border-line bg-background p-3">
-            <span className="flex items-center gap-2 text-small font-medium">
-              <I className="size-4" aria-hidden />
-              {s}
+          <div key={s} className={cn("flex items-center gap-2.5 py-1.5", i < 3 && "border-b border-(--ui-line)")}>
+            <I className="size-3.5 text-(--ui-muted)" />
+            <span className="text-(--ui-text)">{s}</span>
+            {soon && <span className="text-[10px] text-(--ui-muted)">voice soon</span>}
+            <span className="ml-auto flex gap-2">
+              <Mark on={!!voice} soon={soon}>
+                <PhoneIcon className="size-3" />
+              </Mark>
+              <Mark on={!!chat}>
+                <ChatCircleIcon className="size-3" />
+              </Mark>
             </span>
-            <span className="flex flex-wrap gap-1 text-label">
-              {voice && (
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-full border px-1.5",
-                    "soon" in voice && voice.soon ? "border-dashed border-line-strong text-ink-muted" : "border-line-strong text-ink-secondary"
-                  )}
-                >
-                  <PhoneIcon className="size-3" aria-hidden />
-                  {"soon" in voice && voice.soon ? "Voice · soon" : "Voice"}
-                </span>
-              )}
-              {chat && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-line-strong px-1.5 text-ink-secondary">
-                  <ChatCircleIcon className="size-3" aria-hidden />
-                  Chat
-                </span>
-              )}
-            </span>
-          </li>
+          </div>
         )
       })}
-    </ul>
+    </Mini>
   )
 }
 
-const LOGO_ROW = ["hubspot", "zendesk", "googlecalendar", "calendly", "whatsapp", "zapier", "shopify", "googlesheets"]
+const LOGO_ROW = ["hubspot", "zendesk", "googlecalendar", "whatsapp", "zapier", "shopify"]
 
-function ToolsVisual() {
+function ToolsMini() {
   return (
-    <div className="flex flex-col gap-3">
-      <div aria-hidden className="h-40 overflow-hidden rounded-md">
-        <ToolsScreen className={CHROME} />
-      </div>
-      <ul className="flex flex-wrap gap-2" aria-label="Integrations">
+    <Mini title="Tools" aside={<span className="text-[11px] text-(--ui-muted)">Mid-call</span>}>
+      <MiniRow k="Look up account" v={<Pill tone="live">CRM</Pill>} />
+      <MiniRow k="Take payment" v={<Pill tone="live">Payments</Pill>} />
+      <div className="flex items-center gap-1.5 pt-2.5">
         {LOGO_ROW.map((k) => (
-          <li key={k} className="grid size-9 place-items-center rounded-md border border-line bg-background" title={LOGOS[k].title}>
-            <svg viewBox="0 0 24 24" className="size-4" style={{ fill: `#${LOGOS[k].hex}` }} aria-label={LOGOS[k].title}>
+          <span key={k} className="grid size-7 place-items-center rounded-md bg-white" title={LOGOS[k].title}>
+            <svg viewBox="0 0 24 24" className="size-3.5" style={{ fill: `#${LOGOS[k].hex}` }}>
               <path d={LOGOS[k].path} />
             </svg>
-          </li>
+          </span>
         ))}
-        <li className="grid h-9 place-items-center rounded-md border border-dashed border-line-strong px-2 text-label text-ink-muted">
-          + API, MCP
-        </li>
-      </ul>
-    </div>
+        <span className="ml-auto text-[11px] text-(--ui-muted)">+ API, MCP</span>
+      </div>
+    </Mini>
   )
 }
 
@@ -157,25 +226,19 @@ export function PlatformOverview() {
             </div>
           </Tile>
           <Tile id="workflow" className="lg:col-span-5">
-            <Crop>
-              <CampaignScreen className={cn("absolute inset-x-0 top-0 h-80", CHROME)} />
-            </Crop>
+            <WorkflowMini />
           </Tile>
           <Tile id="simulations" className="lg:col-span-5">
-            <Crop>
-              <SimulationRunScreen className={cn("absolute inset-x-0 top-0 h-80", CHROME)} />
-            </Crop>
+            <SimulationsMini />
           </Tile>
           <Tile id="qa" className="lg:col-span-4">
-            <Crop>
-              <AnalyticsScreen className={cn("absolute inset-x-0 top-0 h-80", CHROME)} />
-            </Crop>
+            <QaMini />
           </Tile>
           <Tile id="channels" className="lg:col-span-4">
-            <ChannelsVisual />
+            <ChannelsMini />
           </Tile>
           <Tile id="tools" className="lg:col-span-4">
-            <ToolsVisual />
+            <ToolsMini />
           </Tile>
         </div>
         <TextLink href="/platform" className="mt-8">
