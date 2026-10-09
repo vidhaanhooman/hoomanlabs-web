@@ -3,27 +3,22 @@ import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { AgentConfigScreen } from "@/components/product/agent-config-screen"
-import { AnalyticsScreen } from "@/components/product/analytics-screen"
-import { CampaignScreen } from "@/components/product/campaign-screen"
-import { SimulationRunScreen } from "@/components/product/simulation-run-screen"
 import { UseCasesScreen } from "@/components/product/use-cases-screen"
 import { FeaturePanel } from "@/components/sections/feature-panel"
-import { HomeChannels, HomeIntegrations, Impact, Security, StartPaths } from "@/components/sections/landing"
+import { Impact, Security, StartPaths } from "@/components/sections/landing"
 import { ListenExperience } from "@/components/sections/listen-experience"
 import { Logos } from "@/components/sections/logos"
-import { Platform } from "@/components/sections/platform"
+import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
 import { ctas, hero, panels } from "@/content/draft"
-import { chapters, homePlatform } from "@/content/landing"
-import { componentHref } from "@/content/platform"
+import { chapters } from "@/content/landing"
 
 /**
  * Proposed homepage (/lab/home), in the order a buyer's questions come:
  * 1 Hero with the listen / call-me experience, then logos
  * 2 Business impact (numbers)
  * 3 Use cases
- * 4 Platform: Agents, Workflow, Simulations, QA, Channels, Tools, integrations
+ * 4 Platform overview: six component tiles, detail on /platform
  * 5 Customer quotes, then a short security strip
  * 6 Ways to get started
  */
@@ -64,47 +59,9 @@ export function LandingPage() {
         media="end"
       />
 
-      {/* 4 Platform, ending with integrations */}
+      {/* 4 Platform: overview of all six components; detail lives on /platform */}
       <Chapter {...chapters.platform} />
-      <FeaturePanel
-        id="product-agents"
-        {...homePlatform.agents}
-        linkHref={componentHref("agents")}
-        visual="Agent builder UI"
-        backdrop="/art/backdrops/home-build.png"
-        screen={(className) => <AgentConfigScreen className={className} />}
-        media="end"
-      />
-      <FeaturePanel
-        id="product-workflow"
-        {...homePlatform.workflow}
-        linkHref={componentHref("workflow")}
-        visual="Campaign UI"
-        backdrop="/art/backdrops/home-deploy.png"
-        screen={(className) => <CampaignScreen className={className} />}
-        media="start"
-      />
-      <FeaturePanel
-        id="product-simulations"
-        {...homePlatform.simulations}
-        linkHref={componentHref("simulations")}
-        visual="Simulation run UI"
-        backdrop="/art/backdrops/home-test.png"
-        screen={(className) => <SimulationRunScreen className={className} />}
-        media="end"
-      />
-      <FeaturePanel
-        id="product-qa"
-        {...homePlatform.qa}
-        linkHref={componentHref("qa")}
-        visual="QA analytics UI"
-        backdrop="/art/backdrops/home-measure.png"
-        screen={(className) => <AnalyticsScreen className={className} />}
-        media="start"
-      />
-      <HomeChannels />
-      <Platform title={homePlatform.tools.title} more={homePlatform.tools.more} />
-      <HomeIntegrations />
+      <PlatformOverview />
 
       {/* 5 Proof, then trust */}
       <Chapter {...chapters.proof} />

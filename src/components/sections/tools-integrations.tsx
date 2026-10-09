@@ -66,7 +66,7 @@ export function ToolsIntegrations({
 }
 
 /** Brand marks in their own colours (simple-icons, CC0). Keys match `logo` in content. */
-const LOGOS: Record<string, SimpleIcon> = {
+export const LOGOS: Record<string, SimpleIcon> = {
   hubspot: siHubspot,
   zendesk: siZendesk,
   zoho: siZoho,
