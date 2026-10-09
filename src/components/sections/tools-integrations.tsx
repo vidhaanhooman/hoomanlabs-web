@@ -65,7 +65,7 @@ export function ToolsIntegrations({
   );
 }
 
-/** Monochrome brand marks (simple-icons, CC0). Keys match `logo` in content. */
+/** Brand marks in their own colours (simple-icons, CC0). Keys match `logo` in content. */
 const LOGOS: Record<string, SimpleIcon> = {
   hubspot: siHubspot,
   zendesk: siZendesk,
@@ -109,7 +109,8 @@ export function IntegrationGroups({ className }: { className?: string }) {
                     {icon ? (
                       <svg
                         viewBox="0 0 24 24"
-                        className="size-4 fill-foreground"
+                        className="size-4"
+                        style={{ fill: `#${icon.hex}` }}
                         aria-hidden
                       >
                         <path d={icon.path} />

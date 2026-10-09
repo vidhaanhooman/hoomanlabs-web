@@ -10,13 +10,29 @@ import { cn } from "@/lib/utils"
 
 export type UseCaseVisual = "collections" | "booking" | "leads" | "support" | "renewals" | "surveys"
 
+/** Where the halftone is densest in each tile, so neighbours don't repeat. */
+const FOCUS: Record<UseCaseVisual, string> = {
+  collections: "15% 20%",
+  booking: "85% 15%",
+  leads: "80% 85%",
+  support: "20% 85%",
+  renewals: "50% 0%",
+  surveys: "100% 50%",
+}
+
 export function UseCaseTile({ kind }: { kind: UseCaseVisual }) {
   const Visual = VISUALS[kind]
+  const mask = `radial-gradient(ellipse 75% 85% at ${FOCUS[kind]}, black 0%, transparent 100%)`
   return (
     <div
       aria-hidden
-      className="flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md border border-line bg-surface p-6 text-[11px] leading-snug"
+      className="relative isolate flex aspect-[16/11] items-center justify-center overflow-hidden rounded-md border border-line bg-surface p-6 text-[11px] leading-snug"
     >
+      {/* Halftone: a dot grid faded out from one focal point (Linear-style texture). */}
+      <span
+        className="absolute inset-0 -z-10 bg-[radial-gradient(circle,var(--color-ink-muted)_0.9px,transparent_1.1px)] bg-size-[7px_7px] opacity-60"
+        style={{ maskImage: mask, WebkitMaskImage: mask }}
+      />
       <div className="origin-center scale-110 xl:scale-125">
         <Visual />
       </div>
