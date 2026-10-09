@@ -19,9 +19,12 @@ export function UseCases({
   return (
     <Section id="product-use-cases">
       <Container>
-        <div className="flex max-w-[44rem] flex-col gap-3">
-          <h2 className="text-h2 font-normal">What teams put agents on.</h2>
-          <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div className="flex max-w-[44rem] flex-col gap-3">
+            <h2 className="text-h2 font-normal">What teams put agents on.</h2>
+            <p className="text-body text-ink-secondary">Start with one high-volume call type, then add the next.</p>
+          </div>
+          {more && <TextLink href={more.href}>{more.label}</TextLink>}
         </div>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((u, i) => (
@@ -35,11 +38,6 @@ export function UseCases({
             </li>
           ))}
         </ul>
-        {more && (
-          <TextLink href={more.href} className="mt-8">
-            {more.label}
-          </TextLink>
-        )}
       </Container>
     </Section>
   )
