@@ -150,6 +150,23 @@
 }
 
 :root {
+  /* Tile tones: soft, low-chroma colour fields behind illustration tiles
+     (use cases, channels). Taken from the painted art's palette. Each has a
+     light base and a deeper accent for the gradient and halftone. */
+  --tone-sage: oklch(0.93 0.035 150);
+  --tone-sage-deep: oklch(0.8 0.07 150);
+  --tone-ochre: oklch(0.94 0.045 85);
+  --tone-ochre-deep: oklch(0.82 0.1 80);
+  --tone-terracotta: oklch(0.93 0.035 45);
+  --tone-terracotta-deep: oklch(0.78 0.09 45);
+  --tone-sky: oklch(0.93 0.03 235);
+  --tone-sky-deep: oklch(0.78 0.07 235);
+  --tone-lavender: oklch(0.93 0.03 295);
+  --tone-lavender-deep: oklch(0.78 0.07 295);
+  --tone-sand: oklch(0.95 0.02 70);
+  --tone-sand-deep: oklch(0.82 0.05 70);
+}
+:root {
   /* Section rhythm and gutters */
   /* Visible gap between any two sections: 40px phone -> 64px desktop.
      Every section pads half of it top and bottom, so gaps never stack. */

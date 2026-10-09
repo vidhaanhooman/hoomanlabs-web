@@ -1,5 +1,6 @@
 import { MicrophoneIcon, PhoneDisconnectIcon, MicrophoneSlashIcon } from "@phosphor-icons/react/dist/ssr"
 
+import { TileBackdrop, type Tone } from "@/components/layout/tile-backdrop"
 import { channels } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
@@ -19,6 +20,13 @@ function modesFor(surface: Surface) {
   })
 }
 
+const BACKDROP: Record<Surface, { tone: Tone; focus: string }> = {
+  Phone: { tone: "sky", focus: "50% 0%" },
+  Web: { tone: "sand", focus: "0% 30%" },
+  App: { tone: "sage", focus: "100% 20%" },
+  WhatsApp: { tone: "ochre", focus: "50% 10%" },
+}
+
 const CAPTION: Record<Surface, string> = {
   Phone: "Your numbers or SIP trunk",
   Web: "Widget on your website",
@@ -33,8 +41,9 @@ export function ChannelDevices({ className }: { className?: string }) {
         <li key={s} className="flex flex-col gap-3">
           <div
             aria-hidden
-            className="flex h-72 items-end justify-center overflow-hidden rounded-md border border-line bg-surface px-4 pt-6"
+            className="relative isolate flex h-72 items-end justify-center overflow-hidden rounded-md border border-line px-4 pt-6"
           >
+            <TileBackdrop {...BACKDROP[s]} art={["channels", s.toLowerCase()]} />
             {s === "Phone" && <PhoneCall />}
             {s === "Web" && <WebWidget />}
             {s === "App" && <AppVoice />}
