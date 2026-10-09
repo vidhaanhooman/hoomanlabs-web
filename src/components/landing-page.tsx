@@ -55,6 +55,7 @@ export function LandingPage() {
         {...panels.useCases}
         visual="Use cases"
         backdrop="/art/listen/listen-midday.png"
+        softBackdrop
         screen={(className) => <UseCasesScreen className={className} />}
         media="end"
       />

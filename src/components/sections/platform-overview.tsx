@@ -220,8 +220,9 @@ export function PlatformOverview() {
                 alt=""
                 fill
                 sizes="(min-width: 1300px) 700px, (min-width: 1024px) 55vw, 100vw"
-                className="-z-10 object-cover"
+                className="-z-20 scale-110 object-cover blur-[6px]"
               />
+              <span className="absolute inset-0 -z-10 bg-background/30" />
               <AgentConfigScreen className={cn("absolute inset-x-[6%] top-[8%] bottom-[8%]", CHROME)} />
             </div>
           </Tile>
