@@ -30,7 +30,10 @@ const FORMAT: Record<string, { length: number; groups: number[] }> = {
 const LANG: Record<string, string> = { English: "EN", Hindi: "HI", Spanish: "ES" }
 
 /** Deterministic bar heights (no hydration drift). */
-const BARS = Array.from({ length: 48 }, (_, i) => 5 + Math.round(16 * Math.abs(Math.sin(i * 1.3) * Math.cos(i * 0.45))))
+const BARS = Array.from({ length: 36 }, (_, i) => {
+  const env = 0.35 + 0.65 * Math.sin((Math.PI * (i + 0.5)) / 36)
+  return Math.round(4 + 18 * env * (0.45 + 0.55 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6))))
+})
 
 function group(digits: string, groups: number[]) {
   const out: string[] = []
@@ -135,7 +138,7 @@ export function HeroCallCard() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl rounded-[2rem] border border-white/50 bg-background/80 p-3 text-left shadow-[0_40px_100px_-40px_oklch(0.2_0.03_150/0.65)] backdrop-blur-xl sm:p-4">
+    <div className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/50 bg-background/80 p-3 text-left shadow-[0_40px_100px_-40px_oklch(0.2_0.03_150/0.65)] backdrop-blur-xl sm:p-4">
       {/* 1 Pick */}
       <div className="flex justify-center px-2 pt-1 pb-3">
         <div
@@ -271,31 +274,28 @@ export function HeroCallCard() {
 /* ------------------------------------------------------------ parts */
 
 function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; playing: boolean; onToggle: () => void }) {
-  const lines = playing ? call.lines.filter((l) => l.t <= t).slice(-2) : []
   const progress = playing ? t / call.duration : 0
-  const half = BARS.length / 2
-  const bar = (h: number, i: number) => (
-    <span
-      key={i}
-      className={cn(
-        "w-[2.5px] rounded-full transition-colors duration-200",
-        i / BARS.length < progress ? "bg-foreground" : "bg-foreground/20"
-      )}
-      style={{ height: h }}
-    />
-  )
-  return (
-    <div className="flex flex-col items-center gap-4 text-center">
-      <p className="text-small text-ink-secondary">
-        <span className="font-medium text-foreground">{call.agent}</span> · {call.useCase} agent · {call.direction} ·{" "}
-        {call.language}
-      </p>
+  // Index of the line being spoken; -1 before play.
+  const current = playing ? call.lines.findLastIndex((l) => l.t <= t) : -1
+  const listRef = useRef<HTMLOListElement>(null)
 
-      {/* Waveform split around a centred play button */}
-      <div className="flex w-full items-center gap-4">
-        <span aria-hidden className={cn("flex h-7 flex-1 items-center justify-between", playing && "ui-wave")}>
-          {BARS.slice(0, half).map((h, i) => bar(h, i))}
-        </span>
+  // Keep the current line in view inside the transcript.
+  useEffect(() => {
+    const list = listRef.current
+    const el = list?.children[current] as HTMLElement | undefined
+    if (list && el) list.scrollTo({ top: el.offsetTop - list.clientHeight / 2 + el.clientHeight / 2, behavior: "smooth" })
+  }, [current])
+
+  return (
+    <div className="grid gap-5 md:grid-cols-[15rem_1fr] md:gap-6">
+      {/* Left: play */}
+      <div className="flex flex-col items-center justify-center gap-4 text-center md:border-r md:border-line md:pr-6">
+        <p className="text-small text-ink-secondary">
+          <span className="font-medium text-foreground">{call.agent}</span> · {call.useCase} agent
+          <span className="block text-ink-muted">
+            {call.direction} · {call.language}
+          </span>
+        </p>
         <span className="relative grid size-16 shrink-0 place-items-center">
           {playing && <span className="absolute inset-0 rounded-full bg-foreground/10 motion-safe:animate-ping" />}
           <button
@@ -307,35 +307,54 @@ function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; 
             {playing ? <PauseIcon weight="fill" className="size-5" /> : <PlayIcon weight="fill" className="ml-0.5 size-5" />}
           </button>
         </span>
-        <span aria-hidden className={cn("flex h-7 flex-1 items-center justify-between", playing && "ui-wave")}>
-          {BARS.slice(half).map((h, i) => bar(h, i + half))}
-        </span>
+        {/* Waveform scrubber: played part solid, with the time at each end */}
+        <div className="flex w-full flex-col gap-1.5">
+          <span aria-hidden className={cn("flex h-7 w-full items-center gap-[3px]", playing && "ui-wave")}>
+            {BARS.map((h, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "flex-1 rounded-full transition-colors duration-200",
+                  i / BARS.length < progress ? "bg-foreground" : "bg-foreground/15"
+                )}
+                style={{ height: h }}
+              />
+            ))}
+          </span>
+          <span className="flex justify-between font-mono text-[11px] text-ink-muted tabular-nums">
+            <span>{clock(playing ? t : 0)}</span>
+            <span>{clock(call.duration)}</span>
+          </span>
+        </div>
       </div>
 
-      {/* Transcript: the last two lines, or an idle cue */}
-      <div className="flex min-h-14 w-full flex-col items-center justify-end gap-1" aria-live="polite">
-        {lines.length ? (
-          lines.map((l, i) => (
-            <p
+      {/* Right: the full transcript, current line highlighted */}
+      <ol
+        ref={listRef}
+        aria-label="Transcript"
+        className="relative flex max-h-36 flex-col gap-2.5 overflow-y-auto md:max-h-64 pr-1 [scrollbar-width:thin]"
+      >
+        {current === -1 ? (
+          <li className="flex h-full min-h-24 items-center justify-center text-center text-small text-ink-muted">
+            Press play. The transcript appears as {call.agent} talks.
+          </li>
+        ) : (
+          call.lines.slice(0, current + 1).map((l, i) => (
+            <li
               key={l.t}
               className={cn(
-                "max-w-[52ch] text-[1.0625rem] leading-snug transition-opacity duration-300",
-                i < lines.length - 1 ? "text-ink-muted" : "text-foreground"
+                "flex gap-3 text-small leading-snug transition-colors duration-500 motion-safe:animate-[reveal-blur_450ms_var(--ease-out)_both]",
+                i === current ? "text-foreground" : "text-ink-muted"
               )}
             >
-              <span className="mr-2 text-small text-ink-muted">{l.speaker === "agent" ? "Agent" : "User"}</span>
-              {l.text}
-            </p>
+              <span className={cn("w-11 shrink-0 text-label", i === current ? "font-medium text-foreground" : "text-ink-muted")}>
+                {l.speaker === "agent" ? "Agent" : "User"}
+              </span>
+              <span>{l.text}</span>
+            </li>
           ))
-        ) : (
-          <p className="text-[1.0625rem] leading-snug text-ink-secondary">
-            Press play to hear {call.agent} handle a real {call.useCase.toLowerCase()} call.
-          </p>
         )}
-      </div>
-      <span className="font-mono text-label text-ink-muted tabular-nums">
-        {clock(playing ? t : 0)} / {clock(call.duration)}
-      </span>
+      </ol>
     </div>
   )
 }

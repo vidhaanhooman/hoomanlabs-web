@@ -26,7 +26,7 @@ export function LandingPage() {
     <>
       {/* 1 Hero: centred headline, the call box, then the parallax with a live call */}
       <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
-        <Container className="flex flex-col items-center text-center">
+        <Container className="flex flex-col items-start text-left">
           <h1 className="reveal text-display font-normal">
             {heroCall.title}
             <span className="block text-ink-secondary">{heroCall.aside}</span>
@@ -42,7 +42,7 @@ export function LandingPage() {
             <HeroScene />
           </div>
           <p
-            className="reveal mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-small text-ink-secondary"
+            className="reveal mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-secondary"
             style={{ "--i": 3 } as React.CSSProperties}
           >
             {heroCall.proof.map((p) => (

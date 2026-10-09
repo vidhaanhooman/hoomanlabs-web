@@ -231,6 +231,6 @@ export const homePlatform = {
 export const heroCall = {
   title: "Every call answered.",
   aside: "Every task done.",
-  body: "AI agents for support, sales, collections and bookings. Voice first, then WhatsApp and chat, with your CRM, payments and calendars updated before the call ends.",
+  body: "AI employees for every customer conversation, starting with the phone.",
   proof: ["10.66M+ calls handled", "4.6/5 from 12,000+ customer ratings"],
 }
