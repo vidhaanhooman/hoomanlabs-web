@@ -267,28 +267,19 @@ function Stage({
           onAmp={onAmp}
           className="absolute inset-0 size-full"
         />
-        {/* Humi is the agent's face: eyes glow while it talks or calls. */}
         <button
           type="button"
           onClick={ringing ? () => setRinging(false) : onPlay}
           aria-label={ringing ? "Dismiss call" : playing ? `Pause ${call.useCase} call` : `Play ${call.useCase} call`}
-          className="group absolute top-1/2 left-1/2 size-[60%] -translate-1/2 transition-transform duration-150 ease-(--ease-out) active:scale-[0.96]"
+          className="absolute top-1/2 left-1/2 grid size-14 -translate-1/2 place-items-center rounded-full bg-white text-[oklch(0.16_0_0)] shadow-[0_14px_36px_-16px_oklch(0_0_0/0.8)] transition-transform duration-150 ease-(--ease-out) active:scale-[0.95]"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element -- animated SVG (CSS inside the file) */}
-          <img
-            src={mode === "idle" ? "/art/humi/head.svg" : "/art/humi/head-active.svg"}
-            alt=""
-            className="size-full object-contain drop-shadow-[0_14px_24px_oklch(0_0_0/0.45)]"
-          />
-          <span className="absolute -right-1 -bottom-1 grid size-10 place-items-center rounded-full bg-white text-[oklch(0.16_0_0)] shadow-[0_10px_24px_-10px_oklch(0_0_0/0.8)] transition-transform duration-150 group-hover:scale-105">
-            {ringing ? (
-              <PhoneCallIcon weight="fill" className="size-4" />
-            ) : playing ? (
-              <PauseIcon weight="fill" className="size-4" />
-            ) : (
-              <PlayIcon weight="fill" className="size-4 translate-x-px" />
-            )}
-          </span>
+          {ringing ? (
+            <PhoneCallIcon weight="fill" className="size-5" />
+          ) : playing ? (
+            <PauseIcon weight="fill" className="size-5" />
+          ) : (
+            <PlayIcon weight="fill" className="size-5 translate-x-0.5" />
+          )}
         </button>
       </div>
 
