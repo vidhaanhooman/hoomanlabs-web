@@ -133,62 +133,95 @@ function ConsoleVersions() {
 type Line = { kind: "you" | "tool" | "ok" | "say"; text: string }
 
 const SESSION: Line[] = [
-  { kind: "you", text: "Make the billing agent greet in Hindi first, then run the simulations." },
-  { kind: "tool", text: "hoomanlabs.get_agent(\"billing-assistant\")" },
-  { kind: "tool", text: "hoomanlabs.update_prompt(version: \"v5\", greeting: \"hi-IN first\")" },
-  { kind: "tool", text: "hoomanlabs.run_simulations(version: \"v5\")" },
+  { kind: "you", text: "make the billing agent greet in hindi first, then run the simulations" },
+  { kind: "tool", text: "get_agent(\"billing-assistant\")" },
+  { kind: "ok", text: "Billing assistant · v4 live · 6 nodes" },
+  { kind: "tool", text: "update_prompt(version: \"v5\", greeting: \"hi-IN first\")" },
+  { kind: "ok", text: "Draft v5 created" },
+  { kind: "tool", text: "run_simulations(version: \"v5\")" },
   { kind: "ok", text: "18 of 18 scenarios passed" },
-  { kind: "say", text: "Done. v5 is ready. Want me to publish it?" },
-  { kind: "you", text: "Publish it." },
-  { kind: "tool", text: "hoomanlabs.publish(version: \"v5\")" },
+  { kind: "say", text: "Done. v5 greets in Hindi first and passed every scenario. Publish it?" },
+  { kind: "you", text: "yes, publish" },
+  { kind: "tool", text: "publish(version: \"v5\")" },
   { kind: "ok", text: "v5 is live on +91 80 4718 2290" },
 ]
 
+/** A terminal running an MCP client, typing out one session and looping. */
 function McpSession() {
   const ref = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLOListElement>(null)
   const inView = useInView(ref, { amount: 0.4 })
   const reduce = usePrefersReducedMotion()
   const [shown, setShown] = useState(1)
   useEffect(() => {
     if (!inView || reduce) return
-    const t = setInterval(() => setShown((n) => (n >= SESSION.length + 3 ? 1 : n + 1)), 900)
+    const t = setInterval(() => setShown((n) => (n >= SESSION.length + 3 ? 1 : n + 1)), 850)
     return () => clearInterval(t)
   }, [inView, reduce])
   const count = reduce ? SESSION.length : Math.min(shown, SESSION.length)
+
+  // Keep the newest line in view, like a terminal.
+  useEffect(() => {
+    const el = listRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [count])
 
   return (
     <div
       ref={ref}
       aria-hidden
-      className={cn("ui-dark flex h-72 flex-col overflow-hidden font-mono text-[11.5px] leading-relaxed", CHROME)}
+      className={cn(
+        "flex h-72 flex-col overflow-hidden bg-[oklch(0.12_0_0)] font-mono text-[11.5px] leading-[1.65] text-[oklch(0.86_0_0)]",
+        CHROME
+      )}
     >
-      <div className="flex h-11 shrink-0 items-center gap-2 border-b border-(--ui-line) px-4 font-sans text-[12px]">
-        <span className="flex gap-1">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="size-2 rounded-full bg-(--ui-raised)" />
-          ))}
+      {/* Title bar */}
+      <div className="relative flex h-8 shrink-0 items-center border-b border-white/10 bg-[oklch(0.17_0_0)] px-3">
+        <span className="flex gap-1.5">
+          <span className="size-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="size-2.5 rounded-full bg-[#febc2e]" />
+          <span className="size-2.5 rounded-full bg-[#28c840]" />
         </span>
-        <span className="ml-2 text-(--ui-muted)">Your editor · HoomanLabs MCP connected</span>
-        <span className="ml-auto size-1.5 rounded-full bg-(--ui-live)" />
+        <span className="absolute inset-x-0 text-center text-[11px] text-white/45">~/support-agents — zsh</span>
       </div>
-      <ol className="flex flex-1 flex-col justify-end gap-1.5 overflow-hidden px-4 py-3">
+
+      <ol ref={listRef} className="flex flex-1 flex-col gap-1 overflow-hidden px-4 py-3">
+        <li className="text-white/40">hoomanlabs mcp · connected · 9 tools</li>
         {SESSION.slice(0, count).map((l, i) => (
-          <li
-            key={i}
-            className={cn(
-              "motion-safe:animate-[reveal-blur_350ms_var(--ease-out)_both]",
-              l.kind === "you" && "font-sans text-[12.5px] text-(--ui-text)",
-              l.kind === "tool" && "text-[oklch(0.75_0.12_250)]",
-              l.kind === "ok" && "text-(--ui-live)",
-              l.kind === "say" && "font-sans text-[12.5px] text-(--ui-muted)"
+          <li key={i} className="whitespace-pre-wrap">
+            {l.kind === "you" && (
+              <span className="mt-1.5 block text-white">
+                <span className="mr-2 text-[oklch(0.78_0.15_150)]">❯</span>
+                {l.text}
+              </span>
             )}
-          >
-            {l.kind === "you" && <span className="mr-2 text-(--ui-muted)">You</span>}
-            {l.kind === "tool" && <span className="mr-2 text-(--ui-muted)">→</span>}
-            {l.kind === "ok" && <span className="mr-2">✓</span>}
-            {l.text}
+            {l.kind === "tool" && (
+              <span className="block">
+                <span className="mr-2 text-[oklch(0.75_0.12_250)]">⏺</span>
+                <span className="text-white/55">hoomanlabs</span>
+                <span className="text-white/35"> · </span>
+                <span className="text-[oklch(0.8_0.1_250)]">{l.text}</span>
+              </span>
+            )}
+            {l.kind === "ok" && (
+              <span className="block pl-4 text-white/55">
+                <span className="mr-2 text-white/30">⎿</span>
+                <span className="text-[oklch(0.78_0.15_150)]">✓ </span>
+                {l.text}
+              </span>
+            )}
+            {l.kind === "say" && (
+              <span className="block text-white/85">
+                <span className="mr-2 text-white/40">⏺</span>
+                {l.text}
+              </span>
+            )}
           </li>
         ))}
+        <li>
+          <span className="mr-2 text-[oklch(0.78_0.15_150)]">❯</span>
+          <span className="inline-block h-[1.05em] w-[0.55em] translate-y-[2px] bg-white/80 motion-safe:animate-[blink_1s_steps(1)_infinite]" />
+        </li>
       </ol>
     </div>
   )

@@ -265,6 +265,8 @@
 @keyframes flow-dash { to { stroke-dashoffset: -11; } }
 @media (prefers-reduced-motion: reduce) { .flow-dash { animation: none; } }
 
+@keyframes blink { 50% { opacity: 0; } }
+
 @keyframes flow-x {
   from { left: 0; }
   to { left: calc(100% - 6px); }
