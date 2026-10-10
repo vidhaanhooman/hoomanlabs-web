@@ -163,19 +163,19 @@ function EdgeLine({ d, state, dashed }: { d: string; state: State; dashed?: bool
 
 /* ------------------------------------------------------------ workflow */
 
-const WF_W = 158
+const WF_W = 180
 const WF_NODES: (Node & { stage: number })[] = [
-  { id: "in", x: 8, y: 194, label: "call.ended", kind: "input", tabs: ["Config", "Settings"], stage: 0 },
-  { id: "auth", x: 196, y: 194, label: "AUTH", kind: "js", tabs: ["Inputs", "Config"], stage: 1 },
-  { id: "det", x: 384, y: 30, label: "detractor_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
-  { id: "cb", x: 384, y: 112, label: "check_callback", kind: "cond", tabs: ["Inputs", "Config"], stage: 2 },
-  { id: "end", x: 384, y: 194, label: "call_end", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
-  { id: "rec", x: 384, y: 276, label: "recording", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
-  { id: "sum", x: 384, y: 358, label: "summary_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
-  { id: "push", x: 572, y: 30, label: "push_to_CRM", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
-  { id: "cbp", x: 572, y: 112, label: "book_callback", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
-  { id: "summ", x: 572, y: 358, label: "send_summary", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
-  { id: "out", x: 760, y: 194, label: "Output", kind: "output", tabs: ["Inputs", "Config"], stage: 4 },
+  { id: "in", x: 20, y: 188, label: "call.ended", kind: "input", tabs: ["Config", "Settings"], stage: 0 },
+  { id: "auth", x: 265, y: 188, label: "AUTH", kind: "js", tabs: ["Inputs", "Config"], stage: 1 },
+  { id: "det", x: 510, y: 24, label: "detractor_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "cb", x: 510, y: 106, label: "check_callback", kind: "cond", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "end", x: 510, y: 188, label: "call_end", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "rec", x: 510, y: 270, label: "recording", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "sum", x: 510, y: 352, label: "summary_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "push", x: 755, y: 24, label: "push_to_CRM", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "cbp", x: 755, y: 106, label: "book_callback", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "summ", x: 755, y: 352, label: "send_summary", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "out", x: 1000, y: 188, label: "Output", kind: "output", tabs: ["Inputs", "Config"], stage: 4 },
 ]
 
 const WF_EDGES: Edge[] = [
@@ -217,7 +217,7 @@ export function WorkflowCanvas({ className }: { className?: string }) {
           {WF_STATUS[stage]}
         </span>
       </div>
-      <svg viewBox="0 0 926 450" className="block h-auto w-full font-sans">
+      <svg viewBox="0 0 1200 430" className="block h-auto w-full font-sans">
         {WF_EDGES.map((e) => (
           <EdgeLine key={`${e.from}-${e.to}`} d={path(byId[e.from], byId[e.to], WF_W)} state={nodeState(byId[e.to].stage)} />
         ))}
@@ -238,14 +238,14 @@ export function WorkflowCanvas({ className }: { className?: string }) {
 
 /* ------------------------------------------------------------ agent builder */
 
-const AG_W = 168
+const AG_W = 172
 const AG_NODES: Node[] = [
-  { id: "start", x: 10, y: 190, label: "Start", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "cond", x: 196, y: 190, label: "order_on_file?", kind: "cond", tabs: ["Config"] },
-  { id: "verify", x: 382, y: 300, label: "collect_and_verify", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "fetch", x: 382, y: 400, label: "fetch_order_history", kind: "js", tabs: ["Config"] },
-  { id: "ident", x: 568, y: 190, label: "order_identification", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "route", x: 754, y: 190, label: "routing", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "start", x: 20, y: 214, label: "Start", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "cond", x: 252, y: 214, label: "order_on_file?", kind: "cond", tabs: ["Config"] },
+  { id: "verify", x: 484, y: 350, label: "collect_and_verify", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "fetch", x: 484, y: 452, label: "fetch_order_history", kind: "js", tabs: ["Config"] },
+  { id: "ident", x: 716, y: 90, label: "order_identification", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "route", x: 920, y: 214, label: "routing", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
 ]
 
 const AG_EDGES: Edge[] = [
@@ -342,7 +342,7 @@ export function AgentBuilder({ className }: { className?: string }) {
           <span className={n.kind === "cond" ? "text-[oklch(0.72_0.14_295)]" : n.kind === "js" ? "text-[oklch(0.83_0.16_85)]" : "text-[oklch(0.7_0.14_250)]"}>
             {n.kind === "cond" ? "⑂" : n.kind === "js" ? "JS" : "✦"}
           </span>
-          <span key={n.id} className="text-[13px] font-medium text-(--ui-text) motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]">
+          <span className="text-[13px] font-medium text-(--ui-text)">
             {n.label}
           </span>
           <span className="font-mono text-(--ui-muted)">id: {n.id}</span>
@@ -354,7 +354,7 @@ export function AgentBuilder({ className }: { className?: string }) {
             </span>
           ))}
         </div>
-        <div key={idx} className="flex flex-1 flex-col gap-3 p-3.5 motion-safe:animate-[reveal-blur_400ms_var(--ease-out)_both]">
+        <div className="flex flex-1 flex-col gap-3 p-3.5">
           <div className="flex flex-col gap-1.5 rounded-md border border-(--ui-line) bg-(--ui-panel) p-3">
             <p className="text-[12.5px] font-medium text-(--ui-text)">{beat.title}</p>
             <ul className="list-disc pl-4 text-(--ui-muted)">
@@ -386,8 +386,8 @@ export function AgentBuilder({ className }: { className?: string }) {
       </div>
 
       {/* Canvas */}
-      <div className={cn("relative aspect-[940/470] md:aspect-auto", BG)}>
-        <svg viewBox="0 0 940 470" className="absolute inset-0 size-full font-sans" preserveAspectRatio="xMidYMid meet">
+      <div className={cn("relative aspect-[1110/530] md:aspect-auto", BG)}>
+        <svg viewBox="0 0 1110 530" className="absolute inset-0 size-full font-sans" preserveAspectRatio="xMidYMid meet">
           {AG_EDGES.map((e) => (
             <EdgeLine key={`${e.from}-${e.to}`} d={path(byId[e.from], byId[e.to], AG_W)} state={edgeState(e)} />
           ))}

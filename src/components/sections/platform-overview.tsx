@@ -225,21 +225,21 @@ export function PlatformOverview() {
         <div className="grid gap-3 lg:grid-cols-12">
           {/* Agents: the large tile, same plain treatment as the rest */}
           <Tile id="agents" className="lg:col-span-12">
-            <AgentBuilder className={cn("md:h-[26rem]", CHROME)} />
+            <AgentBuilder className={cn("md:h-[30rem]", CHROME)} />
           </Tile>
-          <Tile id="workflow" className="lg:col-span-7">
+          <Tile id="workflow" className="lg:col-span-12">
             <WorkflowCanvas className={CHROME} />
           </Tile>
-          <Tile id="simulations" className="lg:col-span-5">
+          <Tile id="simulations" className="lg:col-span-6">
             <SimulationsMini />
           </Tile>
-          <Tile id="qa" className="lg:col-span-4">
+          <Tile id="qa" className="lg:col-span-6">
             <QaMini />
           </Tile>
-          <Tile id="channels" className="lg:col-span-4">
+          <Tile id="channels" className="lg:col-span-6">
             <ChannelsMini />
           </Tile>
-          <Tile id="tools" className="lg:col-span-4">
+          <Tile id="tools" className="lg:col-span-6">
             <ToolsMini />
           </Tile>
         </div>
