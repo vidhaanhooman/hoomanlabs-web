@@ -31,6 +31,7 @@ export type SectionId =
   | "product-call"
   | "product-integrations"
   | "product-agents"
+  | "product-manage"
   | "product-workflow"
   | "product-simulations"
   | "product-qa"
@@ -82,6 +83,7 @@ export const productSections: { id: SectionId; name: string; status: SectionStat
   { id: "product-call", name: "Stage: On the call", status: "draft" },
   { id: "product-integrations", name: "Integrations", status: "draft" },
   { id: "product-agents", name: "Platform: Agents", status: "draft" },
+  { id: "product-manage", name: "Platform: Manage agents (console + MCP)", status: "draft" },
   { id: "product-workflow", name: "Platform: Workflow", status: "draft" },
   { id: "product-simulations", name: "Platform: Simulations", status: "draft" },
   { id: "product-qa", name: "Platform: QA", status: "draft" },
