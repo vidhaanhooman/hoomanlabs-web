@@ -165,6 +165,42 @@ function SampleCard({
           </span>
         </div>
 
+        {/* Transcript: what was said and what the agent did */}
+        <ol className="flex flex-col gap-1.5 border-t border-line pt-3 text-small leading-snug">
+          {item[side].transcript.map((l, i, all) => {
+            const next = all[i + 1]?.t ?? Infinity
+            const now = active && t >= l.t && t < next
+            const dim = active && t < l.t
+            return (
+              <li
+                key={`${side}-${i}`}
+                className={cn("flex gap-2 transition-opacity duration-300", dim ? "opacity-35" : "opacity-100")}
+              >
+                {l.who === "action" ? (
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-label",
+                      side === "b" ? "border-[oklch(0.62_0.15_150/0.4)] text-foreground" : "border-[oklch(0.65_0.18_30/0.4)] text-foreground"
+                    )}
+                  >
+                    <span
+                      className={cn("size-1.5 rounded-full", side === "b" ? "bg-[oklch(0.62_0.15_150)]" : "bg-[oklch(0.65_0.18_30)]")}
+                    />
+                    {l.text}
+                  </span>
+                ) : (
+                  <>
+                    <span className={cn("w-11 shrink-0 text-label", now ? "text-foreground" : "text-ink-muted")}>
+                      {l.who === "agent" ? "Agent" : "User"}
+                    </span>
+                    <span className={now ? "text-foreground" : "text-ink-secondary"}>{l.text}</span>
+                  </>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+
         <div className="flex items-center justify-between gap-3 text-label text-ink-muted">
           <span>{missing ? "Sample coming soon" : item[side].note}</span>
           <span className="shrink-0 font-mono tabular-nums">{duration ? `${clock(t)} / ${clock(duration)}` : ""}</span>

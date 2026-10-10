@@ -11,7 +11,7 @@ import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
-import { AgentConfigScreen } from "@/components/product/agent-config-screen"
+import { AgentFlowCanvas, AgentNodeEditor, WorkflowCanvas } from "@/components/product/flow-canvas"
 import { Pill } from "@/components/product/ui-bits"
 import { LOGOS } from "@/components/sections/tools-integrations"
 import { channels, componentHref, type ComponentId } from "@/content/platform"
@@ -102,15 +102,6 @@ function MiniRow({ k, v, last }: { k: string; v: React.ReactNode; last?: boolean
   )
 }
 
-function WorkflowMini() {
-  return (
-    <Mini title="March reminders" aside={<Pill tone="live">Running</Pill>}>
-      <MiniRow k="Priya Raman" v={<Pill tone="live">Completed</Pill>} />
-      <MiniRow k="Tom Hadley" v={<Pill tone="warn">Calling</Pill>} />
-      <MiniRow k="Ana Ferreira" v={<Pill>Queued</Pill>} last />
-    </Mini>
-  )
-}
 
 function SimulationsMini() {
   return (
@@ -233,11 +224,14 @@ export function PlatformOverview() {
       <Container>
         <div className="grid gap-3 lg:grid-cols-12">
           {/* Agents: the large tile, same plain treatment as the rest */}
-          <Tile id="agents" className="lg:col-span-7 lg:row-span-2">
-            <AgentConfigScreen className={cn("h-80 w-full lg:h-[24rem]", CHROME)} />
+          <Tile id="agents" className="lg:col-span-12">
+            <div className={cn("grid overflow-hidden md:h-[26rem] md:grid-cols-[22rem_1fr]", CHROME)}>
+              <AgentNodeEditor className="hidden border-r border-white/10 md:flex" />
+              <AgentFlowCanvas className="aspect-[780/480] md:aspect-auto md:h-full" />
+            </div>
           </Tile>
-          <Tile id="workflow" className="lg:col-span-5">
-            <WorkflowMini />
+          <Tile id="workflow" className="lg:col-span-7">
+            <WorkflowCanvas className={CHROME} />
           </Tile>
           <Tile id="simulations" className="lg:col-span-5">
             <SimulationsMini />
