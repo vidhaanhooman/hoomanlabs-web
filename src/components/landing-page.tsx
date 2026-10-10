@@ -7,6 +7,7 @@ import { Logos } from "@/components/sections/logos"
 import { PlatformOverview } from "@/components/sections/platform-overview"
 import { Testimonials } from "@/components/sections/testimonials"
 import { UseCases } from "@/components/sections/use-cases"
+import { VoiceSamples } from "@/components/sections/voice-samples"
 import { chapters, heroCall } from "@/content/landing"
 
 /**
@@ -56,12 +57,12 @@ export function LandingPage() {
       {/* 4 Platform: overview of all six components; detail lives on /platform */}
       <Chapter {...chapters.platform} />
       <PlatformOverview />
+      <VoiceSamples />
 
       {/* 5 Proof, then trust */}
       <Chapter {...chapters.proof} />
       <Testimonials />
       <Security />
-
 
       {/* 6 Ways to get started */}
       <StartPaths />

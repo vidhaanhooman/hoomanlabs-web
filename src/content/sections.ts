@@ -48,6 +48,7 @@ export type SectionId =
   | "start"
   | "use-cases"
   | "platform-overview"
+  | "voice-samples"
   | "enterprise-hero"
   | "enterprise-steps"
   | "enterprise-timeline"
@@ -101,6 +102,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "start", name: "Two ways to start", status: "draft" },
   { id: "use-cases", name: "Use cases panel", status: "draft" },
   { id: "platform-overview", name: "Platform overview (6 tiles)", status: "draft" },
+  { id: "voice-samples", name: "Hear it on real calls (audio A/B)", status: "draft" },
   { id: "enterprise-hero", name: "Enterprise: hero", status: "draft" },
   { id: "enterprise-steps", name: "Enterprise: build steps", status: "draft" },
   { id: "enterprise-timeline", name: "Enterprise: Gantt timeline", status: "draft" },

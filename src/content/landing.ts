@@ -232,3 +232,36 @@ export const heroCall = {
   title: "AI employees for every customer conversation, starting with the phone.",
   body: "They answer, follow up and finish the job in your customers' language, with your CRM, payments and calendars updated before the call ends.",
 }
+
+/**
+ * Audio samples on the homepage: hear what each voice capability does.
+ * Files go in public/audio/features/ with these names; until a file exists,
+ * its card shows "Sample coming soon".
+ */
+export const voiceSamples = {
+  title: "Hear it handle a real phone line.",
+  body: "Real calls are noisy, people pause and interrupt, and sometimes nobody picks up. Press play and switch between the two versions.",
+  items: [
+    {
+      id: "turn",
+      title: "Turn detection",
+      body: "Waits until the caller has finished, not just paused.",
+      a: { label: "Without", src: "/audio/features/turn-off.mp3", note: "The agent cuts in during a pause." },
+      b: { label: "With", src: "/audio/features/turn-on.mp3", note: "The agent waits, then replies." },
+    },
+    {
+      id: "noise",
+      title: "Noise reduction",
+      body: "Hears the caller, not the traffic or TV behind them.",
+      a: { label: "Off", src: "/audio/features/noise-off.mp3", note: "Street noise reaches the agent." },
+      b: { label: "On", src: "/audio/features/noise-on.mp3", note: "Only the caller's voice comes through." },
+    },
+    {
+      id: "voicemail",
+      title: "Voicemail detection",
+      body: "Spots an answering machine and leaves your message.",
+      a: { label: "Without", src: "/audio/features/voicemail-off.mp3", note: "The agent talks to the machine." },
+      b: { label: "With", src: "/audio/features/voicemail-on.mp3", note: "Detects the beep, leaves a short message." },
+    },
+  ],
+}
