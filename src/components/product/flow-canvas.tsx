@@ -7,30 +7,46 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
- * Node-graph canvases recreated from the product: the workflow editor and the
- * agent flow builder. Drawn in SVG on a fixed viewBox so the whole graph
- * scales with its tile. Dots travel along the edges (and the agent flow walks
- * its nodes) while visible; reduced motion shows the still graph.
+ * Node-graph canvases recreated from the product, each playing a short story
+ * step by step: the agent builder walks a live call through its nodes (the
+ * editor beside it follows), and the workflow runs after a call ends, node by
+ * node, until the results are synced. SVG on a fixed viewBox, so the graph
+ * scales with its tile. Reduced motion shows the finished state.
  * Fictional demo data.
  */
 
 type Kind = "input" | "js" | "http" | "cond" | "output" | "agent"
-type Node = { id: string; x: number; y: number; label: string; kind: Kind; tabs: string[]; issue?: "warn" | "error" }
+type Node = { id: string; x: number; y: number; label: string; kind: Kind; tabs: string[] }
 type Edge = { from: string; to: string; label?: string; dashed?: boolean }
+type State = "idle" | "active" | "done"
 
-const W_NODE = 176
-const H_NODE = 52
+const H = 52
+const LIVE = "oklch(0.78 0.15 150)"
 
 const BG =
   "bg-[oklch(0.13_0_0)] [background-image:radial-gradient(oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:16px_16px]"
 
-function edgePath(a: Node, b: Node, w = W_NODE, h = H_NODE) {
+function path(a: Node, b: Node, w: number) {
   const x1 = a.x + w
-  const y1 = a.y + h / 2
+  const y1 = a.y + H / 2
   const x2 = b.x
-  const y2 = b.y + h / 2
-  const dx = Math.max(40, (x2 - x1) / 2)
+  const y2 = b.y + H / 2
+  const dx = Math.max(30, (x2 - x1) / 2)
   return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`
+}
+
+/** Runs a step counter while the canvas is on screen. */
+function useSteps(count: number, ms: number) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { amount: 0.35 })
+  const reduce = usePrefersReducedMotion()
+  const [step, setStep] = useState(0)
+  useEffect(() => {
+    if (!inView || reduce) return
+    const t = setInterval(() => setStep((s) => (s + 1) % count), ms)
+    return () => clearInterval(t)
+  }, [inView, reduce, count, ms])
+  return { ref, step: reduce ? count - 1 : step }
 }
 
 function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
@@ -53,21 +69,18 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
     )
   if (kind === "cond")
     return (
-      <g fill="none" stroke="oklch(0.72 0.14 295)" strokeWidth={1.5} strokeLinecap="round">
-        <path d={`M${x + 2},${y - 5} L${x + 6.5},${y + 1} L${x + 11},${y - 5} M${x + 6.5},${y + 1} L${x + 6.5},${y + 6}`} />
-      </g>
-    )
-  if (kind === "output")
-    return (
       <path
-        d={`M${x + 11},${y - 4} A6 6 0 1 0 ${x + 12},${y + 3}`}
+        d={`M${x + 2},${y - 5} L${x + 6.5},${y + 1} L${x + 11},${y - 5} M${x + 6.5},${y + 1} L${x + 6.5},${y + 6}`}
         fill="none"
-        stroke="oklch(0.74 0.16 150)"
-        strokeWidth={1.6}
+        stroke="oklch(0.72 0.14 295)"
+        strokeWidth={1.5}
         strokeLinecap="round"
       />
     )
-  // input (bolt) and agent (sparkle) share the blue
+  if (kind === "output")
+    return (
+      <path d={`M${x + 11},${y - 4} A6 6 0 1 0 ${x + 12},${y + 3}`} fill="none" stroke={LIVE} strokeWidth={1.6} strokeLinecap="round" />
+    )
   if (kind === "input")
     return <path d={`M${x + 7},${y - 7} L${x + 2},${y + 1} L${x + 6},${y + 1} L${x + 5},${y + 7} L${x + 11},${y - 1} L${x + 7},${y - 1} Z`} fill="oklch(0.7 0.14 250)" />
   return (
@@ -78,75 +91,91 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
   )
 }
 
-function NodeBox({ n, active, w = W_NODE }: { n: Node; active?: boolean; w?: number }) {
+function NodeBox({ n, w, state }: { n: Node; w: number; state: State }) {
+  const max = Math.floor((w - 56) / 7)
   return (
-    <g transform={`translate(${n.x},${n.y})`}>
+    <g transform={`translate(${n.x},${n.y})`} opacity={state === "idle" ? 0.55 : 1} style={{ transition: "opacity 400ms" }}>
       <rect
         width={w}
-        height={H_NODE}
+        height={H}
         rx={7}
         fill="oklch(0.17 0 0)"
-        stroke={n.issue === "error" ? "oklch(0.6 0.2 25)" : active ? "oklch(0.92 0 0)" : "oklch(0.32 0 0)"}
-        strokeWidth={active ? 1.6 : 1}
+        stroke={state === "active" ? "oklch(0.95 0 0)" : state === "done" ? "oklch(0.5 0.08 150)" : "oklch(0.32 0 0)"}
+        strokeWidth={state === "active" ? 1.6 : 1}
         style={{ transition: "stroke 400ms" }}
       />
-      <text x={12} y={21} fontSize={10} fill="oklch(0.55 0 0)">
-        ›
-      </text>
-      <Icon kind={n.kind} x={24} y={17} />
-      <text x={44} y={21.5} fontSize={12.5} fill="oklch(0.93 0 0)">
-        {n.label.length > 19 ? `${n.label.slice(0, 18)}…` : n.label}
+      <Icon kind={n.kind} x={12} y={17} />
+      <text x={32} y={21.5} fontSize={12.5} fill="oklch(0.93 0 0)">
+        {n.label.length > max ? `${n.label.slice(0, max - 1)}…` : n.label}
       </text>
       {n.tabs.map((t, i) => (
-        <text key={t} x={12 + i * (n.tabs.length > 3 ? 40 : 46)} y={41} fontSize={10.5} fill="oklch(0.6 0 0)">
+        <text key={t} x={12 + i * (n.tabs.length > 3 ? 38 : 46)} y={41} fontSize={10.5} fill="oklch(0.6 0 0)">
           {t}
         </text>
       ))}
-      {n.issue && (
-        <text x={w - 22} y={41} fontSize={10} fill={n.issue === "error" ? "oklch(0.65 0.2 25)" : "oklch(0.78 0.15 70)"}>
-          {n.issue === "error" ? "⊘" : "⚠"} 1
-        </text>
+      {/* state badge */}
+      {state === "active" && (
+        <g transform={`translate(${w - 14},14)`}>
+          <circle r={4} fill={LIVE}>
+            <animate attributeName="r" values="3;5.5;3" dur="1.1s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="1;0.4;1" dur="1.1s" repeatCount="indefinite" />
+          </circle>
+        </g>
       )}
-      {/* ports */}
-      <circle cx={0} cy={H_NODE / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
-      <circle cx={w} cy={H_NODE / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
+      {state === "done" && (
+        <g transform={`translate(${w - 14},14)`}>
+          <circle r={6} fill="oklch(0.4 0.1 150)" />
+          <path d="M-2.5,0 L-0.5,2 L3,-2" fill="none" stroke="oklch(0.95 0 0)" strokeWidth={1.4} strokeLinecap="round" />
+        </g>
+      )}
+      <circle cx={0} cy={H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
+      <circle cx={w} cy={H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
     </g>
   )
 }
 
-function EdgeLabel({ x, y, text }: { x: number; y: number; text: string }) {
+function EdgeLabel({ x, y, text, on }: { x: number; y: number; text: string; on?: boolean }) {
   const w = text.length * 6.4 + 10
   return (
     <g transform={`translate(${x - w / 2},${y - 8})`}>
-      <rect width={w} height={16} rx={3} fill="oklch(0.15 0 0)" stroke="oklch(0.35 0 0)" />
-      <text x={w / 2} y={11.5} fontSize={9.5} textAnchor="middle" fill="oklch(0.75 0 0)" fontFamily="var(--font-mono, monospace)">
+      <rect width={w} height={16} rx={3} fill="oklch(0.15 0 0)" stroke={on ? LIVE : "oklch(0.35 0 0)"} style={{ transition: "stroke 400ms" }} />
+      <text x={w / 2} y={11.5} fontSize={9.5} textAnchor="middle" fill={on ? LIVE : "oklch(0.75 0 0)"} fontFamily="var(--font-mono, monospace)">
         {text}
       </text>
     </g>
   )
 }
 
-function useLive<T extends Element>() {
-  const ref = useRef<T>(null)
-  const inView = useInView(ref, { amount: 0.3 })
-  const reduce = usePrefersReducedMotion()
-  return { ref, live: inView && !reduce }
+/** An edge: grey when idle, flowing dashes while active, solid once passed. */
+function EdgeLine({ d, state, dashed }: { d: string; state: State; dashed?: boolean }) {
+  return (
+    <path
+      d={d}
+      fill="none"
+      stroke={state === "idle" ? "oklch(0.36 0 0)" : state === "active" ? LIVE : "oklch(0.55 0.06 150)"}
+      strokeWidth={state === "active" ? 1.8 : 1.1}
+      strokeDasharray={state === "active" ? "6 5" : dashed ? "4 4" : undefined}
+      className={state === "active" ? "flow-dash" : undefined}
+      style={{ transition: "stroke 300ms" }}
+    />
+  )
 }
 
 /* ------------------------------------------------------------ workflow */
 
-const WF_NODES: Node[] = [
-  { id: "in", x: 10, y: 194, label: "Input", kind: "input", tabs: ["Config", "Settings"] },
-  { id: "auth", x: 210, y: 194, label: "AUTH", kind: "js", tabs: ["Inputs", "Config", "Settings"], issue: "warn" },
-  { id: "det", x: 420, y: 28, label: "detractor_payload", kind: "js", tabs: ["Inputs", "Config", "Settings"] },
-  { id: "cb", x: 420, y: 112, label: "check_callback", kind: "cond", tabs: ["Inputs", "Config", "Settings"] },
-  { id: "end", x: 420, y: 194, label: "call_end", kind: "http", tabs: ["Inputs", "Config", "Settings"], issue: "warn" },
-  { id: "rec", x: 420, y: 276, label: "recording", kind: "http", tabs: ["Inputs", "Config", "Settings"], issue: "error" },
-  { id: "sum", x: 420, y: 360, label: "summary_payload", kind: "js", tabs: ["Inputs", "Config", "Settings"] },
-  { id: "push", x: 630, y: 28, label: "push_detractor", kind: "http", tabs: ["Inputs", "Config", "Settings"] },
-  { id: "cbp", x: 630, y: 112, label: "callback_payload", kind: "js", tabs: ["Inputs", "Config", "Settings"] },
-  { id: "summ", x: 630, y: 360, label: "summary", kind: "http", tabs: ["Inputs", "Config", "Settings"], issue: "warn" },
-  { id: "out", x: 820, y: 194, label: "Output", kind: "output", tabs: ["Inputs", "Config"] },
+const WF_W = 158
+const WF_NODES: (Node & { stage: number })[] = [
+  { id: "in", x: 8, y: 194, label: "call.ended", kind: "input", tabs: ["Config", "Settings"], stage: 0 },
+  { id: "auth", x: 196, y: 194, label: "AUTH", kind: "js", tabs: ["Inputs", "Config"], stage: 1 },
+  { id: "det", x: 384, y: 30, label: "detractor_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "cb", x: 384, y: 112, label: "check_callback", kind: "cond", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "end", x: 384, y: 194, label: "call_end", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "rec", x: 384, y: 276, label: "recording", kind: "http", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "sum", x: 384, y: 358, label: "summary_payload", kind: "js", tabs: ["Inputs", "Config"], stage: 2 },
+  { id: "push", x: 572, y: 30, label: "push_to_CRM", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "cbp", x: 572, y: 112, label: "book_callback", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "summ", x: 572, y: 358, label: "send_summary", kind: "http", tabs: ["Inputs", "Config"], stage: 3 },
+  { id: "out", x: 760, y: 194, label: "Output", kind: "output", tabs: ["Inputs", "Config"], stage: 4 },
 ]
 
 const WF_EDGES: Edge[] = [
@@ -156,7 +185,7 @@ const WF_EDGES: Edge[] = [
   { from: "auth", to: "end" },
   { from: "auth", to: "rec" },
   { from: "auth", to: "sum" },
-  { from: "det", to: "push", label: "If" },
+  { from: "det", to: "push" },
   { from: "cb", to: "cbp", label: "If" },
   { from: "sum", to: "summ" },
   { from: "push", to: "out" },
@@ -166,46 +195,42 @@ const WF_EDGES: Edge[] = [
   { from: "summ", to: "out" },
 ]
 
-/** Routes a "run" takes through the graph; one dot per route, staggered. */
-const WF_ROUTES = [
-  ["in", "auth", "end", "out"],
-  ["in", "auth", "sum", "summ", "out"],
-  ["in", "auth", "cb", "cbp", "out"],
-  ["in", "auth", "det", "push", "out"],
+const WF_STATUS = [
+  "Call with Priya ended · 3:42",
+  "Authenticating",
+  "5 steps running in parallel",
+  "Updating CRM, booking callback, sending summary",
+  "Writing results",
+  "Done in 1.4s · CRM updated · callback Fri 10:00 · summary sent",
 ]
 
 export function WorkflowCanvas({ className }: { className?: string }) {
-  const { ref, live } = useLive<HTMLDivElement>()
+  const { ref, step } = useSteps(WF_STATUS.length + 1, 1200)
+  const stage = Math.min(step, WF_STATUS.length - 1)
   const byId = Object.fromEntries(WF_NODES.map((n) => [n.id, n]))
-  const route = (ids: string[]) =>
-    ids
-      .slice(1)
-      .map((id, i) => edgePath(byId[ids[i]], byId[id]))
-      .map((d, i) => (i === 0 ? d : d.replace(/^M[^C]+/, "L" + d.match(/^M([^C]+)/)![1].trim() + " ")))
-      .join(" ")
+  const nodeState = (s: number): State => (s < stage ? "done" : s === stage ? (stage === 5 ? "done" : "active") : "idle")
   return (
-    <div ref={ref} aria-hidden className={cn("overflow-hidden", BG, className)}>
-      <svg viewBox="0 0 1006 440" className="block h-auto w-full font-sans">
-        <g fill="none" stroke="oklch(0.45 0 0)" strokeWidth={1.1}>
-          {WF_EDGES.map((e) => (
-            <path key={`${e.from}-${e.to}`} d={edgePath(byId[e.from], byId[e.to])} />
-          ))}
-        </g>
+    <div ref={ref} aria-hidden className={cn("relative overflow-hidden", BG, className)}>
+      <div className="absolute top-2.5 left-3 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 font-mono text-[10px] text-white/80 backdrop-blur">
+        <span className={cn("size-1.5 rounded-full", stage === 5 ? "bg-[oklch(0.78_0.15_150)]" : "bg-[oklch(0.8_0.14_80)] motion-safe:animate-pulse")} />
+        <span key={stage} className="motion-safe:animate-[reveal-blur_350ms_var(--ease-out)_both]">
+          {WF_STATUS[stage]}
+        </span>
+      </div>
+      <svg viewBox="0 0 926 450" className="block h-auto w-full font-sans">
+        {WF_EDGES.map((e) => (
+          <EdgeLine key={`${e.from}-${e.to}`} d={path(byId[e.from], byId[e.to], WF_W)} state={nodeState(byId[e.to].stage)} />
+        ))}
         {WF_EDGES.filter((e) => e.label).map((e) => {
           const a = byId[e.from]
           const b = byId[e.to]
-          return <EdgeLabel key={`l-${e.from}`} x={(a.x + W_NODE + b.x) / 2} y={(a.y + b.y) / 2 + H_NODE / 2} text={e.label!} />
+          return (
+            <EdgeLabel key={`l-${e.from}`} x={(a.x + WF_W + b.x) / 2} y={(a.y + b.y) / 2 + H / 2} text={e.label!} on={stage >= b.stage} />
+          )
         })}
         {WF_NODES.map((n) => (
-          <NodeBox key={n.id} n={n} />
+          <NodeBox key={n.id} n={n} w={WF_W} state={nodeState(n.stage)} />
         ))}
-        {live &&
-          WF_ROUTES.map((r, i) => (
-            <circle key={i} r={3.5} fill="oklch(0.85 0.12 150)" opacity={0}>
-              <animateMotion dur="4.8s" begin={`${i * 1.2}s`} repeatCount="indefinite" path={route(r)} />
-              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.92;1" dur="4.8s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
-            </circle>
-          ))}
       </svg>
     </div>
   )
@@ -213,111 +238,182 @@ export function WorkflowCanvas({ className }: { className?: string }) {
 
 /* ------------------------------------------------------------ agent builder */
 
-const AG_W = 236
+const AG_W = 168
 const AG_NODES: Node[] = [
-  { id: "start", x: 20, y: 30, label: "Start", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "cond", x: 150, y: 170, label: "order_identification_condition", kind: "cond", tabs: ["Config"] },
-  { id: "ident", x: 470, y: 40, label: "order_identification", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "verify", x: 440, y: 300, label: "collect_and_verify_number", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "route", x: 520, y: 180, label: "routing", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
-  { id: "fetch", x: 90, y: 400, label: "fetch_order_history", kind: "js", tabs: ["Config"] },
+  { id: "start", x: 10, y: 190, label: "Start", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "cond", x: 196, y: 190, label: "order_on_file?", kind: "cond", tabs: ["Config"] },
+  { id: "verify", x: 382, y: 300, label: "collect_and_verify", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "fetch", x: 382, y: 400, label: "fetch_order_history", kind: "js", tabs: ["Config"] },
+  { id: "ident", x: 568, y: 190, label: "order_identification", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
+  { id: "route", x: 754, y: 190, label: "routing", kind: "agent", tabs: ["Prompt", "Tools", "Voice", "Turn"] },
 ]
 
 const AG_EDGES: Edge[] = [
-  { from: "start", to: "cond", label: "get_orders" },
-  { from: "cond", to: "ident" },
-  { from: "cond", to: "verify" },
+  { from: "start", to: "cond" },
+  { from: "cond", to: "ident", label: "found" },
+  { from: "cond", to: "verify", label: "missing" },
   { from: "verify", to: "ident" },
   { from: "ident", to: "route" },
-  { from: "verify", to: "fetch", dashed: true },
 ]
 
-const AG_WALK = ["start", "cond", "verify", "ident", "route"]
-
-export function AgentFlowCanvas({ className }: { className?: string }) {
-  const { ref, live } = useLive<HTMLDivElement>()
-  const [step, setStep] = useState(0)
-  useEffect(() => {
-    if (!live) return
-    const t = setInterval(() => setStep((s) => (s + 1) % AG_WALK.length), 1400)
-    return () => clearInterval(t)
-  }, [live])
-  const byId = Object.fromEntries(AG_NODES.map((n) => [n.id, n]))
-  const active = AG_WALK[step]
-  return (
-    <div ref={ref} aria-hidden className={cn("overflow-hidden", BG, className)}>
-      <svg viewBox="0 0 780 480" className="block h-full w-full font-sans" preserveAspectRatio="xMidYMid meet">
-        <g fill="none" strokeWidth={1.1}>
-          {AG_EDGES.map((e) => (
-            <path
-              key={`${e.from}-${e.to}`}
-              d={edgePath(byId[e.from], byId[e.to], AG_W)}
-              stroke={AG_WALK[step - 1] === e.from && active === e.to ? "oklch(0.85 0.12 150)" : "oklch(0.45 0 0)"}
-              strokeDasharray={e.dashed ? "4 4" : undefined}
-              style={{ transition: "stroke 400ms" }}
-            />
-          ))}
-        </g>
-        <EdgeLabel x={byId.start.x + AG_W + 20} y={115} text="get_orders" />
-        {AG_NODES.map((n) => (
-          <NodeBox key={n.id} n={n} w={AG_W} active={live && n.id === active} />
-        ))}
-      </svg>
-    </div>
-  )
+type Beat = {
+  node: string
+  /** Edge that leads into this node, for the flowing highlight. */
+  via?: string
+  tab: string
+  title: string
+  lines: string[]
+  code?: string
+  say?: { who: "Agent" | "User" | "Tool"; text: string }
 }
 
-/** The node editor panel beside the canvas (Start node, Prompt tab). */
-export function AgentNodeEditor({ className }: { className?: string }) {
+const BEATS: Beat[] = [
+  {
+    node: "start",
+    tab: "Prompt",
+    title: "STEP 1 : Introduction and language",
+    lines: ["Greet, say who you are, and ask which language they are comfortable in.", "If they name a language, continue in it."],
+    say: { who: "Agent", text: "Hi, this is Ria from Halden. Which language is easiest for you?" },
+  },
+  {
+    node: "cond",
+    via: "start>cond",
+    tab: "Config",
+    title: "Is there an order on file?",
+    lines: ["Found: confirm the order.", "Missing: collect and verify the number first."],
+    code: "has(context.order_id)",
+    say: { who: "Tool", text: "get_orders · no order linked to this caller" },
+  },
+  {
+    node: "verify",
+    via: "cond>verify",
+    tab: "Prompt",
+    title: "Collect and verify the number",
+    lines: ["Ask for the registered mobile number and read it back.", "Then look up their recent orders."],
+    say: { who: "User", text: "It's 98765 43210." },
+  },
+  {
+    node: "fetch",
+    tab: "Tools",
+    title: "fetch_order_history",
+    lines: ["Runs mid-call with the verified number."],
+    code: "orders = fetch(customer.phone)",
+    say: { who: "Tool", text: "fetch_order_history · 2 orders found" },
+  },
+  {
+    node: "ident",
+    via: "verify>ident",
+    tab: "Prompt",
+    title: "Confirm the order",
+    lines: ["Name the most recent order and ask if the call is about it."],
+    say: { who: "Agent", text: "I can see your March order of two frames. Is it about that one?" },
+  },
+  {
+    node: "route",
+    via: "ident>route",
+    tab: "Prompt",
+    title: "Route the call",
+    lines: ["Send delivery issues to the delivery flow, refunds to billing."],
+    say: { who: "Agent", text: "It's out for delivery today. I'll text you the tracking link now." },
+  },
+]
+
+/** Agent builder: editor (follows the active node) + flow canvas, playing one call. */
+export function AgentBuilder({ className }: { className?: string }) {
+  const { ref, step } = useSteps(BEATS.length + 1, 1900)
+  const idx = Math.min(step, BEATS.length - 1)
+  const beat = BEATS[idx]
+  const reached = new Set(BEATS.slice(0, idx + 1).map((b) => b.node))
+  const byId = Object.fromEntries(AG_NODES.map((n) => [n.id, n]))
+  const nodeState = (id: string): State => (id === beat.node ? "active" : reached.has(id) ? "done" : "idle")
+  const edgeState = (e: Edge): State => {
+    const key = `${e.from}>${e.to}`
+    if (beat.via === key) return "active"
+    return BEATS.slice(0, idx).some((b) => b.via === key) ? "done" : "idle"
+  }
+  const n = byId[beat.node]
+  const tabs = n.kind === "agent" ? ["Prompt", "Tools", "Voice", "Turn"] : ["Config"]
+
   return (
-    <div aria-hidden className={cn("ui-dark flex flex-col overflow-hidden text-[11px] leading-snug", className)}>
-      <div className="flex items-center gap-2 border-b border-(--ui-line) px-3.5 py-2.5">
-        <span className="text-[oklch(0.7_0.14_250)]">✦</span>
-        <span className="text-[13px] font-medium text-(--ui-text)">Start</span>
-        <span className="font-mono text-(--ui-muted)">id: start</span>
-      </div>
-      <div className="flex gap-4 border-b border-(--ui-line) px-3.5 pt-2">
-        {["Prompt", "Tools", "Voice", "Turn"].map((t, i) => (
-          <span
-            key={t}
-            className={cn("pb-2", i === 0 ? "border-b border-(--ui-text) text-(--ui-text)" : "text-(--ui-muted)")}
-          >
-            {t}
+    <div ref={ref} aria-hidden className={cn("grid overflow-hidden md:grid-cols-[21rem_1fr]", className)}>
+      {/* Editor: follows the active node */}
+      <div className="ui-dark hidden flex-col overflow-hidden border-r border-white/10 text-[11px] leading-snug md:flex">
+        <div className="flex items-center gap-2 border-b border-(--ui-line) px-3.5 py-2.5">
+          <span className={n.kind === "cond" ? "text-[oklch(0.72_0.14_295)]" : n.kind === "js" ? "text-[oklch(0.83_0.16_85)]" : "text-[oklch(0.7_0.14_250)]"}>
+            {n.kind === "cond" ? "⑂" : n.kind === "js" ? "JS" : "✦"}
           </span>
-        ))}
-      </div>
-      <div className="flex flex-col gap-3 overflow-hidden p-3.5">
-        <div className="rounded-md border border-(--ui-line) bg-(--ui-panel) p-3">
-          <div className="mb-1.5 flex items-center gap-2">
-            <span className="font-medium text-(--ui-text)">Global instructions</span>
-            <span className="rounded-full bg-[oklch(0.3_0.08_280)] px-1.5 text-[10px] text-[oklch(0.82_0.08_280)]">Read only</span>
-          </div>
-          <p className="text-[12px] font-medium text-(--ui-text)">Role</p>
-          <p className="text-(--ui-muted)">
-            You are Ria, an AI customer service agent for Halden Energy. You take inbound calls and help customers with
-            their bills and orders.
-          </p>
+          <span key={n.id} className="text-[13px] font-medium text-(--ui-text) motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]">
+            {n.label}
+          </span>
+          <span className="font-mono text-(--ui-muted)">id: {n.id}</span>
         </div>
-        <div>
-          <p className="font-medium text-(--ui-text)">Node instructions</p>
-          <p className="text-(--ui-muted)">Applies to this node only, on top of the global instructions.</p>
-        </div>
-        <div className="flex flex-col gap-1.5 rounded-md border border-(--ui-line) bg-(--ui-panel) p-3">
-          <p className="text-[13px] font-medium text-(--ui-text)">Call Flow.</p>
-          <p className="font-medium text-(--ui-text)">STEP 1 : Introduction and language</p>
-          <ul className="list-disc pl-4 text-(--ui-muted)">
-            <li>Greet, say who you are, and ask which language they are comfortable in.</li>
-            <li>If they name a language, continue in it.</li>
-          </ul>
-          <p className="font-medium text-(--ui-text)">STEP 2 : Ask the problem</p>
-          <div className="flex gap-2 rounded bg-(--ui-raised) px-2 py-1 font-mono text-[10.5px]">
-            <span className="text-(--ui-muted)">IF</span>
-            <span className="text-[oklch(0.75_0.12_250)]">
-              has(context.calls) <span className="text-(--ui-muted)">&amp;&amp;</span> context.calls &gt;= 1
+        <div className="flex gap-4 border-b border-(--ui-line) px-3.5 pt-2">
+          {tabs.map((t) => (
+            <span key={t} className={cn("pb-2", t === beat.tab ? "border-b border-(--ui-text) text-(--ui-text)" : "text-(--ui-muted)")}>
+              {t}
             </span>
-          </div>
-          <p className="text-(--ui-muted)">Acknowledge the earlier call and ask whether this is the same concern.</p>
+          ))}
         </div>
+        <div key={idx} className="flex flex-1 flex-col gap-3 p-3.5 motion-safe:animate-[reveal-blur_400ms_var(--ease-out)_both]">
+          <div className="flex flex-col gap-1.5 rounded-md border border-(--ui-line) bg-(--ui-panel) p-3">
+            <p className="text-[12.5px] font-medium text-(--ui-text)">{beat.title}</p>
+            <ul className="list-disc pl-4 text-(--ui-muted)">
+              {beat.lines.map((l) => (
+                <li key={l}>{l}</li>
+              ))}
+            </ul>
+            {beat.code && (
+              <div className="mt-1 flex gap-2 rounded bg-(--ui-raised) px-2 py-1 font-mono text-[10.5px]">
+                <span className="text-(--ui-muted)">{n.kind === "cond" ? "IF" : "fn"}</span>
+                <span className="text-[oklch(0.75_0.12_250)]">{beat.code}</span>
+              </div>
+            )}
+          </div>
+          {/* Live call: what's happening at this step */}
+          <div className="mt-auto flex flex-col gap-1.5 rounded-md border border-(--ui-line) p-3">
+            <span className="flex items-center gap-1.5 text-[10px] text-(--ui-muted)">
+              <span className="size-1.5 rounded-full bg-[oklch(0.78_0.15_150)] motion-safe:animate-pulse" />
+              Live call · step {idx + 1} of {BEATS.length}
+            </span>
+            {beat.say && (
+              <p className="text-[12px] text-(--ui-text)">
+                <span className="mr-1.5 text-(--ui-muted)">{beat.say.who}</span>
+                {beat.say.text}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Canvas */}
+      <div className={cn("relative aspect-[940/470] md:aspect-auto", BG)}>
+        <svg viewBox="0 0 940 470" className="absolute inset-0 size-full font-sans" preserveAspectRatio="xMidYMid meet">
+          {AG_EDGES.map((e) => (
+            <EdgeLine key={`${e.from}-${e.to}`} d={path(byId[e.from], byId[e.to], AG_W)} state={edgeState(e)} />
+          ))}
+          {/* tool call: verify -> fetch, straight down */}
+          <EdgeLine
+            d={`M${byId.verify.x + AG_W / 2},${byId.verify.y + H} L${byId.fetch.x + AG_W / 2},${byId.fetch.y}`}
+            state={beat.node === "fetch" ? "active" : idx > 3 ? "done" : "idle"}
+            dashed
+          />
+          {AG_EDGES.filter((e) => e.label).map((e) => {
+            const a = byId[e.from]
+            const b = byId[e.to]
+            return (
+              <EdgeLabel
+                key={`l-${e.from}-${e.to}`}
+                x={(a.x + AG_W + b.x) / 2}
+                y={(a.y + b.y) / 2 + H / 2}
+                text={e.label!}
+                on={edgeState(e) !== "idle"}
+              />
+            )
+          })}
+          {AG_NODES.map((node) => (
+            <NodeBox key={node.id} n={node} w={AG_W} state={nodeState(node.id)} />
+          ))}
+        </svg>
       </div>
     </div>
   )

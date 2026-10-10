@@ -11,7 +11,7 @@ import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
-import { AgentFlowCanvas, AgentNodeEditor, WorkflowCanvas } from "@/components/product/flow-canvas"
+import { AgentBuilder, WorkflowCanvas } from "@/components/product/flow-canvas"
 import { Pill } from "@/components/product/ui-bits"
 import { LOGOS } from "@/components/sections/tools-integrations"
 import { channels, componentHref, type ComponentId } from "@/content/platform"
@@ -225,10 +225,7 @@ export function PlatformOverview() {
         <div className="grid gap-3 lg:grid-cols-12">
           {/* Agents: the large tile, same plain treatment as the rest */}
           <Tile id="agents" className="lg:col-span-12">
-            <div className={cn("grid overflow-hidden md:h-[26rem] md:grid-cols-[22rem_1fr]", CHROME)}>
-              <AgentNodeEditor className="hidden border-r border-white/10 md:flex" />
-              <AgentFlowCanvas className="aspect-[780/480] md:aspect-auto md:h-full" />
-            </div>
+            <AgentBuilder className={cn("md:h-[26rem]", CHROME)} />
           </Tile>
           <Tile id="workflow" className="lg:col-span-7">
             <WorkflowCanvas className={CHROME} />

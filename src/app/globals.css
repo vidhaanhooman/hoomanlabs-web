@@ -261,6 +261,10 @@
   from { transform: translate(-3%, -2%) rotate(0deg); }
   to { transform: translate(3%, 2%) rotate(8deg); }
 }
+.flow-dash { animation: flow-dash 600ms linear infinite; }
+@keyframes flow-dash { to { stroke-dashoffset: -11; } }
+@media (prefers-reduced-motion: reduce) { .flow-dash { animation: none; } }
+
 @keyframes flow-x {
   from { left: 0; }
   to { left: calc(100% - 6px); }
