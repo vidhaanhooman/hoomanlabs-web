@@ -83,12 +83,8 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
     )
   if (kind === "input")
     return <path d={`M${x + 7},${y - 7} L${x + 2},${y + 1} L${x + 6},${y + 1} L${x + 5},${y + 7} L${x + 11},${y - 1} L${x + 7},${y - 1} Z`} fill="oklch(0.7 0.14 250)" />
-  return (
-    <path
-      d={`M${x + 6.5},${y - 7} L${x + 8.3},${y - 1.8} L${x + 13},${y} L${x + 8.3},${y + 1.8} L${x + 6.5},${y + 7} L${x + 4.7},${y + 1.8} L${x},${y} L${x + 4.7},${y - 1.8} Z`}
-      fill="oklch(0.7 0.14 250)"
-    />
-  )
+  // agent: Humi's head
+  return <image href="/art/humi/head.svg" x={x - 3} y={y - 10} width={19} height={20} preserveAspectRatio="xMidYMid meet" />
 }
 
 function NodeBox({ n, w, state }: { n: Node; w: number; state: State }) {
@@ -339,9 +335,14 @@ export function AgentBuilder({ className }: { className?: string }) {
       {/* Editor: follows the active node */}
       <div className="ui-dark hidden flex-col overflow-hidden border-r border-white/10 text-[11px] leading-snug md:flex">
         <div className="flex items-center gap-2 border-b border-(--ui-line) px-3.5 py-2.5">
-          <span className={n.kind === "cond" ? "text-[oklch(0.72_0.14_295)]" : n.kind === "js" ? "text-[oklch(0.83_0.16_85)]" : "text-[oklch(0.7_0.14_250)]"}>
-            {n.kind === "cond" ? "⑂" : n.kind === "js" ? "JS" : "✦"}
-          </span>
+          {n.kind === "agent" ? (
+            // eslint-disable-next-line @next/next/no-img-element -- animated SVG
+            <img src="/art/humi/head-active.svg" alt="" className="size-5" />
+          ) : (
+            <span className={n.kind === "cond" ? "text-[oklch(0.72_0.14_295)]" : "text-[oklch(0.83_0.16_85)]"}>
+              {n.kind === "cond" ? "⑂" : "JS"}
+            </span>
+          )}
           <span className="text-[13px] font-medium text-(--ui-text)">
             {n.label}
           </span>
