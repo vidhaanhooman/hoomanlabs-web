@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { Fragment } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
@@ -10,7 +9,6 @@ import { VoiceFlow } from "@/components/product/voice-flow"
 import { Channels } from "@/components/sections/channels"
 import { FinalCta } from "@/components/sections/final-cta"
 import { ProductResources } from "@/components/sections/product-resources"
-import { ManageAgents } from "@/components/sections/manage-agents"
 import { ProductStageList } from "@/components/sections/product-stage-list"
 import { StageIndex } from "@/components/sections/stage-index"
 import { ToolsIntegrations } from "@/components/sections/tools-integrations"
@@ -83,10 +81,7 @@ export function PlatformPage() {
       <UseCases />
 
       {stages.map((s, i) => (
-        <Fragment key={s.id}>
-          <ProductStageList stage={s} start={starts[i]} productName={platform.name} />
-          {s.id === "agents" && <ManageAgents />}
-        </Fragment>
+        <ProductStageList key={s.id} stage={s} start={starts[i]} productName={platform.name} />
       ))}
       <Channels start={channelsStart} productName={platform.name} />
       <ToolsIntegrations start={toolsStart} productName={platform.name} />

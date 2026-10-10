@@ -44,7 +44,9 @@ export type MenuMedia =
 
 export const menuMedia: MenuMedia | null = null
 
-export const componentHref = (id: ComponentId) => `/platform#product-${id}`
+/** Components with their own page; the rest link to their section on /platform. */
+const PAGES: Partial<Record<ComponentId, string>> = { agents: "/platform/agents" }
+export const componentHref = (id: ComponentId) => PAGES[id] ?? `/platform#product-${id}`
 
 /* Hero: calls in, results out. */
 export const flow = {
