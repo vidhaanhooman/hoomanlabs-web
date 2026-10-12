@@ -41,7 +41,7 @@ export function StartResources() {
             <Panel className="flex w-full flex-col gap-5 p-6 sm:p-7">
               <div className="flex flex-col gap-1.5">
                 <h3 className="text-h4 font-normal">Follow-up done</h3>
-                <p className="text-small text-ink-secondary">Summary, CRM and score, after every call.</p>
+                <p className="text-small text-ink-secondary">Done before anyone looks.</p>
               </div>
               <div aria-hidden className="flex flex-col gap-3 rounded-md border border-line bg-background p-3 text-small">
                 <div className="flex items-center justify-between text-label text-ink-muted">
@@ -50,6 +50,7 @@ export function StartResources() {
                 </div>
                 <ul className="flex flex-col">
                   {[
+                    ["Summary", "Written"],
                     ["CRM", "HubSpot updated"],
                     ["Ticket", "#TCK-2291"],
                     ["QA score", "4.6 / 5"],
@@ -74,7 +75,7 @@ export function StartResources() {
             <Panel className="flex w-full flex-col gap-5 p-6 sm:p-7">
               <div className="flex flex-col gap-1.5">
                 <h3 className="text-h4 font-normal">Your systems</h3>
-                <p className="text-small text-ink-secondary">CRM, helpdesk, calendar and your own tools.</p>
+                <p className="text-small text-ink-secondary">Agents act on the tools you already run.</p>
               </div>
               <div aria-hidden className="flex flex-col overflow-hidden rounded-md border border-line bg-background text-small">
                 <div className="grid grid-cols-[1fr_auto] border-b border-line px-3 py-2 text-label text-ink-muted">
@@ -115,7 +116,7 @@ export function StartResources() {
             <Panel className="flex w-full flex-col p-6 sm:p-7">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>
-              <p className="pt-1.5 text-small text-ink-secondary">API, docs and MCP.</p>
+              <p className="pt-1.5 text-small text-ink-secondary">Build on it from your own code.</p>
               <ul className="mt-5 flex flex-col">
                 {resources.links
                   .filter((r) => r.label !== "Changelog")

@@ -27,9 +27,9 @@ const [design, ...rest] = features
 
 /** One line for each compact card. */
 const SHORT: Record<string, string> = {
-  "feature-channels": "Phone, web, app and WhatsApp.",
+  "feature-channels": "One agent, with the conversation carried across.",
   "feature-guardrails": "Simulated callers test every version.",
-  "feature-analytics": "Every call scored, with alerts.",
+  "feature-analytics": "Know what works, and when it slips.",
 }
 
 function Brand({ icon, className }: { icon: SimpleIcon; className?: string }) {
@@ -96,6 +96,7 @@ const MINI: Record<string, React.ReactNode> = {
         {[
           { p: "Frustrated repeat caller", s: "Payment not applied", ok: true },
           { p: "Switches to Hindi", s: "Explain tariff", ok: true },
+          { p: "Interrupts often", s: "Dispute late fee", ok: true },
           { p: "Asks for a human", s: "Escalation", ok: false },
           { p: "In a hurry", s: "Update phone number", ok: true },
         ].map((r) => (
@@ -134,7 +135,7 @@ const MINI: Record<string, React.ReactNode> = {
         <span className="bg-ink-muted" style={{ width: "9%" }} />
         <span className="bg-[oklch(0.65_0.19_25)]" style={{ width: "6%" }} />
       </div>
-      <svg viewBox="0 0 300 48" preserveAspectRatio="none" className="h-16 w-full flex-1" aria-hidden>
+      <svg viewBox="0 0 300 48" preserveAspectRatio="none" className="h-[4.75rem] w-full" aria-hidden>
         <path
           d="M0,40 L25,36 L50,38 L75,30 L100,32 L125,25 L150,27 L175,20 L200,22 L225,14 L250,16 L275,9 L300,6"
           fill="none"
@@ -149,6 +150,7 @@ const MINI: Record<string, React.ReactNode> = {
       </svg>
       <ul className="flex flex-col border-t border-line pt-1 text-small">
         {[
+          { t: "Transfers above 15%", where: "Slack", tone: WARN },
           { t: "Resolution below 65%", where: "On-call", tone: OK },
         ].map((a) => (
           <li key={a.t} className="flex items-center gap-2 py-1.5">
