@@ -7,10 +7,10 @@ import { JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from 
 import { cn } from "@/lib/utils"
 
 /**
- * Calm hero journey (/lab/v3): two columns (step rail + feed), one step on
- * screen at a time, one thing moving at a time. Green only marks "now".
- * What the agent learns arrives as a light card that floats just outside the
- * window's edge, then gives way to the next. Remount (key) to switch journey.
+ * Calm hero journey (/lab/v3): step rail, one running transcript of every
+ * action and line, and a context pane that fills in as the agent learns
+ * things. One thing moving at a time; green only marks "now". Remount (key)
+ * to switch journey.
  */
 
 type Card = { title: string; rows: [string, string][] }
@@ -36,11 +36,9 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
   const { events, steps } = journey
   const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS, onEnd })
 
-  // The current step's events only; the rail keeps the history.
-  const first = events.findIndex((e) => e.step === step)
-  const upTo = done ? events.length : at.i + 1
-  const lines = events.slice(first, upTo).filter((e) => e.step === step)
-  const card = CARDS[id][step]
+  // One running transcript: every action and line so far.
+  const lines = events.slice(0, done ? events.length : at.i + 1)
+  const cards = Object.entries(CARDS[id]).map(([s, c]) => ({ step: Number(s), ...c! }))
 
   return (
     <div ref={ref} className="relative">
@@ -69,7 +67,7 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
           <span className="text-[12px] whitespace-nowrap">{steps[step].label}</span>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[17rem_minmax(0,1fr)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[15rem_minmax(0,1fr)] @5xl:grid-cols-[16rem_minmax(0,1fr)_17rem]">
           {/* Step rail */}
           <ol aria-label="Journey steps" className="hidden flex-col gap-1.5 border-r border-(--ui-line) p-4 @3xl:flex">
             {steps.map((s, i) => {
@@ -107,19 +105,15 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
 
           {/* Feed: this step only */}
           <div className="flex min-w-0 flex-col">
-            <ol key={`${id}-${step}`} aria-label={steps[step].label} className="flex h-72 flex-col gap-4 overflow-hidden px-5 pt-7 pb-4 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both] @3xl:h-[30rem] @3xl:px-8 @5xl:pr-80">
-              {/* What the agent learned, inline where there's no room for the floating card */}
-              {card && (
-                <li className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-(--ui-muted) @5xl:hidden">
-                  {card.rows.map(([k, v]) => (
-                    <span key={k}>
-                      {k} <span className="text-(--ui-text)">{v}</span>
-                    </span>
-                  ))}
-                </li>
-              )}
-              {lines.map((e, n) => {
-                const i = first + n
+            <ol
+              aria-label="Journey transcript"
+              className="flex h-72 flex-col justify-end gap-4 overflow-hidden px-5 pt-7 pb-4 @3xl:h-[30rem] @3xl:px-8"
+              style={{
+                maskImage: "linear-gradient(to bottom, transparent, black 22%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent, black 22%)",
+              }}
+            >
+              {lines.map((e, i) => {
                 const live = i === at.i && !done
                 return (
                   <li key={i} className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500">
@@ -157,25 +151,27 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
               </span>
             </div>
           </div>
-        </div>
-        {/* Floating card: what the agent just learned, top right of the feed */}
-        {card && (
-          <div
-            key={`${id}-card-${step}`}
-            aria-hidden
-            className="absolute top-20 right-6 hidden w-64 flex-col gap-2 rounded-lg border border-black/5 bg-background p-4 text-foreground shadow-[0_24px_60px_-24px_oklch(0.2_0.03_120/0.55)] motion-safe:animate-[reveal-blur_600ms_var(--ease-out)_350ms_both] @5xl:flex"
-          >
-            <span className="font-mono text-label text-ink-muted">{card.title}</span>
-            <dl className="flex flex-col">
-              {card.rows.map(([k, v]) => (
-                <div key={k} className="flex flex-col border-t border-line py-1.5 first:border-0 first:pt-0">
-                  <dt className="text-label text-ink-muted">{k}</dt>
-                  <dd className="text-small">{v}</dd>
+
+          {/* What the agent has learned, filled in as it goes */}
+          <aside aria-label="Context" className="hidden flex-col gap-5 border-l border-(--ui-line) bg-(--ui-panel) p-5 @5xl:flex">
+            {cards.map((c) => {
+              const known = done || step >= c.step
+              return (
+                <div key={c.title} className="flex flex-col gap-2.5">
+                  <span className="font-mono text-[11px] text-(--ui-muted)">{c.title}</span>
+                  <dl className="flex flex-col gap-2">
+                    {c.rows.map(([k, v]) => (
+                      <div key={k} className="flex flex-col">
+                        <dt className="text-[11px] text-(--ui-muted)">{k}</dt>
+                        <dd className={cn("transition-colors duration-500", !known && "text-(--ui-muted)")}>{known ? v : "…"}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
-              ))}
-            </dl>
-          </div>
-        )}
+              )
+            })}
+          </aside>
+        </div>
       </div>
     </div>
   )

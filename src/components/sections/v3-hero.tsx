@@ -15,8 +15,8 @@ import { cn } from "@/lib/utils"
 
 /**
  * /lab/v3 hero, two layouts to compare (lab switch, top right):
- * - calm: a full-bleed painting with one large window whose lower edge
- *   breaks onto the page; it plays inbound, then outbound, on its own.
+ * - calm: the parallax painting with one large window (rail, transcript,
+ *   context pane); it plays inbound, then outbound, on its own.
  * - window: the earlier framed painting with the three-column window.
  */
 
@@ -66,15 +66,15 @@ export function V3Hero() {
       </Container>
 
       {layout === "calm" && (
-        <div className="relative mt-10 md:mt-12">
-          {/* Full-bleed painting; the window's lower edge breaks out below it */}
-          <HeroParallaxStage className="absolute inset-x-0 top-0 bottom-20 rounded-none md:bottom-24" />
-          <Container className="relative z-10 pt-12 md:pt-16 lg:pt-20">
-            <div id="v3-journey" className="reveal" style={{ "--i": 4 } as React.CSSProperties}>
-              <CalmJourneyWindow key={journey} id={journey} onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))} />
-            </div>
-          </Container>
-        </div>
+        <Container className="mt-10 md:mt-12">
+          <div id="v3-journey" className="reveal" style={{ "--i": 3 } as React.CSSProperties}>
+            <HeroParallaxStage className="rounded-xl">
+              <div className="relative z-10 px-3 py-10 sm:px-10 sm:py-16 lg:px-16 lg:py-24">
+                <CalmJourneyWindow key={journey} id={journey} onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))} />
+              </div>
+            </HeroParallaxStage>
+          </div>
+        </Container>
       )}
     </Section>
   )
