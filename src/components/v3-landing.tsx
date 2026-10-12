@@ -3,9 +3,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
-import { FlowArrowIcon, GitBranchIcon, LightningIcon } from "@phosphor-icons/react/dist/ssr"
-
-import { WorkflowCanvas } from "@/components/product/flow-canvas"
+import { WorkflowAnatomy } from "@/components/product/workflow-anatomy"
 import { AgentAnatomy } from "@/components/product/agent-anatomy"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
@@ -48,13 +46,6 @@ function Header({ title, body, aside }: { title: string; body?: string; aside?: 
     </div>
   )
 }
-
-/** What the workflow canvas is made of. */
-const WORKFLOW_PARTS = [
-  { icon: LightningIcon, title: "Triggers", body: "Start a run when something happens.", eg: "call.ended · form.submitted" },
-  { icon: GitBranchIcon, title: "Branches", body: "Take a different path on what the call found.", eg: "if unanswered · if payment failed" },
-  { icon: FlowArrowIcon, title: "Actions", body: "Update your systems, message and retry.", eg: "push_to_CRM · send_summary" },
-]
 
 /** The three deployments shown with the enterprise path. Third is a placeholder pick. */
 const DEPLOYMENTS = (["support", "leads", "collections"] as const).map((v) => useCases.find((u) => u.visual === v)!)
@@ -131,25 +122,8 @@ export function V3Landing() {
             body="Triggers, campaigns, follow-ups and retries, so every call starts with context and ends with the next step done."
             aside={<TextLink href="/platform#product-workflow">Explore Workflow</TextLink>}
           />
-          {/* What it's made of on the left; the canvas, top to bottom, on the right */}
-          <div className="mt-10 grid gap-3 rounded-xl border border-line bg-surface p-3 sm:gap-4 sm:p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
-            <ul className="order-2 grid gap-3 sm:grid-cols-3 sm:gap-4 lg:order-1 lg:grid-cols-1 lg:grid-rows-3">
-              {WORKFLOW_PARTS.map(({ icon: Ico, title, body, eg }) => (
-                <li key={title} className="flex gap-3 rounded-lg border border-line bg-background p-4 lg:items-center lg:p-5">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line text-ink-secondary">
-                    <Ico className="size-4" />
-                  </span>
-                  <span className="flex min-w-0 flex-col gap-0.5">
-                    <span className="text-body font-medium">{title}</span>
-                    <span className="text-small text-ink-secondary">{body}</span>
-                    <span className="pt-1 font-mono text-[11.5px] text-ink-muted">{eg}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div aria-hidden className="order-1 flex items-center overflow-hidden rounded-lg bg-[oklch(0.13_0_0)] lg:order-2">
-              <WorkflowCanvas vertical className="w-full px-3 pt-10 pb-3" />
-            </div>
+          <div className="mt-10">
+            <WorkflowAnatomy />
           </div>
         </Container>
       </Section>

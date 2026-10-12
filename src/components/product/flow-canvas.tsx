@@ -225,7 +225,19 @@ const WFV_NODES: (Node & { stage: number })[] = WF_NODES.map((n) => {
   return { ...n, x: n.id in col ? WFV_X[col[n.id]] : WFV_MID, y: WFV_ROW[n.stage] }
 })
 
-export function WorkflowCanvas({ className, vertical = false }: { className?: string; vertical?: boolean }) {
+export function WorkflowCanvas({
+  className,
+  vertical = false,
+  marks,
+  focus,
+}: {
+  className?: string
+  vertical?: boolean
+  /** Numbered markers on nodes (node id → number), for annotations. */
+  marks?: Record<string, number>
+  /** Spotlight: only these nodes stay bright. */
+  focus?: string[] | null
+}) {
   const { ref, step } = useSteps(WF_STATUS.length + 1, 1200)
   const stage = Math.min(step, WF_STATUS.length - 1)
   const W = vertical ? WFV_W : WF_W
@@ -241,7 +253,7 @@ export function WorkflowCanvas({ className, vertical = false }: { className?: st
           {WF_STATUS[stage]}
         </span>
       </div>
-      <svg viewBox={vertical ? "-4 0 838 492" : "0 0 1200 430"} className="block h-auto w-full font-sans">
+      <svg viewBox={vertical ? "-4 -10 852 502" : "0 0 1200 430"} className="block h-auto w-full font-sans">
         {WF_EDGES.map((e) => (
           <EdgeLine key={`${e.from}-${e.to}`} d={edge(byId[e.from], byId[e.to], W)} state={nodeState(byId[e.to].stage)} />
         ))}
@@ -255,8 +267,23 @@ export function WorkflowCanvas({ className, vertical = false }: { className?: st
           )
         })}
         {nodes.map((n) => (
-          <NodeBox key={n.id} n={n} w={W} state={nodeState(n.stage)} vertical={vertical} />
+          <g key={n.id} opacity={focus && !focus.includes(n.id) ? 0.22 : 1} style={{ transition: "opacity 300ms" }}>
+            <NodeBox n={n} w={W} state={nodeState(n.stage)} vertical={vertical} />
+          </g>
         ))}
+        {marks &&
+          Object.entries(marks).map(([id, num]) => {
+            const n = byId[id]
+            if (!n) return null
+            return (
+              <g key={`m-${id}`} data-marker={num} transform={`translate(${n.x + W},${n.y})`}>
+                <circle r={9} fill="white" />
+                <text y={3.6} fontSize={10.5} textAnchor="middle" fill="black" fontFamily="var(--font-mono, monospace)">
+                  {num}
+                </text>
+              </g>
+            )
+          })}
       </svg>
     </div>
   )

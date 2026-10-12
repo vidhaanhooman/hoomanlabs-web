@@ -157,6 +157,29 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
   ),
 }
 
+/** Post-call: the summary and the follow-ups done after goodbye. */
+function PostCallGraphic() {
+  return (
+    <Snip className="w-72 gap-2">
+      <span className="text-ink-muted">Summary</span>
+      <span>Double charge on 4 March confirmed; refund ticket raised and reference texted.</span>
+      <span className="flex flex-col border-t border-line pt-1">
+        {[
+          ["CRM updated", "HubSpot"],
+          ["Ticket created", "#TCK-2291"],
+          ["QA score", "4.6 / 5"],
+        ].map(([t, d]) => (
+          <span key={t} className="flex items-center gap-2 py-1">
+            <Tick />
+            <span className="flex-1">{t}</span>
+            <span className="text-[10.5px] text-ink-muted">{d}</span>
+          </span>
+        ))}
+      </span>
+    </Snip>
+  )
+}
+
 /* Dark and light alternate in a checkerboard across the 3 × 2 grid. */
 /** One benefit line per part (the platform pages carry the detail). */
 const LINE: Record<ComponentId, string> = {
@@ -167,14 +190,7 @@ const LINE: Record<ComponentId, string> = {
   channels: "One agent on phone, WhatsApp, web and app.",
   tools: "Works inside your CRM, helpdesk and calendar.",
 }
-const DARK_IDS: ComponentId[] = ["simulations", "channels"]
-/** Bento placement on large screens (12 columns, 2 rows). */
-const SPAN: Partial<Record<ComponentId, string>> = {
-  simulations: "lg:col-span-6",
-  qa: "lg:col-span-3",
-  channels: "lg:col-span-3",
-  tools: "lg:col-span-6",
-}
+const DARK_IDS: ComponentId[] = ["simulations", "qa", "tools"]
 const FOCUS: Record<ComponentId, string> = {
   agents: "15% 20%",
   workflow: "85% 15%",
@@ -184,8 +200,31 @@ const FOCUS: Record<ComponentId, string> = {
   tools: "100% 50%",
 }
 
-/** The parts not covered by their own sections on this page (Agents and Workflow are). */
-const PARTS: ComponentId[] = ["simulations", "qa", "channels", "tools"]
+type Card = { key: string; name: string; line: string; href: string; span: string; dark: boolean; focus: string; G: () => React.ReactNode }
+
+const part = (id: ComponentId, span: string): Card => ({
+  key: id,
+  name: components.find((x) => x.id === id)!.name,
+  line: LINE[id],
+  href: componentHref(id),
+  span,
+  dark: DARK_IDS.includes(id),
+  focus: FOCUS[id],
+  G: GRAPHICS[id],
+})
+
+/**
+ * The parts not covered by their own sections on this page (Agents and Workflow
+ * are), plus post-call. Two rows of three that zig-zag on 12 columns; the
+ * resources card closes the second row.
+ */
+const CARDS: Card[] = [
+  part("simulations", "lg:col-span-5"),
+  { key: "post", name: "Post-call", line: "Summary, CRM update and a score after every call.", href: "/platform", span: "lg:col-span-4", dark: false, focus: "85% 20%", G: PostCallGraphic },
+  part("qa", "lg:col-span-3"),
+  part("channels", "lg:col-span-3"),
+  part("tools", "lg:col-span-5"),
+]
 
 export function StartResources() {
   return (
@@ -199,40 +238,36 @@ export function StartResources() {
           <TextLink href="/platform">See the full platform</TextLink>
         </div>
         <ul className="mt-10 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-12">
-          {PARTS.map((id) => {
-            const c = components.find((x) => x.id === id)!
-            const G = GRAPHICS[id]
-            return (
-              <li key={id} className={cn("flex min-w-0", SPAN[id], id === "tools" && "sm:col-span-2")}>
-                <Link
-                  href={componentHref(id)}
-                  className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
-                >
-                  <div aria-hidden className="relative isolate flex min-h-40 flex-1 items-center justify-center overflow-hidden bg-surface p-4">
-                    <Halftone focus={FOCUS[id]} />
-                    <div
-                      className={cn(
-                        "text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-0.5",
-                        DARK_IDS.includes(id) && DARK
-                      )}
-                    >
-                      <G />
-                    </div>
+          {CARDS.map(({ key, name, line, href, span, dark, focus, G }) => (
+            <li key={key} className={cn("flex min-w-0", span)}>
+              <Link
+                href={href}
+                className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
+              >
+                <div aria-hidden className="relative isolate flex min-h-40 flex-1 items-center justify-center overflow-hidden bg-surface p-4">
+                  <Halftone focus={focus} />
+                  <div
+                    className={cn(
+                      "text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-0.5",
+                      dark && DARK
+                    )}
+                  >
+                    <G />
                   </div>
-                  <div className="flex flex-col gap-1 border-t border-line p-4">
-                    <span className="flex items-center justify-between text-body font-medium">
-                      {c.name}
-                      <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                    <span className="text-small text-ink-secondary">{LINE[id]}</span>
-                  </div>
-                </Link>
-              </li>
-            )
-          })}
+                </div>
+                <div className="flex flex-col gap-1 border-t border-line p-4">
+                  <span className="flex items-center justify-between text-body font-medium">
+                    {name}
+                    <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                  <span className="text-small text-ink-secondary">{line}</span>
+                </div>
+              </Link>
+            </li>
+          ))}
 
-          {/* Resources: the full height of the last column */}
-          <li className="flex min-w-0 sm:col-span-2 lg:col-span-3 lg:col-start-10 lg:row-span-2 lg:row-start-1">
+          {/* Resources close the second row */}
+          <li className="flex min-w-0 lg:col-span-4">
             <div className="flex w-full flex-col rounded-xl border border-line bg-surface p-5">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>

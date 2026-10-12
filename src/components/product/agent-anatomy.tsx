@@ -12,7 +12,6 @@ import {
   PlayIcon,
   SpeakerHighIcon,
   TrayArrowDownIcon,
-  TrayArrowUpIcon,
   type Icon,
 } from "@phosphor-icons/react"
 
@@ -38,7 +37,6 @@ const MARKS: Mark[] = [
   { n: 2, side: "right", title: "Conditions", body: "Branch the call in CEL, inline.", icon: GitBranchIcon },
   { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your documents.", icon: BookOpenTextIcon },
   { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages.", icon: LightningIcon },
-  { n: 5, side: "right", title: "After the call", body: "Summary, CRM update and QA score.", icon: TrayArrowUpIcon },
   { n: 6, side: "right", title: "Voice & languages", body: "en-GB voice, 30 languages.", icon: SpeakerHighIcon },
 ]
 
@@ -145,13 +143,6 @@ function Editor({ focus }: { focus: number | null }) {
           </li>
         </ol>
 
-        <div className={cn("flex flex-col gap-2.5 pt-2", dim(5))}>
-          <h4 className="font-medium">After the call</h4>
-          <p className="text-(--ui-text)/85">
-            Write a two-line summary, update the CRM and score the call
-            <Marker n={5} />
-          </p>
-        </div>
       </div>
     </div>
   )
@@ -224,7 +215,7 @@ const MIN_SPACE = 12
 type Pos = { n: number; y: number; top: number; h: number }
 
 /** The order cards arrive in: top to bottom through the editor. */
-const ORDER = [6, 1, 3, 2, 4, 5]
+const ORDER = [6, 1, 3, 2, 4]
 /** Scroll steps: one per card, then one with all shown and no spotlight. */
 const STEPS = ORDER.length + 1
 
