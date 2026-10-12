@@ -118,7 +118,7 @@ function Editor({ focus }: { focus: number | null }) {
           </li>
           <li className={dim()}>Otherwise, follow the instructions for this account&rsquo;s status:</li>
         </ol>
-        <div className={cn("relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dim(2, 4))}>
+        <div className={cn("relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dim(2))}>
           <div>
             <span className={op}>{"{{ "}</span>
             <span className={vr}>context.balance</span>
@@ -128,8 +128,7 @@ function Editor({ focus }: { focus: number | null }) {
             <Marker n={2} />
           </div>
           <div className="pl-4 text-(--ui-text)/85">
-            &quot;&quot;&quot;Offer to take the payment now with <span className="text-[oklch(0.82_0.12_80)]">[take_payment]</span>
-            <Marker n={4} />. If they can&rsquo;t pay in full, offer a plan of up to three instalments.&quot;&quot;&quot;
+            &quot;&quot;&quot;Offer to take the payment now. If they can&rsquo;t pay in full, offer a plan of up to three instalments.&quot;&quot;&quot;
           </div>
           <div className="pl-4 text-(--ui-text)/85">
             <span className={op}>: </span>&quot;&quot;&quot;Confirm nothing is owed.&quot;&quot;&quot;<span className={op}>{" }}"}</span>
@@ -139,30 +138,20 @@ function Editor({ focus }: { focus: number | null }) {
             Valid CEL
           </span>
         </div>
-      </div>
+        <ol start={4} className="flex list-decimal flex-col gap-1.5 pl-5 text-(--ui-text)/85 marker:text-(--ui-muted)">
+          <li className={dim(4)}>
+            To take a payment, use <span className="rounded-[3px] font-mono text-[0.92em] text-[oklch(0.82_0.12_80)]">[take_payment]</span>
+            <Marker n={4} /> and read the amount back first.
+          </li>
+        </ol>
 
-      {/* Post-call */}
-      <div className={cn("flex flex-col gap-3 border-t border-(--ui-line) bg-(--ui-panel) px-8 py-4 @3xl:px-12", dim(5))}>
-        <span className="flex items-center font-mono text-[11px] tracking-wide text-(--ui-muted) uppercase">
-          After the call
-          <Marker n={5} />
-        </span>
-        <dl className="grid grid-cols-2 gap-2 @xl:grid-cols-4">
-          {[
-            ["Summary", "Written"],
-            ["CRM updated", "HubSpot"],
-            ["Ticket", "#TCK-2291"],
-            ["QA score", "4.6 / 5"],
-          ].map(([k, v]) => (
-            <div key={k} className="flex flex-col gap-0.5 rounded-md border border-(--ui-line) bg-(--ui-bg) px-3 py-2">
-              <dt className="text-[11px] text-(--ui-muted)">{k}</dt>
-              <dd className="flex items-center gap-1.5 text-[12.5px]">
-                <CheckIcon weight="bold" className="size-3 shrink-0 text-(--ui-live)" aria-hidden />
-                <span className="truncate">{v}</span>
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className={cn("flex flex-col gap-2.5 pt-2", dim(5))}>
+          <h4 className="font-medium">After the call</h4>
+          <p className="text-(--ui-text)/85">
+            Write a two-line summary, update the CRM and score the call
+            <Marker n={5} />
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -228,7 +217,7 @@ function CalloutCard({
 /* ------------------------------------------------------------ layout */
 
 /** Callout column width and spacing (px). */
-const CARD = 284
+const CARD = 324
 const GAP = 12
 const MIN_SPACE = 12
 
@@ -272,17 +261,15 @@ export function AgentAnatomy() {
         const b = ed.querySelector<HTMLElement>(`[data-marker="${m.n}"]`)?.getBoundingClientRect()
         return { m, y: b ? b.top - r.top + b.height / 2 : 0 }
       })
-      // One column on the right: cards in marker order, spread evenly over the editor's height.
+      // One column on the right: each card centred on its marker so every line is a
+      // straight horizontal; cards are only nudged down if they would overlap.
       const order = ys.sort((a, b) => a.y - b.y)
-      const heights = order.map(({ m }) => cards.current[m.n]?.offsetHeight ?? 80)
-      const top0 = e.top - r.top
-      const room = e.height - heights.reduce((a, b) => a + b, 0)
-      const gap = Math.max(MIN_SPACE, room / Math.max(1, order.length - 1))
-      let y0 = top0
-      const next: Pos[] = order.map(({ m, y }, i) => {
-        const top = y0
-        y0 += heights[i] + gap
-        return { n: m.n, y, top, h: heights[i] }
+      let floor = e.top - r.top
+      const next: Pos[] = order.map(({ m, y }) => {
+        const h = cards.current[m.n]?.offsetHeight ?? 64
+        const top = Math.max(y - h / 2, floor)
+        floor = top + h + MIN_SPACE
+        return { n: m.n, y, top, h }
       })
       setPos(next)
     }
@@ -300,19 +287,19 @@ export function AgentAnatomy() {
       {/* Tall track on large screens; the stage inside stays pinned while it scrolls past */}
       <div ref={track} className={cn(!reduce && "lg:h-[480vh]")}>
         <div className={cn(!reduce && "lg:sticky lg:top-24")}>
-          <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-20 lg:pt-4 lg:pb-14">
+          <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_19.5rem] lg:gap-x-16 lg:pt-4 lg:pb-14">
             <div ref={editor}>
               <Editor focus={focus} />
             </div>
             <div aria-hidden className="hidden lg:block" />
 
-            {/* Hairlines: a curve from each marker, out of the editor, into its card */}
+            {/* Hairlines: straight across from each marker into its card */}
             <svg aria-hidden className="pointer-events-none absolute inset-0 hidden size-full overflow-visible lg:block">
               {pos.map((p) => {
                 const x0 = edge.right
                 const x1 = edge.width - (CARD - GAP)
-                // A soft curve from the marker to the middle of its card; markers and cards share an order, so curves never cross.
-                const y1 = p.top + p.h / 2
+                // Straight across at the marker's height (kept inside the card if it was nudged).
+                const y1 = Math.min(Math.max(p.y, p.top + 12), p.top + p.h - 12)
                 const dx = (x1 - x0) / 2
                 return (
                   <path
