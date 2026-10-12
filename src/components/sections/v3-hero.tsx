@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils"
 export function V3Hero() {
   const [layout, setLayout] = useState<"calm" | "window">("calm")
   const [journey, setJourney] = useState<JourneyId>("inbound")
+  const [sound, setSound] = useState(false)
   return (
     <Section id="hero" spacing="none" className="pt-10 pb-(--section-pad) md:pt-16">
       <Container className="relative">
@@ -74,6 +75,9 @@ export function V3Hero() {
                   key={journey}
                   id={journey}
                   onPick={setJourney}
+                  sound={sound}
+                  onSound={setSound}
+                  tryHref="#v3-talk"
                   onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))}
                 />
               </div>

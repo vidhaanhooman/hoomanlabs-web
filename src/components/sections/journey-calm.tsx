@@ -1,9 +1,31 @@
 "use client"
 
-import { useRef } from "react"
-import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
+import { useEffect, useRef } from "react"
+import {
+  ArrowRightIcon,
+  ChatTextIcon,
+  CheckCircleIcon,
+  CheckIcon,
+  CircleNotchIcon,
+  FlowArrowIcon,
+  LightningIcon,
+  PhoneIcon,
+  SpeakerHighIcon,
+  SpeakerSlashIcon,
+  TextboxIcon,
+  type Icon,
+} from "@phosphor-icons/react"
+import { siHubspot, siWhatsapp, siZendesk, type SimpleIcon } from "simple-icons"
 
-import { JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
+import {
+  JOURNEYS,
+  SpeechLine,
+  clock,
+  useJourneyPlayback,
+  type Event,
+  type JourneyId,
+  type SystemId,
+} from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
 
 /**
@@ -30,11 +52,79 @@ const CARDS: Record<JourneyId, Partial<Record<number, Card>>> = {
 
 const STEP_PAUSE_MS = 900
 
-export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?: () => void; onPick?: (j: JourneyId) => void }) {
+/** The systems strip: brand marks where we have them, plain icons otherwise. Names are placeholders. */
+const SYSTEMS: Record<SystemId, { name: string; brand?: SimpleIcon; icon?: Icon }> = {
+  phone: { name: "Phone line", icon: PhoneIcon },
+  crm: { name: "HubSpot", brand: siHubspot },
+  zendesk: { name: "Zendesk", brand: siZendesk },
+  sms: { name: "SMS", icon: ChatTextIcon },
+  form: { name: "Website form", icon: TextboxIcon },
+  campaigns: { name: "Campaigns", icon: FlowArrowIcon },
+  whatsapp: { name: "WhatsApp", brand: siWhatsapp },
+}
+
+/**
+ * Voice a line with the browser's speech synthesis (agent and caller get
+ * different voices). Stand-in until each line has a recorded take. Messages
+ * (WhatsApp) aren't spoken. Resolves when done, or after a safety timeout.
+ */
+function speakLine(e: Event): Promise<void> {
+  if (e.kind === "action" || e.channel || typeof window === "undefined" || !("speechSynthesis" in window)) return Promise.resolve()
+  return new Promise((resolve) => {
+    const voices = window.speechSynthesis.getVoices().filter((v) => v.lang.startsWith("en"))
+    const pick = (names: string[]) => voices.find((v) => names.some((n) => v.name.includes(n)))
+    const u = new SpeechSynthesisUtterance(e.text)
+    u.voice =
+      (e.kind === "agent"
+        ? pick(["Samantha", "Google UK English Female", "Serena", "Karen"])
+        : pick(["Daniel", "Google UK English Male", "Arthur", "Moira"])) ??
+      voices[e.kind === "agent" ? 0 : Math.min(1, voices.length - 1)] ??
+      null
+    u.rate = e.kind === "agent" ? 1.04 : 0.98
+    u.pitch = e.kind === "agent" ? 1.05 : 0.95
+    const finish = () => resolve()
+    u.onend = finish
+    u.onerror = finish
+    setTimeout(finish, e.text.length * 95 + 2500)
+    window.speechSynthesis.speak(u)
+  })
+}
+
+export function CalmJourneyWindow({
+  id,
+  onEnd,
+  onPick,
+  sound = false,
+  onSound,
+  tryHref,
+}: {
+  id: JourneyId
+  onEnd?: () => void
+  onPick?: (j: JourneyId) => void
+  /** Voice the conversation (off by default; browsers need a click first). */
+  sound?: boolean
+  onSound?: (on: boolean) => void
+  /** Where "Get this call on your phone" goes once the journey ends. */
+  tryHref?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const journey = JOURNEYS[id]
   const { events, steps } = journey
-  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS, onEnd })
+  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, {
+    stepPause: STEP_PAUSE_MS,
+    onEnd,
+    speak: sound ? speakLine : undefined,
+  })
+
+  // Stop talking when sound goes off or the window goes away.
+  useEffect(() => {
+    if (!sound) window.speechSynthesis?.cancel()
+  }, [sound])
+  useEffect(() => () => window.speechSynthesis?.cancel(), [])
+
+  // Systems in use now, and ones already touched.
+  const live = done ? null : at.i < events.length ? events[at.i].system : null
+  const touched = new Set(events.slice(0, done ? events.length : at.i).map((e) => e.system))
 
   // One running transcript: every action and line so far.
   const lines = events.slice(0, done ? events.length : at.i + 1)
@@ -48,9 +138,24 @@ export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?
           <span className={cn("size-2 rounded-full", done ? "bg-(--ui-muted)" : "bg-(--ui-live)")} />
           <span className="font-medium">{done ? "Complete" : "Live"}</span>
           <span className="hidden text-(--ui-muted) @md:inline">{journey.title}</span>
-          <span className="font-mono text-(--ui-muted) tabular-nums">{clock(seconds)}</span>
+          <span className="hidden font-mono text-(--ui-muted) tabular-nums @sm:inline">{clock(seconds)}</span>
+          {onSound && (
+            <button
+              type="button"
+              onClick={() => onSound(!sound)}
+              aria-pressed={sound}
+              aria-label={sound ? "Sound on" : "Listen"}
+              className={cn(
+                "ml-auto flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] transition-colors",
+                sound ? "border-(--ui-live)/50 text-(--ui-text)" : "border-(--ui-line) text-(--ui-muted) hover:text-(--ui-text)"
+              )}
+            >
+              {sound ? <SpeakerHighIcon className="size-3.5" aria-hidden /> : <SpeakerSlashIcon className="size-3.5" aria-hidden />}
+              <span className="hidden @md:inline">{sound ? "Sound on" : "Listen"}</span>
+            </button>
+          )}
           {onPick && (
-            <div role="tablist" aria-label="Journey" className="ml-auto flex gap-0.5 rounded-full border border-(--ui-line) bg-(--ui-raised) p-0.5">
+            <div role="tablist" aria-label="Journey" className={cn("flex gap-0.5 rounded-full border border-(--ui-line) bg-(--ui-raised) p-0.5", !onSound && "ml-auto")}>
               {(Object.keys(JOURNEYS) as JourneyId[]).map((j) => (
                 <button
                   key={j}
@@ -59,7 +164,7 @@ export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?
                   aria-selected={id === j}
                   onClick={() => onPick(j)}
                   className={cn(
-                    "rounded-full px-3 py-1 text-[12px] transition-colors duration-150",
+                    "rounded-full px-2.5 py-1 text-[12px] transition-colors duration-150 @md:px-3",
                     id === j ? "bg-(--ui-text) text-(--ui-bg)" : "text-(--ui-muted) hover:text-(--ui-text)"
                   )}
                 >
@@ -162,6 +267,18 @@ export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?
                   </li>
                 )
               })}
+              {done && tryHref && (
+                <li className="motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_400ms_both]">
+                  <a
+                    href={tryHref}
+                    className="group inline-flex items-center gap-2 rounded-full bg-(--ui-text) px-4 py-2 text-[13px] font-medium text-(--ui-bg) transition-transform active:scale-[0.97]"
+                  >
+                    <PhoneIcon weight="fill" className="size-3.5" aria-hidden />
+                    Get this call on your phone
+                    <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                  </a>
+                </li>
+              )}
             </ol>
 
             {/* Status */}
@@ -209,6 +326,38 @@ export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?
               )
             })}
           </aside>
+        </div>
+
+        {/* Systems the agent works in; the one in use now lights up */}
+        <div className="flex items-center gap-2 overflow-x-auto border-t border-(--ui-line) px-5 py-3 [scrollbar-width:none] @3xl:px-6">
+          <span className="mr-1 shrink-0 font-mono text-[11px] text-(--ui-muted)">Connected</span>
+          {journey.systems.map((k) => {
+            const sys = SYSTEMS[k]
+            const now = live === k
+            const used = touched.has(k)
+            return (
+              <span
+                key={k}
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] transition-[border-color,color,box-shadow] duration-500",
+                  now
+                    ? "border-(--ui-live)/60 text-(--ui-text) shadow-[0_0_16px_-4px_var(--ui-live)]"
+                    : used
+                      ? "border-(--ui-line) text-(--ui-text)"
+                      : "border-(--ui-line) text-(--ui-muted)"
+                )}
+              >
+                {sys.brand ? (
+                  <svg viewBox="0 0 24 24" className="size-3.5 fill-current" aria-hidden>
+                    <path d={sys.brand.path} />
+                  </svg>
+                ) : (
+                  sys.icon && <sys.icon className="size-3.5" aria-hidden />
+                )}
+                {sys.name}
+              </span>
+            )
+          })}
         </div>
       </div>
     </div>
