@@ -9,21 +9,37 @@ import { cn } from "@/lib/utils"
 /**
  * Floating "Talk to an agent" button, bottom right. Opens the same call card
  * as the hero (play a sample, or get the call) in a panel above it. Appears
- * once the hero's call card has scrolled out of view.
+ * once the `after` element (the hero's call card by default) has scrolled out
+ * of view, and steps aside while the `hideOver` element is on screen.
  */
-export function VoiceWidget() {
+export function VoiceWidget({
+  after = "listen",
+  hideOver,
+}: {
+  /** Show once this element has scrolled out of view. */
+  after?: string
+  /** Hide while this element (e.g. a full talk-to-an-agent section) is on screen. */
+  hideOver?: string
+} = {}) {
   const [open, setOpen] = useState(false)
-  const [shown, setShown] = useState(false)
+  const [past, setPast] = useState(false)
+  const [covered, setCovered] = useState(false)
 
-  // Only offer the widget once the hero's own call card is off screen.
   useEffect(() => {
-    const hero = document.getElementById("listen")
-    if (!hero) return
-    const io = new IntersectionObserver(([e]) => setShown(!e.isIntersecting), { threshold: 0 })
-    io.observe(hero)
-    return () => io.disconnect()
-  }, [])
+    const io: IntersectionObserver[] = []
+    const watch = (id: string | undefined, set: (inView: boolean) => void) => {
+      const el = id && document.getElementById(id)
+      if (!el) return
+      const o = new IntersectionObserver(([e]) => set(e.isIntersecting), { threshold: 0 })
+      o.observe(el)
+      io.push(o)
+    }
+    watch(after, (v) => setPast(!v))
+    watch(hideOver, setCovered)
+    return () => io.forEach((o) => o.disconnect())
+  }, [after, hideOver])
 
+  const shown = past && !covered
   if (!shown && !open) return null
   return (
     <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6">

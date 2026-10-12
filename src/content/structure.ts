@@ -32,7 +32,7 @@ export const outcomes = {
 }
 
 export const stat = {
-  value: "1.2 million",
+  value: "1.5 million",
   label: "conversations handled every week",
   body: "Across phone, web, app and WhatsApp, in 30+ languages.",
 }

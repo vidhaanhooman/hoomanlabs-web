@@ -40,11 +40,11 @@ const SAMPLE_LOGOS: SimpleIcon[] = [
  * Logo wall, directly under the hero. Greyscale at rest; each logo takes its
  * brand colour on hover (pointer devices only, so taps don't leave it coloured).
  */
-export function Logos() {
+export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
-        <p className="text-center text-small text-ink-muted">{logos.label}</p>
+        <p className="text-center text-small text-ink-muted">{label}</p>
         <ul className="mt-8 grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3 lg:grid-cols-6">
           {SAMPLE_LOGOS.map((icon) => (
             <li key={icon.slug}>

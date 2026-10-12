@@ -70,6 +70,13 @@ export type SectionId =
   | "enterprise-timeline"
   | "enterprise-split"
   | "enterprise-cta"
+  // Homepage v3 (/lab/v3)
+  | "v3-journey"
+  | "v3-customers"
+  | "v3-deployments"
+  | "v3-agent"
+  | "v3-workflow"
+  | "v3-talk"
 
 export const sections: { id: SectionId; name: string; status: SectionStatus }[] = [
   { id: "hero", name: "Hero", status: "draft" },
@@ -140,6 +147,12 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "enterprise-timeline", name: "Enterprise: Gantt timeline", status: "draft" },
   { id: "enterprise-split", name: "Enterprise: who brings what", status: "draft" },
   { id: "enterprise-cta", name: "Enterprise: CTA", status: "draft" },
+  { id: "v3-journey", name: "v3: hero journey (inbound / outbound)", status: "draft" },
+  { id: "v3-customers", name: "v3: customer cards", status: "draft" },
+  { id: "v3-deployments", name: "v3: deployments + enterprise", status: "draft" },
+  { id: "v3-agent", name: "v3: agent builder", status: "draft" },
+  { id: "v3-workflow", name: "v3: workflow", status: "draft" },
+  { id: "v3-talk", name: "v3: talk to an agent", status: "draft" },
 ]
 
 export function sectionMeta(id: SectionId) {
