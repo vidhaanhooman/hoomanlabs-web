@@ -11,7 +11,6 @@ import {
   CustomerStories,
   HomeFaq,
   StatHeadline,
-  UseCaseCarousel,
 } from "@/components/sections/structure"
 import { UseCaseStory } from "@/components/sections/use-case-story"
 import { StartResources } from "@/components/sections/start-resources"
@@ -133,11 +132,6 @@ export function V3Landing() {
       {/* 5c The rest of the platform: simulations, QA, channels, tools */}
       <StartResources />
 
-      {/* 6 Solutions: the broader use cases, lower down */}
-      <UseCaseCarousel
-        only={["booking", "renewals", "surveys", "leads"]}
-        more={{ label: "See all solutions", href: "#" /* TODO: /solutions once it exists */ }}
-      />
 
       {/* 7 Talk to an agent */}
       <Section id="v3-talk">
