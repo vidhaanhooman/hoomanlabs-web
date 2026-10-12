@@ -1,6 +1,4 @@
-import Link from "next/link"
 
-import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
@@ -13,15 +11,15 @@ import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
   CustomerStories,
   HomeFaq,
-  PlatformSummary,
   StatHeadline,
   UseCaseCarousel,
 } from "@/components/sections/structure"
 import { UseCaseStory } from "@/components/sections/use-case-story"
+import { StartResources } from "@/components/sections/start-resources"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { VoiceWidget } from "@/components/sections/voice-widget"
-import { enterpriseBuild, startPaths } from "@/content/landing"
-import { tools, useCases } from "@/content/platform"
+import { enterpriseBuild } from "@/content/landing"
+import { useCases } from "@/content/platform"
 
 /**
  * Homepage v3 (/lab/v3), FIRST PASS: the new order, built from existing
@@ -53,11 +51,8 @@ function Header({ title, body, aside }: { title: string; body?: string; aside?: 
 /** The three deployments shown with the enterprise path. Third is a placeholder pick. */
 const DEPLOYMENTS = (["support", "leads", "collections"] as const).map((v) => useCases.find((u) => u.visual === v)!)
 
-/** A short line of integrations in place of the full logo grid. */
-const INTEGRATIONS = tools.groups.flatMap((g) => g.items.map((i) => i.name)).slice(0, 9)
 
 export function V3Landing() {
-  const selfServe = startPaths.paths[0]
   return (
     <div style={ROOMY}>
       {/* 1 Hero: headline, one CTA, the journey */}
@@ -134,29 +129,8 @@ export function V3Landing() {
         </Container>
       </Section>
 
-      {/* 5c Everything in one platform: self-serve + resources, short integrations line */}
-      <PlatformSummary
-        hide={["Changelog"]}
-        footer={
-          <div className="mt-4 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-md border border-line bg-surface p-5">
-              <div className="flex flex-col gap-1">
-                <span className="text-body font-medium">Start {selfServe.name.toLowerCase()}</span>
-                <span className="text-small text-ink-secondary">
-                  {selfServe.rows[0].v}. {selfServe.rows[1].v} to live.
-                </span>
-              </div>
-              <Link href={selfServe.cta.href} className={buttonVariants({ variant: "secondary" })}>
-                {selfServe.cta.label}
-              </Link>
-            </div>
-            <div className="flex flex-col justify-center gap-1 rounded-md border border-line p-5">
-              <span className="text-small text-ink-muted">Integrations</span>
-              <span className="text-small">{INTEGRATIONS.join(" · ")} and more</span>
-            </div>
-          </div>
-        }
-      />
+      {/* 5c Everything in one platform: self-serve and resources */}
+      <StartResources />
 
       {/* 6 Solutions: the broader use cases, lower down */}
       <UseCaseCarousel
