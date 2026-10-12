@@ -143,10 +143,18 @@ const RAW = (() => {
 
 const TYPE_MS = 14
 
-export function PromptEditor({ className }: { className?: string }) {
+export function PromptEditor({
+  className,
+  play,
+}: {
+  className?: string
+  /** Start writing the expression when true (default: once the editor is on screen). */
+  play?: boolean
+}) {
   const [view, setView] = useState<"preview" | "text">("preview")
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { amount: 0.45, once: true })
+  const seen = useInView(ref, { amount: 0.45, once: true })
+  const inView = play ?? seen
   const reduce = usePrefersReducedMotion()
   const [typed, setTyped] = useState(0)
   const body = useRef<HTMLDivElement>(null)
@@ -160,9 +168,18 @@ export function PromptEditor({ className }: { className?: string }) {
     const b = body.current
     const c = cel.current
     if (!b || !c || b.scrollHeight <= b.clientHeight) return
-    const t = setTimeout(() => b.scrollTo({ top: c.offsetTop - 96, behavior: reduce ? "auto" : "smooth" }), 350)
+    const t = setTimeout(() => b.scrollTo({ top: c.offsetTop - 56, behavior: reduce ? "auto" : "smooth" }), 350)
     return () => clearTimeout(t)
   }, [inView, view, reduce])
+
+  // Once written, make sure the whole expression is in view.
+  useEffect(() => {
+    const b = body.current
+    const c = cel.current
+    if (!valid || view !== "preview" || !b || !c) return
+    const bottom = c.offsetTop + c.offsetHeight + 24 - b.clientHeight
+    if (bottom > b.scrollTop) b.scrollTo({ top: bottom, behavior: reduce ? "auto" : "smooth" })
+  }, [valid, view, reduce])
 
   // Write the expression in, a few characters at a time, once on screen.
   useEffect(() => {
