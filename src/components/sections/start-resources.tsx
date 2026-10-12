@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, GlobeIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, DeviceMobileIcon, GlobeIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
 import { siHubspot, siWhatsapp, siZendesk, type SimpleIcon } from "simple-icons"
 
 import { Container } from "@/components/layout/container"
@@ -12,10 +12,11 @@ import { resources } from "@/content/structure"
 import { cn } from "@/lib/utils"
 
 /**
- * Everything in one platform (/lab/v3). The six platform parts as cards in
- * the use-case card pattern (a stage with one small product graphic, then
- * the name and one line); on the right, the resources list as before, and
- * self-serve as a card under it. Dark and light graphics alternate. Static.
+ * Everything in one platform (/lab/v3): a light overview that links out.
+ * One grid: the six platform parts as cards (a short stage with a small
+ * graphic, the name and one benefit line), and in the last column the
+ * resources list (top row) and self-serve (bottom row), so every edge
+ * lines up. Dark and light graphics form a checkerboard. Static.
  */
 
 const DARK = "dark graphite"
@@ -57,7 +58,7 @@ const Code = ({ children }: { children: React.ReactNode }) => (
 
 const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
   agents: () => (
-    <Snip className="w-48 gap-1.5">
+    <Snip className="w-44 gap-1.5">
       <span className="flex items-center justify-between">
         <span className="font-medium">Billing assistant</span>
         <span className="text-[10px] text-ink-muted">v5</span>
@@ -69,7 +70,7 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </Snip>
   ),
   workflow: () => (
-    <Snip className="w-48 gap-0">
+    <Snip className="w-44 gap-0">
       {[
         ["When", "Call not answered"],
         ["Then", "Send WhatsApp"],
@@ -84,7 +85,7 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </Snip>
   ),
   simulations: () => (
-    <Snip className="w-48 gap-2">
+    <Snip className="w-44 gap-2">
       <span className="flex items-center justify-between">
         <span>Personas</span>
         <span className="font-medium tabular-nums">18 / 18</span>
@@ -111,12 +112,12 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </Snip>
   ),
   channels: () => (
-    <div className="grid w-48 grid-cols-2 gap-1.5 text-[11px]">
+    <div className="grid w-44 grid-cols-2 gap-1.5 text-[11px]">
       {[
         { n: "Phone", i: <PhoneIcon className="size-3.5" /> },
         { n: "WhatsApp", i: <Brand icon={siWhatsapp} /> },
         { n: "Web", i: <GlobeIcon className="size-3.5" /> },
-        { n: "App", i: <PhoneIcon className="size-3.5 rotate-90" /> },
+        { n: "App", i: <DeviceMobileIcon className="size-3.5" /> },
       ].map((c) => (
         <span key={c.n} className="flex items-center gap-1.5 rounded-md border border-line-strong bg-background px-2 py-1.5 shadow-sm">
           {c.i}
@@ -126,7 +127,7 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </div>
   ),
   tools: () => (
-    <Snip className="w-48 gap-0">
+    <Snip className="w-44 gap-0">
       {[
         { n: "HubSpot", i: <Brand icon={siHubspot} />, d: "CRM" },
         { n: "Zendesk", i: <Brand icon={siZendesk} />, d: "Tickets" },
@@ -143,7 +144,16 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
 }
 
 /* Dark and light alternate in a checkerboard across the 3 × 2 grid. */
-const DARK_IDS: ComponentId[] = ["agents", "qa", "simulations"]
+/** One benefit line per part (the platform pages carry the detail). */
+const LINE: Record<ComponentId, string> = {
+  agents: "Plain-language prompts with your data built in.",
+  workflow: "Follow-ups, retries and campaigns run themselves.",
+  simulations: "Every change tested against real personas first.",
+  qa: "Every call scored, with alerts when quality slips.",
+  channels: "One agent on phone, WhatsApp, web and app.",
+  tools: "Works inside your CRM, helpdesk and calendar.",
+}
+const DARK_IDS: ComponentId[] = ["agents", "simulations", "channels"]
 const FOCUS: Record<ComponentId, string> = {
   agents: "15% 20%",
   workflow: "85% 15%",
@@ -156,11 +166,11 @@ const FOCUS: Record<ComponentId, string> = {
 function SelfServe() {
   const s = startPaths.paths[0]
   return (
-    <Link href={s.cta.href} className="group flex flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong">
-      <div aria-hidden className="relative isolate flex h-40 items-center justify-center overflow-hidden bg-surface p-5">
+    <Link href={s.cta.href} className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong">
+      <div aria-hidden className="relative isolate flex h-32 items-center justify-center overflow-hidden bg-surface p-4">
         <Halftone focus="85% 20%" />
-        <div className={cn("text-[11.5px] leading-snug text-foreground", DARK)}>
-          <Snip className="w-52 gap-0">
+        <div className={cn("origin-center scale-90 text-[11.5px] leading-snug text-foreground", DARK)}>
+          <Snip className="w-44 gap-0">
             {[
               ["Sign up", "1 min"],
               ["Build an agent", "template"],
@@ -176,12 +186,12 @@ function SelfServe() {
           </Snip>
         </div>
       </div>
-      <div className="flex flex-col gap-1 border-t border-line p-4">
+      <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
         <span className="flex items-center justify-between text-body font-medium">
           Start self-serve
           <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
         </span>
-        <span className="text-small text-ink-secondary">Sign up, build an agent, test it and go live yourself.</span>
+        <span className="text-small text-ink-secondary">Build, test and go live yourself, today.</span>
       </div>
     </Link>
   )
@@ -195,64 +205,64 @@ export function StartResources() {
           <h2 className="max-w-[44rem] text-h2 font-normal">{resources.title}</h2>
           <TextLink href="/platform">See the full platform</TextLink>
         </div>
-        <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
-          {/* The platform parts */}
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {components.map((c) => {
-              const G = GRAPHICS[c.id]
-              return (
-                <li key={c.id} className="flex min-w-0">
-                  <Link
-                    href={componentHref(c.id)}
-                    className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
-                  >
-                    <div aria-hidden className="relative isolate flex h-40 items-center justify-center overflow-hidden bg-surface p-4">
-                      <Halftone focus={FOCUS[c.id]} />
-                      <div
-                        className={cn(
-                          "text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-1",
-                          DARK_IDS.includes(c.id) && DARK
-                        )}
-                      >
-                        <G />
-                      </div>
+        {/* One grid: six parts on the left, resources and self-serve filling the last column's two rows */}
+        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
+          {components.map((c, i) => {
+            const G = GRAPHICS[c.id]
+            return (
+              <li key={c.id} className={cn("flex min-w-0", i < 3 ? "lg:row-start-1" : "lg:row-start-2")}>
+                <Link
+                  href={componentHref(c.id)}
+                  className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
+                >
+                  <div aria-hidden className="relative isolate flex h-32 items-center justify-center overflow-hidden bg-surface p-4">
+                    <Halftone focus={FOCUS[c.id]} />
+                    <div
+                      className={cn(
+                        "origin-center scale-90 text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-0.5",
+                        DARK_IDS.includes(c.id) && DARK
+                      )}
+                    >
+                      <G />
                     </div>
-                    <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
-                      <span className="flex items-center justify-between text-body font-medium">
-                        {c.name}
-                        <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
-                      </span>
-                      <span className="text-small text-ink-secondary">{c.summary}</span>
-                    </div>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
+                  </div>
+                  <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
+                    <span className="flex items-center justify-between text-body font-medium">
+                      {c.name}
+                      <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                    <span className="text-small text-ink-secondary">{LINE[c.id]}</span>
+                  </div>
+                </Link>
+              </li>
+            )
+          })}
 
-          {/* Resources, as before, then self-serve */}
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col">
-              <p className="pb-3 font-mono text-label text-ink-muted">Resources</p>
-              <ul className="flex flex-col border-t border-line">
-                {resources.links
-                  .filter((r) => r.label !== "Changelog")
-                  .map((r) => (
-                    <li key={r.label} className="border-b border-line">
-                      <Link href={r.href} className="group flex items-center justify-between gap-4 py-3.5">
-                        <span className="flex flex-col">
-                          <span className="text-body">{r.label}</span>
-                          <span className="text-small text-ink-secondary">{r.body}</span>
-                        </span>
-                        <ArrowUpRightIcon className="size-4 text-ink-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </div>
+          {/* Resources, as before */}
+          <li className="flex min-w-0 flex-col sm:col-span-2 lg:col-span-1 lg:col-start-4 lg:row-start-1 lg:pl-3">
+            <p className="pb-3 font-mono text-label text-ink-muted">Resources</p>
+            <ul className="flex flex-1 flex-col justify-between border-t border-line">
+              {resources.links
+                .filter((r) => r.label !== "Changelog")
+                .map((r) => (
+                  <li key={r.label} className="border-b border-line">
+                    <Link href={r.href} className="group flex items-center justify-between gap-4 py-3">
+                      <span className="flex flex-col">
+                        <span className="text-body">{r.label}</span>
+                        <span className="text-small text-ink-secondary">{r.body}</span>
+                      </span>
+                      <ArrowUpRightIcon className="size-4 text-ink-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </li>
+
+          {/* Self-serve */}
+          <li className="flex min-w-0 sm:col-span-2 lg:col-span-1 lg:col-start-4 lg:row-start-2">
             <SelfServe />
-          </div>
-        </div>
+          </li>
+        </ul>
       </Container>
     </Section>
   )
