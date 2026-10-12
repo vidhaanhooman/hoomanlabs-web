@@ -1,7 +1,9 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { useInView } from "motion/react"
+import { useLayoutEffect, useRef, useState } from "react"
+import { useMotionValueEvent, useScroll } from "motion/react"
+
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { ArrowsSplitIcon, FlowArrowIcon, LightningIcon, TrayArrowUpIcon, type Icon } from "@phosphor-icons/react"
 
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
@@ -9,10 +11,12 @@ import { cn } from "@/lib/utils"
 
 /**
  * The workflow, explained like the agent section (/lab/v3): the running
- * canvas (top to bottom) on the left with numbered markers on its nodes, and
- * a callout card for each in one column on the right, level with its marker
+ * canvas (top to bottom) on the right with numbered markers on its nodes, and
+ * a callout card for each in one column on the left, level with its marker
  * and joined by a straight hairline. Hovering or focusing a card spotlights
- * its nodes. Cards fade in once on scroll. Below lg the cards list under it.
+ * its nodes. On large screens the canvas stays pinned while you scroll and
+ * the cards arrive one by one, each spotlighting its nodes. Below lg (and for
+ * reduced motion) the cards list under it.
  */
 
 type Mark = { n: number; node: string; nodes: string[]; title: string; body: string; icon: Icon }
@@ -24,6 +28,8 @@ const MARKS: Mark[] = [
   { n: 4, node: "out", nodes: ["out"], title: "Results", body: "Everything written back in about a second.", icon: TrayArrowUpIcon },
 ]
 const MARK_NODES = Object.fromEntries(MARKS.map((m) => [m.node, m.n]))
+/** Scroll steps: one per card, then one with all shown and no spotlight. */
+const STEPS = MARKS.length + 1
 
 const CARD = 324
 const GAP = 12
@@ -85,16 +91,17 @@ export function WorkflowAnatomy() {
   const canvas = useRef<HTMLDivElement>(null)
   const cards = useRef<Record<number, HTMLButtonElement | null>>({})
   const [pos, setPos] = useState<Pos[]>([])
-  const [edge, setEdge] = useState({ right: 0, width: 0 })
-  const [focus, setFocus] = useState<number | null>(null)
-  const shown = useInView(box, { amount: 0.3, once: true })
-  // After the reveal, drop the entrance delays so hover responds at once.
-  const [settled, setSettled] = useState(false)
-  useEffect(() => {
-    if (!shown) return
-    const t = setTimeout(() => setSettled(true), 1600)
-    return () => clearTimeout(t)
-  }, [shown])
+  const [edge, setEdge] = useState({ left: 0 })
+  const reduce = usePrefersReducedMotion()
+  // Scroll through a tall track while the canvas stays pinned; each step brings in the next card.
+  const track = useRef<HTMLDivElement>(null)
+  const [step, setStep] = useState(0)
+  const { scrollYProgress } = useScroll({ target: track, offset: ["start 96px", "end end"] })
+  useMotionValueEvent(scrollYProgress, "change", (v) => setStep(Math.min(STEPS, Math.floor(v * (STEPS + 0.5)))))
+  const st = reduce ? STEPS : step
+  const shown = (n: number) => n <= st
+  const scrollFocus = st >= 1 && st <= MARKS.length ? st : null
+  const [hover, setHover] = useState<number | null>(null)
 
   // Marker positions, and each card centred on its marker (nudged down only if two would overlap).
   useLayoutEffect(() => {
@@ -104,7 +111,7 @@ export function WorkflowAnatomy() {
     const measure = () => {
       const r = root.getBoundingClientRect()
       const c = cv.getBoundingClientRect()
-      setEdge({ right: c.right - r.left, width: r.width })
+      setEdge({ left: c.left - r.left })
       let floor = c.top - r.top
       const next = MARKS.map((m) => {
         const b = cv.querySelector(`[data-marker="${m.n}"]`)?.getBoundingClientRect()
@@ -127,20 +134,24 @@ export function WorkflowAnatomy() {
   }, [])
 
   const at = (n: number) => pos.find((p) => p.n === n)
+  const focus = hover ?? scrollFocus
   const lit = focus ? MARKS[focus - 1].nodes : null
 
   return (
     <div>
-      <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_19.5rem] lg:gap-x-16">
+      <div ref={track} className={cn(!reduce && "lg:h-[340vh]")}>
+      <div className={cn(!reduce && "lg:sticky lg:top-24")}>
+      <div ref={box} className="relative lg:grid lg:grid-cols-[19.5rem_minmax(0,1fr)] lg:gap-x-16">
+        <div aria-hidden className="hidden lg:block" />
         <div ref={canvas} aria-hidden className="flex items-center overflow-hidden rounded-lg bg-[oklch(0.13_0_0)] shadow-[0_40px_100px_-50px_oklch(0.2_0.02_260/0.6)]">
-          <WorkflowCanvas vertical marks={MARK_NODES} focus={lit} className="w-full px-4 pt-11 pb-4" />
+          <WorkflowCanvas vertical marks={MARK_NODES} markSide="left" focus={lit} className="w-full px-4 pt-11 pb-4" />
         </div>
 
         {/* Hairlines: straight across from each marker into its card */}
         <svg aria-hidden className="pointer-events-none absolute inset-0 hidden size-full overflow-visible lg:block">
           {pos.map((p) => {
-            const x0 = edge.right
-            const x1 = edge.width - (CARD - GAP)
+            const x0 = edge.left
+            const x1 = CARD - GAP
             const y1 = Math.min(Math.max(p.y, p.top + 12), p.top + p.h - 12)
             const dx = (x1 - x0) / 2
             return (
@@ -151,7 +162,7 @@ export function WorkflowAnatomy() {
                 fill="none"
                 strokeDasharray="1 1"
                 className={cn("transition-[stroke,stroke-dashoffset] duration-700 ease-(--ease-out)", focus === p.n ? "stroke-foreground/50" : "stroke-line-strong")}
-                style={{ strokeDashoffset: shown ? 0 : 1, transitionDelay: shown && !settled ? `${200 + p.n * 120}ms` : "0ms" }}
+                style={{ strokeDashoffset: shown(p.n) ? 0 : 1 }}
               />
             )
           })}
@@ -164,21 +175,23 @@ export function WorkflowAnatomy() {
               key={m.n}
               m={m}
               on={focus === m.n}
-              onFocus={setFocus}
+              onFocus={setHover}
               cardRef={(el) => {
                 cards.current[m.n] = el
               }}
-              className={cn("absolute right-0 hidden lg:flex", p && shown ? "opacity-100" : "translate-x-3 opacity-0")}
-              style={{ top: p?.top ?? 0, width: CARD - GAP, transitionDelay: shown && !settled ? `${350 + m.n * 120}ms` : "0ms" }}
+              className={cn("absolute left-0 hidden lg:flex", p && shown(m.n) ? "opacity-100" : "pointer-events-none -translate-x-3 opacity-0")}
+              style={{ top: p?.top ?? 0, width: CARD - GAP }}
             />
           )
         })}
+      </div>
+      </div>
       </div>
 
       <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
         {MARKS.map((m) => (
           <li key={m.n} className="flex">
-            <CalloutCard m={m} on={focus === m.n} onFocus={setFocus} number className="w-full" />
+            <CalloutCard m={m} on={hover === m.n} onFocus={setHover} number className="w-full" />
           </li>
         ))}
       </ol>

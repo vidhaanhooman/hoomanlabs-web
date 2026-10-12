@@ -12,13 +12,11 @@ import {
   HomeFaq,
   StatHeadline,
 } from "@/components/sections/structure"
-import { UseCaseStory } from "@/components/sections/use-case-story"
 import { StartResources } from "@/components/sections/start-resources"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { VoiceWidget } from "@/components/sections/voice-widget"
 import { enterpriseBuild } from "@/content/landing"
-import { useCases } from "@/content/platform"
 
 /**
  * Homepage v3 (/lab/v3), FIRST PASS: the new order, built from existing
@@ -47,8 +45,6 @@ function Header({ title, body, aside }: { title: string; body?: string; aside?: 
   )
 }
 
-/** The three deployments shown with the enterprise path. Third is a placeholder pick. */
-const DEPLOYMENTS = (["support", "leads", "collections"] as const).map((v) => useCases.find((u) => u.visual === v)!)
 
 
 export function V3Landing() {
@@ -64,18 +60,7 @@ export function V3Landing() {
       {/* 3 Deployments + the enterprise path */}
       <Section id="v3-deployments">
         <Container>
-          <Header
-            title="Running in production today."
-            body="Three deployments, each live on a real line, each built on the same platform."
-          />
-          <ul className="mt-10 grid gap-4 md:grid-cols-3">
-            {DEPLOYMENTS.map((u, i) => (
-              <li key={u.title} className="flex">
-                <UseCaseStory useCase={u} resultFirst tone={i % 2 === 0 ? "charcoal" : "light"} />
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex flex-col gap-6 rounded-xl border border-line bg-surface p-6 sm:p-8">
+          <div className="flex flex-col gap-6 rounded-xl border border-line bg-surface p-6 sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="flex flex-col gap-1.5">
                 <span className="font-mono text-label text-ink-muted">{enterpriseBuild.eyebrow}</span>

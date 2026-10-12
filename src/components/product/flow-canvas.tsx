@@ -229,12 +229,15 @@ export function WorkflowCanvas({
   className,
   vertical = false,
   marks,
+  markSide = "right",
   focus,
 }: {
   className?: string
   vertical?: boolean
   /** Numbered markers on nodes (node id → number), for annotations. */
   marks?: Record<string, number>
+  /** Which top corner of the node the marker sits on. */
+  markSide?: "left" | "right"
   /** Spotlight: only these nodes stay bright. */
   focus?: string[] | null
 }) {
@@ -253,7 +256,7 @@ export function WorkflowCanvas({
           {WF_STATUS[stage]}
         </span>
       </div>
-      <svg viewBox={vertical ? "-4 -10 852 502" : "0 0 1200 430"} className="block h-auto w-full font-sans">
+      <svg viewBox={vertical ? "-14 -10 866 502" : "0 0 1200 430"} className="block h-auto w-full font-sans">
         {WF_EDGES.map((e) => (
           <EdgeLine key={`${e.from}-${e.to}`} d={edge(byId[e.from], byId[e.to], W)} state={nodeState(byId[e.to].stage)} />
         ))}
@@ -276,7 +279,7 @@ export function WorkflowCanvas({
             const n = byId[id]
             if (!n) return null
             return (
-              <g key={`m-${id}`} data-marker={num} transform={`translate(${n.x + W},${n.y})`}>
+              <g key={`m-${id}`} data-marker={num} transform={`translate(${markSide === "left" ? n.x : n.x + W},${n.y})`}>
                 <circle r={9} fill="white" />
                 <text y={3.6} fontSize={10.5} textAnchor="middle" fill="black" fontFamily="var(--font-mono, monospace)">
                   {num}
