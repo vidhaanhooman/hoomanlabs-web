@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils"
 /**
  * Everything an agent needs, explained on one screen (/lab/v3): a large,
  * static prompt editor with a small numbered marker right beside each part
- * that matters, and a callout card for each, three a side, level with its
- * marker and joined to the editor's edge by a hairline. Hovering (or
+ * that matters, and a callout card for each in one column on the right, joined
+ * to its marker by a hairline that leaves the editor level with the marker. Hovering (or
  * focusing) a card spotlights its part: the rest of the editor dims.
  * Below lg the cards become a numbered list under the editor; tapping one
  * spotlights the same way. On large screens the editor stays pinned while
@@ -34,11 +34,11 @@ import { cn } from "@/lib/utils"
 type Mark = { n: number; side: "left" | "right"; title: string; body: string; icon: Icon }
 
 const MARKS: Mark[] = [
-  { n: 1, side: "left", title: "Pre-call context", body: "Filled in before the first ring, from your CRM and billing.", icon: TrayArrowDownIcon },
-  { n: 2, side: "left", title: "Conditions", body: "Branch the call in CEL, right inside the prompt.", icon: GitBranchIcon },
+  { n: 1, side: "right", title: "Pre-call context", body: "Filled in before the first ring, from your CRM and billing.", icon: TrayArrowDownIcon },
+  { n: 2, side: "right", title: "Conditions", body: "Branch the call in CEL, right inside the prompt.", icon: GitBranchIcon },
   { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your own documents.", icon: BookOpenTextIcon },
   { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages, called by name.", icon: LightningIcon },
-  { n: 5, side: "left", title: "After the call", body: "Summary, CRM update and a QA score, automatically.", icon: TrayArrowUpIcon },
+  { n: 5, side: "right", title: "After the call", body: "Summary, CRM update and a QA score, automatically.", icon: TrayArrowUpIcon },
   { n: 6, side: "right", title: "Voice & languages", body: "A warm en-GB voice, 30 languages, natural turn-taking.", icon: SpeakerHighIcon },
 ]
 
@@ -203,15 +203,15 @@ function CalloutCard({
       )}
       style={style}
     >
-      <span className="flex gap-3 p-3">
+      <span className="flex gap-2.5 p-3">
         <span
           aria-hidden
           className={cn(
-            "relative grid size-10 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-200",
+            "relative grid size-8 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-200",
             on ? "text-foreground" : "text-ink-secondary"
           )}
         >
-          <m.icon className="size-[18px]" />
+          <m.icon className="size-4" />
           {number && (
             <span className="absolute -right-1.5 -bottom-1.5 grid size-4 place-items-center rounded-full bg-foreground font-mono text-[9.5px] text-background">{m.n}</span>
           )}
@@ -228,7 +228,7 @@ function CalloutCard({
 /* ------------------------------------------------------------ layout */
 
 /** Callout column width and spacing (px). */
-const CARD = 256
+const CARD = 284
 const GAP = 12
 const MIN_SPACE = 12
 
@@ -245,7 +245,7 @@ export function AgentAnatomy() {
   const editor = useRef<HTMLDivElement>(null)
   const cards = useRef<Record<number, HTMLButtonElement | null>>({})
   const [pos, setPos] = useState<Pos[]>([])
-  const [edge, setEdge] = useState({ left: 0, right: 0 })
+  const [edge, setEdge] = useState({ left: 0, right: 0, width: 0 })
   const [hover, setHover] = useState<number | null>(null)
   const reduce = usePrefersReducedMotion()
 
@@ -267,23 +267,23 @@ export function AgentAnatomy() {
     const measure = () => {
       const r = root.getBoundingClientRect()
       const e = ed.getBoundingClientRect()
-      setEdge({ left: e.left - r.left, right: e.right - r.left })
+      setEdge({ left: e.left - r.left, right: e.right - r.left, width: r.width })
       const ys = MARKS.map((m) => {
         const b = ed.querySelector<HTMLElement>(`[data-marker="${m.n}"]`)?.getBoundingClientRect()
         return { m, y: b ? b.top - r.top + b.height / 2 : 0 }
       })
-      const next: Pos[] = []
-      for (const side of ["left", "right"] as const) {
-        let floor = 0
-        ys.filter((p) => p.m.side === side)
-          .sort((a, b) => a.y - b.y)
-          .forEach(({ m, y }) => {
-            const h = cards.current[m.n]?.offsetHeight ?? 80
-            const top = Math.max(y - 24, floor)
-            floor = top + h + MIN_SPACE
-            next.push({ n: m.n, y, top })
-          })
-      }
+      // One column on the right: cards in marker order, spread evenly over the editor's height.
+      const order = ys.sort((a, b) => a.y - b.y)
+      const heights = order.map(({ m }) => cards.current[m.n]?.offsetHeight ?? 80)
+      const top0 = e.top - r.top
+      const room = e.height - heights.reduce((a, b) => a + b, 0)
+      const gap = Math.max(MIN_SPACE, room / Math.max(1, order.length - 1))
+      let y0 = top0
+      const next: Pos[] = order.map(({ m, y }, i) => {
+        const top = y0
+        y0 += heights[i] + gap
+        return { n: m.n, y, top }
+      })
       setPos(next)
     }
     measure()
@@ -300,34 +300,37 @@ export function AgentAnatomy() {
       {/* Tall track on large screens; the stage inside stays pinned while it scrolls past */}
       <div ref={track} className={cn(!reduce && "lg:h-[480vh]")}>
         <div className={cn(!reduce && "lg:sticky lg:top-24")}>
-          <div ref={box} className="relative lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_16rem] lg:gap-x-10 lg:pt-4 lg:pb-14">
-            <div aria-hidden className="hidden lg:block" />
+          <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-16 lg:pt-4 lg:pb-14">
             <div ref={editor}>
               <Editor focus={focus} />
             </div>
             <div aria-hidden className="hidden lg:block" />
 
-            {/* Hairlines: from each card to the editor's edge, level with its marker */}
-            {pos.map((p) => {
-              const m = MARKS[p.n - 1]
-              const style =
-                m.side === "left"
-                  ? { top: p.y, left: CARD - GAP, right: `calc(100% - ${edge.left}px)` }
-                  : { top: p.y, left: edge.right, right: CARD - GAP }
-              return (
-                <span
-                  key={`l${p.n}`}
-                  aria-hidden
-                  className={cn(
-                    "absolute hidden h-px transition-[background-color,transform] duration-500 ease-(--ease-out) lg:block",
-                    m.side === "left" ? "origin-right" : "origin-left",
-                    focus === p.n ? "bg-foreground/50" : "bg-line-strong",
-                    !shown(p.n) && "scale-x-0"
-                  )}
-                  style={style}
-                />
-              )
-            })}
+            {/* Hairlines: out of the editor at each marker, then across and into its card */}
+            <svg aria-hidden className="pointer-events-none absolute inset-0 hidden size-full overflow-visible lg:block">
+              {pos.map((p) => {
+                const x0 = edge.right
+                const x1 = edge.width - (CARD - GAP)
+                // Each line turns at its own x, so lines never run on top of each other.
+                const i = pos.indexOf(p)
+                const mid = Math.round(x0 + 12 + i * ((x1 - x0 - 24) / Math.max(1, pos.length - 1)))
+                const y1 = p.top + 22
+                return (
+                  <path
+                    key={`l${p.n}`}
+                    d={`M${x0},${p.y} H${mid} V${y1} H${x1}`}
+                    pathLength={1}
+                    fill="none"
+                    strokeDasharray="1 1"
+                    className={cn(
+                      "transition-[stroke,stroke-dashoffset] duration-500 ease-(--ease-out)",
+                      focus === p.n ? "stroke-foreground/50" : "stroke-line-strong"
+                    )}
+                    style={{ strokeDashoffset: shown(p.n) ? 0 : 1 }}
+                  />
+                )
+              })}
+            </svg>
 
             {/* Callout cards, arriving one by one */}
             {MARKS.map((m) => {
@@ -345,8 +348,8 @@ export function AgentAnatomy() {
                   className={cn(
                     "absolute hidden transition-[opacity,transform,border-color,background-color,box-shadow] duration-500 ease-(--ease-out) lg:flex",
                     p && on ? "opacity-100" : "pointer-events-none opacity-0",
-                    !on && (m.side === "left" ? "-translate-x-4" : "translate-x-4"),
-                    m.side === "left" ? "left-0" : "right-0"
+                    !on && "translate-x-4",
+                    "right-0"
                   )}
                   style={{ top: p?.top ?? 0, width: CARD - GAP }}
                 />
