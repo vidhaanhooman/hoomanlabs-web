@@ -133,7 +133,16 @@ type Head = { i: number; w: number }
  * Shared playback for the hero journey variants. Advances one event at a
  * time while `ref` is on screen; `stepPause` adds a beat between steps.
  */
-export function useJourneyPlayback(journey: Journey, ref: React.RefObject<HTMLElement | null>, { stepPause = 0 } = {}) {
+export function useJourneyPlayback(
+  journey: Journey,
+  ref: React.RefObject<HTMLElement | null>,
+  { stepPause = 0, onEnd }: { stepPause?: number; onEnd?: () => void } = {}
+) {
+  // Called after the finished journey has held, instead of looping.
+  const end = useRef(onEnd)
+  useEffect(() => {
+    end.current = onEnd
+  })
   const [head, setHead] = useState<Head>({ i: 0, w: 0 })
   const [seconds, setSeconds] = useState(0)
   const reduce = usePrefersReducedMotion()
@@ -165,6 +174,7 @@ export function useJourneyPlayback(journey: Journey, ref: React.RefObject<HTMLEl
     // A beat before a new step starts.
     if (!done && next.i !== head.i && next.i < events.length && events[next.i].step !== current!.step) ms += stepPause
     const t = setTimeout(() => {
+      if (done && end.current) return end.current()
       setHead(next)
       if (done) setSeconds(0)
     }, ms)

@@ -30,11 +30,11 @@ const CARDS: Record<JourneyId, Partial<Record<number, Card>>> = {
 
 const STEP_PAUSE_MS = 900
 
-export function CalmJourneyWindow({ id }: { id: JourneyId }) {
+export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => void }) {
   const ref = useRef<HTMLDivElement>(null)
   const journey = JOURNEYS[id]
   const { events, steps } = journey
-  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS })
+  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS, onEnd })
 
   // The current step's events only; the rail keeps the history.
   const first = events.findIndex((e) => e.step === step)
@@ -43,10 +43,10 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
   const card = CARDS[id][step]
 
   return (
-    <div ref={ref} className="relative mx-auto max-w-5xl">
-      <div className="ui-dark @container overflow-hidden rounded-lg text-[13px] leading-[1.6] shadow-[0_50px_120px_-40px_oklch(0.2_0.03_120/0.65)] @3xl:text-[14px]">
+    <div ref={ref} className="relative">
+      <div className="ui-dark @container relative overflow-hidden rounded-lg text-[13px] leading-[1.6] shadow-[0_50px_120px_-40px_oklch(0.2_0.03_120/0.65)] @3xl:text-[15px]">
         {/* Top bar */}
-        <div className="flex h-12 items-center gap-3 border-b border-(--ui-line) px-5">
+        <div className="flex h-14 items-center gap-3 border-b border-(--ui-line) px-5 @3xl:px-6">
           <span className={cn("size-2 rounded-full", done ? "bg-(--ui-muted)" : "bg-(--ui-live)")} />
           <span className="font-medium">{done ? "Complete" : "Live"}</span>
           <span className="hidden text-(--ui-muted) @md:inline">{journey.title}</span>
@@ -69,9 +69,9 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
           <span className="text-[12px] whitespace-nowrap">{steps[step].label}</span>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[15rem_minmax(0,1fr)]">
+        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[17rem_minmax(0,1fr)]">
           {/* Step rail */}
-          <ol aria-label="Journey steps" className="hidden flex-col gap-1 border-r border-(--ui-line) p-3 @3xl:flex">
+          <ol aria-label="Journey steps" className="hidden flex-col gap-1.5 border-r border-(--ui-line) p-4 @3xl:flex">
             {steps.map((s, i) => {
               const state = i < step || done ? "done" : i === step ? "active" : "todo"
               return (
@@ -81,7 +81,7 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
                     onClick={() => jump(i)}
                     aria-current={state === "active" ? "step" : undefined}
                     className={cn(
-                      "flex w-full items-center gap-3 rounded-md border px-3 py-2.5 text-left transition-[background-color,border-color,color] duration-500",
+                      "flex w-full items-center gap-3 rounded-md border px-3.5 py-3 text-left transition-[background-color,border-color,color] duration-500",
                       state === "active" ? "border-(--ui-live)/40 bg-(--ui-live)/[0.07]" : "border-transparent hover:bg-(--ui-raised)"
                     )}
                   >
@@ -107,10 +107,10 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
 
           {/* Feed: this step only */}
           <div className="flex min-w-0 flex-col">
-            <ol key={`${id}-${step}`} aria-label={steps[step].label} className="flex h-60 flex-col gap-3.5 overflow-hidden px-5 pt-6 pb-4 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both] @3xl:h-[19rem] @3xl:px-7">
+            <ol key={`${id}-${step}`} aria-label={steps[step].label} className="flex h-72 flex-col gap-4 overflow-hidden px-5 pt-7 pb-4 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both] @3xl:h-[30rem] @3xl:px-8 @5xl:pr-80">
               {/* What the agent learned, inline where there's no room for the floating card */}
               {card && (
-                <li className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-(--ui-muted) xl:hidden">
+                <li className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-(--ui-muted) @5xl:hidden">
                   {card.rows.map(([k, v]) => (
                     <span key={k}>
                       {k} <span className="text-(--ui-text)">{v}</span>
@@ -145,7 +145,7 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
             </ol>
 
             {/* Status */}
-            <div className="flex h-11 items-center gap-3 border-t border-(--ui-line) px-5 text-(--ui-muted) @3xl:px-7">
+            <div className="flex h-12 items-center gap-3 border-t border-(--ui-line) px-5 text-(--ui-muted) @3xl:px-8">
               <span className="ui-wave flex h-4 items-end gap-[3px]" data-idle={speaking ? undefined : ""} aria-hidden>
                 {Array.from({ length: 5 }, (_, i) => (
                   <span key={i} className={cn("block h-full w-[3px] rounded-full", speaking ? "bg-(--ui-text)/80" : "bg-(--ui-text)/30")} />
@@ -158,26 +158,25 @@ export function CalmJourneyWindow({ id }: { id: JourneyId }) {
             </div>
           </div>
         </div>
+        {/* Floating card: what the agent just learned, top right of the feed */}
+        {card && (
+          <div
+            key={`${id}-card-${step}`}
+            aria-hidden
+            className="absolute top-20 right-6 hidden w-64 flex-col gap-2 rounded-lg border border-black/5 bg-background p-4 text-foreground shadow-[0_24px_60px_-24px_oklch(0.2_0.03_120/0.55)] motion-safe:animate-[reveal-blur_600ms_var(--ease-out)_350ms_both] @5xl:flex"
+          >
+            <span className="font-mono text-label text-ink-muted">{card.title}</span>
+            <dl className="flex flex-col">
+              {card.rows.map(([k, v]) => (
+                <div key={k} className="flex flex-col border-t border-line py-1.5 first:border-0 first:pt-0">
+                  <dt className="text-label text-ink-muted">{k}</dt>
+                  <dd className="text-small">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
       </div>
-
-      {/* Floating card: what the agent just learned */}
-      {card && (
-        <div
-          key={`${id}-card-${step}`}
-          aria-hidden
-          className="absolute top-20 left-[calc(100%-2.5rem)] hidden w-60 flex-col gap-2 rounded-lg border border-black/5 bg-background p-4 text-foreground shadow-[0_24px_60px_-24px_oklch(0.2_0.03_120/0.55)] motion-safe:animate-[reveal-blur_600ms_var(--ease-out)_350ms_both] xl:flex"
-        >
-          <span className="font-mono text-label text-ink-muted">{card.title}</span>
-          <dl className="flex flex-col">
-            {card.rows.map(([k, v]) => (
-              <div key={k} className="flex flex-col border-t border-line py-1.5 first:border-0 first:pt-0">
-                <dt className="text-label text-ink-muted">{k}</dt>
-                <dd className="text-small">{v}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      )}
     </div>
   )
 }
