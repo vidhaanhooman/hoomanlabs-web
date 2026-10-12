@@ -262,7 +262,7 @@ export function HeroCallCard() {
             {error ? (
               <span className="text-destructive">{error}</span>
             ) : (
-              <span>I agree to one demo call from {call.agent} to this number. No spam.</span>
+              <span>Call me once with this demo. We won&apos;t call again or share your number.</span>
             )}
           </label>
         </form>
