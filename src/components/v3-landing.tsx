@@ -1,3 +1,4 @@
+import Link from "next/link"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -5,7 +6,6 @@ import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
 import { AgentAnatomy } from "@/components/product/agent-anatomy"
-import { FinalCta } from "@/components/sections/final-cta"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
@@ -15,11 +15,11 @@ import {
   UseCaseCarousel,
 } from "@/components/sections/structure"
 import { UseCaseStory } from "@/components/sections/use-case-story"
-import { StartResources } from "@/components/sections/start-resources"
+import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { VoiceWidget } from "@/components/sections/voice-widget"
 import { enterpriseBuild } from "@/content/landing"
-import { useCases } from "@/content/platform"
+import { componentHref, components, useCases } from "@/content/platform"
 
 /**
  * Homepage v3 (/lab/v3), FIRST PASS: the new order, built from existing
@@ -112,6 +112,18 @@ export function V3Landing() {
           <div className="mt-10">
             <AgentAnatomy />
           </div>
+          {/* The platform parts, as a quiet line of links */}
+          <nav aria-label="Explore the platform" className="mt-10 flex flex-wrap items-baseline gap-x-5 gap-y-2 border-t border-line pt-5 text-small">
+            <span className="font-mono text-label text-ink-muted">Explore the platform</span>
+            {components.map((c) => (
+              <Link key={c.id} href={componentHref(c.id)} className="text-ink-secondary transition-colors hover:text-foreground">
+                {c.name}
+              </Link>
+            ))}
+            <TextLink href="/platform" className="ml-auto">
+              See the full platform
+            </TextLink>
+          </nav>
         </Container>
       </Section>
 
@@ -129,8 +141,6 @@ export function V3Landing() {
         </Container>
       </Section>
 
-      {/* 5c Everything in one platform: self-serve and resources */}
-      <StartResources />
 
       {/* 6 Solutions: the broader use cases, lower down */}
       <UseCaseCarousel
@@ -149,7 +159,7 @@ export function V3Landing() {
       </Section>
 
       <HomeFaq />
-      <FinalCta />
+      <TwoWayCta />
       <VoiceWidget after="v3-journey" hideOver="v3-talk" />
     </div>
   )
