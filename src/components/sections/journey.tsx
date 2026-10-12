@@ -428,16 +428,28 @@ export function Journey() {
 /** Shared transcript row: a narrow label column (speaker or icon), then the text. */
 export const ROW = "grid grid-cols-[2.75rem_minmax(0,1fr)] gap-3"
 
-export function SpeechLine({ event, words, live }: { event: Extract<Event, { kind: "agent" | "caller" }>; words: number; live: boolean }) {
+export function SpeechLine({
+  event,
+  words,
+  live,
+  agentAbove = false,
+}: {
+  event: Extract<Event, { kind: "agent" | "caller" }>
+  words: number
+  live: boolean
+  /** Agent lines: "Agent" on its own line above the words (caller lines unchanged). */
+  agentAbove?: boolean
+}) {
   const all = event.text.split(" ")
   const shown = all.slice(0, words).join(" ")
   const speaking = live && words > 0 && words < all.length
+  const stacked = agentAbove && event.kind === "agent"
   return (
     <div className={cn(ROW, "items-baseline")}>
-      <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)")}>
+      <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)", stacked && "col-start-2")}>
         {event.kind === "agent" ? "Agent" : "Caller"}
       </span>
-      <p className={cn("min-h-[1.5em]", event.kind === "caller" && "text-(--ui-text)/80")}>
+      <p className={cn("min-h-[1.5em]", event.kind === "caller" && "text-(--ui-text)/80", stacked && "col-start-2 -mt-2")}>
         {words === 0 ? (
           <span className="ui-wave inline-flex h-3 items-end gap-[2px] align-middle" aria-hidden>
             {[0, 1, 2].map((i) => (

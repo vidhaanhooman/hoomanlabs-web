@@ -74,7 +74,6 @@ export function V3Hero() {
                   key={journey}
                   id={journey}
                   onPick={setJourney}
-                  tryHref="#v3-talk"
                   onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))}
                 />
               </div>

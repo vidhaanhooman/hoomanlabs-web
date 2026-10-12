@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef } from "react"
-import { ArrowRightIcon, CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon, PhoneIcon } from "@phosphor-icons/react"
+import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
 
 import { JOURNEYS, ROW, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
@@ -34,13 +34,10 @@ export function CalmJourneyWindow({
   id,
   onEnd,
   onPick,
-  tryHref,
 }: {
   id: JourneyId
   onEnd?: () => void
   onPick?: (j: JourneyId) => void
-  /** Where "Get this call on your phone" goes once the journey ends. */
-  tryHref?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const journey = JOURNEYS[id]
@@ -172,24 +169,11 @@ export function CalmJourneyWindow({
                         )}
                       </div>
                     ) : (
-                      <SpeechLine event={e} words={live ? at.w : Infinity} live={live} />
+                      <SpeechLine event={e} words={live ? at.w : Infinity} live={live} agentAbove />
                     )}
                   </li>
                 )
               })}
-              {done && tryHref && (
-                <li className={cn(ROW, "motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_400ms_both]")}>
-                  <span />
-                  <a
-                    href={tryHref}
-                    className="group -ml-1 inline-flex w-max items-center gap-2 rounded-full bg-(--ui-text) px-4 py-2 text-[13px] font-medium text-(--ui-bg) transition-transform active:scale-[0.97]"
-                  >
-                    <PhoneIcon weight="fill" className="size-3.5" aria-hidden />
-                    Get this call on your phone
-                    <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                  </a>
-                </li>
-              )}
             </ol>
 
             {/* Status */}
