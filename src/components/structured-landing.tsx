@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { PhoneIcon } from "@phosphor-icons/react/dist/ssr"
+import { CheckIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
 import { siAndroid, siApple, siGooglechrome, siWhatsapp, type SimpleIcon } from "simple-icons"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -8,12 +8,12 @@ import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
-import { WorkflowCanvas } from "@/components/product/flow-canvas"
 import { FinalCta } from "@/components/sections/final-cta"
 import { HomeIntegrations, StartPaths } from "@/components/sections/landing"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
+  AgentsWorkflowSwitch,
   HomeFaq,
   PlatformSummary,
   StatHeadline,
@@ -49,45 +49,51 @@ const WARN = "bg-[oklch(0.8_0.14_80)]"
 const MINI: Record<string, React.ReactNode> = {
   /* Channels: one tile per surface, with its logo and the modes it supports */
   "feature-channels": (
-    <ul className="grid grid-cols-2 gap-2">
+    <div className="overflow-hidden rounded-md border border-line bg-background">
+      <div className="grid grid-cols-[1fr_4.5rem_4.5rem] border-b border-line px-3 py-2 text-label text-ink-muted">
+        <span>Channel</span>
+        <span className="text-center">Voice</span>
+        <span className="text-center">Chat</span>
+      </div>
       {[
-        { name: "Phone", note: "Your numbers or SIP", logo: <PhoneIcon className="size-5" />, modes: ["Voice"] },
-        { name: "WhatsApp", note: "Business messaging", logo: <Brand icon={siWhatsapp} className="size-5" />, modes: ["Chat", "Voice · soon"] },
-        { name: "Web", note: "Widget on your site", logo: <Brand icon={siGooglechrome} className="size-5" />, modes: ["Voice", "Chat"] },
+        { name: "Phone", logo: <PhoneIcon className="size-4" />, voice: "yes", chat: "no" },
+        { name: "WhatsApp", logo: <Brand icon={siWhatsapp} />, voice: "soon", chat: "yes" },
+        { name: "Web", logo: <Brand icon={siGooglechrome} />, voice: "yes", chat: "yes" },
         {
-          name: "App",
-          note: "iOS and Android SDK",
+          name: "iOS & Android",
           logo: (
-            <span className="flex gap-1">
-              <Brand icon={siApple} className="size-[18px]" />
-              <Brand icon={siAndroid} className="size-[18px]" />
+            <span className="flex gap-0.5">
+              <Brand icon={siApple} className="size-3.5" />
+              <Brand icon={siAndroid} className="size-3.5" />
             </span>
           ),
-          modes: ["Voice", "Chat"],
+          voice: "yes",
+          chat: "yes",
         },
       ].map((c) => (
-        <li key={c.name} className="flex items-center gap-3 rounded-md border border-line bg-background p-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line">{c.logo}</span>
-          <span className="flex min-w-0 flex-col">
-            <span className="text-small font-medium">{c.name}</span>
-            <span className="mt-1 flex flex-wrap gap-1">
-              {c.modes.map((m) => (
-                <span
-                  key={m}
-                  className={
-                    m.endsWith("soon")
-                      ? "rounded-full border border-dashed border-line-strong px-1.5 text-[10px] whitespace-nowrap text-ink-muted"
-                      : "rounded-full border border-line-strong px-1.5 text-[10px] whitespace-nowrap text-ink-secondary"
-                  }
-                >
-                  {m}
-                </span>
-              ))}
-            </span>
+        <div key={c.name} className="grid grid-cols-[1fr_4.5rem_4.5rem] items-center border-b border-line px-3 py-2.5 last:border-0">
+          <span className="flex items-center gap-2.5 text-small">
+            <span className="grid size-7 place-items-center rounded-md border border-line">{c.logo}</span>
+            {c.name}
           </span>
-        </li>
+          {[c.voice, c.chat].map((v, i) => (
+            <span key={i} className="flex justify-center">
+              {v === "yes" ? (
+                <CheckIcon weight="bold" className="size-4 text-[oklch(0.55_0.13_150)]" />
+              ) : v === "soon" ? (
+                <span className="rounded-full border border-dashed border-line-strong px-1.5 text-[10px] text-ink-muted">Soon</span>
+              ) : (
+                <span className="text-ink-muted">–</span>
+              )}
+            </span>
+          ))}
+        </div>
       ))}
-    </ul>
+      <div className="flex items-center gap-2 border-t border-line bg-surface px-3 py-2 text-label text-ink-secondary">
+        <span className="size-1.5 rounded-full bg-[oklch(0.62_0.15_150)]" />
+        Context carries over when a customer switches channel
+      </div>
+    </div>
   ),
 
   /* Simulations: personas that ran against the new version, and the tally */
@@ -217,14 +223,12 @@ export function StructuredLanding() {
             <Panel className="flex flex-col gap-6 p-6 sm:p-8 lg:col-span-12">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <h3 className="text-h3 font-normal">{design.title}</h3>
+                  <h3 className="text-h3 font-normal">Design agents and the workflows around them</h3>
                   <p className="max-w-[60ch] text-small text-ink-secondary">{design.body}</p>
                 </div>
                 <TextLink href={design.link.href}>{design.link.label}</TextLink>
               </div>
-              <div aria-hidden className="flex items-center overflow-hidden rounded-md border border-black/10 bg-[oklch(0.13_0_0)]">
-                <WorkflowCanvas className="w-full pt-12" />
-              </div>
+              <AgentsWorkflowSwitch />
             </Panel>
 
             {/* Compact: one line + a tiny visual each */}

@@ -10,6 +10,7 @@ import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
+import { AgentBuilder, WorkflowCanvas } from "@/components/product/flow-canvas"
 import { UseCaseStory } from "@/components/sections/use-case-story"
 import { ctas } from "@/content/draft"
 import { caseStudy, faqs, outcomes, resources, stat, stories, templates } from "@/content/structure"
@@ -359,5 +360,47 @@ export function HomeFaq() {
         </Accordion>
       </Container>
     </Section>
+  )
+}
+
+/* ------------------------------------------------------------ agents / workflow switch */
+
+const VIEWS = [
+  { id: "agent", label: "Agent builder" },
+  { id: "workflow", label: "Workflow" },
+] as const
+
+/** The large feature card's visual: switch between the agent builder and the workflow graph. */
+export function AgentsWorkflowSwitch() {
+  const [view, setView] = useState<(typeof VIEWS)[number]["id"]>("agent")
+  return (
+    <div className="flex flex-col gap-3">
+      <div role="tablist" aria-label="View" className="flex w-fit gap-1 rounded-full bg-secondary p-1">
+        {VIEWS.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            role="tab"
+            aria-selected={view === v.id}
+            onClick={() => setView(v.id)}
+            className={cn(
+              "rounded-full px-4 py-1.5 text-small transition-colors duration-150",
+              view === v.id ? "bg-background text-foreground shadow-xs" : "text-ink-secondary hover:text-foreground"
+            )}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+      <div aria-hidden className="overflow-hidden rounded-md border border-black/10">
+        {view === "agent" ? (
+          <AgentBuilder className="md:h-[30rem]" />
+        ) : (
+          <div className="flex items-center bg-[oklch(0.13_0_0)] md:h-[30rem]">
+            <WorkflowCanvas className="w-full pt-12" />
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
