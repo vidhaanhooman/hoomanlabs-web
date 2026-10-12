@@ -18,7 +18,6 @@ import {
   PlatformSummary,
   StatHeadline,
   UseCaseCarousel,
-  UseCaseTemplates,
 } from "@/components/sections/structure"
 import { Testimonials } from "@/components/sections/testimonials"
 import { VoiceWidget } from "@/components/sections/voice-widget"
@@ -176,7 +175,7 @@ const MINI: Record<string, React.ReactNode> = {
 /**
  * Structured homepage (/lab/hero-call):
  * hero · logos · use-case carousel · outcomes · stat ·
- * platform features (1 large + 3 compact) · summary + resources · integrations · templates ·
+ * platform features (1 large + 3 compact) · summary + resources · integrations ·
  * get started (2 paths) · quotes · FAQ · closing CTA · footer (layout) · voice widget
  */
 /** A little more room between every section on this page (site default is 2.5rem → 4rem). */
@@ -258,7 +257,6 @@ export function StructuredLanding() {
 
       <PlatformSummary />
       <HomeIntegrations />
-      <UseCaseTemplates />
       <StartPaths />
       <Testimonials />
       <HomeFaq />
