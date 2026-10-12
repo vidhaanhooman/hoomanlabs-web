@@ -427,6 +427,8 @@ export function Journey() {
 /** A transcript line that streams in word by word; a blinking caret while it's live. */
 /** Shared transcript row: a narrow label column (speaker or icon), then the text. */
 export const ROW = "grid grid-cols-[2.75rem_minmax(0,1fr)] gap-3"
+/** Tighter row when speaker names sit above the words: the first column only holds an icon. */
+export const ICON_ROW = "grid grid-cols-[1rem_minmax(0,1fr)] gap-x-2.5 gap-y-1"
 
 export function SpeechLine({
   event,
@@ -445,11 +447,11 @@ export function SpeechLine({
   const speaking = live && words > 0 && words < all.length
   const stacked = above
   return (
-    <div className={cn(ROW, "items-baseline")}>
+    <div className={cn(stacked ? ICON_ROW : ROW, "items-baseline")}>
       <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)", stacked && "col-start-2")}>
         {event.kind === "agent" ? "Agent" : "Caller"}
       </span>
-      <p className={cn("min-h-[1.5em]", stacked ? "col-start-2 -mt-2" : event.kind === "caller" && "text-(--ui-text)/80")}>
+      <p className={cn("min-h-[1.5em]", stacked ? "col-start-2" : event.kind === "caller" && "text-(--ui-text)/80")}>
         {words === 0 ? (
           <span className="ui-wave inline-flex h-3 items-end gap-[2px] align-middle" aria-hidden>
             {[0, 1, 2].map((i) => (

@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
 
-import { JOURNEYS, ROW, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
+import { ICON_ROW, JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
 
 /**
@@ -152,7 +152,7 @@ export function CalmJourneyWindow({
                 return (
                   <li key={i} className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500">
                     {e.kind === "action" ? (
-                      <div className={cn(ROW, "items-center")}>
+                      <div className={cn(ICON_ROW, "items-center")}>
                         {pending ? (
                           <CircleNotchIcon className="size-3.5 text-(--ui-muted) motion-safe:animate-spin" aria-hidden />
                         ) : e.done ? (
@@ -164,7 +164,7 @@ export function CalmJourneyWindow({
                           <span className="shimmer-text">{e.pending}…</span>
                         ) : e.done ? (
                           /* The outcome, highlighted */
-                          <span className="-ml-3 inline-flex max-w-max min-w-0 items-center gap-2 rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 px-3 py-1.5 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]">
+                          <span className="-ml-1.5 inline-flex max-w-max min-w-0 items-center gap-2 rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 px-3 py-1.5 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]">
                             <span className="shrink-0 font-medium">{e.text}</span>
                             {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
                           </span>
@@ -185,7 +185,7 @@ export function CalmJourneyWindow({
 
                     {/* What this line taught the agent */}
                     {fact && (
-                      <div className={cn(ROW, "mt-2")}>
+                      <div className={cn(ICON_ROW, "mt-2")}>
                         <span />
                         <span className="flex flex-wrap gap-1.5">
                           {fact.rows.map(([k, v]) => (
