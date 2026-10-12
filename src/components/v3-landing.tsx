@@ -6,7 +6,7 @@ import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
-import { PromptEditor } from "@/components/product/prompt-editor"
+import { AgentJourney } from "@/components/product/agent-journey"
 import { FinalCta } from "@/components/sections/final-cta"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
@@ -110,12 +110,12 @@ export function V3Landing() {
       <Section id="v3-agent">
         <Container>
           <Header
-            title="Write the prompt. Get the agent."
-            body="Describe the job in plain language. Pull in what you already know with variables, call tools by name, and branch with conditions written right inside the prompt."
+            title="Everything an agent needs, from before the call to after it."
+            body="Context before the first ring, a prompt in plain language with conditions inside it, answers from your own documents, actions on your systems, the right voice, and the follow-up done after goodbye."
             aside={<TextLink href="/platform/agents">Explore Agents</TextLink>}
           />
-          <div className="mt-10 overflow-hidden rounded-md border border-black/10 shadow-[0_30px_80px_-50px_oklch(0.2_0.02_260/0.6)]">
-            <PromptEditor className="h-[34rem] md:h-[38rem]" />
+          <div className="mt-10">
+            <AgentJourney />
           </div>
         </Container>
       </Section>

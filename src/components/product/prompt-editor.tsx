@@ -149,8 +149,20 @@ export function PromptEditor({ className }: { className?: string }) {
   const inView = useInView(ref, { amount: 0.45, once: true })
   const reduce = usePrefersReducedMotion()
   const [typed, setTyped] = useState(0)
+  const body = useRef<HTMLDivElement>(null)
+  const cel = useRef<HTMLDivElement>(null)
   const shown = reduce ? CEL.length : typed
   const valid = shown >= CEL.length
+
+  // Bring the expression into view as it starts (it sits below the fold in short editors).
+  useEffect(() => {
+    if (!inView || view !== "preview") return
+    const b = body.current
+    const c = cel.current
+    if (!b || !c || b.scrollHeight <= b.clientHeight) return
+    const t = setTimeout(() => b.scrollTo({ top: c.offsetTop - 96, behavior: reduce ? "auto" : "smooth" }), 350)
+    return () => clearTimeout(t)
+  }, [inView, view, reduce])
 
   // Write the expression in, a few characters at a time, once on screen.
   useEffect(() => {
@@ -199,7 +211,8 @@ export function PromptEditor({ className }: { className?: string }) {
 
       {/* Body */}
       <div
-        className="min-h-0 flex-1 overflow-hidden px-5 py-5 @3xl:px-7"
+        ref={body}
+        className="relative min-h-0 flex-1 overflow-hidden px-5 py-5 @3xl:px-7"
         style={{ maskImage: "linear-gradient(to bottom, black 88%, transparent)", WebkitMaskImage: "linear-gradient(to bottom, black 88%, transparent)" }}
       >
         {view === "text" ? (
@@ -241,7 +254,7 @@ export function PromptEditor({ className }: { className?: string }) {
                 )
               }
               return (
-                <div key={i} className="relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-3.5 py-3 font-mono text-[12.5px] leading-[1.75] ring-1 ring-[oklch(0.72_0.14_295/0.25)]">
+                <div key={i} ref={cel} className="relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-3.5 py-3 font-mono text-[12.5px] leading-[1.75] ring-1 ring-[oklch(0.72_0.14_295/0.25)]">
                   <Cel chars={shown} />
                   {!valid && <span className="ml-px inline-block h-[1.1em] w-px translate-y-[3px] bg-(--ui-text) motion-safe:animate-[blink_1s_steps(1)_infinite]" />}
                   <span
