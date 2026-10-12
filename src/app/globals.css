@@ -275,6 +275,21 @@
   from { top: 0; }
   to { top: 100%; }
 }
+/* A light sweep across text while something is working (hero journey). */
+@keyframes shimmer-text {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+.shimmer-text {
+  color: transparent;
+  background: linear-gradient(90deg, var(--ui-muted) 0%, var(--ui-muted) 40%, var(--ui-text) 50%, var(--ui-muted) 60%, var(--ui-muted) 100%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer-text 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-text { animation: none; color: var(--ui-muted); background: none; }
+}
 @keyframes ui-wave {
   0%, 100% { transform: scaleY(0.35); }
   50% { transform: scaleY(1); }
