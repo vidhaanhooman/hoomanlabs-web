@@ -30,6 +30,7 @@ const AGENT_ENV: Record<string, string> = {
   "appointments-hi": "HOOMAN_AGENT_APPOINTMENTS",
   "support-es": "HOOMAN_AGENT_SUPPORT",
   "sales-en": "HOOMAN_AGENT_SALES",
+  "feedback-en": "HOOMAN_AGENT_FEEDBACK",
 }
 
 const IP_WINDOW_MS = 60 * 60 * 1000

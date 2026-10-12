@@ -104,4 +104,18 @@ export const useCaseCalls: UseCaseCall[] = [
       { t: 20, speaker: "agent", text: "Then let's get you a quote. I've booked you with our fleet team for Thursday at 11." },
     ],
   },
+  {
+    // Real recording; transcript to come (one line shown until then).
+    id: "feedback-en",
+    useCase: "Feedback",
+    summary: "Asks a guest about their stay and logs the answers",
+    agent: "Ria",
+    language: "English",
+    direction: "Outbound",
+    src: "/audio/calls/feedback-en.mp3",
+    scene: { art: "/art/listen/listen-evening.png", label: "Evening", glow: 0.5, scrim: 0.4 },
+    sound: { art: "/art/backdrops/home-measure.png", colour: "Dusk blue" },
+    duration: 81,
+    lines: [{ t: 0, speaker: "agent", text: "A post-stay feedback call. Transcript coming soon." }],
+  },
 ]
