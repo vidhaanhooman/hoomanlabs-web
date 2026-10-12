@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowRightIcon, ArrowUpRightIcon, BookOpenTextIcon, BracketsCurlyIcon, CheckIcon, TerminalWindowIcon } from "@phosphor-icons/react/dist/ssr"
-import { siGooglecalendar, siHubspot, siShopify, siZendesk } from "simple-icons"
+import { siCalendly, siGooglecalendar, siHubspot, siIntercom, siShopify, siZendesk } from "simple-icons"
 
 import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
@@ -56,6 +56,7 @@ export function StartResources() {
                     ["CRM", "HubSpot updated"],
                     ["Ticket", "#TCK-2291"],
                     ["QA score", "4.6 / 5"],
+                    ["Follow-up", "SMS sent"],
                   ].map(([k, v]) => (
                     <li key={k} className="flex items-center justify-between gap-3 border-t border-line py-2">
                       <span className="text-ink-muted">{k}</span>
@@ -88,6 +89,8 @@ export function StartResources() {
                   { n: "Zendesk", i: siZendesk, d: "Tickets" },
                   { n: "Google Calendar", i: siGooglecalendar, d: "Bookings" },
                   { n: "Shopify", i: siShopify, d: "Orders" },
+                  { n: "Calendly", i: siCalendly, d: "Scheduling" },
+                  { n: "Intercom", i: siIntercom, d: "Chat" },
                 ].map((t) => (
                   <div key={t.n} className="grid grid-cols-[1fr_auto] items-center border-b border-line px-3 py-2.5">
                     <span className="flex items-center gap-2.5">
@@ -117,14 +120,14 @@ export function StartResources() {
             <Panel className="flex w-full flex-col p-6 sm:p-7">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>
-              <ul className="mt-4 flex flex-col">
+              <ul className="mt-4 flex flex-1 flex-col">
                 {resources.links
                   .filter((r) => r.label !== "Changelog")
                   .map((r, i) => {
                     const Ico = [BookOpenTextIcon, BracketsCurlyIcon, TerminalWindowIcon][i] ?? BookOpenTextIcon
                     return (
-                      <li key={r.label} className="border-t border-line first:border-0">
-                        <Link href={r.href} className="group flex h-full items-center gap-3 py-3.5">
+                      <li key={r.label} className="flex border-t border-line first:border-0 lg:flex-1">
+                        <Link href={r.href} className="group flex w-full items-center gap-3 py-3.5">
                           <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-background text-ink-secondary transition-colors group-hover:text-foreground">
                             <Ico className="size-4" />
                           </span>
@@ -138,7 +141,7 @@ export function StartResources() {
                     )
                   })}
               </ul>
-              <Link href={startPaths.paths[0].cta.href} className="group mt-auto flex items-center justify-between gap-3 border-t border-line pt-4 text-small">
+              <Link href={startPaths.paths[0].cta.href} className="group flex items-center justify-between gap-3 border-t border-line pt-4 text-small">
                 <span className="flex flex-col">
                   <span className="text-body font-medium">Start self-serve</span>
                   <span className="text-ink-secondary">Build, test and go live yourself.</span>

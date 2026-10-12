@@ -104,6 +104,7 @@ const MINI: Record<string, React.ReactNode> = {
           { p: "Interrupts often", s: "Dispute late fee", ok: true },
           { p: "Asks for a human", s: "Escalation", ok: false },
           { p: "In a hurry", s: "Update phone number", ok: true },
+          { p: "Noisy background", s: "Report an outage", ok: true },
         ].map((r) => (
           <li key={r.p} className="flex items-center gap-3 border-t border-line py-2">
             <span className="flex-1 truncate">{r.p}</span>
