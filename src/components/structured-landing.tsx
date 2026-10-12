@@ -12,9 +12,9 @@ import { FeaturePanel } from "@/components/sections/feature-panel"
 import { FinalCta } from "@/components/sections/final-cta"
 import { HomeIntegrations, StartPaths } from "@/components/sections/landing"
 import { Logos } from "@/components/sections/logos"
+import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
   HomeFaq,
-  Outcomes,
   PlatformSummary,
   StatHeadline,
   UseCaseCarousel,
@@ -79,7 +79,7 @@ export function StructuredLanding() {
 
       <Logos />
       <UseCaseCarousel />
-      <Outcomes />
+      <OutcomeDiagrams />
       <StatHeadline />
 
       {features.map((f, i) => (
