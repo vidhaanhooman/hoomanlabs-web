@@ -163,32 +163,45 @@ const FOCUS: Record<ComponentId, string> = {
   tools: "100% 50%",
 }
 
-/* Fine-line drawing in the outcome-card style: steps rising to "Go live". */
+/* Fine-line drawing in the outcome-card style: a dial whose arc runs a short
+   way round, from sign-up to live, with hour ticks around it. */
 const STROKE = { fill: "none", stroke: "currentColor", strokeWidth: 1.3, strokeLinecap: "round" as const }
 const DOTTED = { ...STROKE, strokeDasharray: "1.5 4", opacity: 0.55 }
-const STEPS = [
-  { x: 24, y: 78, label: "Sign up", done: true },
-  { x: 92, y: 62, label: "Build", done: true },
-  { x: 160, y: 46, label: "Test", done: true },
-  { x: 228, y: 30, label: "Go live", done: false },
-]
 
 function SelfServeLine() {
-  const solid = STEPS.filter((p) => p.done)
-  const open = STEPS.slice(solid.length - 1)
+  const cx = 126
+  const cy = 60
+  const r = 34
+  /** A point on the dial, `deg` clockwise from 12 o'clock. */
+  const at = (deg: number, rr = r) => {
+    const a = ((deg - 90) * Math.PI) / 180
+    return [Math.round((cx + rr * Math.cos(a)) * 10) / 10, Math.round((cy + rr * Math.sin(a)) * 10) / 10] as const
+  }
+  const [sx, sy] = at(0)
+  const [ex, ey] = at(110)
   return (
-    <svg viewBox="0 0 252 112" className="h-full max-h-24 w-full max-w-[15rem] text-foreground">
-      <path d={solid.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...STROKE} />
-      <path d={open.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...DOTTED} />
-      {STEPS.map((p) => (
-        <g key={p.label}>
-          <line x1={p.x} y1={p.y + 7} x2={p.x} y2={94} {...DOTTED} />
-          <circle cx={p.x} cy={p.y} r={4} className={p.done ? "fill-foreground" : "fill-surface"} stroke="currentColor" strokeWidth={1.3} />
-          <text x={p.x} y={108} fontSize={10} textAnchor="middle" className="fill-ink-muted">
-            {p.label}
-          </text>
-        </g>
-      ))}
+    <svg viewBox="66 14 128 92" className="h-full max-h-28 w-full max-w-[12rem] text-foreground">
+      {/* The dial and its hour ticks */}
+      <circle cx={cx} cy={cy} r={r} {...DOTTED} />
+      {Array.from({ length: 12 }, (_, i) => {
+        if (i === 0) return null
+        const [x1, y1] = at(i * 30, r + 4)
+        const [x2, y2] = at(i * 30, r + 8)
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} {...STROKE} opacity={0.35} />
+      })}
+      {/* Sign-up to live: a short way round */}
+      <path d={`M${sx},${sy} A${r},${r} 0 0 1 ${ex},${ey}`} {...STROKE} strokeWidth={1.6} />
+      <circle cx={sx} cy={sy} r={4} className="fill-surface" stroke="currentColor" strokeWidth={1.3} />
+      <circle cx={ex} cy={ey} r={4} className="fill-foreground" />
+      <text x={sx - 10} y={sy + 3.5} fontSize={10} textAnchor="end" className="fill-ink-muted">
+        Sign up
+      </text>
+      <text x={ex + 10} y={ey + 4} fontSize={10} className="fill-foreground">
+        Live
+      </text>
+      <text x={cx} y={cy + 4} fontSize={11} textAnchor="middle" className="fill-ink-muted">
+        hours
+      </text>
     </svg>
   )
 }
