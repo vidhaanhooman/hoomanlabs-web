@@ -180,7 +180,7 @@ export function CalmJourneyWindow({
                         )}
                       </div>
                     ) : (
-                      <SpeechLine event={e} words={live ? at.w : Infinity} live={live} agentAbove />
+                      <SpeechLine event={e} words={live ? at.w : Infinity} live={live} above />
                     )}
 
                     {/* What this line taught the agent */}

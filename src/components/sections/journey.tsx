@@ -432,24 +432,24 @@ export function SpeechLine({
   event,
   words,
   live,
-  agentAbove = false,
+  above = false,
 }: {
   event: Extract<Event, { kind: "agent" | "caller" }>
   words: number
   live: boolean
-  /** Agent lines: "Agent" on its own line above the words (caller lines unchanged). */
-  agentAbove?: boolean
+  /** Speaker name on its own line above the words. */
+  above?: boolean
 }) {
   const all = event.text.split(" ")
   const shown = all.slice(0, words).join(" ")
   const speaking = live && words > 0 && words < all.length
-  const stacked = agentAbove && event.kind === "agent"
+  const stacked = above
   return (
     <div className={cn(ROW, "items-baseline")}>
       <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)", stacked && "col-start-2")}>
         {event.kind === "agent" ? "Agent" : "Caller"}
       </span>
-      <p className={cn("min-h-[1.5em]", event.kind === "caller" && "text-(--ui-text)/80", stacked && "col-start-2 -mt-2")}>
+      <p className={cn("min-h-[1.5em]", stacked ? "col-start-2 -mt-2" : event.kind === "caller" && "text-(--ui-text)/80")}>
         {words === 0 ? (
           <span className="ui-wave inline-flex h-3 items-end gap-[2px] align-middle" aria-hidden>
             {[0, 1, 2].map((i) => (
