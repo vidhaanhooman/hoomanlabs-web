@@ -425,14 +425,17 @@ export function Journey() {
 }
 
 /** A transcript line that streams in word by word; a blinking caret while it's live. */
+/** Shared transcript row: a narrow label column (speaker or icon), then the text. */
+export const ROW = "grid grid-cols-[2.75rem_minmax(0,1fr)] gap-3"
+
 export function SpeechLine({ event, words, live }: { event: Extract<Event, { kind: "agent" | "caller" }>; words: number; live: boolean }) {
   const all = event.text.split(" ")
   const shown = all.slice(0, words).join(" ")
-  const speaking = live && words < all.length
+  const speaking = live && words > 0 && words < all.length
   return (
-    <div className="grid grid-cols-[3.5rem_1fr] gap-2">
-      <span className={cn("flex items-center gap-1.5 pt-px text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)")}>
-        {event.kind === "agent" ? (event.channel ?? "Agent") : "Caller"}
+    <div className={cn(ROW, "items-baseline")}>
+      <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)")}>
+        {event.kind === "agent" ? "Agent" : "Caller"}
       </span>
       <p className={cn("min-h-[1.5em]", event.kind === "caller" && "text-(--ui-text)/80")}>
         {words === 0 ? (

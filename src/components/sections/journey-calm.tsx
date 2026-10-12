@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { ArrowRightIcon, CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon, PhoneIcon } from "@phosphor-icons/react"
 
-import { JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
+import { JOURNEYS, ROW, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
 
 /**
@@ -148,25 +148,29 @@ export function CalmJourneyWindow({
                 return (
                   <li key={i} className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500">
                     {e.kind === "action" ? (
-                      live && at.w === 0 ? (
-                        <span className="inline-flex items-center gap-2 text-(--ui-muted)">
-                          <CircleNotchIcon className="size-3.5 motion-safe:animate-spin" aria-hidden />
-                          {e.pending}…
-                        </span>
-                      ) : e.done ? (
-                        /* The outcome, highlighted */
-                        <span className="inline-flex max-w-full items-center gap-2 rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 px-3 py-2 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]">
-                          <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
-                          <span className="shrink-0 font-medium">{e.text}</span>
-                          {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
-                        </span>
-                      ) : (
-                        <span className="inline-flex max-w-full items-center gap-2">
-                          <LightningIcon weight="fill" className="size-3.5 shrink-0 text-(--ui-muted)" aria-hidden />
-                          <span className="shrink-0">{e.text}</span>
-                          {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
-                        </span>
-                      )
+                      <div className={cn(ROW, "items-center")}>
+                        {live && at.w === 0 ? (
+                          <CircleNotchIcon className="size-3.5 text-(--ui-muted) motion-safe:animate-spin" aria-hidden />
+                        ) : e.done ? (
+                          <CheckCircleIcon weight="fill" className="size-4 text-(--ui-live)" aria-hidden />
+                        ) : (
+                          <LightningIcon weight="fill" className="size-3.5 text-(--ui-muted)" aria-hidden />
+                        )}
+                        {live && at.w === 0 ? (
+                          <span className="text-(--ui-muted)">{e.pending}…</span>
+                        ) : e.done ? (
+                          /* The outcome, highlighted */
+                          <span className="-ml-3 inline-flex max-w-max min-w-0 items-center gap-2 rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 px-3 py-1.5 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]">
+                            <span className="shrink-0 font-medium">{e.text}</span>
+                            {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
+                          </span>
+                        ) : (
+                          <span className="flex min-w-0 items-baseline gap-2">
+                            <span className="shrink-0">{e.text}</span>
+                            {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
+                          </span>
+                        )}
+                      </div>
                     ) : (
                       <SpeechLine event={e} words={live ? at.w : Infinity} live={live} />
                     )}
@@ -174,10 +178,11 @@ export function CalmJourneyWindow({
                 )
               })}
               {done && tryHref && (
-                <li className="motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_400ms_both]">
+                <li className={cn(ROW, "motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_400ms_both]")}>
+                  <span />
                   <a
                     href={tryHref}
-                    className="group inline-flex items-center gap-2 rounded-full bg-(--ui-text) px-4 py-2 text-[13px] font-medium text-(--ui-bg) transition-transform active:scale-[0.97]"
+                    className="group -ml-1 inline-flex w-max items-center gap-2 rounded-full bg-(--ui-text) px-4 py-2 text-[13px] font-medium text-(--ui-bg) transition-transform active:scale-[0.97]"
                   >
                     <PhoneIcon weight="fill" className="size-3.5" aria-hidden />
                     Get this call on your phone
