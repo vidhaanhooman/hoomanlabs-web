@@ -1,5 +1,6 @@
 
 import { Container } from "@/components/layout/container"
+import { HeroScene } from "@/components/lab/hero-scene"
 import { Section } from "@/components/layout/section"
 import { Impact, Security, StartPaths } from "@/components/sections/landing"
 import { ListenExperience } from "@/components/sections/listen-experience"
@@ -12,14 +13,15 @@ import { chapters, heroCall } from "@/content/landing"
 
 /**
  * Proposed homepage (/lab/home), in the order a buyer's questions come:
- * 1 Hero: headline, then the listen / call-me panel, then logos
+ * 1 Hero: headline, then the listen / call-me panel (or, with hero="call-card",
+ *   the glass call card on the parallax), then logos
  * 2 Business impact (numbers)
  * 3 Use cases
  * 4 Platform overview: six component tiles, detail on /platform
  * 5 Customer quotes, then a short security strip
  * 6 Ways to get started
  */
-export function LandingPage() {
+export function LandingPage({ hero = "listen" }: { hero?: "listen" | "call-card" } = {}) {
   return (
     <>
       {/* 1 Hero: centred headline, the call box, then the parallax with a live call */}
@@ -36,9 +38,17 @@ export function LandingPage() {
             {heroCall.body}
           </p>
         </Container>
-        <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 4 } as React.CSSProperties}>
-          <ListenExperience />
-        </div>
+        {hero === "call-card" ? (
+          <Container>
+            <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 2 } as React.CSSProperties}>
+              <HeroScene />
+            </div>
+          </Container>
+        ) : (
+          <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 4 } as React.CSSProperties}>
+            <ListenExperience />
+          </div>
+        )}
       </Section>
       <Logos />
 
