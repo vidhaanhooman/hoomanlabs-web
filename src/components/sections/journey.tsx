@@ -34,17 +34,12 @@ import { cn } from "@/lib/utils"
  * motion: the finished journey, still clickable.
  */
 
-/** Systems the agent touches; shown as chips that light up when used. */
-export type SystemId = "phone" | "crm" | "zendesk" | "sms" | "form" | "campaigns" | "whatsapp"
-
 export type Event =
-  | { step: number; kind: "action"; pending: string; text: string; detail?: string; done?: boolean; system?: SystemId }
-  | { step: number; kind: "agent" | "caller"; text: string; channel?: string; system?: SystemId }
+  | { step: number; kind: "action"; pending: string; text: string; detail?: string; done?: boolean }
+  | { step: number; kind: "agent" | "caller"; text: string; channel?: string }
 
 export type Journey = {
   label: string
-  /** Systems in this journey, in the order they appear. */
-  systems: SystemId[]
   title: string
   steps: { label: string; icon: Icon; branch?: string }[]
   events: Event[]
@@ -57,7 +52,6 @@ export const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
   inbound: {
     label: "Inbound",
     title: "Inbound call · billing line",
-    systems: ["phone", "crm", "zendesk", "sms"],
     steps: [
       { label: "Call comes in", icon: PhoneIncomingIcon },
       { label: "Context retrieved", icon: DatabaseIcon },
@@ -66,17 +60,17 @@ export const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
       { label: "Ticket to CRM", icon: TicketIcon, branch: "If unresolved" },
     ],
     events: [
-      { step: 0, kind: "action", pending: "Answering", text: "Call answered", system: "phone", detail: "+44 20 7946 0958 · 1st ring" },
-      { step: 1, kind: "action", pending: "Looking up caller", text: "Customer found", system: "crm", detail: "CRM · 140 ms" },
-      { step: 1, kind: "action", pending: "Loading history", text: "Last call loaded", system: "crm", detail: "12 Feb · meter reading" },
-      { step: 2, kind: "agent", system: "phone", text: "Hi Maya, it’s Ria from Halden Energy. Is this about your March bill?" },
-      { step: 3, kind: "caller", system: "phone", text: "Yes. I think I was charged twice?" },
-      { step: 3, kind: "agent", system: "phone", text: "You’re right, I can see two charges of £86.40 on the 4th of March." },
-      { step: 3, kind: "caller", system: "phone", text: "Can you refund one today?" },
-      { step: 3, kind: "agent", system: "phone", text: "Refunds this size need a quick approval, so I’ll raise it now and text you the reference." },
+      { step: 0, kind: "action", pending: "Answering", text: "Call answered", detail: "+44 20 7946 0958 · 1st ring" },
+      { step: 1, kind: "action", pending: "Looking up caller", text: "Customer found", detail: "CRM · 140 ms" },
+      { step: 1, kind: "action", pending: "Loading history", text: "Last call loaded", detail: "12 Feb · meter reading" },
+      { step: 2, kind: "agent", text: "Hi Maya, it’s Ria from Halden Energy. Is this about your March bill?" },
+      { step: 3, kind: "caller", text: "Yes. I think I was charged twice?" },
+      { step: 3, kind: "agent", text: "You’re right, I can see two charges of £86.40 on the 4th of March." },
+      { step: 3, kind: "caller", text: "Can you refund one today?" },
+      { step: 3, kind: "agent", text: "Refunds this size need a quick approval, so I’ll raise it now and text you the reference." },
       { step: 4, kind: "action", pending: "Checking refund policy", text: "Unresolved", detail: "needs approval · over £50" },
-      { step: 4, kind: "action", pending: "Creating ticket", text: "Ticket created", system: "zendesk", detail: "#TCK-2291 · Zendesk" },
-      { step: 4, kind: "action", pending: "Sending SMS", text: "SMS sent", system: "sms", detail: "reference to customer", done: true },
+      { step: 4, kind: "action", pending: "Creating ticket", text: "Ticket created", detail: "#TCK-2291 · Zendesk" },
+      { step: 4, kind: "action", pending: "Sending SMS", text: "SMS sent", detail: "reference to customer", done: true },
     ],
     context: [
       { label: "Customer", value: "Maya Patel", step: 1 },
@@ -90,7 +84,6 @@ export const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
   outbound: {
     label: "Outbound",
     title: "Outbound lead · demo requests",
-    systems: ["form", "campaigns", "crm", "phone", "whatsapp"],
     steps: [
       { label: "Form submitted", icon: FileTextIcon },
       { label: "Added to campaign", icon: MegaphoneIcon },
@@ -99,13 +92,13 @@ export const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
       { label: "Message and retry", icon: WhatsappLogoIcon, branch: "If unanswered" },
     ],
     events: [
-      { step: 0, kind: "action", pending: "Receiving form", text: "Form submitted", system: "form", detail: "Demo request · website" },
-      { step: 1, kind: "action", pending: "Adding to campaign", text: "Added to campaign", system: "campaigns", detail: "New demo requests · #1 in queue" },
-      { step: 2, kind: "action", pending: "Enriching lead", text: "Lead enriched", system: "crm", detail: "company · role · region" },
-      { step: 3, kind: "action", pending: "Dialling +91 98••• ••210", text: "Ringing", system: "phone", detail: "6 rings" },
-      { step: 3, kind: "action", pending: "Waiting for answer", text: "No answer", system: "phone", detail: "voicemail skipped" },
+      { step: 0, kind: "action", pending: "Receiving form", text: "Form submitted", detail: "Demo request · website" },
+      { step: 1, kind: "action", pending: "Adding to campaign", text: "Added to campaign", detail: "New demo requests · #1 in queue" },
+      { step: 2, kind: "action", pending: "Enriching lead", text: "Lead enriched", detail: "company · role · region" },
+      { step: 3, kind: "action", pending: "Dialling +91 98••• ••210", text: "Ringing", detail: "6 rings" },
+      { step: 3, kind: "action", pending: "Waiting for answer", text: "No answer", detail: "voicemail skipped" },
       { step: 4, kind: "agent", channel: "WhatsApp", text: "Hi Arjun, it’s Ria from HoomanLabs. Sorry we missed you! Is 2 pm a good time to call back?" },
-      { step: 4, kind: "action", pending: "Scheduling retry", text: "Retry queued", system: "campaigns", detail: "today 2:00 pm", done: true },
+      { step: 4, kind: "action", pending: "Scheduling retry", text: "Retry queued", detail: "today 2:00 pm", done: true },
     ],
     context: [
       { label: "Lead", value: "Arjun Mehta", step: 0 },
@@ -143,27 +136,13 @@ type Head = { i: number; w: number }
 export function useJourneyPlayback(
   journey: Journey,
   ref: React.RefObject<HTMLElement | null>,
-  {
-    stepPause = 0,
-    onEnd,
-    speak,
-  }: {
-    stepPause?: number
-    onEnd?: () => void
-    /** Voice a speech line; the transcript waits for it to finish. */
-    speak?: (e: Event) => Promise<void>
-  } = {}
+  { stepPause = 0, onEnd }: { stepPause?: number; onEnd?: () => void } = {}
 ) {
   // Called after the finished journey has held, instead of looping.
   const end = useRef(onEnd)
-  const voice = useRef(speak)
   useEffect(() => {
     end.current = onEnd
-    voice.current = speak
   })
-  /** Index of the line being voiced, and the last one that finished. */
-  const started = useRef(-1)
-  const [spoken, setSpoken] = useState(-1)
   const [head, setHead] = useState<Head>({ i: 0, w: 0 })
   const [seconds, setSeconds] = useState(0)
   const reduce = usePrefersReducedMotion()
@@ -189,26 +168,18 @@ export function useJourneyPlayback(
       ms = head.w === 0 ? ACTION_PENDING_MS : AFTER_ACTION_MS
     } else {
       const words = current!.text.split(" ").length
-      // Line fully shown but still being voiced: wait for the voice.
-      if (head.w >= words && started.current === head.i && spoken !== head.i) return
       next = head.w < words ? { i: head.i, w: head.w + 1 } : { i: head.i + 1, w: 0 }
       ms = head.w === 0 ? BREATH_MS : head.w < words ? wordMs(current!.kind, head.w) : AFTER_LINE_MS
     }
-    const startVoice = !done && current!.kind !== "action" && head.w === 0 ? current : null
     // A beat before a new step starts.
     if (!done && next.i !== head.i && next.i < events.length && events[next.i].step !== current!.step) ms += stepPause
     const t = setTimeout(() => {
       if (done && end.current) return end.current()
-      if (startVoice && voice.current) {
-        const i = head.i
-        started.current = i
-        voice.current(startVoice).then(() => setSpoken(i))
-      }
       setHead(next)
       if (done) setSeconds(0)
     }, ms)
     return () => clearTimeout(t)
-  }, [playing, done, current, head, events, stepPause, spoken])
+  }, [playing, done, current, head, events, stepPause])
 
   // Call timer while the journey runs.
   useEffect(() => {
