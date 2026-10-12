@@ -1,7 +1,9 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { useInView } from "motion/react"
+import { useLayoutEffect, useRef, useState } from "react"
+import { useMotionValueEvent, useScroll } from "motion/react"
+
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import {
   BookOpenTextIcon,
   CheckIcon,
@@ -23,8 +25,10 @@ import { cn } from "@/lib/utils"
  * marker and joined to the editor's edge by a hairline. Hovering (or
  * focusing) a card spotlights its part: the rest of the editor dims.
  * Below lg the cards become a numbered list under the editor; tapping one
- * spotlights the same way. Each card has an icon. It all reveals once on scroll: editor,
- * hairlines, then cards in turn. Sample content (fictional Halden Energy agent).
+ * spotlights the same way. On large screens the editor stays pinned while
+ * you scroll, and the cards arrive one by one (each spotlighting its part);
+ * after the last, all stay and the spotlight clears. Sample content
+ * (fictional Halden Energy agent).
  */
 
 type Mark = { n: number; side: "left" | "right"; title: string; body: string; icon: Icon }
@@ -220,28 +224,32 @@ const MIN_SPACE = 12
 
 type Pos = { n: number; y: number; top: number }
 
+/** The order cards arrive in: top to bottom through the editor. */
+const ORDER = [6, 1, 3, 2, 4, 5]
+/** Scroll steps: one per card, then one with all shown and no spotlight. */
+const STEPS = ORDER.length + 1
+
 export function AgentAnatomy() {
+  const track = useRef<HTMLDivElement>(null)
   const box = useRef<HTMLDivElement>(null)
   const editor = useRef<HTMLDivElement>(null)
   const cards = useRef<Record<number, HTMLButtonElement | null>>({})
   const [pos, setPos] = useState<Pos[]>([])
   const [edge, setEdge] = useState({ left: 0, right: 0 })
-  const [focus, setFocus] = useState<number | null>(null)
-  // Reveal once on scroll: editor, then hairlines draw out, then cards in turn.
-  const shown = useInView(box, { amount: 0.25, once: true })
-  /** Order cards appear in: top to bottom, alternating sides. */
-  const order = (n: number) => [6, 1, 3, 2, 4, 5].indexOf(n)
-  // After the reveal, drop the entrance delays so hover responds at once.
-  const [settled, setSettled] = useState(false)
-  useEffect(() => {
-    if (!shown) return
-    const t = setTimeout(() => setSettled(true), 1800)
-    return () => clearTimeout(t)
-  }, [shown])
-  const delay = (ms: number) => (shown && !settled ? `${ms}ms` : "0ms")
+  const [hover, setHover] = useState<number | null>(null)
+  const reduce = usePrefersReducedMotion()
 
-  // Marker positions relative to the section, and each card's top placed level
-  // with its marker (pushed down if the card above on the same side would overlap).
+  // Scroll through a tall track while the editor stays pinned; each step brings in the next card.
+  const [step, setStep] = useState(0)
+  const { scrollYProgress } = useScroll({ target: track, offset: ["start 96px", "end end"] })
+  useMotionValueEvent(scrollYProgress, "change", (v) => setStep(Math.min(STEPS, Math.floor(v * (STEPS + 0.5)))))
+  const s = reduce ? STEPS : step
+  const shown = (n: number) => ORDER.indexOf(n) < s
+  const scrollFocus = s >= 1 && s <= ORDER.length ? ORDER[s - 1] : null
+  const focus = hover ?? scrollFocus
+
+  // Marker positions relative to the box, and each card's top placed level with
+  // its marker (pushed down if the card above on the same side would overlap).
   useLayoutEffect(() => {
     const root = box.current
     const ed = editor.current
@@ -279,67 +287,70 @@ export function AgentAnatomy() {
 
   return (
     <div>
-      <div ref={box} className="relative lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_16rem] lg:gap-x-10 lg:pt-4 lg:pb-14">
-        <div aria-hidden className="hidden lg:block" />
-        <div
-          ref={editor}
-          className={cn("motion-safe:transition-[opacity,transform] motion-safe:duration-700 motion-safe:ease-(--ease-out)", !shown && "motion-safe:translate-y-3 motion-safe:opacity-0")}
-        >
-          <Editor focus={focus} />
+      {/* Tall track on large screens; the stage inside stays pinned while it scrolls past */}
+      <div ref={track} className={cn(!reduce && "lg:h-[480vh]")}>
+        <div className={cn(!reduce && "lg:sticky lg:top-24")}>
+          <div ref={box} className="relative lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_16rem] lg:gap-x-10 lg:pt-4 lg:pb-14">
+            <div aria-hidden className="hidden lg:block" />
+            <div ref={editor}>
+              <Editor focus={focus} />
+            </div>
+            <div aria-hidden className="hidden lg:block" />
+
+            {/* Hairlines: from each card to the editor's edge, level with its marker */}
+            {pos.map((p) => {
+              const m = MARKS[p.n - 1]
+              const style =
+                m.side === "left"
+                  ? { top: p.y, left: CARD - GAP, right: `calc(100% - ${edge.left}px)` }
+                  : { top: p.y, left: edge.right, right: CARD - GAP }
+              return (
+                <span
+                  key={`l${p.n}`}
+                  aria-hidden
+                  className={cn(
+                    "absolute hidden h-px transition-[background-color,transform] duration-500 ease-(--ease-out) lg:block",
+                    m.side === "left" ? "origin-right" : "origin-left",
+                    focus === p.n ? "bg-foreground/50" : "bg-line-strong",
+                    !shown(p.n) && "scale-x-0"
+                  )}
+                  style={style}
+                />
+              )
+            })}
+
+            {/* Callout cards, arriving one by one */}
+            {MARKS.map((m) => {
+              const p = at(m.n)
+              const on = shown(m.n)
+              return (
+                <CalloutCard
+                  key={m.n}
+                  m={m}
+                  on={focus === m.n}
+                  onFocus={setHover}
+                  cardRef={(el) => {
+                    cards.current[m.n] = el
+                  }}
+                  className={cn(
+                    "absolute hidden transition-[opacity,transform,border-color,background-color,box-shadow] duration-500 ease-(--ease-out) lg:flex",
+                    p && on ? "opacity-100" : "pointer-events-none opacity-0",
+                    !on && (m.side === "left" ? "-translate-x-4" : "translate-x-4"),
+                    m.side === "left" ? "left-0" : "right-0"
+                  )}
+                  style={{ top: p?.top ?? 0, width: CARD - GAP }}
+                />
+              )
+            })}
+          </div>
         </div>
-        <div aria-hidden className="hidden lg:block" />
-
-        {/* Hairlines: from each card to the editor's edge, level with its marker */}
-        {pos.map((p) => {
-          const m = MARKS[p.n - 1]
-          const style =
-            m.side === "left"
-              ? { top: p.y, left: CARD - GAP, right: `calc(100% - ${edge.left}px)` }
-              : { top: p.y, left: edge.right, right: CARD - GAP }
-          return (
-            <span
-              key={`l${p.n}`}
-              aria-hidden
-              className={cn(
-                "absolute hidden h-px transition-[background-color,transform] duration-200 lg:block motion-safe:duration-500",
-                m.side === "left" ? "origin-right" : "origin-left",
-                focus === p.n ? "bg-foreground/50" : "bg-line-strong",
-                !shown && "motion-safe:scale-x-0"
-              )}
-              style={{ ...style, transitionDelay: delay(450 + order(p.n) * 110) }}
-            />
-          )
-        })}
-
-        {/* Callout cards, three a side */}
-        {MARKS.map((m) => {
-          const p = at(m.n)
-          return (
-            <CalloutCard
-              key={m.n}
-              m={m}
-              on={focus === m.n}
-              onFocus={setFocus}
-              cardRef={(el) => {
-                cards.current[m.n] = el
-              }}
-              className={cn(
-                "absolute hidden lg:flex motion-safe:transition-[opacity,transform,border-color,background-color,box-shadow] motion-safe:duration-500 motion-safe:ease-(--ease-out)",
-                p && shown ? "opacity-100" : "opacity-0",
-                !shown && (m.side === "left" ? "motion-safe:-translate-x-3" : "motion-safe:translate-x-3"),
-                m.side === "left" ? "left-0" : "right-0"
-              )}
-              style={{ top: p?.top ?? 0, width: CARD - GAP, transitionDelay: delay(650 + order(m.n) * 110) }}
-            />
-          )
-        })}
       </div>
 
       {/* Narrow screens: the cards as a list */}
       <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:hidden">
         {MARKS.map((m) => (
           <li key={m.n} className="flex">
-            <CalloutCard m={m} on={focus === m.n} onFocus={setFocus} number className="w-full" />
+            <CalloutCard m={m} on={hover === m.n} onFocus={setHover} number className="w-full" />
           </li>
         ))}
       </ol>
