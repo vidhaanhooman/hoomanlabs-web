@@ -111,13 +111,14 @@ export function HomeIntegrations() {
 }
 
 /** Closing section: the two ways to start, and the trigger to the full process page. */
-export function StartPaths() {
+export function StartPaths({ extra = [] }: { extra?: (typeof startPaths.paths)[number][] } = {}) {
+  const paths = [...startPaths.paths, ...extra]
   return (
     <Section id="start" spacing="none" className="pt-(--section-pad) pb-(--section-gap)">
       <Container>
         <Header title={startPaths.headline} body={startPaths.body} />
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          {startPaths.paths.map((p, i) => (
+        <div className={cn("mt-10 grid gap-4 md:grid-cols-2", paths.length === 3 && "lg:grid-cols-3")}>
+          {paths.map((p, i) => (
             <div key={p.name} className="flex flex-col gap-6 rounded-md border border-line bg-surface p-6 sm:p-8">
               <div className="flex flex-col gap-2">
                 <h3 className="text-h4 font-medium">{p.name}</h3>
@@ -132,7 +133,7 @@ export function StartPaths() {
                 ))}
               </dl>
               <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3">
-                <Link href={p.cta.href} className={buttonVariants({ variant: i === 0 ? "secondary" : "default" })}>
+                <Link href={p.cta.href} className={buttonVariants({ variant: i === 1 ? "default" : "secondary" })}>
                   {p.cta.label}
                 </Link>
                 {p.more && <TextLink href={p.more.href}>{p.more.label}</TextLink>}

@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 
-import { LandingPage } from "@/components/landing-page"
+import { StructuredLanding } from "@/components/structured-landing"
 
-export const metadata: Metadata = { title: "Lab: homepage with the call card on the parallax (draft)" }
+export const metadata: Metadata = { title: "Lab: structured homepage (draft)" }
 
-/** Same page as /lab/home, with the earlier hero: the glass call card on the parallax painting. */
+/** The homepage in the 21-part structure, with the call-card hero. */
 export default function LabHeroCall() {
-  return <LandingPage hero="call-card" />
+  return <StructuredLanding />
 }

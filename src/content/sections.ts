@@ -52,6 +52,18 @@ export type SectionId =
   | "use-cases"
   | "platform-overview"
   | "voice-samples"
+  | "sl-usecases"
+  | "sl-outcomes"
+  | "sl-stat"
+  | "sl-video"
+  | "feature-design"
+  | "feature-channels"
+  | "feature-guardrails"
+  | "feature-analytics"
+  | "sl-summary"
+  | "sl-templates"
+  | "sl-stories"
+  | "sl-faq"
   | "enterprise-hero"
   | "enterprise-steps"
   | "enterprise-timeline"
@@ -109,6 +121,18 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "use-cases", name: "Use cases panel", status: "draft" },
   { id: "platform-overview", name: "Platform overview (6 tiles)", status: "draft" },
   { id: "voice-samples", name: "Hear it on real calls (audio A/B)", status: "draft" },
+  { id: "sl-usecases", name: "Use-case carousel", status: "draft" },
+  { id: "sl-outcomes", name: "Outcomes (3 cards)", status: "draft" },
+  { id: "sl-stat", name: "Stat headline", status: "draft" },
+  { id: "sl-video", name: "Video case study", status: "draft" },
+  { id: "feature-design", name: "Feature: design & workflows", status: "draft" },
+  { id: "feature-channels", name: "Feature: omnichannel", status: "draft" },
+  { id: "feature-guardrails", name: "Feature: guardrails & testing", status: "draft" },
+  { id: "feature-analytics", name: "Feature: analytics", status: "draft" },
+  { id: "sl-summary", name: "Platform summary & resources", status: "draft" },
+  { id: "sl-templates", name: "Use-case templates", status: "draft" },
+  { id: "sl-stories", name: "Customer stories", status: "draft" },
+  { id: "sl-faq", name: "FAQ", status: "draft" },
   { id: "enterprise-hero", name: "Enterprise: hero", status: "draft" },
   { id: "enterprise-steps", name: "Enterprise: build steps", status: "draft" },
   { id: "enterprise-timeline", name: "Enterprise: Gantt timeline", status: "draft" },
