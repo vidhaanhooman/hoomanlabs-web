@@ -131,14 +131,11 @@ export function V3Landing() {
             body="Triggers, campaigns, follow-ups and retries, so every call starts with context and ends with the next step done."
             aside={<TextLink href="/platform#product-workflow">Explore Workflow</TextLink>}
           />
-          {/* The canvas as a dark snippet in a light frame, like the sections around it */}
-          <div className="mt-10 rounded-xl border border-line bg-surface p-3 sm:p-4">
-            <div aria-hidden className="flex items-center overflow-hidden rounded-lg bg-[oklch(0.13_0_0)] md:h-[21rem]">
-              <WorkflowCanvas className="mx-auto w-full max-w-[52rem] pt-8" />
-            </div>
-            <ul className="mt-3 grid gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-4">
+          {/* What it's made of on the left; the canvas, top to bottom, on the right */}
+          <div className="mt-10 grid gap-3 rounded-xl border border-line bg-surface p-3 sm:gap-4 sm:p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]">
+            <ul className="order-2 grid gap-3 sm:grid-cols-3 sm:gap-4 lg:order-1 lg:grid-cols-1 lg:grid-rows-3">
               {WORKFLOW_PARTS.map(({ icon: Ico, title, body, eg }) => (
-                <li key={title} className="flex gap-3 rounded-lg border border-line bg-background p-4">
+                <li key={title} className="flex gap-3 rounded-lg border border-line bg-background p-4 lg:items-center lg:p-5">
                   <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line text-ink-secondary">
                     <Ico className="size-4" />
                   </span>
@@ -150,6 +147,9 @@ export function V3Landing() {
                 </li>
               ))}
             </ul>
+            <div aria-hidden className="order-1 flex items-center overflow-hidden rounded-lg bg-[oklch(0.13_0_0)] lg:order-2">
+              <WorkflowCanvas vertical className="w-full px-3 pt-10 pb-3" />
+            </div>
           </div>
         </Container>
       </Section>

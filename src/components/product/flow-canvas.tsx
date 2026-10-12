@@ -36,6 +36,16 @@ function path(a: Node, b: Node, w: number) {
 }
 
 /** Runs a step counter while the canvas is on screen. */
+/** Top-to-bottom edge for the vertical layout. */
+function pathV(a: Node, b: Node, w: number) {
+  const x1 = a.x + w / 2
+  const y1 = a.y + H
+  const x2 = b.x + w / 2
+  const y2 = b.y
+  const dy = Math.max(24, (y2 - y1) / 2)
+  return `M${x1},${y1} C${x1},${y1 + dy} ${x2},${y2 - dy} ${x2},${y2}`
+}
+
 function useSteps(count: number, ms: number) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.35 })
@@ -91,7 +101,7 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
   )
 }
 
-function NodeBox({ n, w, state }: { n: Node; w: number; state: State }) {
+function NodeBox({ n, w, state, vertical = false }: { n: Node; w: number; state: State; vertical?: boolean }) {
   const max = Math.floor((w - 56) / 7)
   return (
     <g transform={`translate(${n.x},${n.y})`} opacity={state === "idle" ? 0.55 : 1} style={{ transition: "opacity 400ms" }}>
@@ -128,8 +138,8 @@ function NodeBox({ n, w, state }: { n: Node; w: number; state: State }) {
           <path d="M-2.5,0 L-0.5,2 L3,-2" fill="none" stroke="oklch(0.95 0 0)" strokeWidth={1.4} strokeLinecap="round" />
         </g>
       )}
-      <circle cx={0} cy={H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
-      <circle cx={w} cy={H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
+      <circle cx={vertical ? w / 2 : 0} cy={vertical ? 0 : H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
+      <circle cx={vertical ? w / 2 : w} cy={vertical ? H : H / 2} r={3} fill="oklch(0.17 0 0)" stroke="oklch(0.6 0 0)" />
     </g>
   )
 }
@@ -204,10 +214,24 @@ const WF_STATUS = [
   "Done in 1.4s · CRM updated · callback Fri 10:00 · summary sent",
 ]
 
-export function WorkflowCanvas({ className }: { className?: string }) {
+/* The same workflow laid out top to bottom: one row per stage, the five
+   parallel steps side by side. */
+const WFV_W = 158
+const WFV_X = [0, 168, 336, 504, 672]
+const WFV_MID = 336
+const WFV_ROW = [16, 112, 216, 320, 424]
+const WFV_NODES: (Node & { stage: number })[] = WF_NODES.map((n) => {
+  const col: Record<string, number> = { det: 0, cb: 1, end: 2, rec: 3, sum: 4, push: 0, cbp: 1, summ: 4 }
+  return { ...n, x: n.id in col ? WFV_X[col[n.id]] : WFV_MID, y: WFV_ROW[n.stage] }
+})
+
+export function WorkflowCanvas({ className, vertical = false }: { className?: string; vertical?: boolean }) {
   const { ref, step } = useSteps(WF_STATUS.length + 1, 1200)
   const stage = Math.min(step, WF_STATUS.length - 1)
-  const byId = Object.fromEntries(WF_NODES.map((n) => [n.id, n]))
+  const W = vertical ? WFV_W : WF_W
+  const nodes = vertical ? WFV_NODES : WF_NODES
+  const byId = Object.fromEntries(nodes.map((n) => [n.id, n]))
+  const edge = vertical ? pathV : path
   const nodeState = (s: number): State => (s < stage ? "done" : s === stage ? (stage === 5 ? "done" : "active") : "idle")
   return (
     <div ref={ref} aria-hidden className={cn("relative overflow-hidden", BG, className)}>
@@ -217,19 +241,21 @@ export function WorkflowCanvas({ className }: { className?: string }) {
           {WF_STATUS[stage]}
         </span>
       </div>
-      <svg viewBox="0 0 1200 430" className="block h-auto w-full font-sans">
+      <svg viewBox={vertical ? "-4 0 838 492" : "0 0 1200 430"} className="block h-auto w-full font-sans">
         {WF_EDGES.map((e) => (
-          <EdgeLine key={`${e.from}-${e.to}`} d={path(byId[e.from], byId[e.to], WF_W)} state={nodeState(byId[e.to].stage)} />
+          <EdgeLine key={`${e.from}-${e.to}`} d={edge(byId[e.from], byId[e.to], W)} state={nodeState(byId[e.to].stage)} />
         ))}
         {WF_EDGES.filter((e) => e.label).map((e) => {
           const a = byId[e.from]
           const b = byId[e.to]
-          return (
-            <EdgeLabel key={`l-${e.from}`} x={(a.x + WF_W + b.x) / 2} y={(a.y + b.y) / 2 + H / 2} text={e.label!} on={stage >= b.stage} />
+          return vertical ? (
+            <EdgeLabel key={`l-${e.from}`} x={a.x + W / 2} y={(a.y + H + b.y) / 2} text={e.label!} on={stage >= b.stage} />
+          ) : (
+            <EdgeLabel key={`l-${e.from}`} x={(a.x + W + b.x) / 2} y={(a.y + b.y) / 2 + H / 2} text={e.label!} on={stage >= b.stage} />
           )
         })}
-        {WF_NODES.map((n) => (
-          <NodeBox key={n.id} n={n} w={WF_W} state={nodeState(n.stage)} />
+        {nodes.map((n) => (
+          <NodeBox key={n.id} n={n} w={W} state={nodeState(n.stage)} vertical={vertical} />
         ))}
       </svg>
     </div>
