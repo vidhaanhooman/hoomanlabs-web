@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef } from "react"
-import { CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
+import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
 
 import { JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
@@ -30,7 +30,7 @@ const CARDS: Record<JourneyId, Partial<Record<number, Card>>> = {
 
 const STEP_PAUSE_MS = 900
 
-export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => void }) {
+export function CalmJourneyWindow({ id, onEnd, onPick }: { id: JourneyId; onEnd?: () => void; onPick?: (j: JourneyId) => void }) {
   const ref = useRef<HTMLDivElement>(null)
   const journey = JOURNEYS[id]
   const { events, steps } = journey
@@ -48,7 +48,26 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
           <span className={cn("size-2 rounded-full", done ? "bg-(--ui-muted)" : "bg-(--ui-live)")} />
           <span className="font-medium">{done ? "Complete" : "Live"}</span>
           <span className="hidden text-(--ui-muted) @md:inline">{journey.title}</span>
-          <span className="ml-auto font-mono text-(--ui-muted) tabular-nums">{clock(seconds)}</span>
+          <span className="font-mono text-(--ui-muted) tabular-nums">{clock(seconds)}</span>
+          {onPick && (
+            <div role="tablist" aria-label="Journey" className="ml-auto flex gap-0.5 rounded-full border border-(--ui-line) bg-(--ui-raised) p-0.5">
+              {(Object.keys(JOURNEYS) as JourneyId[]).map((j) => (
+                <button
+                  key={j}
+                  type="button"
+                  role="tab"
+                  aria-selected={id === j}
+                  onClick={() => onPick(j)}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-[12px] transition-colors duration-150",
+                    id === j ? "bg-(--ui-text) text-(--ui-bg)" : "text-(--ui-muted) hover:text-(--ui-text)"
+                  )}
+                >
+                  {JOURNEYS[j].label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Narrow: progress in place of the rail */}
@@ -123,6 +142,13 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
                           <CircleNotchIcon className="size-3.5 motion-safe:animate-spin" aria-hidden />
                           {e.pending}…
                         </span>
+                      ) : e.done ? (
+                        /* The outcome, highlighted */
+                        <span className="inline-flex max-w-full items-center gap-2 rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 px-3 py-2 motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]">
+                          <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
+                          <span className="shrink-0 font-medium">{e.text}</span>
+                          {e.detail && <span className="truncate font-mono text-[12px] text-(--ui-muted)">{e.detail}</span>}
+                        </span>
                       ) : (
                         <span className="inline-flex max-w-full items-center gap-2">
                           <LightningIcon weight="fill" className="size-3.5 shrink-0 text-(--ui-muted)" aria-hidden />
@@ -155,10 +181,22 @@ export function CalmJourneyWindow({ id, onEnd }: { id: JourneyId; onEnd?: () => 
           {/* What the agent has learned, filled in as it goes */}
           <aside aria-label="Context" className="hidden flex-col gap-5 border-l border-(--ui-line) bg-(--ui-panel) p-5 @5xl:flex">
             {cards.map((c) => {
-              const known = done || step >= c.step
+              // The outcome lands only when the journey is done.
+              const outcome = c.step === steps.length - 1
+              const known = done || (!outcome && step >= c.step)
               return (
-                <div key={c.title} className="flex flex-col gap-2.5">
-                  <span className="font-mono text-[11px] text-(--ui-muted)">{c.title}</span>
+                <div
+                  key={c.title}
+                  className={cn(
+                    "flex flex-col gap-2.5 transition-[background-color,border-color] duration-500",
+                    outcome && "mt-auto rounded-md border p-3.5",
+                    outcome && (known ? "border-(--ui-live)/40 bg-(--ui-live)/10" : "border-(--ui-line)")
+                  )}
+                >
+                  <span className={cn("flex items-center gap-1.5 font-mono text-[11px]", outcome && known ? "text-(--ui-live)" : "text-(--ui-muted)")}>
+                    {outcome && known && <CheckCircleIcon weight="fill" className="size-3.5" aria-hidden />}
+                    {c.title}
+                  </span>
                   <dl className="flex flex-col gap-2">
                     {c.rows.map(([k, v]) => (
                       <div key={k} className="flex flex-col">

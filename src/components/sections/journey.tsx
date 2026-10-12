@@ -430,7 +430,7 @@ export function SpeechLine({ event, words, live }: { event: Extract<Event, { kin
   const shown = all.slice(0, words).join(" ")
   const speaking = live && words < all.length
   return (
-    <div className="grid grid-cols-[4.5rem_1fr] gap-3">
+    <div className="grid grid-cols-[3.5rem_1fr] gap-2">
       <span className={cn("flex items-center gap-1.5 pt-px text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)")}>
         {event.kind === "agent" ? (event.channel ?? "Agent") : "Caller"}
       </span>

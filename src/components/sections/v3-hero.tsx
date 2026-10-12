@@ -70,7 +70,12 @@ export function V3Hero() {
           <div id="v3-journey" className="reveal" style={{ "--i": 3 } as React.CSSProperties}>
             <HeroParallaxStage className="rounded-xl">
               <div className="relative z-10 px-3 py-10 sm:px-10 sm:py-16 lg:px-16 lg:py-24">
-                <CalmJourneyWindow key={journey} id={journey} onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))} />
+                <CalmJourneyWindow
+                  key={journey}
+                  id={journey}
+                  onPick={setJourney}
+                  onEnd={() => setJourney((j) => (j === "inbound" ? "outbound" : "inbound"))}
+                />
               </div>
             </HeroParallaxStage>
           </div>
