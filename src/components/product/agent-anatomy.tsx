@@ -34,12 +34,12 @@ import { cn } from "@/lib/utils"
 type Mark = { n: number; side: "left" | "right"; title: string; body: string; icon: Icon }
 
 const MARKS: Mark[] = [
-  { n: 1, side: "right", title: "Pre-call context", body: "Filled in before the first ring, from your CRM and billing.", icon: TrayArrowDownIcon },
-  { n: 2, side: "right", title: "Conditions", body: "Branch the call in CEL, right inside the prompt.", icon: GitBranchIcon },
-  { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your own documents.", icon: BookOpenTextIcon },
-  { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages, called by name.", icon: LightningIcon },
-  { n: 5, side: "right", title: "After the call", body: "Summary, CRM update and a QA score, automatically.", icon: TrayArrowUpIcon },
-  { n: 6, side: "right", title: "Voice & languages", body: "A warm en-GB voice, 30 languages, natural turn-taking.", icon: SpeakerHighIcon },
+  { n: 1, side: "right", title: "Pre-call context", body: "Filled in before the first ring.", icon: TrayArrowDownIcon },
+  { n: 2, side: "right", title: "Conditions", body: "Branch the call in CEL, inline.", icon: GitBranchIcon },
+  { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your documents.", icon: BookOpenTextIcon },
+  { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages.", icon: LightningIcon },
+  { n: 5, side: "right", title: "After the call", body: "Summary, CRM update and QA score.", icon: TrayArrowUpIcon },
+  { n: 6, side: "right", title: "Voice & languages", body: "en-GB voice, 30 languages.", icon: SpeakerHighIcon },
 ]
 
 /* ------------------------------------------------------------ editor */
@@ -232,7 +232,7 @@ const CARD = 284
 const GAP = 12
 const MIN_SPACE = 12
 
-type Pos = { n: number; y: number; top: number }
+type Pos = { n: number; y: number; top: number; h: number }
 
 /** The order cards arrive in: top to bottom through the editor. */
 const ORDER = [6, 1, 3, 2, 4, 5]
@@ -282,7 +282,7 @@ export function AgentAnatomy() {
       const next: Pos[] = order.map(({ m, y }, i) => {
         const top = y0
         y0 += heights[i] + gap
-        return { n: m.n, y, top }
+        return { n: m.n, y, top, h: heights[i] }
       })
       setPos(next)
     }
@@ -300,25 +300,24 @@ export function AgentAnatomy() {
       {/* Tall track on large screens; the stage inside stays pinned while it scrolls past */}
       <div ref={track} className={cn(!reduce && "lg:h-[480vh]")}>
         <div className={cn(!reduce && "lg:sticky lg:top-24")}>
-          <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-16 lg:pt-4 lg:pb-14">
+          <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-20 lg:pt-4 lg:pb-14">
             <div ref={editor}>
               <Editor focus={focus} />
             </div>
             <div aria-hidden className="hidden lg:block" />
 
-            {/* Hairlines: out of the editor at each marker, then across and into its card */}
+            {/* Hairlines: a curve from each marker, out of the editor, into its card */}
             <svg aria-hidden className="pointer-events-none absolute inset-0 hidden size-full overflow-visible lg:block">
               {pos.map((p) => {
                 const x0 = edge.right
                 const x1 = edge.width - (CARD - GAP)
-                // Each line turns at its own x, so lines never run on top of each other.
-                const i = pos.indexOf(p)
-                const mid = Math.round(x0 + 12 + i * ((x1 - x0 - 24) / Math.max(1, pos.length - 1)))
-                const y1 = p.top + 22
+                // A soft curve from the marker to the middle of its card; markers and cards share an order, so curves never cross.
+                const y1 = p.top + p.h / 2
+                const dx = (x1 - x0) / 2
                 return (
                   <path
                     key={`l${p.n}`}
-                    d={`M${x0},${p.y} H${mid} V${y1} H${x1}`}
+                    d={`M${x0},${p.y} C${x0 + dx},${p.y} ${x1 - dx},${y1} ${x1},${y1}`}
                     pathLength={1}
                     fill="none"
                     strokeDasharray="1 1"
