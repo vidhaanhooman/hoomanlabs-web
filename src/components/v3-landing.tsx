@@ -7,7 +7,7 @@ import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { AgentBuilder, WorkflowCanvas } from "@/components/product/flow-canvas"
 import { FinalCta } from "@/components/sections/final-cta"
-import { Journey } from "@/components/sections/journey"
+import { HeroVariants } from "@/components/sections/hero-variants"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
@@ -76,7 +76,7 @@ export function V3Landing() {
             </Link>
           </div>
           <div id="v3-journey" className="reveal mt-10 md:mt-12" style={{ "--i": 3 } as React.CSSProperties}>
-            <Journey />
+            <HeroVariants />
           </div>
         </Container>
       </Section>
