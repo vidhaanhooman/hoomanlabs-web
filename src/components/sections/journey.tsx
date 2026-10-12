@@ -199,8 +199,8 @@ export function Journey() {
   return (
     <div ref={ref}>
       <HeroParallaxStage className="rounded-xl">
-        <div className="relative z-10 px-3 py-8 sm:px-8 sm:py-12 lg:px-12 lg:py-16">
-          <div className="ui-dark @container overflow-hidden rounded-lg text-[13px] leading-[1.5] shadow-[0_40px_100px_-40px_oklch(0.2_0.03_120/0.7)]">
+        <div className="relative z-10 px-3 py-10 sm:px-10 sm:py-16 lg:px-20 lg:py-24">
+          <div className="ui-dark @container overflow-hidden rounded-lg text-[13px] leading-[1.55] @5xl:text-[14px] shadow-[0_40px_100px_-40px_oklch(0.2_0.03_120/0.7)]">
             {/* Top bar */}
             <div className="flex h-12 items-center gap-3 border-b border-(--ui-line) px-4">
               <span className="relative flex size-2">
@@ -247,7 +247,7 @@ export function Journey() {
               </span>
             </div>
 
-            <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[13.5rem_minmax(0,1fr)_15rem]">
+            <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[14.5rem_minmax(0,1fr)_16rem]">
               {/* Step rail */}
               <ol aria-label="Journey steps" className="hidden flex-col gap-1 border-r border-(--ui-line) p-3 @3xl:flex">
                 {steps.map((s, i) => {
@@ -303,7 +303,7 @@ export function Journey() {
                 <ol
                   key={id}
                   aria-label="Journey events"
-                  className="flex h-80 flex-col justify-end gap-2.5 overflow-hidden px-4 pt-4 pb-3 @3xl:h-[24rem]"
+                  className="flex h-80 flex-col justify-end gap-3 overflow-hidden px-4 pt-4 pb-3 @3xl:h-[28rem] @3xl:px-6"
                   style={{
                     maskImage: "linear-gradient(to bottom, transparent, black 25%)",
                     WebkitMaskImage: "linear-gradient(to bottom, transparent, black 25%)",

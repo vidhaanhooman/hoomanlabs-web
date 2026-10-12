@@ -75,7 +75,7 @@ export function V3Landing() {
               {ctas.demo.label}
             </Link>
           </div>
-          <div id="v3-journey" className="reveal mt-10 md:mt-12" style={{ "--i": 3 } as React.CSSProperties}>
+          <div id="v3-journey" className="reveal mt-12 md:mt-16" style={{ "--i": 3 } as React.CSSProperties}>
             <Journey />
           </div>
         </Container>
