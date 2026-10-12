@@ -293,8 +293,8 @@ export function PlatformSummary() {
         />
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
           {/* Real cell borders (not a gap-px background), so the dividers survive sub-pixel column widths. The list overhangs by 1px so the last row/column borders are clipped. */}
-          <div className="overflow-hidden rounded-md border border-line">
-            <ul className="-mr-px -mb-px grid sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex overflow-hidden rounded-md border border-line">
+            <ul className="-mr-px -mb-px grid flex-1 auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
               {components.map((c) => (
                 <li key={c.id} className="border-r border-b border-line">
                   <Link
