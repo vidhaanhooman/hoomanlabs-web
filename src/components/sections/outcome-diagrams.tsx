@@ -1,77 +1,98 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
 
 import { Container } from "@/components/layout/container"
+import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
- * Outcomes as three ruled columns, each with a fine line diagram that draws
- * itself in when the section scrolls into view: a curve rising from "Before"
- * to "After" (experience), funnel rings (growth), many inputs converging into
- * one line (efficiency). Hairline grid with small crosshair marks at the
- * intersections.
+ * Outcomes in the site's own language: three panels, each with a small live
+ * scene from the work itself (calls picked up instantly, leads called back,
+ * tasks closing on their own), a number that counts up, and the outcome.
+ * Scenes loop while visible; reduced motion shows the finished state.
+ * Figures are placeholders to confirm.
  */
 
 const ITEMS = [
   {
-    title: "Better customer experience",
-    body: "Every call answered in under a second, in the caller's language. Problems get solved on the first call, and people only reach your team when they need to.",
-    Diagram: CurveDiagram,
+    key: "cx",
+    tag: "Customer experience",
+    value: 0.8,
+    format: (v: number) => `${v.toFixed(1)}s`,
+    label: "average time to answer",
+    body: "No queue, no hold music. Every caller is greeted in their own language and most leave with the problem solved.",
+    Scene: CallsScene,
   },
   {
-    title: "Growth across the funnel",
-    body: "Reach new leads within minutes, follow up on every missed call and win back lapsed customers, at a volume no team could dial by hand.",
-    Diagram: FunnelDiagram,
+    key: "growth",
+    tag: "Growth",
+    value: 3,
+    format: (v: number) => `${v.toFixed(1)}×`,
+    label: "more leads reached in the first hour",
+    body: "New leads get a call within minutes, missed calls get a callback, and lapsed customers hear from you again.",
+    Scene: LeadsScene,
   },
   {
-    title: "More done with the same team",
-    body: "Reminders, bookings, collections and verification run on their own. Your people spend their time on the conversations that need judgment.",
-    Diagram: ConvergeDiagram,
+    key: "ops",
+    tag: "Efficiency",
+    value: 71,
+    format: (v: number) => `${Math.round(v)}%`,
+    label: "of conversations closed without a person",
+    body: "Payments moved, slots booked and records updated during the call, so your team only picks up what needs judgment.",
+    Scene: TasksScene,
   },
 ]
 
+/** Counts from 0 to `to` once, when first visible. */
+function CountUp({ to, format, start }: { to: number; format: (v: number) => string; start: boolean }) {
+  const [v, setV] = useState(0)
+  useEffect(() => {
+    if (!start) return
+    let raf = 0
+    const t0 = performance.now()
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - t0) / 1200)
+      setV(to * (1 - Math.pow(1 - p, 3)))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [start, to])
+  return <>{format(v)}</>
+}
+
 export function OutcomeDiagrams() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.35 })
+  const inView = useInView(ref, { amount: 0.4 })
+  const seen = useInView(ref, { amount: 0.4, once: true })
   const reduce = usePrefersReducedMotion()
-  const drawn = inView || reduce
-
+  const live = inView && !reduce
   return (
     <Section id="sl-outcomes">
       <Container>
-        <h2 className="max-w-[34ch] text-display font-normal">
-          Voice and chat agents built to move your support, sales and operations numbers.
-        </h2>
-
-        <div ref={ref} className="relative mt-12 grid border-y border-line md:grid-cols-3">
-          {/* crosshair marks where the rules meet */}
-          {[0, 1, 2, 3].map((i) => (
-            <span key={`t${i}`} aria-hidden className="absolute -top-[3px] hidden size-[5px] -translate-x-1/2 bg-foreground md:block" style={{ left: `${(i / 3) * 100}%` }} />
-          ))}
-          {[0, 1, 2, 3].map((i) => (
-            <span key={`b${i}`} aria-hidden className="absolute -bottom-[3px] hidden size-[5px] -translate-x-1/2 bg-foreground md:block" style={{ left: `${(i / 3) * 100}%` }} />
-          ))}
-
-          {ITEMS.map(({ title, body, Diagram }, i) => (
-            <div
-              key={title}
-              className={cn(
-                "flex flex-col gap-10 px-2 py-10 sm:px-6 lg:px-10",
-                i > 0 && "border-t border-line md:border-t-0 md:border-l"
-              )}
-            >
-              <div aria-hidden className="flex h-56 items-center justify-center">
-                <Diagram drawn={drawn} delay={i * 0.25} />
+        <div className="flex max-w-[44rem] flex-col gap-3">
+          <h2 className="text-h2 font-normal">What changes when agents take the calls.</h2>
+          <p className="text-body text-ink-secondary">Three things teams measure in the first month.</p>
+        </div>
+        <div ref={ref} className="mt-10 grid gap-3 md:grid-cols-3">
+          {ITEMS.map(({ key, tag, value, format, label, body, Scene }) => (
+            <Panel key={key} className="flex flex-col gap-6 p-6">
+              <div aria-hidden className="relative h-40 overflow-hidden rounded-md border border-line bg-background">
+                <Scene live={live} />
               </div>
-              <div className="flex flex-col gap-3">
-                <h3 className="text-h4 font-normal">{title}</h3>
-                <p className="max-w-[40ch] text-body text-ink-secondary">{body}</p>
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-label text-ink-muted">{tag}</span>
+                <span className="text-display font-normal tabular-nums">
+                  {reduce ? format(value) : <CountUp to={value} format={format} start={seen} />}
+                </span>
+                <span className="text-small text-ink-secondary">{label}</span>
               </div>
-            </div>
+              <p className="border-t border-line pt-4 text-small text-ink-secondary">{body}</p>
+            </Panel>
           ))}
         </div>
       </Container>
@@ -79,133 +100,102 @@ export function OutcomeDiagrams() {
   )
 }
 
-/* ------------------------------------------------------------ diagrams */
+/* ------------------------------------------------------------ scenes */
 
-type DiagramProps = { drawn: boolean; delay: number }
-
-/** A path that draws itself in via stroke-dashoffset. */
-function Draw({
-  d,
-  drawn,
-  delay,
-  dur = 1.4,
-  dotted,
-  className,
-}: {
-  d: string
-  drawn: boolean
-  delay: number
-  dur?: number
-  dotted?: boolean
-  className?: string
-}) {
-  return (
-    <path
-      d={d}
-      pathLength={1}
-      fill="none"
-      className={cn("stroke-foreground", className)}
-      strokeWidth={dotted ? 1.4 : 1.4}
-      strokeLinecap="round"
-      strokeDasharray={dotted ? "0.006 0.012" : "1 1"}
-      strokeDashoffset={dotted ? 0 : drawn ? 0 : 1}
-      opacity={dotted ? (drawn ? 0.55 : 0) : 1}
-      style={{
-        transition: dotted
-          ? `opacity 600ms ease ${delay + 0.3}s`
-          : `stroke-dashoffset ${dur}s cubic-bezier(0.23,1,0.32,1) ${delay}s`,
-      }}
-    />
-  )
+function useTick(live: boolean, ms: number, count: number) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (!live) return
+    const t = setInterval(() => setN((x) => (x + 1) % count), ms)
+    return () => clearInterval(t)
+  }, [live, ms, count])
+  return live ? n : count - 1
 }
 
-function Fade({ drawn, delay, children }: { drawn: boolean; delay: number; children: React.ReactNode }) {
+/** Calls arrive and are picked up the moment they land: no queue forms. */
+function CallsScene({ live }: { live: boolean }) {
+  const n = useTick(live, 900, 6)
   return (
-    <g opacity={drawn ? 1 : 0} style={{ transition: `opacity 500ms ease ${delay}s` }}>
-      {children}
-    </g>
-  )
-}
-
-function CurveDiagram({ drawn, delay }: DiagramProps) {
-  return (
-    <svg viewBox="0 0 280 200" className="h-full w-auto max-w-full">
-      <Draw d="M10,180 C70,175 95,170 140,130 C185,95 220,95 270,92" drawn={drawn} delay={delay} dotted />
-      <Draw d="M10,180 C60,178 80,150 120,105 C150,70 175,40 200,30 C225,20 250,18 270,18" drawn={drawn} delay={delay} />
-      <Fade drawn={drawn} delay={delay + 0.7}>
-        <circle cx={131} cy={92} r={4} className="fill-background stroke-foreground" strokeWidth={1.4} />
-        <text x={108} y={74} fontSize={11} className="fill-ink-muted">
-          Before
-        </text>
-      </Fade>
-      <Fade drawn={drawn} delay={delay + 1.1}>
-        <circle cx={205} cy={28} r={4} className="fill-foreground" />
-        <text x={186} y={12} fontSize={11} className="fill-foreground">
-          After
-        </text>
-      </Fade>
-    </svg>
-  )
-}
-
-function FunnelDiagram({ drawn, delay }: DiagramProps) {
-  // Nested circles sharing a left tangent: the funnel narrowing to conversions.
-  const R = 90
-  const cx = 140
-  const cy = 100
-  const rings = [90, 72, 56, 42]
-  return (
-    <svg viewBox="0 0 280 200" className="h-full w-auto max-w-full">
-      <Draw d={`M20,${cy} L260,${cy}`} drawn={drawn} delay={delay} dotted />
-      {rings.map((r, i) => {
-        const x = cx - R + r // left edges aligned
+    <div className="flex h-full flex-col justify-center gap-3 px-5">
+      {[0, 1, 2].map((r) => {
+        const answered = (n + r) % 3 !== 0
         return (
-          <Draw
-            key={r}
-            d={`M${x - r},${cy} a${r},${r} 0 1,0 ${r * 2},0 a${r},${r} 0 1,0 ${-r * 2},0`}
-            drawn={drawn}
-            delay={delay + i * 0.18}
-            className={i === 0 ? undefined : "stroke-ink-muted"}
-          />
+          <div key={r} className="flex items-center gap-3">
+            <span className="w-14 font-mono text-[11px] text-ink-muted">+91 ••{r}4</span>
+            <span className="relative h-px flex-1 bg-line-strong">
+              <span
+                className="absolute top-1/2 size-2 -translate-y-1/2 rounded-full bg-foreground transition-[left] duration-700 ease-(--ease-out)"
+                style={{ left: answered ? "calc(100% - 8px)" : "0%" }}
+              />
+            </span>
+            <span
+              className={cn(
+                "flex w-24 items-center justify-end gap-1.5 text-[11px] transition-opacity duration-300",
+                answered ? "opacity-100" : "opacity-40"
+              )}
+            >
+              <span className={cn("size-1.5 rounded-full", answered ? "bg-[oklch(0.62_0.15_150)]" : "bg-ink-muted")} />
+              {answered ? "Answered 0.8s" : "Ringing"}
+            </span>
+          </div>
         )
       })}
-      <Fade drawn={drawn} delay={delay + 1}>
-        <circle cx={cx - R} cy={cy} r={3.2} className="fill-foreground" />
-        <circle cx={cx + R} cy={cy} r={3.2} className="fill-foreground" />
-        {rings.slice(1).map((r) => (
-          <circle key={r} cx={cx - R + 2 * r} cy={cy} r={1.8} className="fill-ink-muted" />
-        ))}
-      </Fade>
-    </svg>
+    </div>
   )
 }
 
-function ConvergeDiagram({ drawn, delay }: DiagramProps) {
-  const hub = { x: 150, y: 100 }
-  const ins = [
-    { x: 40, y: 20, dotted: true },
-    { x: 40, y: 100, dotted: false },
-    { x: 40, y: 180, dotted: true },
-  ]
+/** Leads drop in and get a call within minutes; the week's bars fill up. */
+function LeadsScene({ live }: { live: boolean }) {
+  const n = useTick(live, 700, 9)
+  const bars = [3, 5, 4, 7, 6, 9, 8, 11]
   return (
-    <svg viewBox="0 0 280 200" className="h-full w-auto max-w-full">
-      {ins.map((p, i) =>
-        p.dotted ? (
-          <Draw key={i} d={`M${p.x},${p.y} L${hub.x},${hub.y}`} drawn={drawn} delay={delay + i * 0.15} dotted />
-        ) : (
-          <Draw key={i} d={`M${p.x},${p.y} L${hub.x - 6},${hub.y}`} drawn={drawn} delay={delay} />
-        )
-      )}
-      <Draw d={`M${hub.x + 6},${hub.y} L250,${hub.y}`} drawn={drawn} delay={delay + 0.6} />
-      <Fade drawn={drawn} delay={delay + 0.2}>
-        {ins.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r={4} className="fill-background stroke-foreground" strokeWidth={1.4} />
+    <div className="flex h-full flex-col justify-between p-5">
+      <div className="flex items-center justify-between text-[11px] text-ink-muted">
+        <span>Leads called within 5 min</span>
+        <span className="font-mono text-foreground tabular-nums">{Math.min(n + 1, 8) * 12}</span>
+      </div>
+      <div className="flex h-20 items-end gap-2">
+        {bars.map((h, i) => (
+          <span
+            key={i}
+            className={cn(
+              "flex-1 rounded-sm transition-[height,background-color] duration-500 ease-(--ease-out)",
+              i < n ? "bg-foreground" : "bg-line"
+            )}
+            style={{ height: i < n ? `${h * 9}%` : "8%" }}
+          />
         ))}
-      </Fade>
-      <Fade drawn={drawn} delay={delay + 0.9}>
-        <circle cx={hub.x} cy={hub.y} r={3.5} className="fill-foreground" />
-        <circle cx={250} cy={hub.y} r={4} className="fill-background stroke-foreground" strokeWidth={1.4} />
-      </Fade>
-    </svg>
+      </div>
+    </div>
+  )
+}
+
+/** A to-do list that closes itself, one task at a time. */
+function TasksScene({ live }: { live: boolean }) {
+  const n = useTick(live, 900, 6)
+  const tasks = ["Payment moved to Friday", "Slot booked Thu 10:00", "CRM record updated", "Summary sent to team"]
+  return (
+    <ul className="flex h-full flex-col justify-center gap-2 px-5 text-[12px]">
+      {tasks.map((t, i) => {
+        const done = i < n
+        return (
+          <li key={t} className="flex items-center gap-2.5">
+            <span
+              className={cn(
+                "grid size-4 shrink-0 place-items-center rounded-full border transition-colors duration-300",
+                done ? "border-foreground bg-foreground text-background" : "border-line-strong"
+              )}
+            >
+              {done && (
+                <svg viewBox="0 0 10 10" className="size-2.5">
+                  <path d="M2,5 L4.2,7 L8,3" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
+                </svg>
+              )}
+            </span>
+            <span className={cn("transition-colors duration-300", done ? "text-foreground" : "text-ink-muted")}>{t}</span>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
