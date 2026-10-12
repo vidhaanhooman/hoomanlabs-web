@@ -7,7 +7,6 @@ import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { AgentBuilder, WorkflowCanvas } from "@/components/product/flow-canvas"
 import { FinalCta } from "@/components/sections/final-cta"
-import { Journey } from "@/components/sections/journey"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
@@ -18,9 +17,9 @@ import {
   UseCaseCarousel,
 } from "@/components/sections/structure"
 import { UseCaseStory } from "@/components/sections/use-case-story"
+import { V3Hero } from "@/components/sections/v3-hero"
 import { VoiceWidget } from "@/components/sections/voice-widget"
-import { ctas } from "@/content/draft"
-import { enterpriseBuild, heroCall, startPaths } from "@/content/landing"
+import { enterpriseBuild, startPaths } from "@/content/landing"
 import { tools, useCases } from "@/content/platform"
 
 /**
@@ -61,25 +60,7 @@ export function V3Landing() {
   return (
     <div style={ROOMY}>
       {/* 1 Hero: headline, one CTA, the journey */}
-      <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
-        <Container>
-          <h1 className="reveal text-display font-normal">
-            AI employees for every customer conversation,
-            <span className="block">starting with the phone.</span>
-          </h1>
-          <p className="reveal mt-5 max-w-[56ch] text-body-lg text-ink-secondary" style={{ "--i": 1 } as React.CSSProperties}>
-            {heroCall.body}
-          </p>
-          <div className="reveal mt-8" style={{ "--i": 2 } as React.CSSProperties}>
-            <Link href={ctas.demo.href} className={buttonVariants()}>
-              {ctas.demo.label}
-            </Link>
-          </div>
-          <div id="v3-journey" className="reveal mt-12 md:mt-16" style={{ "--i": 3 } as React.CSSProperties}>
-            <Journey />
-          </div>
-        </Container>
-      </Section>
+      <V3Hero />
 
       {/* 2 Customer showcase */}
       <Logos label="Trusted by 100+ teams" />

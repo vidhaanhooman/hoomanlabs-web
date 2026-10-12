@@ -34,11 +34,11 @@ import { cn } from "@/lib/utils"
  * motion: the finished journey, still clickable.
  */
 
-type Event =
+export type Event =
   | { step: number; kind: "action"; pending: string; text: string; detail?: string; done?: boolean }
   | { step: number; kind: "agent" | "caller"; text: string; channel?: string }
 
-type Journey = {
+export type Journey = {
   label: string
   title: string
   steps: { label: string; icon: Icon; branch?: string }[]
@@ -48,7 +48,7 @@ type Journey = {
   outcome: string
 }
 
-const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
+export const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
   inbound: {
     label: "Inbound",
     title: "Inbound call · billing line",
@@ -111,7 +111,7 @@ const JOURNEYS: Record<"inbound" | "outbound", Journey> = {
   },
 }
 
-type JourneyId = keyof typeof JOURNEYS
+export type JourneyId = keyof typeof JOURNEYS
 
 /* Pacing. Speech streams word by word; a short "breath" before each line. */
 const ACTION_PENDING_MS = 850
@@ -121,7 +121,7 @@ const AFTER_LINE_MS = 650
 const HOLD_MS = 5500
 const wordMs = (who: "agent" | "caller", n: number) => (who === "agent" ? 95 : 125) + ((n * 37) % 60)
 
-function clock(total: number) {
+export function clock(total: number) {
   return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`
 }
 
@@ -129,15 +129,16 @@ function clock(total: number) {
  *  (actions: 0 pending, 1 resolved; speech: words shown). */
 type Head = { i: number; w: number }
 
-export function Journey() {
-  const [id, setId] = useState<JourneyId>("inbound")
+/**
+ * Shared playback for the hero journey variants. Advances one event at a
+ * time while `ref` is on screen; `stepPause` adds a beat between steps.
+ */
+export function useJourneyPlayback(journey: Journey, ref: React.RefObject<HTMLElement | null>, { stepPause = 0 } = {}) {
   const [head, setHead] = useState<Head>({ i: 0, w: 0 })
   const [seconds, setSeconds] = useState(0)
   const reduce = usePrefersReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { amount: 0.3 })
 
-  const journey = JOURNEYS[id]
   const { events, steps } = journey
   const at: Head = reduce ? { i: events.length, w: 0 } : head
   const done = at.i >= events.length
@@ -161,12 +162,14 @@ export function Journey() {
       next = head.w < words ? { i: head.i, w: head.w + 1 } : { i: head.i + 1, w: 0 }
       ms = head.w === 0 ? BREATH_MS : head.w < words ? wordMs(current!.kind, head.w) : AFTER_LINE_MS
     }
+    // A beat before a new step starts.
+    if (!done && next.i !== head.i && next.i < events.length && events[next.i].step !== current!.step) ms += stepPause
     const t = setTimeout(() => {
       setHead(next)
       if (done) setSeconds(0)
     }, ms)
     return () => clearTimeout(t)
-  }, [playing, done, current, head])
+  }, [playing, done, current, head, events, stepPause])
 
   // Call timer while the journey runs.
   useEffect(() => {
@@ -175,8 +178,7 @@ export function Journey() {
     return () => clearInterval(t)
   }, [playing, done])
 
-  const pick = (j: JourneyId) => {
-    setId(j)
+  const reset = () => {
     setHead({ i: 0, w: 0 })
     setSeconds(0)
   }
@@ -187,7 +189,9 @@ export function Journey() {
   const status = done
     ? "Journey complete"
     : current!.kind === "action"
-      ? `${current!.pending}…`
+      ? at.w === 0
+        ? `${current!.pending}…`
+        : current!.text
       : speaking === "agent"
         ? current!.channel
           ? `Agent writing on ${current!.channel}`
@@ -195,6 +199,21 @@ export function Journey() {
         : speaking === "caller"
           ? "Caller speaking"
           : "Listening"
+
+  return { at, done, current, step, seconds, speaking, status, reset, jump }
+}
+
+export function Journey() {
+  const [id, setId] = useState<JourneyId>("inbound")
+  const ref = useRef<HTMLDivElement>(null)
+  const journey = JOURNEYS[id]
+  const { events, steps } = journey
+  const { at, done, step, seconds, speaking, status, reset, jump } = useJourneyPlayback(journey, ref)
+
+  const pick = (j: JourneyId) => {
+    setId(j)
+    reset()
+  }
 
   return (
     <div ref={ref}>
@@ -396,7 +415,7 @@ export function Journey() {
 }
 
 /** A transcript line that streams in word by word; a blinking caret while it's live. */
-function SpeechLine({ event, words, live }: { event: Extract<Event, { kind: "agent" | "caller" }>; words: number; live: boolean }) {
+export function SpeechLine({ event, words, live }: { event: Extract<Event, { kind: "agent" | "caller" }>; words: number; live: boolean }) {
   const all = event.text.split(" ")
   const shown = all.slice(0, words).join(" ")
   const speaking = live && words < all.length
