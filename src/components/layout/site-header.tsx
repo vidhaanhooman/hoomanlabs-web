@@ -22,7 +22,7 @@ export function SiteHeader() {
             <Link href={nav.signIn.href} className={buttonVariants({ variant: "ghost" })}>
               {nav.signIn.label}
             </Link>
-            <Link href={ctas.demo.href} className={buttonVariants()}>
+            <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
           </div>

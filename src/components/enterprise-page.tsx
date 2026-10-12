@@ -30,7 +30,7 @@ export function EnterprisePage() {
             {enterpriseBuild.body}
           </p>
           <div className="reveal-blur mt-8" style={{ "--i": 3 } as React.CSSProperties}>
-            <Link href={ctas.demo.href} className={buttonVariants()}>
+            <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
           </div>

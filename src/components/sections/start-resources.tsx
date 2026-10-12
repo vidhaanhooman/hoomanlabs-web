@@ -9,6 +9,7 @@ import { TextLink } from "@/components/layout/text-link"
 import { componentHref, components, type ComponentId } from "@/content/platform"
 import { startPaths } from "@/content/landing"
 import { resources } from "@/content/structure"
+import { FeatureTrio } from "@/components/structured-landing"
 import { cn } from "@/lib/utils"
 
 /**
@@ -219,11 +220,8 @@ const part = (id: ComponentId, span: string): Card => ({
  * resources card closes the second row.
  */
 const CARDS: Card[] = [
-  part("simulations", "lg:col-span-5"),
   { key: "post", name: "Post-call", line: "Summary, CRM update and a score after every call.", href: "/platform", span: "lg:col-span-4", dark: false, focus: "85% 20%", G: PostCallGraphic },
-  part("qa", "lg:col-span-3"),
-  part("channels", "lg:col-span-3"),
-  part("tools", "lg:col-span-5"),
+  part("tools", "lg:col-span-4"),
 ]
 
 export function StartResources() {
@@ -237,7 +235,11 @@ export function StartResources() {
           </div>
           <TextLink href="/platform">See the full platform</TextLink>
         </div>
-        <ul className="mt-10 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-12">
+        {/* The detailed channels, simulations and analytics cards */}
+        <div className="mt-10 grid gap-3 lg:grid-cols-12">
+          <FeatureTrio />
+        </div>
+        <ul className="mt-3 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-12">
           {CARDS.map(({ key, name, line, href, span, dark, focus, G }) => (
             <li key={key} className={cn("flex min-w-0", span)}>
               <Link
@@ -266,8 +268,8 @@ export function StartResources() {
             </li>
           ))}
 
-          {/* Resources close the second row */}
-          <li className="flex min-w-0 lg:col-span-4">
+          {/* Resources close the row */}
+          <li className="flex min-w-0 sm:col-span-2 lg:col-span-4">
             <div className="flex w-full flex-col rounded-xl border border-line bg-surface p-5">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>

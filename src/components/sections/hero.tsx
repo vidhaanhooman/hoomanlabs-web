@@ -45,7 +45,7 @@ export function Hero({
         <h1 className="reveal max-w-[30ch] text-display font-normal">{hero.headline}</h1>
 
         <div className="reveal mt-8 flex flex-wrap gap-2" style={{ "--i": 1 } as React.CSSProperties}>
-          <Link href={ctas.demo.href} className={buttonVariants()}>
+          <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
           <Link href={ctas.talk.href} className={buttonVariants({ variant: "secondary" })}>

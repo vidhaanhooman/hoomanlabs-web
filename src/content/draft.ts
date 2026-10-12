@@ -14,10 +14,13 @@ export const nav = {
   signIn: { label: "Sign in", href: "#" },
 }
 
+/** Cal.com booking for "Book a demo". */
+export const CAL = { link: "vidhan-dubey-rfmt3g/30min", namespace: "30min" }
+
 /** One label per intent, reused everywhere it appears. */
 export const ctas = {
-  /** The HoomanLabs platform. */
-  demo: { label: "Book a demo", href: "https://hoomanlabs.com/platform" },
+  /** Opens the Cal.com booking pop-up (see CalBooking); the href is the fallback. */
+  demo: { label: "Book a demo", href: "https://cal.com/vidhan-dubey-rfmt3g/30min" },
   talk: { label: "Talk to an agent", href: "#" },
 }
 

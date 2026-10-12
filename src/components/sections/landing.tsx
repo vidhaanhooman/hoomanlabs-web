@@ -133,7 +133,7 @@ export function StartPaths({ extra = [] }: { extra?: (typeof startPaths.paths)[n
                 ))}
               </dl>
               <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3">
-                <Link href={p.cta.href} className={buttonVariants({ variant: i === 1 ? "default" : "secondary" })}>
+                <Link data-demo={p.cta.label === "Book a demo" ? "" : undefined} href={p.cta.href} className={buttonVariants({ variant: i === 1 ? "default" : "secondary" })}>
                   {p.cta.label}
                 </Link>
                 {p.more && <TextLink href={p.more.href}>{p.more.label}</TextLink>}

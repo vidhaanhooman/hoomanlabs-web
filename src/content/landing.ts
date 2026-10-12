@@ -73,7 +73,7 @@ export const startPaths = {
         { k: "Time to live", v: "4–8 weeks per flow, faster after the first" },
         { k: "Support", v: "Dedicated FDE, co-built with your team, full handover" },
       ],
-      cta: { label: "Book a demo", href: "https://hoomanlabs.com/platform" },
+      cta: { label: "Book a demo", href: "https://cal.com/vidhan-dubey-rfmt3g/30min" },
       more: { label: "How an enterprise build runs", href: "/enterprise" },
     },
   ] as {

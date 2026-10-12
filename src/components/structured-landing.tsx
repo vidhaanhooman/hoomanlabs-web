@@ -21,6 +21,7 @@ import { Testimonials } from "@/components/sections/testimonials"
 import { VoiceWidget } from "@/components/sections/voice-widget"
 import { heroCall } from "@/content/landing"
 import { features } from "@/content/structure"
+import { cn } from "@/lib/utils"
 
 const [design, ...rest] = features
 
@@ -169,6 +170,28 @@ const MINI: Record<string, React.ReactNode> = {
 }
 
 
+/** The three detailed feature cards: channels, simulations, analytics. */
+export function FeatureTrio({ className }: { className?: string }) {
+  return (
+    <>
+      {rest.map((f) => (
+        <Panel key={f.id} className={cn("flex flex-col gap-5 p-6 sm:p-7 lg:col-span-4", className)}>
+          <div className="flex flex-col gap-1.5">
+            <h3 className="text-h4 font-normal">{f.title}</h3>
+            <p className="text-small text-ink-secondary">{SHORT[f.id]}</p>
+          </div>
+          <div aria-hidden className="flex-1">
+            {MINI[f.id]}
+          </div>
+          <TextLink href={f.link.href} className="mt-auto">
+            {f.link.label}
+          </TextLink>
+        </Panel>
+      ))}
+    </>
+  )
+}
+
 /**
  * Structured homepage (/lab/hero-call):
  * hero · logos · use-case carousel · outcomes · stat ·
@@ -226,20 +249,7 @@ export function StructuredLanding() {
             </Panel>
 
             {/* Compact: one line + a tiny visual each */}
-            {rest.map((f) => (
-              <Panel key={f.id} className="flex flex-col gap-5 p-6 sm:p-7 lg:col-span-4">
-                <div className="flex items-start justify-between gap-6">
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="text-h4 font-normal">{f.title}</h3>
-                    <p className="text-small text-ink-secondary">{SHORT[f.id]}</p>
-                  </div>
-                </div>
-                <div aria-hidden className="flex-1">{MINI[f.id]}</div>
-                <TextLink href={f.link.href} className="mt-auto">
-                  {f.link.label}
-                </TextLink>
-              </Panel>
-            ))}
+            <FeatureTrio />
           </div>
         </Container>
       </Section>

@@ -55,7 +55,7 @@ export function MobileNav() {
           <Link href={nav.signIn.href} onClick={close} className={buttonVariants({ variant: "outline" })}>
             {nav.signIn.label}
           </Link>
-          <Link href={ctas.demo.href} onClick={close} className={buttonVariants()}>
+          <Link data-demo href={ctas.demo.href} onClick={close} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
         </div>

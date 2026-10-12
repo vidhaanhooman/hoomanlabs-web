@@ -50,7 +50,7 @@ export function TwoWayCta() {
               <p className="max-w-[40ch] text-body text-ink-secondary">Our engineers build your first flow with you, test it on your systems and hand it over, in 4 to 8 weeks.</p>
             </div>
             <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3">
-              <Link href={ctas.demo.href} className={buttonVariants({ className: "w-fit" })}>
+              <Link data-demo href={ctas.demo.href} className={buttonVariants({ className: "w-fit" })}>
                 {ctas.demo.label}
               </Link>
               <Link href="/enterprise" className="text-small text-ink-secondary transition-colors hover:text-foreground">

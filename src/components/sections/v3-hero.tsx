@@ -53,7 +53,7 @@ export function V3Hero() {
           {heroCall.body}
         </p>
         <div className="reveal mt-8" style={{ "--i": 2 } as React.CSSProperties}>
-          <Link href={ctas.demo.href} className={buttonVariants()}>
+          <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
         </div>

@@ -357,7 +357,7 @@ export function HomeFaq() {
           <h2 className="text-h2 font-normal">{faqs.title}</h2>
           <p className="text-body text-ink-secondary">
             Can&apos;t find what you need?{" "}
-            <Link href={ctas.demo.href} className="text-foreground underline underline-offset-4">
+            <Link data-demo href={ctas.demo.href} className="text-foreground underline underline-offset-4">
               Talk to our team
             </Link>
             .
