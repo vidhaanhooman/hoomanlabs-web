@@ -7,13 +7,12 @@ import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
-import { cn } from "@/lib/utils"
 
 /**
- * Outcomes in the site's own language: three panels, each with a small live
- * scene from the work itself (calls picked up instantly, leads called back,
- * tasks closing on their own), a number that counts up, and the outcome.
- * Scenes loop while visible; reduced motion shows the finished state.
+ * Outcomes in the site's own language: three panels, each with a static
+ * fine-line drawing of the outcome (a noisy wait resolving into one calm
+ * wave, reach rippling outward, tasks stepping up to done), a number that
+ * counts up once, and a short explanation.
  * Figures are placeholders to confirm.
  */
 
@@ -67,10 +66,8 @@ function CountUp({ to, format, start }: { to: number; format: (v: number) => str
 
 export function OutcomeDiagrams() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { amount: 0.4 })
   const seen = useInView(ref, { amount: 0.4, once: true })
   const reduce = usePrefersReducedMotion()
-  const live = inView && !reduce
   return (
     <Section id="sl-outcomes">
       <Container>
@@ -81,8 +78,8 @@ export function OutcomeDiagrams() {
         <div ref={ref} className="mt-10 grid gap-3 md:grid-cols-3">
           {ITEMS.map(({ key, tag, value, format, label, body, Scene }) => (
             <Panel key={key} className="flex flex-col gap-6 p-6">
-              <div aria-hidden className="relative h-40 overflow-hidden rounded-md border border-line bg-background">
-                <Scene live={live} />
+              <div aria-hidden className="h-44">
+                <Scene />
               </div>
               <div className="flex flex-col gap-1">
                 <span className="font-mono text-label text-ink-muted">{tag}</span>
@@ -100,102 +97,92 @@ export function OutcomeDiagrams() {
   )
 }
 
-/* ------------------------------------------------------------ scenes */
+/* ------------------------------------------------------------ line drawings
+   Static fine-line diagrams: thin strokes, dotted guides, open and filled
+   points, tiny labels. */
 
-function useTick(live: boolean, ms: number, count: number) {
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    if (!live) return
-    const t = setInterval(() => setN((x) => (x + 1) % count), ms)
-    return () => clearInterval(t)
-  }, [live, ms, count])
-  return live ? n : count - 1
-}
+const STROKE = { fill: "none", stroke: "currentColor", strokeWidth: 1.3, strokeLinecap: "round" as const }
+const DOTTED = { ...STROKE, strokeDasharray: "1.5 4", opacity: 0.55 }
 
-/** Calls arrive and are picked up the moment they land: no queue forms. */
-function CallsScene({ live }: { live: boolean }) {
-  const n = useTick(live, 900, 6)
+/** A noisy, broken line (waiting) that resolves into one calm wave (answered). */
+function CallsScene() {
+  const noisy = Array.from({ length: 22 }, (_, i) => {
+    const x = 18 + i * 5.5
+    const y = 90 + (i % 2 === 0 ? -1 : 1) * (6 + ((i * 7) % 11))
+    return `${i === 0 ? "M" : "L"}${x},${y}`
+  }).join(" ")
   return (
-    <div className="flex h-full flex-col justify-center gap-3 px-5">
-      {[0, 1, 2].map((r) => {
-        const answered = (n + r) % 3 !== 0
-        return (
-          <div key={r} className="flex items-center gap-3">
-            <span className="w-14 font-mono text-[11px] text-ink-muted">+91 ••{r}4</span>
-            <span className="relative h-px flex-1 bg-line-strong">
-              <span
-                className="absolute top-1/2 size-2 -translate-y-1/2 rounded-full bg-foreground transition-[left] duration-700 ease-(--ease-out)"
-                style={{ left: answered ? "calc(100% - 8px)" : "0%" }}
-              />
-            </span>
-            <span
-              className={cn(
-                "flex w-24 items-center justify-end gap-1.5 text-[11px] transition-opacity duration-300",
-                answered ? "opacity-100" : "opacity-40"
-              )}
-            >
-              <span className={cn("size-1.5 rounded-full", answered ? "bg-[oklch(0.62_0.15_150)]" : "bg-ink-muted")} />
-              {answered ? "Answered 0.8s" : "Ringing"}
-            </span>
-          </div>
-        )
-      })}
-    </div>
+    <svg viewBox="0 0 320 170" className="h-full w-full text-foreground">
+      <path d={noisy} {...DOTTED} />
+      <path d="M140,90 C160,90 165,60 185,60 C205,60 210,120 230,120 C250,120 255,90 275,90 L300,90" {...STROKE} />
+      <circle cx={140} cy={90} r={4} className="fill-background" stroke="currentColor" strokeWidth={1.3} />
+      <circle cx={300} cy={90} r={3.5} fill="currentColor" />
+      <text x={18} y={150} fontSize={10.5} className="fill-ink-muted">Waiting</text>
+      <text x={126} y={150} fontSize={10.5} className="fill-ink-muted">0.8s</text>
+      <text x={266} y={150} fontSize={10.5} className="fill-foreground">Answered</text>
+      <line x1={140} y1={100} x2={140} y2={138} {...DOTTED} />
+    </svg>
   )
 }
 
-/** Leads drop in and get a call within minutes; the week's bars fill up. */
-function LeadsScene({ live }: { live: boolean }) {
-  const n = useTick(live, 700, 9)
-  const bars = [3, 5, 4, 7, 6, 9, 8, 11]
+/** Reach spreading outward from one number: rings with leads on them. */
+function LeadsScene() {
+  const cx = 90
+  const cy = 85
+  const rings = [22, 44, 66]
+  const leads = [
+    [0, -0.6], [0, 2.1], [1, 0.3], [1, 1.5], [1, -2.2], [2, -0.9], [2, 0.6], [2, 2.6], [2, -2.6],
+  ] as const
   return (
-    <div className="flex h-full flex-col justify-between p-5">
-      <div className="flex items-center justify-between text-[11px] text-ink-muted">
-        <span>Leads called within 5 min</span>
-        <span className="font-mono text-foreground tabular-nums">{Math.min(n + 1, 8) * 12}</span>
-      </div>
-      <div className="flex h-20 items-end gap-2">
-        {bars.map((h, i) => (
-          <span
-            key={i}
-            className={cn(
-              "flex-1 rounded-sm transition-[height,background-color] duration-500 ease-(--ease-out)",
-              i < n ? "bg-foreground" : "bg-line"
-            )}
-            style={{ height: i < n ? `${h * 9}%` : "8%" }}
-          />
-        ))}
-      </div>
-    </div>
+    <svg viewBox="0 0 320 170" className="h-full w-full text-foreground">
+      {rings.map((r, i) => (
+        <circle key={r} cx={cx} cy={cy} r={r} {...(i === 0 ? DOTTED : STROKE)} opacity={i === 0 ? 0.55 : 1 - i * 0.2} />
+      ))}
+      <circle cx={cx} cy={cy} r={4} fill="currentColor" />
+      {leads.map(([ring, a], i) => (
+        <circle
+          key={i}
+          cx={cx + rings[ring] * Math.cos(a)}
+          cy={cy + rings[ring] * Math.sin(a)}
+          r={3}
+          className={ring === 2 ? "fill-foreground" : "fill-background"}
+          stroke="currentColor"
+          strokeWidth={1.2}
+        />
+      ))}
+      <line x1={cx + 66} y1={cy} x2={300} y2={cy} {...DOTTED} />
+      <text x={200} y={cy - 8} fontSize={10.5} className="fill-ink-muted">within 5 min</text>
+      <text x={200} y={cy + 18} fontSize={10.5} className="fill-foreground">3× leads reached</text>
+    </svg>
   )
 }
 
-/** A to-do list that closes itself, one task at a time. */
-function TasksScene({ live }: { live: boolean }) {
-  const n = useTick(live, 900, 6)
-  const tasks = ["Payment moved to Friday", "Slot booked Thu 10:00", "CRM record updated", "Summary sent to team"]
+/** A row of open tasks that close in order and step up to "done". */
+function TasksScene() {
+  const pts = [
+    { x: 30, y: 130, done: true },
+    { x: 95, y: 108, done: true },
+    { x: 160, y: 86, done: true },
+    { x: 225, y: 64, done: false },
+    { x: 290, y: 42, done: false },
+  ]
+  const solid = pts.filter((p) => p.done)
+  const open = pts.slice(solid.length - 1)
   return (
-    <ul className="flex h-full flex-col justify-center gap-2 px-5 text-[12px]">
-      {tasks.map((t, i) => {
-        const done = i < n
-        return (
-          <li key={t} className="flex items-center gap-2.5">
-            <span
-              className={cn(
-                "grid size-4 shrink-0 place-items-center rounded-full border transition-colors duration-300",
-                done ? "border-foreground bg-foreground text-background" : "border-line-strong"
-              )}
-            >
-              {done && (
-                <svg viewBox="0 0 10 10" className="size-2.5">
-                  <path d="M2,5 L4.2,7 L8,3" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
-                </svg>
-              )}
-            </span>
-            <span className={cn("transition-colors duration-300", done ? "text-foreground" : "text-ink-muted")}>{t}</span>
-          </li>
-        )
-      })}
-    </ul>
+    <svg viewBox="0 0 320 170" className="h-full w-full text-foreground">
+      <path d={solid.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...STROKE} />
+      <path d={open.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...DOTTED} />
+      {pts.map((p) => (
+        <g key={p.x}>
+          <line x1={p.x} y1={p.y + 8} x2={p.x} y2={152} {...DOTTED} />
+          <circle cx={p.x} cy={p.y} r={4} className={p.done ? "fill-foreground" : "fill-background"} stroke="currentColor" strokeWidth={1.3} />
+        </g>
+      ))}
+      <text x={22} y={164} fontSize={10} className="fill-ink-muted">Pay</text>
+      <text x={84} y={164} fontSize={10} className="fill-ink-muted">Book</text>
+      <text x={150} y={164} fontSize={10} className="fill-ink-muted">CRM</text>
+      <text x={210} y={164} fontSize={10} className="fill-ink-muted">Notify</text>
+      <text x={272} y={164} fontSize={10} className="fill-ink-muted">Close</text>
+    </svg>
   )
 }
