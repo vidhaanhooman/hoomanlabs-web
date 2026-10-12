@@ -143,13 +143,22 @@ const RAW = (() => {
 
 const TYPE_MS = 14
 
+/** Where each interesting reference ends in the expression (for `onReference`). */
+const REFS = [...CEL.matchAll(/context\.\w+|\[[a-z_]+\]/g)].map((m) => ({ ref: m[0], end: m.index! + m[0].length }))
+
 export function PromptEditor({
   className,
   play,
+  title,
+  onReference,
 }: {
   className?: string
   /** Start writing the expression when true (default: once the editor is on screen). */
   play?: boolean
+  /** A title at the start of the toolbar (the insert hints are hidden when set). */
+  title?: React.ReactNode
+  /** Called as the expression finishes writing a variable or tool, e.g. "context.balance", "[take_payment]". */
+  onReference?: (ref: string) => void
 }) {
   const [view, setView] = useState<"preview" | "text">("preview")
   const ref = useRef<HTMLDivElement>(null)
@@ -182,17 +191,27 @@ export function PromptEditor({
   }, [valid, view, reduce])
 
   // Write the expression in, a few characters at a time, once on screen.
+  // Each step reports any variable or tool it just completed.
+  const report = useRef(onReference)
+  useEffect(() => {
+    report.current = onReference
+  })
   useEffect(() => {
     if (reduce || !inView || typed >= CEL.length) return
-    const t = setTimeout(() => setTyped((n) => Math.min(CEL.length, n + 3)), typed === 0 ? 500 : TYPE_MS)
+    const t = setTimeout(() => {
+      const next = Math.min(CEL.length, typed + 3)
+      REFS.filter((r) => r.end > typed && r.end <= next).forEach((r) => report.current?.(r.ref))
+      setTyped(next)
+    }, typed === 0 ? 500 : TYPE_MS)
     return () => clearTimeout(t)
   }, [reduce, inView, typed])
 
   return (
     <div ref={ref} className={cn("ui-dark @container flex flex-col overflow-hidden text-[13px] leading-[1.7] @3xl:text-[14px]", className)}>
       {/* Toolbar */}
-      <div className="flex h-12 shrink-0 items-center gap-3 border-b border-(--ui-line) px-3">
-        <div role="tablist" aria-label="Prompt view" className="flex gap-0.5 rounded-md bg-(--ui-raised) p-0.5">
+      <div className={cn("flex h-12 shrink-0 items-center gap-3 border-b border-(--ui-line)", title ? "px-4" : "px-3")}>
+        {title}
+        <div role="tablist" aria-label="Prompt view" className={cn("flex gap-0.5 rounded-md bg-(--ui-raised) p-0.5", title && "ml-auto")}>
           {(["preview", "text"] as const).map((v) => (
             <button
               key={v}
@@ -209,7 +228,7 @@ export function PromptEditor({
             </button>
           ))}
         </div>
-        <div className="ml-auto hidden items-center gap-4 text-[12px] text-(--ui-muted) @2xl:flex">
+        <div className={cn("ml-auto hidden items-center gap-4 text-[12px] text-(--ui-muted)", !title && "@2xl:flex")}>
           <span>Type to insert</span>
           <span className="flex items-center gap-1.5">
             <kbd className="rounded border border-(--ui-line) bg-(--ui-raised) px-1.5 font-mono text-[11px]">`</kbd>
@@ -220,7 +239,7 @@ export function PromptEditor({
             variables and conditional expressions
           </span>
         </div>
-        <span className="ml-auto flex items-center gap-1.5 text-[12px] text-(--ui-muted) @2xl:ml-0">
+        <span className={cn("flex items-center gap-1.5 text-[12px] text-(--ui-muted)", title ? "pl-1" : "ml-auto @2xl:ml-0")}>
           <PlayIcon className="size-3" aria-hidden />
           Test
         </span>

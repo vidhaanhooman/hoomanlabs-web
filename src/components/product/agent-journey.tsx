@@ -1,12 +1,12 @@
 "use client"
 
-import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
 import {
   BookOpenTextIcon,
   CheckCircleIcon,
   CircleNotchIcon,
+  NotePencilIcon,
   LightningIcon,
   SpeakerHighIcon,
   TrayArrowDownIcon,
@@ -19,11 +19,11 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
- * Everything an agent needs, at once (/lab/v3), on a painting. Two strict
- * rows: Before / During / After (pre-call, the prompt, post-call) at equal
- * height, then three identical tiles for what the prompt draws on
- * (knowledge base, tools, voice). The cards light up one at a time, in
- * order, once the section is on screen; each settles before the next.
+ * Everything an agent needs, at once (/lab/v3). One timeline
+ * (Before / During / After) over three aligned columns: pre-call, the prompt
+ * with the three things it draws on beneath it (knowledge, tools, voice), and
+ * post-call. Each card says what it is, above its product snippet. The cards light up one at a time, in order, once on screen; as
+ * the prompt's expression names a variable or tool, that row or tile lights.
  * Sample content (fictional Halden Energy billing agent).
  */
 
@@ -62,36 +62,50 @@ const Code = ({ children }: { children: React.ReactNode }) => (
   <span className="rounded-[4px] bg-white/[0.06] px-1 py-px font-mono text-[11.5px] text-(--ui-text)/85">{children}</span>
 )
 
-/** One card frame for everything: title, phase, and a green edge while it's playing. */
+/**
+ * One card frame for everything: a light card with a title and a line of
+ * explanation, holding the dark product snippet. The snippet gets a green
+ * edge while it's playing (or just referenced by the prompt).
+ */
 function Card({
   title,
+  body,
   phase,
   icon: Ico,
   active,
+  pulse = false,
   className,
   children,
 }: {
   title: string
-  phase: "Before" | "During" | "After"
+  body: string
+  phase: "Before the call" | "During the call" | "After the call"
   icon: Icon
   active: boolean
+  /** Briefly lit because the prompt just referenced it. */
+  pulse?: boolean
   className?: string
   children: React.ReactNode
 }) {
+  const on = active || pulse
   return (
-    <div
-      className={cn(
-        "ui-dark flex flex-col overflow-hidden rounded-lg border text-[13px] leading-[1.55] shadow-[0_30px_70px_-40px_oklch(0.2_0.03_120/0.7)] transition-[border-color] duration-500",
-        active ? "border-(--ui-live)/45" : "border-white/5",
-        className
-      )}
-    >
-      <div className="flex h-11 shrink-0 items-center gap-2.5 border-b border-(--ui-line) px-4">
-        <Ico className={cn("size-4 transition-colors duration-500", active ? "text-(--ui-live)" : "text-(--ui-muted)")} aria-hidden />
-        <span className="truncate font-medium">{title}</span>
-        <span className="ml-auto shrink-0 font-mono text-[10.5px] tracking-wide text-(--ui-muted) uppercase">{phase}</span>
+    <div className={cn("flex flex-col gap-4 rounded-xl border border-line bg-surface p-4", className)}>
+      <div className="flex flex-col gap-1 px-1">
+        <span className="flex items-center gap-2 text-body font-medium">
+          <Ico className={cn("size-4 transition-colors duration-500", on ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
+          {title}
+          <span className="ml-auto font-mono text-[10.5px] font-normal tracking-wide text-ink-muted uppercase">{phase}</span>
+        </span>
+        <p className="text-small text-ink-secondary">{body}</p>
       </div>
-      {children}
+      <div
+        className={cn(
+          "ui-dark flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border text-[13px] leading-[1.55] transition-[border-color] duration-500",
+          on ? "border-(--ui-live)/50" : "border-transparent"
+        )}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -105,15 +119,20 @@ const MAPPING = [
   ["context.lastCall", "12 Feb"],
 ] as const
 
-function PreCall({ go, active }: { go: boolean; active: boolean }) {
+function PreCall({ go, active, lit }: { go: boolean; active: boolean; lit: string | null }) {
   const n = useReveal(go, MAPPING.length + 1, 450, 250)
   return (
-    <Card title="Pre-call context" phase="Before" icon={TrayArrowDownIcon} active={active} className="h-full">
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <span className="text-(--ui-muted)">Looks the caller up in your CRM and billing before the first ring.</span>
+    <Card title="Pre-call context" body="Before the first ring, the caller is looked up, so the agent never asks what you already know." phase="Before the call" icon={TrayArrowDownIcon} active={active} className="h-full">
+      <div className="flex flex-1 flex-col gap-3 p-4">
         <dl className="flex flex-col">
           {MAPPING.map(([k, v], i) => (
-            <div key={k} className="flex items-center justify-between gap-3 border-b border-(--ui-line) py-2.5 last:border-0">
+            <div
+              key={k}
+              className={cn(
+                "-mx-2 flex items-center justify-between gap-3 rounded-md border-b border-(--ui-line) px-2 py-2 transition-colors duration-500 last:border-0",
+                lit === k && "bg-(--ui-live)/12"
+              )}
+            >
               <dt>
                 <Code>{k}</Code>
               </dt>
@@ -123,7 +142,7 @@ function PreCall({ go, active }: { go: boolean; active: boolean }) {
         </dl>
         <span className={cn("flex items-center gap-1.5 text-[12px] text-(--ui-muted) transition-opacity duration-500", n > MAPPING.length ? "opacity-100" : "opacity-0")}>
           <CheckCircleIcon weight="fill" className="size-3.5 text-(--ui-live)" aria-hidden />
-          Ready in 140 ms
+          Ready in 140 ms · HubSpot, billing, call history
         </span>
       </div>
     </Card>
@@ -136,23 +155,31 @@ const ACTIONS = [
   ["Webhook sent", "200"],
   ["QA score", "4.6 / 5"],
 ] as const
-const SUMMARY = "Double charge on 4 March confirmed. Refund needs approval, so a ticket was raised and the reference texted."
+const FIELDS = [
+  ["intent", "Duplicate charge"],
+  ["sentiment", "Calm"],
+  ["outcome", "Ticket raised"],
+] as const
 
 function PostCall({ go, active }: { go: boolean; active: boolean }) {
-  const words = SUMMARY.split(" ")
-  const w = useReveal(go, words.length, 45, 250)
-  const a = useReveal(w >= words.length, ACTIONS.length, 450, 250)
+  const f = useReveal(go, FIELDS.length, 400, 250)
+  const a = useReveal(f >= FIELDS.length, ACTIONS.length, 400, 300)
   return (
-    <Card title="Post-call" phase="After" icon={TrayArrowUpIcon} active={active} className="h-full">
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <span className="text-(--ui-muted)">After goodbye: summarise, act, score.</span>
-        <div className="flex flex-col gap-1">
-          <span className="text-[11.5px] text-(--ui-muted)">Summary</span>
-          <p className="min-h-[4.7em] text-(--ui-text)/90">{w ? words.slice(0, w).join(" ") : <span className="text-(--ui-muted)">…</span>}</p>
-        </div>
-        <ul className="flex flex-col">
+    <Card title="Post-call" body="After goodbye: fields extracted, systems updated, the call scored." phase="After the call" icon={TrayArrowUpIcon} active={active} className="h-full">
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <dl className="flex flex-col">
+          {FIELDS.map(([k, v], i) => (
+            <div key={k} className="flex items-center justify-between gap-3 border-b border-(--ui-line) py-1.5 last:border-0">
+              <dt>
+                <Code>{k}</Code>
+              </dt>
+              <dd className="truncate">{i < f ? <span className={fadeIn}>{v}</span> : <span className="text-(--ui-muted)">…</span>}</dd>
+            </div>
+          ))}
+        </dl>
+        <ul className="flex flex-col border-t border-(--ui-line) pt-2">
           {ACTIONS.map(([t, d], i) => (
-            <li key={t} className="flex items-center gap-2.5 border-b border-(--ui-line) py-2 last:border-0">
+            <li key={t} className="flex items-center gap-2.5 py-1">
               {i < a ? (
                 <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live) motion-safe:animate-in motion-safe:zoom-in-50" aria-hidden />
               ) : (
@@ -170,32 +197,36 @@ function PostCall({ go, active }: { go: boolean; active: boolean }) {
 
 /* ------------------------------------------------------------ bottom tiles */
 
-/** A tile: one line that resolves from working to done, and a quiet detail. */
+/** A small tile under the prompt: one line that resolves from working to done. */
 function Tile({
   title,
+  body,
   icon,
   go,
   active,
+  pulse,
   pending,
   result,
   detail,
 }: {
   title: string
+  body: string
   icon: Icon
   go: boolean
   active: boolean
+  pulse?: boolean
   pending: string
   result: React.ReactNode
   detail: string
 }) {
-  const n = useReveal(go, 1, 0, 1300)
+  const n = useReveal(go, 1, 0, 1100)
   return (
-    <Card title={title} phase="During" icon={icon} active={active}>
-      <div className="flex flex-col gap-1.5 p-4">
-        <span className="min-h-[1.55em]">
-          {n ? <span className={cn("flex items-center gap-2", fadeIn)}>{result}</span> : go ? <Pending>{pending}</Pending> : <span className="text-(--ui-muted)">…</span>}
+    <Card title={title} body={body} phase="During the call" icon={icon} active={active} pulse={pulse} className="h-full">
+      <div className="flex flex-col gap-1 px-4 py-3">
+        <span className="min-h-[1.55em] truncate">
+          {n ? <span className={cn("flex min-w-0 items-center gap-2", fadeIn)}>{result}</span> : go ? <Pending>{pending}</Pending> : <span className="text-(--ui-muted)">…</span>}
         </span>
-        <span className="text-[12px] text-(--ui-muted)">{detail}</span>
+        <span className="truncate text-[12px] text-(--ui-muted)">{detail}</span>
       </div>
     </Card>
   )
@@ -217,82 +248,101 @@ export function AgentJourney() {
     return () => clearTimeout(t)
   }, [reduce, seen, at])
 
+  // What the prompt just referenced: lights the matching pre-call row or tile for a moment.
+  const [lit, setLit] = useState<string | null>(null)
+  useEffect(() => {
+    if (!lit) return
+    const t = setTimeout(() => setLit(null), 1400)
+    return () => clearTimeout(t)
+  }, [lit])
+
   const go = (p: Part) => now >= ORDER.indexOf(p)
   const active = (p: Part) => now === ORDER.indexOf(p)
 
   return (
-    <div ref={ref} className="relative isolate overflow-hidden rounded-xl">
-      <Image src="/art/backdrops/home-build.png" alt="" fill sizes="(min-width: 1300px) 1300px, 100vw" className="-z-10 object-cover" />
-      <div className="flex flex-col gap-5 px-3 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
-        {/* Before / During / After */}
-        <div className="grid gap-5 lg:h-[30rem] lg:grid-cols-12">
-          <div className="lg:col-span-3">
-            <PreCall go={go("pre")} active={active("pre")} />
+    <div ref={ref}>
+      <div className="grid gap-4 lg:grid-cols-12">
+        {/* The prompt, with the most room */}
+        <div className="flex h-[36rem] min-h-0 flex-col gap-4 rounded-xl border border-line bg-surface p-4 lg:col-span-8 lg:row-span-2 lg:h-auto">
+          <div className="flex flex-col gap-1 px-1">
+            <span className="flex items-center gap-2 text-body font-medium">
+              <NotePencilIcon className={cn("size-4 transition-colors duration-500", active("prompt") ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
+              Prompt
+              <span className="ml-auto font-mono text-[10.5px] font-normal tracking-wide text-ink-muted uppercase">During the call</span>
+            </span>
+            <p className="text-small text-ink-secondary">
+              The job in plain language. Variables bring in context, tools are called by name, and conditions branch right inside it.
+            </p>
           </div>
           <div
             className={cn(
-              "h-[30rem] overflow-hidden rounded-lg border shadow-[0_40px_90px_-40px_oklch(0.2_0.03_120/0.75)] transition-[border-color] duration-500 lg:col-span-6 lg:h-auto",
-              active("prompt") ? "border-(--ui-live)/45" : "border-white/5"
+              "min-h-0 flex-1 overflow-hidden rounded-lg border transition-[border-color] duration-500",
+              active("prompt") ? "border-(--ui-live)/50" : "border-transparent"
             )}
           >
-            <PromptEditor className="h-full" play={go("prompt")} />
-          </div>
-          <div className="lg:col-span-3">
-            <PostCall go={go("post")} active={active("post")} />
+            <PromptEditor className="h-full" play={go("prompt")} onReference={setLit} />
           </div>
         </div>
 
+        <div className="lg:col-span-4">
+          <PreCall go={go("pre")} active={active("pre")} lit={lit} />
+        </div>
+        <div className="lg:col-span-4">
+          <PostCall go={go("post")} active={active("post")} />
+        </div>
+
         {/* What the prompt draws on */}
-        <div className="grid gap-5 md:grid-cols-3">
-          <Tile
-            title="Knowledge base"
-            icon={BookOpenTextIcon}
-            go={go("kb")}
-            active={active("kb")}
-            pending="Searching 3 sources"
-            result={
-              <>
-                <BookOpenTextIcon className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
-                “3 to 5 working days”
-                <span className="truncate text-[12px] text-(--ui-muted)">Refund policy §3</span>
-              </>
-            }
-            detail="Tariffs, policies and your help centre, cited in every answer."
-          />
-          <Tile
-            title="Tools"
-            icon={LightningIcon}
-            go={go("tools")}
-            active={active("tools")}
-            pending="Running take_payment"
-            result={
-              <>
-                <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
-                <Code>take_payment</Code>
-                <span className="text-[12px] text-(--ui-muted)">200 OK · 310 ms</span>
-              </>
-            }
-            detail="Payments, tickets and messages, on your own systems."
-          />
-          <Tile
-            title="Voice & languages"
-            icon={SpeakerHighIcon}
-            go={go("voice")}
-            active={active("voice")}
-            pending="Loading voice"
-            result={
-              <>
-                <span className="ui-wave flex h-4 items-end gap-[2px]" aria-hidden>
-                  {[6, 12, 8, 14, 7].map((h, k) => (
-                    <span key={k} className="w-[2px] rounded-full bg-(--ui-live)" style={{ height: h }} />
-                  ))}
-                </span>
-                Ria
-                <span className="text-[12px] text-(--ui-muted)">Warm · en-GB</span>
-              </>
-            }
-            detail="30 languages, turn detection and noise reduction on."
-          />
+        <div className="grid gap-4 sm:grid-cols-3 lg:col-span-12">
+              <Tile
+                title="Knowledge base"
+                body="Answers from your documents, cited."
+                icon={BookOpenTextIcon}
+                go={go("kb")}
+                active={active("kb")}
+                pending="Searching"
+                result={
+                  <>
+                    <BookOpenTextIcon className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
+                    <span className="truncate">“3 to 5 days”</span>
+                  </>
+                }
+                detail="Refund policy §3, cited"
+              />
+              <Tile
+                title="Tools"
+                body="Actions on your systems, mid-call."
+                icon={LightningIcon}
+                go={go("tools")}
+                active={active("tools")}
+                pulse={lit === "[take_payment]"}
+                pending="Running"
+                result={
+                  <>
+                    <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
+                    <Code>take_payment</Code>
+                  </>
+                }
+                detail="200 OK · 310 ms"
+              />
+              <Tile
+                title="Voice"
+                body="30 languages, natural turn-taking."
+                icon={SpeakerHighIcon}
+                go={go("voice")}
+                active={active("voice")}
+                pending="Loading"
+                result={
+                  <>
+                    <span className="ui-wave flex h-4 shrink-0 items-end gap-[2px]" aria-hidden>
+                      {[6, 12, 8, 14, 7].map((h, k) => (
+                        <span key={k} className="w-[2px] rounded-full bg-(--ui-live)" style={{ height: h }} />
+                      ))}
+                    </span>
+                    <span className="truncate">Ria · en-GB</span>
+                  </>
+                }
+                detail="30 languages"
+              />
         </div>
       </div>
     </div>
