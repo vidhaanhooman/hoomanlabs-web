@@ -26,6 +26,14 @@ export type UseCaseCall = {
   lines: CallLine[]
 }
 
+/**
+ * TEMPORARY: every demo plays the one real recording we have (the feedback
+ * call) until each use case has its own file. To switch back, set each `src`
+ * to /audio/calls/<id>.mp3 and its `duration` to that file's length.
+ */
+const TEMP_AUDIO = "/audio/calls/feedback-en.mp3"
+const TEMP_DURATION = 81
+
 export const useCaseCalls: UseCaseCall[] = [
   {
     id: "collections-en",
@@ -34,10 +42,10 @@ export const useCaseCalls: UseCaseCall[] = [
     agent: "Ria",
     language: "English",
     direction: "Outbound",
-    src: "/audio/calls/collections-en.mp3",
+    src: TEMP_AUDIO,
     scene: { art: "/art/listen/listen-morning.png", label: "Morning", glow: 0.15, scrim: 0.5 },
     sound: { art: "/art/backdrops/home-deploy.png", colour: "Sage" },
-    duration: 30,
+    duration: TEMP_DURATION,
     lines: [
       { t: 0, speaker: "agent", text: "Hi Daniel, this is Ria from Halden Energy about your March bill. Is now a good time?" },
       { t: 6, speaker: "caller", text: "Go ahead. I'm pretty sure I already paid that one." },
@@ -54,10 +62,10 @@ export const useCaseCalls: UseCaseCall[] = [
     agent: "Asha",
     language: "Hindi",
     direction: "Inbound",
-    src: "/audio/calls/appointments-hi.mp3",
+    src: TEMP_AUDIO,
     scene: { art: "/art/listen/listen-midday.png", label: "Midday", glow: 0.1, scrim: 0.58 },
     sound: { art: "/art/backdrops/home-measure.png", colour: "Dusk blue" },
-    duration: 26,
+    duration: TEMP_DURATION,
     lines: [
       { t: 0, speaker: "caller", text: "नमस्ते, मुझे कल का अपॉइंटमेंट बदलना है।", translation: "Hi, I need to change tomorrow's appointment." },
       { t: 5, speaker: "agent", text: "ज़रूर। शुक्रवार सुबह 10 बजे या दोपहर 3 बजे?", translation: "Of course. Friday 10am or 3pm?" },
@@ -73,10 +81,10 @@ export const useCaseCalls: UseCaseCall[] = [
     agent: "Lucía",
     language: "Spanish",
     direction: "Inbound",
-    src: "/audio/calls/support-es.mp3",
+    src: TEMP_AUDIO,
     scene: { art: "/art/listen/listen-evening.png", label: "Evening", glow: 0.35, scrim: 0.48 },
     sound: { art: "/art/backdrops/home-deploy.png", colour: "Terracotta", filter: "hue-rotate(-75deg) saturate(1.15)" },
-    duration: 28,
+    duration: TEMP_DURATION,
     lines: [
       { t: 0, speaker: "caller", text: "Hola, quiero cancelar mi plan.", translation: "Hi, I want to cancel my plan." },
       { t: 4, speaker: "agent", text: "Claro. ¿Puedo preguntar el motivo? A veces podemos ayudar.", translation: "Of course. May I ask why? Sometimes we can help." },
@@ -92,10 +100,10 @@ export const useCaseCalls: UseCaseCall[] = [
     agent: "Sam",
     language: "English",
     direction: "Outbound",
-    src: "/audio/calls/sales-en.mp3",
+    src: TEMP_AUDIO,
     scene: { art: "/art/listen/listen-night.png", label: "Night", glow: 0.75, scrim: 0.3 },
     sound: { art: "/art/backdrops/home-deploy.png", colour: "Ochre", filter: "hue-rotate(-40deg) saturate(1.2) brightness(1.05)" },
-    duration: 29,
+    duration: TEMP_DURATION,
     lines: [
       { t: 0, speaker: "agent", text: "Hi Priya, it's Sam from Northwind. You asked about our fleet plan earlier today?" },
       { t: 6, speaker: "caller", text: "Yes, we've got about forty vans across two depots." },
@@ -112,10 +120,10 @@ export const useCaseCalls: UseCaseCall[] = [
     agent: "Ria",
     language: "English",
     direction: "Outbound",
-    src: "/audio/calls/feedback-en.mp3",
+    src: TEMP_AUDIO,
     scene: { art: "/art/listen/listen-evening.png", label: "Evening", glow: 0.5, scrim: 0.4 },
     sound: { art: "/art/backdrops/home-measure.png", colour: "Dusk blue" },
-    duration: 81,
+    duration: TEMP_DURATION,
     lines: [{ t: 0, speaker: "agent", text: "A post-stay feedback call. Transcript coming soon." }],
   },
 ]
