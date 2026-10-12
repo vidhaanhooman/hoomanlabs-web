@@ -101,10 +101,9 @@ export function StructuredLanding() {
                     <h3 className="text-h4 font-normal">{f.title}</h3>
                     <p className="text-small text-ink-secondary">{f.body}</p>
                   </div>
-                  {/* A cropped slice of the screen, fading into the card */}
+                  {/* A cropped slice of the screen */}
                   <div aria-hidden className="relative h-52 overflow-hidden rounded-md">
                     {SCREENS[f.id](`absolute inset-x-0 top-0 h-80 ${CHROME}`)}
-                    <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-surface to-transparent" />
                   </div>
                   <TextLink href={f.link.href} className="mt-auto">
                     {f.link.label}
