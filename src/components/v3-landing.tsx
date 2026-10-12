@@ -110,8 +110,8 @@ export function V3Landing() {
       <Section id="v3-agent">
         <Container>
           <Header
-            title="Everything an agent needs, from before the call to after it."
-            body="Context before the first ring, a prompt in plain language with conditions inside it, answers from your own documents, actions on your systems, the right voice, and the follow-up done after goodbye."
+            title="Everything an agent needs."
+            body="From the context it has before the first ring to the follow-up it does after goodbye."
             aside={<TextLink href="/platform/agents">Explore Agents</TextLink>}
           />
           <div className="mt-10">

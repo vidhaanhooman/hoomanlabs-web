@@ -151,6 +151,7 @@ export function PromptEditor({
   play,
   title,
   onReference,
+  still = false,
 }: {
   className?: string
   /** Start writing the expression when true (default: once the editor is on screen). */
@@ -159,6 +160,8 @@ export function PromptEditor({
   title?: React.ReactNode
   /** Called as the expression finishes writing a variable or tool, e.g. "context.balance", "[take_payment]". */
   onReference?: (ref: string) => void
+  /** Show the finished prompt with no animation. */
+  still?: boolean
 }) {
   const [view, setView] = useState<"preview" | "text">("preview")
   const ref = useRef<HTMLDivElement>(null)
@@ -168,27 +171,27 @@ export function PromptEditor({
   const [typed, setTyped] = useState(0)
   const body = useRef<HTMLDivElement>(null)
   const cel = useRef<HTMLDivElement>(null)
-  const shown = reduce ? CEL.length : typed
+  const shown = reduce || still ? CEL.length : typed
   const valid = shown >= CEL.length
 
   // Bring the expression into view as it starts (it sits below the fold in short editors).
   useEffect(() => {
-    if (!inView || view !== "preview") return
+    if (still || !inView || view !== "preview") return
     const b = body.current
     const c = cel.current
     if (!b || !c || b.scrollHeight <= b.clientHeight) return
     const t = setTimeout(() => b.scrollTo({ top: c.offsetTop - 56, behavior: reduce ? "auto" : "smooth" }), 350)
     return () => clearTimeout(t)
-  }, [inView, view, reduce])
+  }, [still, inView, view, reduce])
 
   // Once written, make sure the whole expression is in view.
   useEffect(() => {
     const b = body.current
     const c = cel.current
-    if (!valid || view !== "preview" || !b || !c) return
+    if (still || !valid || view !== "preview" || !b || !c) return
     const bottom = c.offsetTop + c.offsetHeight + 24 - b.clientHeight
     if (bottom > b.scrollTop) b.scrollTo({ top: bottom, behavior: reduce ? "auto" : "smooth" })
-  }, [valid, view, reduce])
+  }, [still, valid, view, reduce])
 
   // Write the expression in, a few characters at a time, once on screen.
   // Each step reports any variable or tool it just completed.
@@ -197,14 +200,14 @@ export function PromptEditor({
     report.current = onReference
   })
   useEffect(() => {
-    if (reduce || !inView || typed >= CEL.length) return
+    if (reduce || still || !inView || typed >= CEL.length) return
     const t = setTimeout(() => {
       const next = Math.min(CEL.length, typed + 3)
       REFS.filter((r) => r.end > typed && r.end <= next).forEach((r) => report.current?.(r.ref))
       setTyped(next)
     }, typed === 0 ? 500 : TYPE_MS)
     return () => clearTimeout(t)
-  }, [reduce, inView, typed])
+  }, [reduce, still, inView, typed])
 
   return (
     <div ref={ref} className={cn("ui-dark @container flex flex-col overflow-hidden text-[13px] leading-[1.7] @3xl:text-[14px]", className)}>

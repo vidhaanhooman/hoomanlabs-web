@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { useInView } from "motion/react"
 import {
   BookOpenTextIcon,
   CheckCircleIcon,
@@ -15,35 +13,22 @@ import {
 } from "@phosphor-icons/react"
 
 import { PromptEditor } from "@/components/product/prompt-editor"
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
  * Everything an agent needs, at once (/lab/v3). One timeline
  * (Before / During / After) over three aligned columns: pre-call, the prompt
  * with the three things it draws on beneath it (knowledge, tools, voice), and
- * post-call. Each card says what it is, above its product snippet. The cards light up one at a time, in order, once on screen; as
- * the prompt's expression names a variable or tool, that row or tile lights.
+ * post-call. Each card says what it is, above its product snippet. Static:
+ * everything is shown in its finished state.
  * Sample content (fictional Halden Energy billing agent).
  */
 
-/* Order the cards play in, and how long each holds the spotlight. */
-const ORDER = ["pre", "prompt", "kb", "tools", "voice", "post"] as const
-type Part = (typeof ORDER)[number]
-const HOLD: Record<Part, number> = { pre: 3200, prompt: 5200, kb: 3000, tools: 2600, voice: 2200, post: 4200 }
-
 /* ------------------------------------------------------------ helpers */
 
-/** Counts 0 → total once `start` is true, one step every `ms`, after `delay`. */
-function useReveal(start: boolean, total: number, ms: number, delay = 0) {
-  const reduce = usePrefersReducedMotion()
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    if (reduce || !start || n >= total) return
-    const t = setTimeout(() => setN((v) => v + 1), n === 0 ? delay : ms)
-    return () => clearTimeout(t)
-  }, [reduce, start, n, total, ms, delay])
-  return reduce ? total : n
+/** Static section: every card shows its finished state. */
+function useReveal(...args: [start: boolean, total: number, ms: number, delay?: number]) {
+  return args[1]
 }
 
 const fadeIn = "motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500"
@@ -235,38 +220,17 @@ function Tile({
 /* ------------------------------------------------------------ section */
 
 export function AgentJourney() {
-  const ref = useRef<HTMLDivElement>(null)
-  const seen = useInView(ref, { amount: 0.3, once: true })
-  const reduce = usePrefersReducedMotion()
-  // -1 before it starts; then the index in ORDER now playing; ORDER.length when all are done.
-  const [at, setAt] = useState(-1)
-  const now = reduce ? ORDER.length : at
-
-  useEffect(() => {
-    if (reduce || !seen || at >= ORDER.length) return
-    const t = setTimeout(() => setAt((v) => v + 1), at < 0 ? 300 : HOLD[ORDER[at]])
-    return () => clearTimeout(t)
-  }, [reduce, seen, at])
-
-  // What the prompt just referenced: lights the matching pre-call row or tile for a moment.
-  const [lit, setLit] = useState<string | null>(null)
-  useEffect(() => {
-    if (!lit) return
-    const t = setTimeout(() => setLit(null), 1400)
-    return () => clearTimeout(t)
-  }, [lit])
-
-  const go = (p: Part) => now >= ORDER.indexOf(p)
-  const active = (p: Part) => now === ORDER.indexOf(p)
+  // Static: every card is shown finished, none highlighted.
+  const lit = null
 
   return (
-    <div ref={ref}>
+    <div>
       <div className="grid gap-4 lg:grid-cols-12">
         {/* The prompt, with the most room */}
         <div className="flex h-[36rem] min-h-0 flex-col gap-4 rounded-xl border border-line bg-surface p-4 lg:col-span-8 lg:row-span-2 lg:h-auto">
           <div className="flex flex-col gap-1 px-1">
             <span className="flex items-center gap-2 text-body font-medium">
-              <NotePencilIcon className={cn("size-4 transition-colors duration-500", active("prompt") ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
+              <NotePencilIcon className={cn("size-4 transition-colors duration-500", false ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
               Prompt
               <span className="ml-auto font-mono text-[10.5px] font-normal tracking-wide text-ink-muted uppercase">During the call</span>
             </span>
@@ -277,18 +241,18 @@ export function AgentJourney() {
           <div
             className={cn(
               "min-h-0 flex-1 overflow-hidden rounded-lg border transition-[border-color] duration-500",
-              active("prompt") ? "border-(--ui-live)/50" : "border-transparent"
+              false ? "border-(--ui-live)/50" : "border-transparent"
             )}
           >
-            <PromptEditor className="h-full" play={go("prompt")} onReference={setLit} />
+            <PromptEditor className="h-full" still />
           </div>
         </div>
 
         <div className="lg:col-span-4">
-          <PreCall go={go("pre")} active={active("pre")} lit={lit} />
+          <PreCall go={true} active={false} lit={lit} />
         </div>
         <div className="lg:col-span-4">
-          <PostCall go={go("post")} active={active("post")} />
+          <PostCall go={true} active={false} />
         </div>
 
         {/* What the prompt draws on */}
@@ -297,8 +261,8 @@ export function AgentJourney() {
                 title="Knowledge base"
                 body="Answers from your documents, cited."
                 icon={BookOpenTextIcon}
-                go={go("kb")}
-                active={active("kb")}
+                go={true}
+                active={false}
                 pending="Searching"
                 result={
                   <>
@@ -312,10 +276,9 @@ export function AgentJourney() {
                 title="Tools"
                 body="Actions on your systems, mid-call."
                 icon={LightningIcon}
-                go={go("tools")}
-                active={active("tools")}
-                pulse={lit === "[take_payment]"}
-                pending="Running"
+                go={true}
+                active={false}
+                                pending="Running"
                 result={
                   <>
                     <CheckCircleIcon weight="fill" className="size-4 shrink-0 text-(--ui-live)" aria-hidden />
@@ -328,8 +291,8 @@ export function AgentJourney() {
                 title="Voice"
                 body="30 languages, natural turn-taking."
                 icon={SpeakerHighIcon}
-                go={go("voice")}
-                active={active("voice")}
+                go={true}
+                active={false}
                 pending="Loading"
                 result={
                   <>
