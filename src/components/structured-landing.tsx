@@ -46,9 +46,9 @@ const BACKDROPS = {
 
 /**
  * Structured homepage (/lab/hero-call):
- * hero · logos · use-case carousel · outcomes · stat · quotes ·
+ * hero · logos · use-case carousel · outcomes · stat ·
  * 4 platform features · summary + resources · integrations · templates ·
- * get started (2 paths) · FAQ · closing CTA · footer (layout) · voice widget
+ * get started (2 paths) · quotes · FAQ · closing CTA · footer (layout) · voice widget
  */
 export function StructuredLanding() {
   return (
@@ -81,7 +81,6 @@ export function StructuredLanding() {
       <UseCaseCarousel />
       <Outcomes />
       <StatHeadline />
-      <Testimonials />
 
       {features.map((f, i) => (
         <FeaturePanel
@@ -102,6 +101,7 @@ export function StructuredLanding() {
       <HomeIntegrations />
       <UseCaseTemplates />
       <StartPaths />
+      <Testimonials />
       <HomeFaq />
       <FinalCta />
       <VoiceWidget />
