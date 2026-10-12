@@ -11,6 +11,7 @@ import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { UseCaseStory } from "@/components/sections/use-case-story"
+import { ctas } from "@/content/draft"
 import { caseStudy, faqs, outcomes, resources, stat, stories, templates } from "@/content/structure"
 import { componentHref, components, useCases } from "@/content/platform"
 import { cn } from "@/lib/utils"
@@ -331,8 +332,21 @@ export function CustomerStories() {
 export function HomeFaq() {
   return (
     <Section id="sl-faq">
-      <Container className="grid gap-10 lg:grid-cols-[1fr_1.6fr]">
-        <Header title={faqs.title} body="Can't find what you need? Talk to us." />
+      <Container className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:items-start">
+        {/* Heading pinned to the top (sticky) so it stays beside the questions */}
+        <div className="flex flex-col gap-3 lg:sticky lg:top-28">
+          <h2 className="text-h2 font-normal">{faqs.title}</h2>
+          <p className="text-body text-ink-secondary">
+            Can&apos;t find what you need?{" "}
+            <Link href={ctas.demo.href} className="text-foreground underline underline-offset-4">
+              Talk to our team
+            </Link>
+            .
+          </p>
+          <TextLink href="https://docs.hoomanlabs.com" className="mt-2">
+            Read the docs
+          </TextLink>
+        </div>
         <Accordion className="border-y border-line">
           {faqs.items.map((f) => (
             <AccordionItem key={f.q} value={f.q} className="border-line">
