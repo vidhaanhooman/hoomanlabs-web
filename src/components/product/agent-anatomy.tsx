@@ -142,17 +142,27 @@ function Editor({ focus }: { focus: number | null }) {
       </div>
 
       {/* Post-call */}
-      <div className={cn("flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-(--ui-line) bg-(--ui-panel) px-8 py-3 text-[12px] text-(--ui-muted) @3xl:px-12", dim(5))}>
-        <span className="flex items-center font-mono text-[11px] tracking-wide uppercase">
+      <div className={cn("flex flex-col gap-3 border-t border-(--ui-line) bg-(--ui-panel) px-8 py-4 @3xl:px-12", dim(5))}>
+        <span className="flex items-center font-mono text-[11px] tracking-wide text-(--ui-muted) uppercase">
           After the call
           <Marker n={5} />
         </span>
-        {["Summary written", "HubSpot updated", "Ticket #TCK-2291", "QA 4.6 / 5"].map((t) => (
-          <span key={t} className="flex items-center gap-1.5 text-(--ui-text)/85">
-            <CheckIcon weight="bold" className="size-3 text-(--ui-live)" aria-hidden />
-            {t}
-          </span>
-        ))}
+        <dl className="grid grid-cols-2 gap-2 @xl:grid-cols-4">
+          {[
+            ["Summary", "Written"],
+            ["CRM updated", "HubSpot"],
+            ["Ticket", "#TCK-2291"],
+            ["QA score", "4.6 / 5"],
+          ].map(([k, v]) => (
+            <div key={k} className="flex flex-col gap-0.5 rounded-md border border-(--ui-line) bg-(--ui-bg) px-3 py-2">
+              <dt className="text-[11px] text-(--ui-muted)">{k}</dt>
+              <dd className="flex items-center gap-1.5 text-[12.5px]">
+                <CheckIcon weight="bold" className="size-3 shrink-0 text-(--ui-live)" aria-hidden />
+                <span className="truncate">{v}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </div>
   )
