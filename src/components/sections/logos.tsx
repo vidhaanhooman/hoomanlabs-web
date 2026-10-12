@@ -1,69 +1,49 @@
-import {
-  siAirbnb,
-  siAsana,
-  siAtlassian,
-  siDeliveroo,
-  siDoordash,
-  siDropbox,
-  siFigma,
-  siHubspot,
-  siShopify,
-  siSpotify,
-  siStripe,
-  siZendesk,
-  type SimpleIcon,
-} from "simple-icons"
-
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { logos } from "@/content/draft"
-
-// SAMPLE logos to judge the treatment. Replace with real customers (with
-// permission) before anything ships.
-// 12 logos = 2 rows of 6 on desktop.
-const SAMPLE_LOGOS: SimpleIcon[] = [
-  siShopify,
-  siAirbnb,
-  siStripe,
-  siHubspot,
-  siDoordash,
-  siSpotify,
-  siFigma,
-  siAtlassian,
-  siDropbox,
-  siDeliveroo,
-  siAsana,
-  siZendesk,
-]
+import { cn } from "@/lib/utils"
 
 /**
- * Logo wall, directly under the hero. Greyscale at rest; each logo takes its
- * brand colour on hover (pointer devices only, so taps don't leave it coloured).
+ * Customer logos. Until the official logo files are added (drop SVGs in
+ * public/logos/ and set `src`), each customer shows as a typographic
+ * wordmark in one muted grey, so the row reads as a set.
  */
+type Customer = { name: string; src?: string; className?: string }
+
+const CUSTOMERS: Customer[] = [
+  { name: "Vedantu", className: "font-semibold tracking-[-0.02em]" },
+  { name: "GIVA", className: "font-semibold tracking-[0.18em]" },
+  { name: "Pristyn Care", className: "font-medium tracking-[-0.01em]" },
+  { name: "Mosaic Wellness", className: "font-normal tracking-[-0.01em]" },
+  { name: "Be10x", className: "font-bold tracking-[-0.03em]" },
+  { name: "StayVista", className: "font-medium tracking-[-0.02em]" },
+  { name: "SaffronStays", className: "font-medium italic tracking-[-0.01em]" },
+  { name: "ShopDeck", className: "font-semibold tracking-[-0.02em]" },
+  { name: "ShareChat", className: "font-bold tracking-[-0.02em]" },
+]
+
+/** Logo row, directly under the hero. Muted at rest, full ink on hover. */
 export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
         <p className="text-center text-small text-ink-muted">{label}</p>
-        <ul className="mt-8 grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3 lg:grid-cols-6">
-          {SAMPLE_LOGOS.map((icon) => (
-            <li key={icon.slug}>
-              <span
-                style={{ "--brand": `#${icon.hex}` } as React.CSSProperties}
-                className="group/logo flex h-14 items-center justify-center gap-2.5 text-ink-muted transition-colors duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground"
-              >
-                <svg
-                  role="img"
-                  aria-label={icon.title}
-                  viewBox="0 0 24 24"
-                  className="size-6 shrink-0 fill-current transition-colors duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:fill-(--brand)"
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 lg:flex-nowrap lg:justify-between lg:gap-x-6">
+          {CUSTOMERS.map((c) => (
+            <li key={c.name} className="flex h-10 items-center">
+              {c.src ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={c.src} alt={c.name} className="h-7 w-auto opacity-60 grayscale transition-opacity hover:opacity-100" />
+              ) : (
+                <span
+                  className={cn(
+                    "text-[1.3rem] whitespace-nowrap lg:text-[1.2rem] text-ink-muted transition-colors duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground",
+                    c.className
+                  )}
                 >
-                  <path d={icon.path} />
-                </svg>
-                <span aria-hidden className="text-body font-medium tracking-[-0.01em]">
-                  {icon.title}
+                  {c.name}
                 </span>
-              </span>
+              )}
             </li>
           ))}
         </ul>
