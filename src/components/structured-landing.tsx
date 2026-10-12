@@ -27,9 +27,9 @@ const [design, ...rest] = features
 
 /** One line for each compact card. */
 const SHORT: Record<string, string> = {
-  "feature-channels": "The same agent on phone, web, app and WhatsApp, with the conversation carried over.",
-  "feature-guardrails": "Simulated callers test every version before a customer hears it.",
-  "feature-analytics": "Every conversation scored, with outcomes and alerts in one view.",
+  "feature-channels": "Phone, web, app and WhatsApp.",
+  "feature-guardrails": "Simulated callers test every version.",
+  "feature-analytics": "Every call scored, with alerts.",
 }
 
 function Brand({ icon, className }: { icon: SimpleIcon; className?: string }) {
@@ -77,10 +77,6 @@ const MINI: Record<string, React.ReactNode> = {
           ))}
         </div>
       ))}
-      <div className="mt-auto flex items-center gap-2 border-t border-line bg-surface px-3 py-2 text-label text-ink-secondary">
-        <span className="size-1.5 rounded-full bg-[oklch(0.62_0.15_150)]" />
-        Context carries over when a customer switches channel
-      </div>
     </div>
   ),
 
@@ -100,15 +96,12 @@ const MINI: Record<string, React.ReactNode> = {
         {[
           { p: "Frustrated repeat caller", s: "Payment not applied", ok: true },
           { p: "Switches to Hindi", s: "Explain tariff", ok: true },
-          { p: "Hard of hearing", s: "Change billing date", ok: true },
-          { p: "Interrupts often", s: "Dispute late fee", ok: true },
           { p: "Asks for a human", s: "Escalation", ok: false },
           { p: "In a hurry", s: "Update phone number", ok: true },
-          { p: "Noisy background", s: "Report an outage", ok: true },
         ].map((r) => (
           <li key={r.p} className="flex items-center gap-3 border-t border-line py-2">
             <span className="flex-1 truncate">{r.p}</span>
-            <span className="hidden truncate text-ink-muted sm:block lg:hidden 2xl:block">{r.s}</span>
+            <span className="hidden truncate text-ink-muted sm:block lg:hidden">{r.s}</span>
             <span className="flex items-center gap-1.5 text-label">
               <span className={`size-1.5 rounded-full ${r.ok ? OK : WARN}`} />
               {r.ok ? "Passed" : "Review"}
@@ -156,7 +149,6 @@ const MINI: Record<string, React.ReactNode> = {
       </svg>
       <ul className="flex flex-col border-t border-line pt-1 text-small">
         {[
-          { t: "Transfers above 15%", where: "Slack", tone: WARN },
           { t: "Resolution below 65%", where: "On-call", tone: OK },
         ].map((a) => (
           <li key={a.t} className="flex items-center gap-2 py-1.5">
@@ -181,9 +173,7 @@ export function FeatureTrio({ className }: { className?: string }) {
             <h3 className="text-h4 font-normal">{f.title}</h3>
             <p className="text-small text-ink-secondary">{SHORT[f.id]}</p>
           </div>
-          <div aria-hidden className="flex-1">
-            {MINI[f.id]}
-          </div>
+          <div aria-hidden>{MINI[f.id]}</div>
           <TextLink href={f.link.href} className="mt-auto">
             {f.link.label}
           </TextLink>

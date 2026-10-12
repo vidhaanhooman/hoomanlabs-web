@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowRightIcon, ArrowUpRightIcon, BookOpenTextIcon, BracketsCurlyIcon, CheckIcon, TerminalWindowIcon } from "@phosphor-icons/react/dist/ssr"
-import { siCalendly, siGooglecalendar, siHubspot, siIntercom, siShopify, siZendesk } from "simple-icons"
+import { siGooglecalendar, siHubspot, siShopify, siZendesk } from "simple-icons"
 
 import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
@@ -40,19 +40,16 @@ export function StartResources() {
           <li className="flex min-w-0 lg:col-span-4">
             <Panel className="flex w-full flex-col gap-5 p-6 sm:p-7">
               <div className="flex flex-col gap-1.5">
-                <h3 className="text-h4 font-normal">Follow-up done after every call</h3>
-                <p className="text-small text-ink-secondary">A summary, your CRM updated and the call scored, before anyone looks.</p>
+                <h3 className="text-h4 font-normal">Follow-up done</h3>
+                <p className="text-small text-ink-secondary">Summary, CRM and score, after every call.</p>
               </div>
-              <div aria-hidden className="flex flex-1 flex-col gap-3 rounded-md border border-line bg-background p-3 text-small">
+              <div aria-hidden className="flex flex-col gap-3 rounded-md border border-line bg-background p-3 text-small">
                 <div className="flex items-center justify-between text-label text-ink-muted">
                   <span>Call with Maya · 3:42</span>
                   <span>Post-call</span>
                 </div>
-                <p className="text-ink-secondary">Double charge on 4 March confirmed. Refund needs approval, so a ticket was raised and the reference texted.</p>
                 <ul className="flex flex-col">
                   {[
-                    ["intent", "Duplicate charge"],
-                    ["sentiment", "Calm"],
                     ["CRM", "HubSpot updated"],
                     ["Ticket", "#TCK-2291"],
                     ["QA score", "4.6 / 5"],
@@ -76,10 +73,10 @@ export function StartResources() {
           <li className="flex min-w-0 lg:col-span-4">
             <Panel className="flex w-full flex-col gap-5 p-6 sm:p-7">
               <div className="flex flex-col gap-1.5">
-                <h3 className="text-h4 font-normal">Works inside your systems</h3>
-                <p className="text-small text-ink-secondary">Your CRM, helpdesk and calendar out of the box, and your own tools via API or MCP.</p>
+                <h3 className="text-h4 font-normal">Your systems</h3>
+                <p className="text-small text-ink-secondary">CRM, helpdesk, calendar and your own tools.</p>
               </div>
-              <div aria-hidden className="flex flex-1 flex-col overflow-hidden rounded-md border border-line bg-background text-small">
+              <div aria-hidden className="flex flex-col overflow-hidden rounded-md border border-line bg-background text-small">
                 <div className="grid grid-cols-[1fr_auto] border-b border-line px-3 py-2 text-label text-ink-muted">
                   <span>Integration</span>
                   <span>Used for</span>
@@ -89,8 +86,6 @@ export function StartResources() {
                   { n: "Zendesk", i: siZendesk, d: "Tickets" },
                   { n: "Google Calendar", i: siGooglecalendar, d: "Bookings" },
                   { n: "Shopify", i: siShopify, d: "Orders" },
-                  { n: "Calendly", i: siCalendly, d: "Scheduling" },
-                  { n: "Intercom", i: siIntercom, d: "Chat" },
                 ].map((t) => (
                   <div key={t.n} className="grid grid-cols-[1fr_auto] items-center border-b border-line px-3 py-2.5">
                     <span className="flex items-center gap-2.5">
@@ -104,7 +99,7 @@ export function StartResources() {
                     <span className="text-ink-muted">{t.d}</span>
                   </div>
                 ))}
-                <div className="mt-auto flex items-center gap-2 bg-surface px-3 py-2 text-label text-ink-secondary">
+                <div className="flex items-center gap-2 bg-surface px-3 py-2 text-label text-ink-secondary">
                   <span className="rounded-[4px] bg-foreground/[0.07] px-1 font-mono text-[11px] text-foreground/85">take_payment</span>
                   your own tools, called by name
                 </div>
@@ -120,14 +115,7 @@ export function StartResources() {
             <Panel className="flex w-full flex-col p-6 sm:p-7">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>
-              <p className="pt-1.5 text-small text-ink-secondary">
-                Build on the platform from your own code: start calls, manage agents and read results through the API, or work from your editor over MCP.
-              </p>
-              <div aria-hidden className="mt-4 rounded-md border border-line bg-background px-3 py-2.5 font-mono text-[11.5px] leading-relaxed text-ink-secondary">
-                <span className="text-[oklch(0.55_0.13_150)]">POST</span> /v1/calls
-                <br />
-                {"{ "}&quot;agent&quot;: &quot;billing-v5&quot;, &quot;to&quot;: &quot;+44…&quot;{" }"}
-              </div>
+              <p className="pt-1.5 text-small text-ink-secondary">API, docs and MCP.</p>
               <ul className="mt-5 flex flex-col">
                 {resources.links
                   .filter((r) => r.label !== "Changelog")
