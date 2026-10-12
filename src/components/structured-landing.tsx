@@ -49,7 +49,7 @@ const WARN = "bg-[oklch(0.8_0.14_80)]"
 const MINI: Record<string, React.ReactNode> = {
   /* Channels: one tile per surface, with its logo and the modes it supports */
   "feature-channels": (
-    <div className="overflow-hidden rounded-md border border-line bg-background">
+    <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-background">
       <div className="grid grid-cols-[1fr_4.5rem_4.5rem] border-b border-line px-3 py-2 text-label text-ink-muted">
         <span>Channel</span>
         <span className="text-center">Voice</span>
@@ -59,17 +59,8 @@ const MINI: Record<string, React.ReactNode> = {
         { name: "Phone", logo: <PhoneIcon className="size-4" />, voice: "yes", chat: "no" },
         { name: "WhatsApp", logo: <Brand icon={siWhatsapp} />, voice: "soon", chat: "yes" },
         { name: "Web", logo: <Brand icon={siGooglechrome} />, voice: "yes", chat: "yes" },
-        {
-          name: "iOS & Android",
-          logo: (
-            <span className="flex gap-0.5">
-              <Brand icon={siApple} className="size-3.5" />
-              <Brand icon={siAndroid} className="size-3.5" />
-            </span>
-          ),
-          voice: "yes",
-          chat: "yes",
-        },
+        { name: "iOS app", logo: <Brand icon={siApple} />, voice: "yes", chat: "yes" },
+        { name: "Android app", logo: <Brand icon={siAndroid} />, voice: "yes", chat: "yes" },
       ].map((c) => (
         <div key={c.name} className="grid grid-cols-[1fr_4.5rem_4.5rem] items-center border-b border-line px-3 py-2.5 last:border-0">
           <span className="flex items-center gap-2.5 text-small">
@@ -89,7 +80,7 @@ const MINI: Record<string, React.ReactNode> = {
           ))}
         </div>
       ))}
-      <div className="flex items-center gap-2 border-t border-line bg-surface px-3 py-2 text-label text-ink-secondary">
+      <div className="mt-auto flex items-center gap-2 border-t border-line bg-surface px-3 py-2 text-label text-ink-secondary">
         <span className="size-1.5 rounded-full bg-[oklch(0.62_0.15_150)]" />
         Context carries over when a customer switches channel
       </div>
@@ -98,7 +89,7 @@ const MINI: Record<string, React.ReactNode> = {
 
   /* Simulations: personas that ran against the new version, and the tally */
   "feature-guardrails": (
-    <div className="flex flex-col gap-3 rounded-md border border-line bg-background p-3">
+    <div className="flex h-full flex-col gap-3 rounded-md border border-line bg-background p-3">
       <div className="flex items-center justify-between text-label text-ink-muted">
         <span>Billing assistant · v5</span>
         <span className="font-mono text-foreground tabular-nums">17 / 18 passed</span>
@@ -112,7 +103,10 @@ const MINI: Record<string, React.ReactNode> = {
         {[
           { p: "Frustrated repeat caller", s: "Payment not applied", ok: true },
           { p: "Switches to Hindi", s: "Explain tariff", ok: true },
+          { p: "Hard of hearing", s: "Change billing date", ok: true },
+          { p: "Interrupts often", s: "Dispute late fee", ok: true },
           { p: "Asks for a human", s: "Escalation", ok: false },
+          { p: "In a hurry", s: "Update phone number", ok: true },
         ].map((r) => (
           <li key={r.p} className="flex items-center gap-3 border-t border-line py-2">
             <span className="flex-1 truncate">{r.p}</span>
@@ -129,7 +123,7 @@ const MINI: Record<string, React.ReactNode> = {
 
   /* Analytics: three headline numbers, the outcome split and a trend */
   "feature-analytics": (
-    <div className="flex flex-col gap-3 rounded-md border border-line bg-background p-3">
+    <div className="flex h-full flex-col gap-3 rounded-md border border-line bg-background p-3">
       <dl className="grid grid-cols-3 gap-3">
         {[
           { k: "Resolved", v: "71%", d: "+6 pts" },
@@ -149,7 +143,7 @@ const MINI: Record<string, React.ReactNode> = {
         <span className="bg-ink-muted" style={{ width: "9%" }} />
         <span className="bg-[oklch(0.65_0.19_25)]" style={{ width: "6%" }} />
       </div>
-      <svg viewBox="0 0 300 48" preserveAspectRatio="none" className="h-12 w-full" aria-hidden>
+      <svg viewBox="0 0 300 48" preserveAspectRatio="none" className="h-16 w-full flex-1" aria-hidden>
         <path
           d="M0,40 L25,36 L50,38 L75,30 L100,32 L125,25 L150,27 L175,20 L200,22 L225,14 L250,16 L275,9 L300,6"
           fill="none"
@@ -162,6 +156,18 @@ const MINI: Record<string, React.ReactNode> = {
           className="fill-foreground/5"
         />
       </svg>
+      <ul className="flex flex-col border-t border-line pt-1 text-small">
+        {[
+          { t: "Transfers above 15%", where: "Slack", tone: WARN },
+          { t: "Resolution below 65%", where: "On-call", tone: OK },
+        ].map((a) => (
+          <li key={a.t} className="flex items-center gap-2 py-1.5">
+            <span className={`size-1.5 rounded-full ${a.tone}`} />
+            <span className="flex-1 truncate">{a.t}</span>
+            <span className="text-label text-ink-muted">Alert → {a.where}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   ),
 }
@@ -240,7 +246,7 @@ export function StructuredLanding() {
                     <p className="text-small text-ink-secondary">{SHORT[f.id]}</p>
                   </div>
                 </div>
-                <div aria-hidden>{MINI[f.id]}</div>
+                <div aria-hidden className="flex-1">{MINI[f.id]}</div>
                 <TextLink href={f.link.href} className="mt-auto">
                   {f.link.label}
                 </TextLink>
