@@ -1,12 +1,14 @@
 import Link from "next/link"
-import { ArrowRightIcon, CheckIcon, DeviceMobileIcon, GlobeIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
-import { siHubspot, siWhatsapp, siZendesk, type SimpleIcon } from "simple-icons"
+import { ArrowRightIcon, ArrowUpRightIcon, BookOpenTextIcon, BracketsCurlyIcon, CheckIcon, DeviceMobileIcon, GlobeIcon, PhoneIcon, TerminalWindowIcon } from "@phosphor-icons/react/dist/ssr"
+import { siGooglecalendar, siHubspot, siShopify, siWhatsapp, siZendesk, type SimpleIcon } from "simple-icons"
 
 import { Container } from "@/components/layout/container"
 import { Halftone } from "@/components/layout/halftone"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { componentHref, components, type ComponentId } from "@/content/platform"
+import { startPaths } from "@/content/landing"
+import { resources } from "@/content/structure"
 import { cn } from "@/lib/utils"
 
 /**
@@ -14,7 +16,8 @@ import { cn } from "@/lib/utils"
  * QA, Channels and Tools & Integrations, as cards with a small graphic, the
  * name and one benefit line, linking to their pages. Agents and Workflow have
  * their own sections; self-serve and resources live in the closing CTA.
- * Dark and light graphics alternate. Static.
+ * A bento: two wide cards and two narrow, with developer resources running
+ * the full height of the last column. Dark and light alternate. Static.
  */
 
 const DARK = "dark graphite"
@@ -83,17 +86,22 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </Snip>
   ),
   simulations: () => (
-    <Snip className="w-44 gap-2">
-      <span className="flex items-center justify-between">
-        <span>Personas</span>
-        <span className="font-medium tabular-nums">18 / 18</span>
+    <Snip className="w-80 gap-0">
+      <span className="flex items-center justify-between pb-1.5">
+        <span className="font-medium">Billing assistant · v5</span>
+        <span className="tabular-nums">18 / 18 passed</span>
       </span>
-      <span className="grid grid-cols-9 gap-1">
-        {Array.from({ length: 18 }, (_, i) => (
-          <span key={i} className="h-2 rounded-[2px] bg-foreground/80" />
-        ))}
-      </span>
-      <span className="text-[10.5px] text-ink-muted">Passed before go-live</span>
+      {[
+        ["Frustrated repeat caller", "Payment not applied"],
+        ["Switches to Hindi", "Explain tariff"],
+        ["Asks for a human", "Escalation"],
+      ].map(([p, t]) => (
+        <span key={p} className="flex items-center gap-2 border-t border-line py-1.5">
+          <Tick />
+          <span className="flex-1">{p}</span>
+          <span className="text-[10.5px] text-ink-muted">{t}</span>
+        </span>
+      ))}
     </Snip>
   ),
   qa: () => (
@@ -125,18 +133,26 @@ const GRAPHICS: Record<ComponentId, () => React.ReactNode> = {
     </div>
   ),
   tools: () => (
-    <Snip className="w-44 gap-0">
-      {[
-        { n: "HubSpot", i: <Brand icon={siHubspot} />, d: "CRM" },
-        { n: "Zendesk", i: <Brand icon={siZendesk} />, d: "Tickets" },
-        { n: "take_payment", i: <Tick />, d: "Tool" },
-      ].map((t) => (
-        <span key={t.n} className="flex items-center gap-2 border-t border-line py-1.5 first:border-0">
-          {t.i}
-          <span className="flex-1">{t.n}</span>
-          <span className="text-[10.5px] text-ink-muted">{t.d}</span>
-        </span>
-      ))}
+    <Snip className="w-80 gap-2">
+      <div className="grid grid-cols-2 gap-x-4">
+        {[
+          { n: "HubSpot", i: <Brand icon={siHubspot} />, d: "CRM" },
+          { n: "Zendesk", i: <Brand icon={siZendesk} />, d: "Tickets" },
+          { n: "Calendar", i: <Brand icon={siGooglecalendar} />, d: "Bookings" },
+          { n: "Shopify", i: <Brand icon={siShopify} />, d: "Orders" },
+        ].map((t) => (
+          <span key={t.n} className="flex items-center gap-2 border-t border-line py-1.5 [&:nth-child(-n+2)]:border-0">
+            {t.i}
+            <span className="flex-1 truncate">{t.n}</span>
+            <span className="text-[10px] text-ink-muted">{t.d}</span>
+          </span>
+        ))}
+      </div>
+      <span className="flex items-center gap-2 border-t border-line pt-2">
+        <Tick />
+        <Code>take_payment</Code>
+        <span className="text-[10.5px] text-ink-muted">your own tools, via API or MCP</span>
+      </span>
     </Snip>
   ),
 }
@@ -152,6 +168,13 @@ const LINE: Record<ComponentId, string> = {
   tools: "Works inside your CRM, helpdesk and calendar.",
 }
 const DARK_IDS: ComponentId[] = ["simulations", "channels"]
+/** Bento placement on large screens (12 columns, 2 rows). */
+const SPAN: Partial<Record<ComponentId, string>> = {
+  simulations: "lg:col-span-6",
+  qa: "lg:col-span-3",
+  channels: "lg:col-span-3",
+  tools: "lg:col-span-6",
+}
 const FOCUS: Record<ComponentId, string> = {
   agents: "15% 20%",
   workflow: "85% 15%",
@@ -175,17 +198,17 @@ export function StartResources() {
           </div>
           <TextLink href="/platform">See the full platform</TextLink>
         </div>
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-10 grid auto-rows-fr gap-3 sm:grid-cols-2 lg:grid-cols-12">
           {PARTS.map((id) => {
             const c = components.find((x) => x.id === id)!
             const G = GRAPHICS[id]
             return (
-              <li key={id} className="flex min-w-0">
+              <li key={id} className={cn("flex min-w-0", SPAN[id], id === "tools" && "sm:col-span-2")}>
                 <Link
                   href={componentHref(id)}
                   className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
                 >
-                  <div aria-hidden className="relative isolate flex h-40 items-center justify-center overflow-hidden bg-surface p-4">
+                  <div aria-hidden className="relative isolate flex min-h-40 flex-1 items-center justify-center overflow-hidden bg-surface p-4">
                     <Halftone focus={FOCUS[id]} />
                     <div
                       className={cn(
@@ -196,7 +219,7 @@ export function StartResources() {
                       <G />
                     </div>
                   </div>
-                  <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
+                  <div className="flex flex-col gap-1 border-t border-line p-4">
                     <span className="flex items-center justify-between text-body font-medium">
                       {c.name}
                       <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
@@ -207,6 +230,42 @@ export function StartResources() {
               </li>
             )
           })}
+
+          {/* Resources: the full height of the last column */}
+          <li className="flex min-w-0 sm:col-span-2 lg:col-span-3 lg:col-start-10 lg:row-span-2 lg:row-start-1">
+            <div className="flex w-full flex-col rounded-xl border border-line bg-surface p-5">
+              <span className="font-mono text-label text-ink-muted">Resources</span>
+              <p className="pt-1 text-body font-medium">For developers</p>
+              <ul className="mt-4 flex flex-col">
+                {resources.links
+                  .filter((r) => r.label !== "Changelog")
+                  .map((r, i) => {
+                    const Ico = [BookOpenTextIcon, BracketsCurlyIcon, TerminalWindowIcon][i] ?? BookOpenTextIcon
+                    return (
+                      <li key={r.label} className="border-t border-line first:border-0">
+                        <Link href={r.href} className="group flex h-full items-center gap-3 py-3.5">
+                          <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-background text-ink-secondary transition-colors group-hover:text-foreground">
+                            <Ico className="size-4" />
+                          </span>
+                          <span className="flex min-w-0 flex-1 flex-col">
+                            <span className="text-body">{r.label}</span>
+                            <span className="text-small text-ink-secondary">{r.body}</span>
+                          </span>
+                          <ArrowUpRightIcon className="size-4 shrink-0 text-ink-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </Link>
+                      </li>
+                    )
+                  })}
+              </ul>
+              <Link href={startPaths.paths[0].cta.href} className="group mt-auto flex items-center justify-between gap-3 border-t border-line pt-4 text-small">
+                <span className="flex flex-col">
+                  <span className="text-body font-medium">Start self-serve</span>
+                  <span className="text-ink-secondary">Build, test and go live yourself.</span>
+                </span>
+                <ArrowRightIcon className="size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+          </li>
         </ul>
       </Container>
     </Section>
