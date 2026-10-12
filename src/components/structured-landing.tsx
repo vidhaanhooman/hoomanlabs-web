@@ -10,23 +10,21 @@ import { SimulationRunScreen } from "@/components/product/simulation-run-screen"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
 import { FeaturePanel } from "@/components/sections/feature-panel"
 import { FinalCta } from "@/components/sections/final-cta"
-import { HomeIntegrations, Security, StartPaths } from "@/components/sections/landing"
+import { HomeIntegrations, StartPaths } from "@/components/sections/landing"
 import { Logos } from "@/components/sections/logos"
 import {
-  CustomerStories,
   HomeFaq,
   Outcomes,
   PlatformSummary,
   StatHeadline,
   UseCaseCarousel,
   UseCaseTemplates,
-  VideoCaseStudy,
 } from "@/components/sections/structure"
 import { Testimonials } from "@/components/sections/testimonials"
 import { VoiceWidget } from "@/components/sections/voice-widget"
 import { ctas } from "@/content/draft"
 import { heroCall } from "@/content/landing"
-import { developersPath, features } from "@/content/structure"
+import { features } from "@/content/structure"
 
 const SCREENS = {
   "feature-design": (c: string) => (
@@ -47,11 +45,10 @@ const BACKDROPS = {
 } as const
 
 /**
- * Structured homepage (/lab/hero-call), 21 parts:
- * 1 hero · 2 use-case carousel · 3 logos · 4 outcomes · 5 stat · 6 quotes ·
- * 7 video case study · 8-11 platform features · 12 summary + resources ·
- * 13 integrations · 14 templates · 15 security · 16 get started (3 paths) ·
- * 17 stories · 18 FAQ · 19 closing CTA · 20 footer (layout) · 21 voice widget
+ * Structured homepage (/lab/hero-call):
+ * hero · logos · use-case carousel · outcomes · stat · quotes ·
+ * 4 platform features · summary + resources · integrations · templates ·
+ * get started (2 paths) · FAQ · closing CTA · footer (layout) · voice widget
  */
 export function StructuredLanding() {
   return (
@@ -80,12 +77,11 @@ export function StructuredLanding() {
         </Container>
       </Section>
 
-      <UseCaseCarousel />
       <Logos />
+      <UseCaseCarousel />
       <Outcomes />
       <StatHeadline />
       <Testimonials />
-      <VideoCaseStudy />
 
       {features.map((f, i) => (
         <FeaturePanel
@@ -105,9 +101,7 @@ export function StructuredLanding() {
       <PlatformSummary />
       <HomeIntegrations />
       <UseCaseTemplates />
-      <Security />
-      <StartPaths extra={[developersPath]} />
-      <CustomerStories />
+      <StartPaths />
       <HomeFaq />
       <FinalCta />
       <VoiceWidget />
