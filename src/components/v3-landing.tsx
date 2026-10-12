@@ -6,7 +6,7 @@ import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
-import { AgentJourney } from "@/components/product/agent-journey"
+import { AgentBento } from "@/components/product/agent-bento"
 import { FinalCta } from "@/components/sections/final-cta"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
@@ -115,7 +115,7 @@ export function V3Landing() {
             aside={<TextLink href="/platform/agents">Explore Agents</TextLink>}
           />
           <div className="mt-10">
-            <AgentJourney />
+            <AgentBento />
           </div>
         </Container>
       </Section>
