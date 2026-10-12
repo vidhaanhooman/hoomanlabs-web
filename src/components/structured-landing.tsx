@@ -1,8 +1,6 @@
-import Link from "next/link"
 import { CheckIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
 import { siAndroid, siApple, siGooglechrome, siWhatsapp, type SimpleIcon } from "simple-icons"
 
-import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
@@ -21,7 +19,6 @@ import {
 } from "@/components/sections/structure"
 import { Testimonials } from "@/components/sections/testimonials"
 import { VoiceWidget } from "@/components/sections/voice-widget"
-import { ctas } from "@/content/draft"
 import { heroCall } from "@/content/landing"
 import { features } from "@/content/structure"
 
@@ -197,14 +194,6 @@ export function StructuredLanding() {
           <p className="reveal mt-5 max-w-[56ch] text-body-lg text-ink-secondary" style={{ "--i": 1 } as React.CSSProperties}>
             {heroCall.body}
           </p>
-          <div className="reveal mt-8 flex flex-wrap gap-2" style={{ "--i": 2 } as React.CSSProperties}>
-            <Link href={ctas.demo.href} className={buttonVariants()}>
-              {ctas.demo.label}
-            </Link>
-            <Link href="#listen" className={buttonVariants({ variant: "secondary" })}>
-              {ctas.talk.label}
-            </Link>
-          </div>
           <div id="listen" className="reveal mt-10 scroll-mt-24 md:mt-12" style={{ "--i": 3 } as React.CSSProperties}>
             <HeroScene />
           </div>
