@@ -1,7 +1,18 @@
 "use client"
 
-import { useLayoutEffect, useRef, useState } from "react"
-import { BookOpenTextIcon, CheckIcon, PlayIcon, SpeakerHighIcon } from "@phosphor-icons/react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useInView } from "motion/react"
+import {
+  BookOpenTextIcon,
+  CheckIcon,
+  GitBranchIcon,
+  LightningIcon,
+  PlayIcon,
+  SpeakerHighIcon,
+  TrayArrowDownIcon,
+  TrayArrowUpIcon,
+  type Icon,
+} from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -12,18 +23,19 @@ import { cn } from "@/lib/utils"
  * marker and joined to the editor's edge by a hairline. Hovering (or
  * focusing) a card spotlights its part: the rest of the editor dims.
  * Below lg the cards become a numbered list under the editor; tapping one
- * spotlights the same way. Sample content (fictional Halden Energy agent).
+ * spotlights the same way. Each card has an icon. It all reveals once on scroll: editor,
+ * hairlines, then cards in turn. Sample content (fictional Halden Energy agent).
  */
 
-type Mark = { n: number; side: "left" | "right"; title: string; body: string }
+type Mark = { n: number; side: "left" | "right"; title: string; body: string; icon: Icon }
 
 const MARKS: Mark[] = [
-  { n: 1, side: "left", title: "Pre-call context", body: "Filled in before the first ring, from your CRM and billing." },
-  { n: 2, side: "left", title: "Conditions", body: "Branch the call in CEL, right inside the prompt." },
-  { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your own documents." },
-  { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages, called by name." },
-  { n: 5, side: "left", title: "After the call", body: "Summary, CRM update and a QA score, automatically." },
-  { n: 6, side: "right", title: "Voice & languages", body: "A warm en-GB voice, 30 languages, natural turn-taking." },
+  { n: 1, side: "left", title: "Pre-call context", body: "Filled in before the first ring, from your CRM and billing.", icon: TrayArrowDownIcon },
+  { n: 2, side: "left", title: "Conditions", body: "Branch the call in CEL, right inside the prompt.", icon: GitBranchIcon },
+  { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your own documents.", icon: BookOpenTextIcon },
+  { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages, called by name.", icon: LightningIcon },
+  { n: 5, side: "left", title: "After the call", body: "Summary, CRM update and a QA score, automatically.", icon: TrayArrowUpIcon },
+  { n: 6, side: "right", title: "Voice & languages", body: "A warm en-GB voice, 30 languages, natural turn-taking.", icon: SpeakerHighIcon },
 ]
 
 /* ------------------------------------------------------------ editor */
@@ -171,16 +183,29 @@ function CalloutCard({
       onBlur={() => onFocus(null)}
       aria-pressed={on}
       className={cn(
-        "flex gap-2.5 rounded-lg border bg-surface p-3.5 text-left transition-[border-color,background-color,box-shadow] duration-200",
+        "flex overflow-hidden rounded-lg border bg-surface text-left transition-[border-color,background-color,box-shadow] duration-200",
         on ? "border-line-strong bg-background shadow-[0_10px_30px_-18px_oklch(0.2_0.02_260/0.5)]" : "border-line hover:border-line-strong",
         className
       )}
       style={style}
     >
-      {number && <span className="grid size-5 shrink-0 place-items-center rounded-full bg-foreground font-mono text-[10.5px] text-background">{m.n}</span>}
-      <span className="flex flex-col gap-0.5">
-        <span className="text-body font-medium">{m.title}</span>
-        <span className="text-small text-ink-secondary">{m.body}</span>
+      <span className="flex gap-3 p-3">
+        <span
+          aria-hidden
+          className={cn(
+            "relative grid size-10 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-200",
+            on ? "text-foreground" : "text-ink-secondary"
+          )}
+        >
+          <m.icon className="size-[18px]" />
+          {number && (
+            <span className="absolute -right-1.5 -bottom-1.5 grid size-4 place-items-center rounded-full bg-foreground font-mono text-[9.5px] text-background">{m.n}</span>
+          )}
+        </span>
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="text-body font-medium">{m.title}</span>
+          <span className="text-small text-ink-secondary">{m.body}</span>
+        </span>
       </span>
     </button>
   )
@@ -189,7 +214,7 @@ function CalloutCard({
 /* ------------------------------------------------------------ layout */
 
 /** Callout column width and spacing (px). */
-const CARD = 224
+const CARD = 256
 const GAP = 12
 const MIN_SPACE = 12
 
@@ -202,6 +227,18 @@ export function AgentAnatomy() {
   const [pos, setPos] = useState<Pos[]>([])
   const [edge, setEdge] = useState({ left: 0, right: 0 })
   const [focus, setFocus] = useState<number | null>(null)
+  // Reveal once on scroll: editor, then hairlines draw out, then cards in turn.
+  const shown = useInView(box, { amount: 0.25, once: true })
+  /** Order cards appear in: top to bottom, alternating sides. */
+  const order = (n: number) => [6, 1, 3, 2, 4, 5].indexOf(n)
+  // After the reveal, drop the entrance delays so hover responds at once.
+  const [settled, setSettled] = useState(false)
+  useEffect(() => {
+    if (!shown) return
+    const t = setTimeout(() => setSettled(true), 1800)
+    return () => clearTimeout(t)
+  }, [shown])
+  const delay = (ms: number) => (shown && !settled ? `${ms}ms` : "0ms")
 
   // Marker positions relative to the section, and each card's top placed level
   // with its marker (pushed down if the card above on the same side would overlap).
@@ -224,7 +261,7 @@ export function AgentAnatomy() {
           .sort((a, b) => a.y - b.y)
           .forEach(({ m, y }) => {
             const h = cards.current[m.n]?.offsetHeight ?? 80
-            const top = Math.max(y - 22, floor)
+            const top = Math.max(y - 24, floor)
             floor = top + h + MIN_SPACE
             next.push({ n: m.n, y, top })
           })
@@ -242,9 +279,12 @@ export function AgentAnatomy() {
 
   return (
     <div>
-      <div ref={box} className="relative lg:grid lg:grid-cols-[14rem_minmax(0,1fr)_14rem] lg:gap-x-12 lg:py-4">
+      <div ref={box} className="relative lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_16rem] lg:gap-x-10 lg:pt-4 lg:pb-14">
         <div aria-hidden className="hidden lg:block" />
-        <div ref={editor}>
+        <div
+          ref={editor}
+          className={cn("motion-safe:transition-[opacity,transform] motion-safe:duration-700 motion-safe:ease-(--ease-out)", !shown && "motion-safe:translate-y-3 motion-safe:opacity-0")}
+        >
           <Editor focus={focus} />
         </div>
         <div aria-hidden className="hidden lg:block" />
@@ -260,8 +300,13 @@ export function AgentAnatomy() {
             <span
               key={`l${p.n}`}
               aria-hidden
-              className={cn("absolute hidden h-px transition-colors duration-200 lg:block", focus === p.n ? "bg-foreground/50" : "bg-line-strong")}
-              style={style}
+              className={cn(
+                "absolute hidden h-px transition-[background-color,transform] duration-200 lg:block motion-safe:duration-500",
+                m.side === "left" ? "origin-right" : "origin-left",
+                focus === p.n ? "bg-foreground/50" : "bg-line-strong",
+                !shown && "motion-safe:scale-x-0"
+              )}
+              style={{ ...style, transitionDelay: delay(450 + order(p.n) * 110) }}
             />
           )
         })}
@@ -278,8 +323,13 @@ export function AgentAnatomy() {
               cardRef={(el) => {
                 cards.current[m.n] = el
               }}
-              className={cn("absolute hidden lg:flex", p ? "opacity-100" : "opacity-0", m.side === "left" ? "left-0" : "right-0")}
-              style={{ top: p?.top ?? 0, width: CARD - GAP }}
+              className={cn(
+                "absolute hidden lg:flex motion-safe:transition-[opacity,transform,border-color,background-color,box-shadow] motion-safe:duration-500 motion-safe:ease-(--ease-out)",
+                p && shown ? "opacity-100" : "opacity-0",
+                !shown && (m.side === "left" ? "motion-safe:-translate-x-3" : "motion-safe:translate-x-3"),
+                m.side === "left" ? "left-0" : "right-0"
+              )}
+              style={{ top: p?.top ?? 0, width: CARD - GAP, transitionDelay: delay(650 + order(m.n) * 110) }}
             />
           )
         })}
