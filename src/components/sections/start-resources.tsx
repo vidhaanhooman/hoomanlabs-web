@@ -163,28 +163,42 @@ const FOCUS: Record<ComponentId, string> = {
   tools: "100% 50%",
 }
 
+/* Fine-line drawing in the outcome-card style: steps rising to "Go live". */
+const STROKE = { fill: "none", stroke: "currentColor", strokeWidth: 1.3, strokeLinecap: "round" as const }
+const DOTTED = { ...STROKE, strokeDasharray: "1.5 4", opacity: 0.55 }
+const STEPS = [
+  { x: 24, y: 78, label: "Sign up", done: true },
+  { x: 92, y: 62, label: "Build", done: true },
+  { x: 160, y: 46, label: "Test", done: true },
+  { x: 228, y: 30, label: "Go live", done: false },
+]
+
+function SelfServeLine() {
+  const solid = STEPS.filter((p) => p.done)
+  const open = STEPS.slice(solid.length - 1)
+  return (
+    <svg viewBox="0 0 252 112" className="h-full max-h-24 w-full max-w-[15rem] text-foreground">
+      <path d={solid.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...STROKE} />
+      <path d={open.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ")} {...DOTTED} />
+      {STEPS.map((p) => (
+        <g key={p.label}>
+          <line x1={p.x} y1={p.y + 7} x2={p.x} y2={94} {...DOTTED} />
+          <circle cx={p.x} cy={p.y} r={4} className={p.done ? "fill-foreground" : "fill-surface"} stroke="currentColor" strokeWidth={1.3} />
+          <text x={p.x} y={108} fontSize={10} textAnchor="middle" className="fill-ink-muted">
+            {p.label}
+          </text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
 function SelfServe() {
   const s = startPaths.paths[0]
   return (
     <Link href={s.cta.href} className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong">
       <div aria-hidden className="relative isolate flex h-32 items-center justify-center overflow-hidden bg-surface p-4">
-        <Halftone focus="85% 20%" />
-        <div className={cn("origin-center scale-90 text-[11.5px] leading-snug text-foreground", DARK)}>
-          <Snip className="w-44 gap-0">
-            {[
-              ["Sign up", "1 min"],
-              ["Build an agent", "template"],
-              ["Test", "18 passed"],
-              ["Go live", "today"],
-            ].map(([t, d], i) => (
-              <span key={t} className="flex items-center gap-2 border-t border-line py-1 first:border-0">
-                {i < 3 ? <Tick /> : <span className="size-3.5 shrink-0 rounded-full border border-line-strong" />}
-                <span className="flex-1">{t}</span>
-                <span className="text-[10px] text-ink-muted">{d}</span>
-              </span>
-            ))}
-          </Snip>
-        </div>
+        <SelfServeLine />
       </div>
       <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
         <span className="flex items-center justify-between text-body font-medium">
