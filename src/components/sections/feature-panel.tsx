@@ -11,6 +11,8 @@ import type { SectionId } from "@/content/sections"
 
 /** Window position inside the backdrop; shared by placeholders and real screens. */
 const WINDOW_CLASS = "absolute inset-x-[7%] top-[9%] bottom-[12%]"
+/** `airy`: smaller window, more painting around it. */
+const WINDOW_AIRY = "absolute inset-x-[12%] top-[14%] bottom-[16%]"
 
 /**
  * Cursor's boxed split panel: copy in one third, framed product in two thirds.
@@ -27,6 +29,7 @@ export function FeaturePanel({
   screen,
   backdrop,
   softBackdrop = false,
+  airy = false,
   media = "end",
 }: {
   id: SectionId
@@ -41,15 +44,18 @@ export function FeaturePanel({
   backdrop?: string
   /** Blur and wash the artwork so a busy screen on top stays the focus. */
   softBackdrop?: boolean
+  /** More room: extra space around the panel, the copy and the screen. */
+  airy?: boolean
   media?: "start" | "end"
 }) {
   return (
-    <Section id={id} spacing="tight">
+    <Section id={id} spacing="tight" className={airy ? "py-(--section-gap)" : undefined}>
       <Container>
         <Panel className="grid items-center gap-8 p-4 sm:p-6 lg:grid-cols-3 lg:gap-0 lg:p-3">
           <div
             className={cn(
               "flex flex-col gap-5 px-2 pt-4 sm:px-4 lg:px-10 lg:py-10",
+              airy && "lg:px-14 lg:py-14",
               media === "start" && "lg:order-2"
             )}
           >
@@ -75,10 +81,10 @@ export function FeaturePanel({
             {backdrop && softBackdrop ? <span aria-hidden className="absolute inset-0 bg-background/10" /> : null}
             {screen ? (
               screen(
-                `${WINDOW_CLASS} z-10 rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]`
+                `${airy ? WINDOW_AIRY : WINDOW_CLASS} z-10 rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]`
               )
             ) : (
-              <Placeholder variant="frame" label={visual} className={`${WINDOW_CLASS} z-10`} />
+              <Placeholder variant="frame" label={visual} className={`${airy ? WINDOW_AIRY : WINDOW_CLASS} z-10`} />
             )}
           </Placeholder>
         </Panel>

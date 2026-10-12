@@ -94,6 +94,7 @@ export function StructuredLanding() {
           backdrop={BACKDROPS[f.id]}
           screen={SCREENS[f.id]}
           media={i % 2 === 0 ? "end" : "start"}
+          airy
         />
       ))}
 
