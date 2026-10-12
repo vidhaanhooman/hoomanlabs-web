@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, DeviceMobileIcon, GlobeIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
+import { ArrowRightIcon, CheckIcon, DeviceMobileIcon, GlobeIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
 import { siHubspot, siWhatsapp, siZendesk, type SimpleIcon } from "simple-icons"
 
 import { Container } from "@/components/layout/container"
@@ -7,16 +7,14 @@ import { Halftone } from "@/components/layout/halftone"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { componentHref, components, type ComponentId } from "@/content/platform"
-import { startPaths } from "@/content/landing"
-import { resources } from "@/content/structure"
 import { cn } from "@/lib/utils"
 
 /**
- * Everything in one platform (/lab/v3): a light overview that links out.
- * One grid: the six platform parts as cards (a short stage with a small
- * graphic, the name and one benefit line), and in the last column the
- * resources list (top row) and self-serve (bottom row), so every edge
- * lines up. Dark and light graphics form a checkerboard. Static.
+ * The platform parts the page doesn't cover elsewhere (/lab/v3): Simulations,
+ * QA, Channels and Tools & Integrations, as cards with a small graphic, the
+ * name and one benefit line, linking to their pages. Agents and Workflow have
+ * their own sections; self-serve and resources live in the closing CTA.
+ * Dark and light graphics alternate. Static.
  */
 
 const DARK = "dark graphite"
@@ -153,7 +151,7 @@ const LINE: Record<ComponentId, string> = {
   channels: "One agent on phone, WhatsApp, web and app.",
   tools: "Works inside your CRM, helpdesk and calendar.",
 }
-const DARK_IDS: ComponentId[] = ["agents", "simulations", "channels"]
+const DARK_IDS: ComponentId[] = ["simulations", "channels"]
 const FOCUS: Record<ComponentId, string> = {
   agents: "15% 20%",
   workflow: "85% 15%",
@@ -163,91 +161,36 @@ const FOCUS: Record<ComponentId, string> = {
   tools: "100% 50%",
 }
 
-/* Fine-line drawing in the outcome-card style: a dial whose arc runs a short
-   way round, from sign-up to live, with hour ticks around it. */
-const STROKE = { fill: "none", stroke: "currentColor", strokeWidth: 1.3, strokeLinecap: "round" as const }
-const DOTTED = { ...STROKE, strokeDasharray: "1.5 4", opacity: 0.55 }
-
-function SelfServeLine() {
-  const cx = 126
-  const cy = 60
-  const r = 34
-  /** A point on the dial, `deg` clockwise from 12 o'clock. */
-  const at = (deg: number, rr = r) => {
-    const a = ((deg - 90) * Math.PI) / 180
-    return [Math.round((cx + rr * Math.cos(a)) * 10) / 10, Math.round((cy + rr * Math.sin(a)) * 10) / 10] as const
-  }
-  const [sx, sy] = at(0)
-  const [ex, ey] = at(110)
-  return (
-    <svg viewBox="66 14 128 92" className="h-full max-h-28 w-full max-w-[12rem] text-foreground">
-      {/* The dial and its hour ticks */}
-      <circle cx={cx} cy={cy} r={r} {...DOTTED} />
-      {Array.from({ length: 12 }, (_, i) => {
-        if (i === 0) return null
-        const [x1, y1] = at(i * 30, r + 4)
-        const [x2, y2] = at(i * 30, r + 8)
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} {...STROKE} opacity={0.35} />
-      })}
-      {/* Sign-up to live: a short way round */}
-      <path d={`M${sx},${sy} A${r},${r} 0 0 1 ${ex},${ey}`} {...STROKE} strokeWidth={1.6} />
-      <circle cx={sx} cy={sy} r={4} className="fill-surface" stroke="currentColor" strokeWidth={1.3} />
-      <circle cx={ex} cy={ey} r={4} className="fill-foreground" />
-      <text x={sx - 10} y={sy + 3.5} fontSize={10} textAnchor="end" className="fill-ink-muted">
-        Sign up
-      </text>
-      <text x={ex + 10} y={ey + 4} fontSize={10} className="fill-foreground">
-        Live
-      </text>
-      <text x={cx} y={cy + 4} fontSize={11} textAnchor="middle" className="fill-ink-muted">
-        hours
-      </text>
-    </svg>
-  )
-}
-
-function SelfServe() {
-  const s = startPaths.paths[0]
-  return (
-    <Link href={s.cta.href} className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong">
-      <div aria-hidden className="relative isolate flex h-32 items-center justify-center overflow-hidden bg-surface p-4">
-        <SelfServeLine />
-      </div>
-      <div className="flex flex-1 flex-col gap-1 border-t border-line p-4">
-        <span className="flex items-center justify-between text-body font-medium">
-          Start self-serve
-          <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
-        </span>
-        <span className="text-small text-ink-secondary">Build, test and go live yourself, today.</span>
-      </div>
-    </Link>
-  )
-}
+/** The parts not covered by their own sections on this page (Agents and Workflow are). */
+const PARTS: ComponentId[] = ["simulations", "qa", "channels", "tools"]
 
 export function StartResources() {
   return (
     <Section id="sl-summary">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-          <h2 className="max-w-[44rem] text-h2 font-normal">{resources.title}</h2>
+          <div className="flex max-w-[44rem] flex-col gap-3">
+            <h2 className="text-h2 font-normal">Tested, scored and connected.</h2>
+            <p className="text-body text-ink-secondary">Everything around the agent, in the same platform.</p>
+          </div>
           <TextLink href="/platform">See the full platform</TextLink>
         </div>
-        {/* One grid: six parts on the left, resources and self-serve filling the last column's two rows */}
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
-          {components.map((c, i) => {
-            const G = GRAPHICS[c.id]
+        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {PARTS.map((id) => {
+            const c = components.find((x) => x.id === id)!
+            const G = GRAPHICS[id]
             return (
-              <li key={c.id} className={cn("flex min-w-0", i < 3 ? "lg:row-start-1" : "lg:row-start-2")}>
+              <li key={id} className="flex min-w-0">
                 <Link
-                  href={componentHref(c.id)}
+                  href={componentHref(id)}
                   className="group flex w-full min-w-0 flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong"
                 >
-                  <div aria-hidden className="relative isolate flex h-32 items-center justify-center overflow-hidden bg-surface p-4">
-                    <Halftone focus={FOCUS[c.id]} />
+                  <div aria-hidden className="relative isolate flex h-40 items-center justify-center overflow-hidden bg-surface p-4">
+                    <Halftone focus={FOCUS[id]} />
                     <div
                       className={cn(
-                        "origin-center scale-90 text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-0.5",
-                        DARK_IDS.includes(c.id) && DARK
+                        "text-[11.5px] leading-snug text-foreground transition-transform duration-300 ease-(--ease-out) group-hover:-translate-y-0.5",
+                        DARK_IDS.includes(id) && DARK
                       )}
                     >
                       <G />
@@ -258,37 +201,12 @@ export function StartResources() {
                       {c.name}
                       <ArrowRightIcon className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
                     </span>
-                    <span className="text-small text-ink-secondary">{LINE[c.id]}</span>
+                    <span className="text-small text-ink-secondary">{LINE[id]}</span>
                   </div>
                 </Link>
               </li>
             )
           })}
-
-          {/* Resources, as before */}
-          <li className="flex min-w-0 flex-col sm:col-span-2 lg:col-span-1 lg:col-start-4 lg:row-start-1 lg:pl-3">
-            <p className="pb-3 font-mono text-label text-ink-muted">Resources</p>
-            <ul className="flex flex-1 flex-col justify-between border-t border-line">
-              {resources.links
-                .filter((r) => r.label !== "Changelog")
-                .map((r) => (
-                  <li key={r.label} className="border-b border-line">
-                    <Link href={r.href} className="group flex items-center justify-between gap-4 py-3">
-                      <span className="flex flex-col">
-                        <span className="text-body">{r.label}</span>
-                        <span className="text-small text-ink-secondary">{r.body}</span>
-                      </span>
-                      <ArrowUpRightIcon className="size-4 text-ink-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </li>
-
-          {/* Self-serve */}
-          <li className="flex min-w-0 sm:col-span-2 lg:col-span-1 lg:col-start-4 lg:row-start-2">
-            <SelfServe />
-          </li>
         </ul>
       </Container>
     </Section>
