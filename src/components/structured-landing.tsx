@@ -2,13 +2,14 @@ import Link from "next/link"
 
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
+import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
+import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
 import { AnalyticsScreen } from "@/components/product/analytics-screen"
 import { OmnichannelScreen } from "@/components/product/omnichannel-screen"
 import { SimulationRunScreen } from "@/components/product/simulation-run-screen"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
-import { FeaturePanel } from "@/components/sections/feature-panel"
 import { FinalCta } from "@/components/sections/final-cta"
 import { HomeIntegrations, StartPaths } from "@/components/sections/landing"
 import { Logos } from "@/components/sections/logos"
@@ -37,17 +38,13 @@ const SCREENS = {
   "feature-analytics": (c: string) => <AnalyticsScreen className={c} />,
 } as const
 
-const BACKDROPS = {
-  "feature-design": "/art/backdrops/home-build.png",
-  "feature-channels": "/art/backdrops/home-deploy.png",
-  "feature-guardrails": "/art/backdrops/home-test.png",
-  "feature-analytics": "/art/backdrops/home-measure.png",
-} as const
+const CHROME = "rounded-md border border-black/10"
+
 
 /**
  * Structured homepage (/lab/hero-call):
  * hero · logos · use-case carousel · outcomes · stat ·
- * 4 platform features · summary + resources · integrations · templates ·
+ * platform features (2×2) · summary + resources · integrations · templates ·
  * get started (2 paths) · quotes · FAQ · closing CTA · footer (layout) · voice widget
  */
 /** A little more room between every section on this page (site default is 2.5rem → 4rem). */
@@ -88,21 +85,36 @@ export function StructuredLanding() {
       <OutcomeDiagrams />
       <StatHeadline />
 
-      {features.map((f, i) => (
-        <FeaturePanel
-          key={f.id}
-          id={f.id}
-          title={f.title}
-          body={f.body}
-          link={f.link.label}
-          linkHref={f.link.href}
-          visual={f.eyebrow}
-          backdrop={BACKDROPS[f.id]}
-          screen={SCREENS[f.id]}
-          media={i % 2 === 0 ? "end" : "start"}
-          airy
-        />
-      ))}
+      {/* 8-11 Platform features: a 2x2 grid of compact cards */}
+      <Section id="sl-features">
+        <Container>
+          <div className="flex max-w-[44rem] flex-col gap-3">
+            <h2 className="text-h2 font-normal">Build, deploy, test and measure in one place.</h2>
+            <p className="text-body text-ink-secondary">Everything an agent needs, from the first prompt to the thousandth call.</p>
+          </div>
+          <ul className="mt-10 grid gap-3 md:grid-cols-2">
+            {features.map((f) => (
+              <li key={f.id}>
+                <Panel className="flex h-full flex-col gap-5 p-5 sm:p-6">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="font-mono text-label text-ink-muted">{f.eyebrow}</span>
+                    <h3 className="text-h4 font-normal">{f.title}</h3>
+                    <p className="text-small text-ink-secondary">{f.body}</p>
+                  </div>
+                  {/* A cropped slice of the screen, fading into the card */}
+                  <div aria-hidden className="relative h-52 overflow-hidden rounded-md">
+                    {SCREENS[f.id](`absolute inset-x-0 top-0 h-80 ${CHROME}`)}
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-surface to-transparent" />
+                  </div>
+                  <TextLink href={f.link.href} className="mt-auto">
+                    {f.link.label}
+                  </TextLink>
+                </Panel>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </Section>
 
       <PlatformSummary />
       <HomeIntegrations />

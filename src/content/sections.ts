@@ -64,6 +64,7 @@ export type SectionId =
   | "sl-templates"
   | "sl-stories"
   | "sl-faq"
+  | "sl-features"
   | "enterprise-hero"
   | "enterprise-steps"
   | "enterprise-timeline"
@@ -133,6 +134,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "sl-templates", name: "Use-case templates", status: "draft" },
   { id: "sl-stories", name: "Customer stories", status: "draft" },
   { id: "sl-faq", name: "FAQ", status: "draft" },
+  { id: "sl-features", name: "Platform features (2×2)", status: "draft" },
   { id: "enterprise-hero", name: "Enterprise: hero", status: "draft" },
   { id: "enterprise-steps", name: "Enterprise: build steps", status: "draft" },
   { id: "enterprise-timeline", name: "Enterprise: Gantt timeline", status: "draft" },
