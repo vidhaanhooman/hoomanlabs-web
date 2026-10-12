@@ -50,9 +50,15 @@ const BACKDROPS = {
  * 4 platform features · summary + resources · integrations · templates ·
  * get started (2 paths) · quotes · FAQ · closing CTA · footer (layout) · voice widget
  */
+/** A little more room between every section on this page (site default is 2.5rem → 4rem). */
+const ROOMY = {
+  "--section-gap": "clamp(3.25rem, 2.25rem + 3vw, 5rem)",
+  "--section-pad": "calc(var(--section-gap) / 2)",
+} as React.CSSProperties
+
 export function StructuredLanding() {
   return (
-    <>
+    <div style={ROOMY}>
       {/* 1 Hero */}
       <Section id="hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
         <Container>
@@ -106,6 +112,6 @@ export function StructuredLanding() {
       <HomeFaq />
       <FinalCta />
       <VoiceWidget />
-    </>
+    </div>
   )
 }
