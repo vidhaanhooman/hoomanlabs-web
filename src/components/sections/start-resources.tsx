@@ -120,13 +120,21 @@ export function StartResources() {
             <Panel className="flex w-full flex-col p-6 sm:p-7">
               <span className="font-mono text-label text-ink-muted">Resources</span>
               <p className="pt-1 text-body font-medium">For developers</p>
-              <ul className="mt-4 flex flex-1 flex-col">
+              <p className="pt-1.5 text-small text-ink-secondary">
+                Build on the platform from your own code: start calls, manage agents and read results through the API, or work from your editor over MCP.
+              </p>
+              <div aria-hidden className="mt-4 rounded-md border border-line bg-background px-3 py-2.5 font-mono text-[11.5px] leading-relaxed text-ink-secondary">
+                <span className="text-[oklch(0.55_0.13_150)]">POST</span> /v1/calls
+                <br />
+                {"{ "}&quot;agent&quot;: &quot;billing-v5&quot;, &quot;to&quot;: &quot;+44…&quot;{" }"}
+              </div>
+              <ul className="mt-5 flex flex-col">
                 {resources.links
                   .filter((r) => r.label !== "Changelog")
                   .map((r, i) => {
                     const Ico = [BookOpenTextIcon, BracketsCurlyIcon, TerminalWindowIcon][i] ?? BookOpenTextIcon
                     return (
-                      <li key={r.label} className="flex border-t border-line first:border-0 lg:flex-1">
+                      <li key={r.label} className="flex border-t border-line first:border-0">
                         <Link href={r.href} className="group flex w-full items-center gap-3 py-3.5">
                           <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-background text-ink-secondary transition-colors group-hover:text-foreground">
                             <Ico className="size-4" />
@@ -141,7 +149,7 @@ export function StartResources() {
                     )
                   })}
               </ul>
-              <Link href={startPaths.paths[0].cta.href} className="group flex items-center justify-between gap-3 border-t border-line pt-4 text-small">
+              <Link href={startPaths.paths[0].cta.href} className="group mt-auto flex items-center justify-between gap-3 border-t border-line pt-4 text-small">
                 <span className="flex flex-col">
                   <span className="text-body font-medium">Start self-serve</span>
                   <span className="text-ink-secondary">Build, test and go live yourself.</span>
