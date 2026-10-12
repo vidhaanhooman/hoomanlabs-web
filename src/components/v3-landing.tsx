@@ -5,7 +5,8 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
-import { AgentBuilder, WorkflowCanvas } from "@/components/product/flow-canvas"
+import { WorkflowCanvas } from "@/components/product/flow-canvas"
+import { PromptEditor } from "@/components/product/prompt-editor"
 import { FinalCta } from "@/components/sections/final-cta"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
@@ -110,11 +111,11 @@ export function V3Landing() {
         <Container>
           <Header
             title="Write the prompt. Get the agent."
-            body="Describe the job in plain language, add conditions inline, and the agent's flow, voice and tools take shape as you write."
+            body="Describe the job in plain language. Pull in what you already know with variables, call tools by name, and branch with conditions written right inside the prompt."
             aside={<TextLink href="/platform/agents">Explore Agents</TextLink>}
           />
-          <div aria-hidden className="mt-10 overflow-hidden rounded-md border border-black/10">
-            <AgentBuilder className="md:h-[30rem]" />
+          <div className="mt-10 overflow-hidden rounded-md border border-black/10 shadow-[0_30px_80px_-50px_oklch(0.2_0.02_260/0.6)]">
+            <PromptEditor className="h-[34rem] md:h-[38rem]" />
           </div>
         </Container>
       </Section>
