@@ -3,6 +3,7 @@ import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { AgentAnatomy } from "@/components/product/agent-anatomy"
 import { AgentBuilder } from "@/components/product/flow-canvas"
 import { FinalCta } from "@/components/sections/final-cta"
 import { ManageAgents } from "@/components/sections/manage-agents"
@@ -48,6 +49,18 @@ export function AgentsPage() {
           </div>
           <div className="reveal-blur mt-12 md:mt-16" style={{ "--i": 4 } as React.CSSProperties}>
             <AgentBuilder className={`md:h-[34rem] ${CHROME}`} />
+          </div>
+        </Container>
+      </Section>
+
+      <Section id="agents-anatomy">
+        <Container>
+          <div className="flex max-w-[44rem] flex-col gap-3">
+            <h2 className="text-h2 font-normal">Inside the prompt.</h2>
+            <p className="text-body text-ink-secondary">Context before the first ring, conditions in CEL, answers from your documents and tools called by name, all in one place.</p>
+          </div>
+          <div className="mt-10">
+            <AgentAnatomy />
           </div>
         </Container>
       </Section>

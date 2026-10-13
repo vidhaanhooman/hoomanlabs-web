@@ -231,6 +231,7 @@ export function WorkflowCanvas({
   marks,
   markSide = "right",
   focus,
+  still = false,
 }: {
   className?: string
   vertical?: boolean
@@ -240,8 +241,11 @@ export function WorkflowCanvas({
   markSide?: "left" | "right"
   /** Spotlight: only these nodes stay bright. */
   focus?: string[] | null
+  /** Show the finished run, with no animation. */
+  still?: boolean
 }) {
-  const { ref, step } = useSteps(WF_STATUS.length + 1, 1200)
+  const { ref, step: playing } = useSteps(WF_STATUS.length + 1, 1200)
+  const step = still ? WF_STATUS.length - 1 : playing
   const stage = Math.min(step, WF_STATUS.length - 1)
   const W = vertical ? WFV_W : WF_W
   const nodes = vertical ? WFV_NODES : WF_NODES

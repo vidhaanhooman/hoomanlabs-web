@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Fragment } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
@@ -6,6 +7,7 @@ import { Panel } from "@/components/layout/panel"
 import { Placeholder } from "@/components/layout/placeholder"
 import { Section } from "@/components/layout/section"
 import { VoiceFlow } from "@/components/product/voice-flow"
+import { WorkflowAnatomy } from "@/components/product/workflow-anatomy"
 import { Channels } from "@/components/sections/channels"
 import { FinalCta } from "@/components/sections/final-cta"
 import { ProductResources } from "@/components/sections/product-resources"
@@ -81,7 +83,22 @@ export function PlatformPage() {
       <UseCases />
 
       {stages.map((s, i) => (
-        <ProductStageList key={s.id} stage={s} start={starts[i]} productName={platform.name} />
+        <Fragment key={s.id}>
+          <ProductStageList stage={s} start={starts[i]} productName={platform.name} />
+          {s.id === workflow.id && (
+            <Section id="platform-workflow-anatomy">
+              <Container>
+                <div className="flex max-w-[44rem] flex-col gap-3">
+                  <h2 className="text-h2 font-normal">One run, step by step.</h2>
+                  <p className="text-body text-ink-secondary">What happens after a call ends: triggers, branches, actions and the results written back.</p>
+                </div>
+                <div className="mt-10">
+                  <WorkflowAnatomy />
+                </div>
+              </Container>
+            </Section>
+          )}
+        </Fragment>
       ))}
       <Channels start={channelsStart} productName={platform.name} />
       <ToolsIntegrations start={toolsStart} productName={platform.name} />

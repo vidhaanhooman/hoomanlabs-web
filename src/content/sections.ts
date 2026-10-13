@@ -77,6 +77,8 @@ export type SectionId =
   | "v3-agent"
   | "v3-workflow"
   | "v3-talk"
+  | "agents-anatomy"
+  | "platform-workflow-anatomy"
 
 export const sections: { id: SectionId; name: string; status: SectionStatus }[] = [
   { id: "hero", name: "Hero", status: "draft" },
@@ -152,6 +154,8 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "v3-deployments", name: "v3: deployments + enterprise", status: "draft" },
   { id: "v3-agent", name: "v3: how it works (3 steps)", status: "draft" },
   { id: "v3-workflow", name: "v3: workflow", status: "draft" },
+  { id: "agents-anatomy", name: "Agents: annotated prompt editor", status: "draft" },
+  { id: "platform-workflow-anatomy", name: "Platform: annotated workflow", status: "draft" },
   { id: "v3-talk", name: "v3: talk to an agent", status: "draft" },
 ]
 
