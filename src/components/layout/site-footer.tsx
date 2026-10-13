@@ -4,7 +4,7 @@ import { Container } from "@/components/layout/container"
 import { FooterWordmark } from "@/components/layout/footer-wordmark"
 import { Wordmark } from "@/components/layout/wordmark"
 import { footer } from "@/content/draft"
-import { componentHref, components } from "@/content/platform"
+import { menuHref, platformFeatured, platformMenu } from "@/content/platform"
 
 const LINK = "text-small text-ink-muted transition-colors duration-150 hover:text-foreground"
 
@@ -17,7 +17,7 @@ export function SiteFooter() {
   const columns = [
     {
       title: "Platform",
-      links: components.map((c) => ({ label: c.name, href: componentHref(c.id) })),
+      links: [...platformMenu.flatMap((g) => g.pages), platformFeatured].map((p) => ({ label: p.name, href: menuHref(p) })),
     },
     ...footer.columns,
   ]

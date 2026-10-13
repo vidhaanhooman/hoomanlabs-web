@@ -1,19 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
 import Image from "next/image"
-import { motion } from "motion/react"
-import {
-  ArrowRightIcon,
-  ChatsCircleIcon,
-  FlaskIcon,
-  FlowArrowIcon,
-  PlugsConnectedIcon,
-  RobotIcon,
-  ShieldCheckIcon,
-  type Icon,
-} from "@phosphor-icons/react"
+import { ArrowRightIcon } from "@phosphor-icons/react"
 
 import {
   NavigationMenu,
@@ -24,30 +13,19 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { nav } from "@/content/draft"
-import { componentHref, components, menuMedia, type ComponentId } from "@/content/platform"
+import { menuHref, menuMedia, platformFeatured, platformMenu } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
 const ITEM =
   "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
 
-const ICONS: Record<ComponentId, Icon> = {
-  agents: RobotIcon,
-  workflow: FlowArrowIcon,
-  simulations: FlaskIcon,
-  qa: ShieldCheckIcon,
-  channels: ChatsCircleIcon,
-  tools: PlugsConnectedIcon,
-}
-
-const GROUPS = ["Build & test", "Connect"] as const
-
 /**
- * Desktop nav. "Platform" opens the platform's components in two groups
- * (Build & test, Connect), each with icon, name and one line, plus a link to
- * the overview. A highlight slides between items.
+ * Desktop nav. "Platform" opens the menu from the content sheet: the
+ * overview link on top, then three groups (Build, Reach, Trust), each with
+ * one line and its pages as chips, and the featured page (Human + AI) with
+ * the image slot on the right.
  */
 export function MainNav() {
-  const [hovered, setHovered] = useState<ComponentId | null>(null)
 
   return (
     <NavigationMenu aria-label="Main" className="hidden flex-1 justify-start lg:flex">
@@ -57,60 +35,50 @@ export function MainNav() {
             Platform
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid w-[44rem] grid-cols-2 gap-2 p-2" onMouseLeave={() => setHovered(null)}>
-              {GROUPS.map((group) => (
-                <div key={group} className="flex flex-col">
-                  <p className="px-3 pt-2 pb-1 text-label text-ink-muted">{group}</p>
-                  <ul className="flex flex-col gap-0.5">
-                    {components
-                      .filter((c) => c.group === group)
-                      .map((c) => {
-                        const ItemIcon = ICONS[c.id]
-                        return (
-                          <li key={c.id} className="relative">
-                            {hovered === c.id && (
-                              <motion.span
-                                layoutId="product-menu-highlight"
-                                aria-hidden
-                                className="absolute inset-0 rounded-md bg-secondary"
-                                transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-                              />
-                            )}
-                            <NavigationMenuLink
-                              render={<Link href={componentHref(c.id)} />}
-                              onMouseEnter={() => setHovered(c.id)}
-                              onFocus={() => setHovered(c.id)}
-                              className="relative z-10 h-full items-start gap-3 rounded-md px-3 py-2.5 hover:bg-transparent focus:bg-transparent data-active:bg-transparent"
-                            >
-                              <span
-                                className={cn(
-                                  "grid size-8 shrink-0 place-items-center rounded-md border border-line bg-background transition-colors duration-150",
-                                  hovered === c.id ? "text-foreground" : "text-ink-secondary"
-                                )}
-                              >
-                                <ItemIcon className="size-4" aria-hidden />
-                              </span>
-                              <span className="flex flex-col gap-0.5">
-                                <span className="text-small font-medium text-foreground">{c.name}</span>
-                                <span className="text-small leading-snug text-ink-muted">{c.summary}</span>
-                              </span>
-                            </NavigationMenuLink>
-                          </li>
-                        )
-                      })}
-                  </ul>
-                  {group === "Connect" && <MenuMediaSlot />}
-                  {group === "Connect" && (
-                    <NavigationMenuLink
-                      render={<Link href="/platform" />}
-                      className="mt-auto flex-row items-center gap-1.5 rounded-md px-3 py-2.5 text-small text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent"
-                    >
-                      Platform overview
-                      <ArrowRightIcon className="size-3.5" aria-hidden />
-                    </NavigationMenuLink>
-                  )}
+            <div className="flex w-[min(68rem,calc(100vw-3rem))] flex-col p-6">
+              <NavigationMenuLink
+                render={<Link href="/platform" />}
+                className="group/ov w-fit flex-row items-center gap-2 p-0 text-h4 font-normal text-foreground hover:bg-transparent focus:bg-transparent"
+              >
+                Platform overview
+                <ArrowRightIcon className="size-4 transition-transform group-hover/ov:translate-x-0.5" aria-hidden />
+              </NavigationMenuLink>
+
+              <div className="mt-5 grid grid-cols-[1fr_1fr_1fr_17rem] border-t border-line-strong pt-6">
+                {platformMenu.map(({ group, line, pages }) => (
+                  <div key={group} className="flex flex-col gap-1 pr-6">
+                    <p className="text-body text-foreground">{group}</p>
+                    <p className="text-small text-ink-muted">{line}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {pages.map((p) => (
+                        <li key={p.id}>
+                          <NavigationMenuLink
+                            render={<Link href={menuHref(p)} title={p.blurb} />}
+                            className="h-8 flex-row items-center rounded-full border border-line px-3 py-0 text-small text-foreground transition-colors hover:border-line-strong hover:bg-secondary focus:bg-secondary"
+                          >
+                            {p.name}
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+
+                {/* Featured: Human + AI, with the image slot */}
+                <div className="border-l border-line pl-6">
+                  <NavigationMenuLink
+                    render={<Link href={menuHref(platformFeatured)} />}
+                    className="group/feat flex-col items-stretch gap-2 rounded-md p-0 hover:bg-transparent focus:bg-transparent"
+                  >
+                    <MenuMediaSlot />
+                    <span className="flex items-center justify-between gap-2 text-body text-foreground">
+                      {platformFeatured.name}
+                      <ArrowRightIcon className="size-4 transition-transform group-hover/feat:translate-x-0.5" aria-hidden />
+                    </span>
+                    <span className="text-small leading-snug text-ink-muted">{platformFeatured.blurb}</span>
+                  </NavigationMenuLink>
                 </div>
-              ))}
+              </div>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -129,7 +97,7 @@ export function MainNav() {
 
 /** Image or video slot in the menu; a placeholder until `menuMedia` is set. */
 function MenuMediaSlot() {
-  const frame = "relative mx-3 mt-3 aspect-video overflow-hidden rounded-md border border-line bg-surface"
+  const frame = "relative aspect-video overflow-hidden rounded-md border border-line bg-surface"
   if (!menuMedia)
     return (
       <div className={cn(frame, "grid place-items-center text-label text-ink-muted")} role="img" aria-label="Placeholder: image or video">

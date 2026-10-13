@@ -44,6 +44,69 @@ export type MenuMedia =
 
 export const menuMedia: MenuMedia | null = null
 
+/**
+ * The Platform menu (nav, mobile nav, footer), from the "Platform pages" tab
+ * of the website content sheet: three columns (Build, Reach, Trust) and one
+ * featured page. `url` is the page's planned address; until that page exists
+ * the link falls back to the closest section on /platform (see `menuHref`).
+ */
+export type MenuPageId =
+  | "agents"
+  | "voice"
+  | "workflows"
+  | "channels"
+  | "campaigns"
+  | "integrations"
+  | "testing"
+  | "quality"
+  | "security"
+  | "human-ai"
+
+export type MenuPage = { id: MenuPageId; name: string; blurb: string; url: string; fallback: string }
+
+export const platformMenu: { group: "Build" | "Reach" | "Trust"; line: string; pages: MenuPage[] }[] = [
+  {
+    group: "Build",
+    line: "Create your Hooman and how it sounds",
+    pages: [
+      { id: "agents", name: "Agents", blurb: "Follows your process, uses your data.", url: "/platform/agents", fallback: "/platform#product-agents" },
+      { id: "voice", name: "Voice", blurb: "Sounds human, in your customers' language.", url: "/platform/voice", fallback: "/platform#product-agents" },
+      { id: "workflows", name: "Workflows", blurb: "Finishes the work after every conversation.", url: "/platform/workflows", fallback: "/platform#product-workflow" },
+    ],
+  },
+  {
+    group: "Reach",
+    line: "Meet customers and connect your systems",
+    pages: [
+      { id: "channels", name: "Channels", blurb: "Phone, web and app. WhatsApp soon.", url: "/platform/channels", fallback: "/platform#product-channels" },
+      { id: "campaigns", name: "Campaigns", blurb: "Thousands of calls, done right.", url: "/platform/campaigns", fallback: "/platform#product-workflow" },
+      { id: "integrations", name: "Integrations & API", blurb: "Your CRM, data and tools, connected.", url: "/platform/integrations", fallback: "/platform#product-tools" },
+    ],
+  },
+  {
+    group: "Trust",
+    line: "Know it works, on every conversation",
+    pages: [
+      { id: "testing", name: "Testing", blurb: "Know it's ready before a customer hears it.", url: "/platform/testing", fallback: "/platform#product-simulations" },
+      { id: "quality", name: "Quality & Insights", blurb: "See, score and fix every conversation.", url: "/platform/quality", fallback: "/platform#product-qa" },
+      { id: "security", name: "Security & Reliability", blurb: "Always on, compliant, in your control.", url: "/platform/security", fallback: "/platform" },
+    ],
+  },
+]
+
+/** The featured page, shown with the menu's image slot. */
+export const platformFeatured: MenuPage = {
+  id: "human-ai",
+  name: "Human + AI",
+  blurb: "One platform for your AI and human team.",
+  url: "/platform/human-ai",
+  fallback: "/platform",
+}
+
+/** Menu pages that exist; add an id here when its page ships. */
+const BUILT = new Set<MenuPageId>(["agents", "voice"])
+export const menuHref = (p: MenuPage) => (BUILT.has(p.id) ? p.url : p.fallback)
+
 /** Components with their own page; the rest link to their section on /platform. */
 const PAGES: Partial<Record<ComponentId, string>> = { agents: "/platform/agents" }
 export const componentHref = (id: ComponentId) => PAGES[id] ?? `/platform#product-${id}`
