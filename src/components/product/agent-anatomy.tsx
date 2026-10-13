@@ -8,6 +8,7 @@ import {
   BookOpenTextIcon,
   CheckIcon,
   GitBranchIcon,
+  IdentificationBadgeIcon,
   LightningIcon,
   PlayIcon,
   SpeakerHighIcon,
@@ -18,7 +19,7 @@ import {
 import { cn } from "@/lib/utils"
 
 /**
- * Everything an agent needs, explained on one screen (/lab/v3): a large,
+ * Everything an agent needs, explained on one screen (/platform/agents): a large,
  * static prompt editor with a small numbered marker right beside each part
  * that matters, and a callout card for each in one column on the right, joined
  * to its marker by a hairline that leaves the editor level with the marker. Hovering (or
@@ -32,12 +33,13 @@ import { cn } from "@/lib/utils"
 
 type Mark = { n: number; side: "left" | "right"; title: string; body: string; icon: Icon }
 
+// Lines from the website content sheet ("Hoomanlabs" tab), with plain SaaS names.
 const MARKS: Mark[] = [
-  { n: 1, side: "right", title: "Pre-call context", body: "Filled in before the first ring.", icon: TrayArrowDownIcon },
-  { n: 2, side: "right", title: "Conditions", body: "Branch the call in CEL, inline.", icon: GitBranchIcon },
-  { n: 3, side: "right", title: "Knowledge base", body: "Answers cited from your documents.", icon: BookOpenTextIcon },
-  { n: 4, side: "right", title: "Tools", body: "Payments, tickets and messages.", icon: LightningIcon },
-  { n: 6, side: "right", title: "Voice & languages", body: "en-GB voice, 30 languages.", icon: SpeakerHighIcon },
+  { n: 1, side: "right", title: "Instructions", body: "Write the job like you would for a new hire.", icon: IdentificationBadgeIcon },
+  { n: 2, side: "right", title: "Pre-call context", body: "Knows who is calling before it says hello.", icon: TrayArrowDownIcon },
+  { n: 3, side: "right", title: "Knowledge base", body: "Answers from your SOPs, policies and FAQs.", icon: BookOpenTextIcon },
+  { n: 4, side: "right", title: "Conditional logic", body: "One prompt that adapts per customer or case.", icon: GitBranchIcon },
+  { n: 5, side: "right", title: "Tools", body: "Looks up, books, updates and pays mid-call.", icon: LightningIcon },
 ]
 
 /* ------------------------------------------------------------ editor */
@@ -68,12 +70,11 @@ function Editor({ focus }: { focus: number | null }) {
           <span className="rounded-[5px] bg-(--ui-bg) px-3 py-1 shadow-xs">Preview</span>
           <span className="px-3 py-1 text-(--ui-muted)">Text</span>
         </div>
-        <span className={cn("ml-auto flex items-center text-[12px]", dim(6))}>
+        <span className={cn("ml-auto flex items-center text-[12px]", dim())}>
           <span className="flex items-center gap-1.5 rounded-full border border-(--ui-line) bg-(--ui-raised) px-2.5 py-1">
             <SpeakerHighIcon className="size-3.5 text-(--ui-muted)" aria-hidden />
             Ria · en-GB
           </span>
-          <Marker n={6} />
         </span>
         <span className={cn("flex items-center gap-1.5 text-[12px] text-(--ui-muted)", dim())}>
           <PlayIcon className="size-3" aria-hidden />
@@ -83,14 +84,17 @@ function Editor({ focus }: { focus: number | null }) {
 
       {/* Prompt */}
       <div className="flex flex-col gap-2.5 px-8 py-6 @3xl:px-12">
-        <div className={cn("flex flex-col gap-2.5", dim())}>
-          <h4 className="font-medium">Identity &amp; role</h4>
+        <div className={cn("flex flex-col gap-2.5", dim(1))}>
+          <h4 className="font-medium">
+            Identity &amp; role
+            <Marker n={1} />
+          </h4>
           <p className="text-(--ui-text)/85">
             You are Ria, a virtual assistant answering billing calls for Halden Energy. Resolve the reason for the call in one go: explain a charge, take a payment, agree a plan or raise a refund. Warm, clear and brief.
           </p>
         </div>
 
-        <div className={cn("flex flex-col gap-2.5 pt-2", dim(1))}>
+        <div className={cn("flex flex-col gap-2.5 pt-2", dim(2))}>
           <h4 className="font-medium">What you know at the start</h4>
           <ul className="flex list-disc flex-col gap-1 pl-5 text-(--ui-text)/85 marker:text-(--ui-muted)">
             <li>
@@ -98,7 +102,7 @@ function Editor({ focus }: { focus: number | null }) {
             </li>
             <li>
               Their open balance is <Var>context.balance</Var>
-              <Marker n={1} />, due <Var>context.dueDate</Var>
+              <Marker n={2} />, due <Var>context.dueDate</Var>
             </li>
           </ul>
         </div>
@@ -116,14 +120,14 @@ function Editor({ focus }: { focus: number | null }) {
           </li>
           <li className={dim()}>Otherwise, follow the instructions for this account&rsquo;s status:</li>
         </ol>
-        <div className={cn("relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dim(2))}>
+        <div className={cn("relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dim(4))}>
           <div>
             <span className={op}>{"{{ "}</span>
             <span className={vr}>context.balance</span>
             <span className={op}>{" > 0 && !"}</span>
             <span className={vr}>context.promiseToPay</span>
             <span className={op}> ?</span>
-            <Marker n={2} />
+            <Marker n={4} />
           </div>
           <div className="pl-4 text-(--ui-text)/85">
             &quot;&quot;&quot;Offer to take the payment now. If they can&rsquo;t pay in full, offer a plan of up to three instalments.&quot;&quot;&quot;
@@ -137,9 +141,9 @@ function Editor({ focus }: { focus: number | null }) {
           </span>
         </div>
         <ol start={4} className="flex list-decimal flex-col gap-1.5 pl-5 text-(--ui-text)/85 marker:text-(--ui-muted)">
-          <li className={dim(4)}>
+          <li className={dim(5)}>
             To take a payment, use <span className="rounded-[3px] font-mono text-[0.92em] text-[oklch(0.82_0.12_80)]">[take_payment]</span>
-            <Marker n={4} /> and read the amount back first.
+            <Marker n={5} /> and read the amount back first.
           </li>
         </ol>
 

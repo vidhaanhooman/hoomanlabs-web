@@ -93,7 +93,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const dimUnless = (focus: string, region: string) =>
   cn("transition-opacity duration-300 ease-out", focus !== "all" && focus !== region && "opacity-25")
 
-function AgentBuilderScreen({ className, focus }: { className: string; focus: string }) {
+export function AgentBuilderScreen({ className, focus }: { className: string; focus: string }) {
   return (
     <div aria-hidden className={cn("ui-dark @container flex overflow-hidden text-[11px] leading-[1.55]", className)}>
       {/* Icon rail */}
@@ -289,7 +289,7 @@ export function HowItWorksV3() {
           { id: "playbook", title: "Runs your playbook", body: "You write your process once in plain language. Each rule becomes a condition the agent follows on every call." },
         ]}
         link="Explore Agents"
-        linkHref="/platform/agents#agents-anatomy"
+        linkHref="/platform/agents"
         screen={(c, f) => <AgentBuilderScreen className={c} focus={f} />}
       />
       <ProductPanel

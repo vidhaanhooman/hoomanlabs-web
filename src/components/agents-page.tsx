@@ -1,74 +1,88 @@
-import Link from "next/link"
+import {
+  ClockCounterClockwiseIcon,
+  ClockIcon,
+  DatabaseIcon,
+  GitBranchIcon,
+  IdentificationCardIcon,
+  MegaphoneIcon,
+  NotePencilIcon,
+  PhoneCallIcon,
+  PhoneTransferIcon,
+  RobotIcon,
+  ShieldCheckIcon,
+  SlidersHorizontalIcon,
+  UsersThreeIcon,
+} from "@phosphor-icons/react/dist/ssr"
+import { siGooglecalendar, siZendesk, siZoho } from "simple-icons"
 
-import { buttonVariants } from "@/components/ui/button"
-import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
+import { FeatureGrid, FeaturePanel, IntegrationsStrip, PageHero, Pillars, Proof, Showcase, TrustRow, WorksWith } from "@/components/product-page/blocks"
+import { Faq } from "@/components/product-page/faq"
 import { AgentAnatomy } from "@/components/product/agent-anatomy"
-import { AgentBuilder } from "@/components/product/flow-canvas"
+import { FlowsDiagram, LiveCallScreen } from "@/components/product/agent-visuals"
+import { AgentBuilderScreen } from "@/components/sections/how-it-works-v3"
 import { FinalCta } from "@/components/sections/final-cta"
-import { ManageAgents } from "@/components/sections/manage-agents"
-import { ProductStageList } from "@/components/sections/product-stage-list"
-import { VoiceSamples } from "@/components/sections/voice-samples"
-import { ctas } from "@/content/draft"
-import { agents } from "@/content/platform"
-
-const CHROME = "rounded-md border border-black/10 shadow-[0_30px_80px_-30px_oklch(0.25_0_0/0.5)]"
+import { Logos } from "@/components/sections/logos"
+import { agentsPage as c } from "@/content/pages/agents"
 
 /**
- * /platform/agents: the builder playing a live call, what you control (01-05),
- * how agents behave on a real line (audio A/B), managing them from the
- * console or MCP, then the closing CTA.
+ * /platform/agents, in the product-page structure: hero with the demo CTA,
+ * customer logos, the idea in three parts, three deep-dives (the pinned
+ * prompt, flows, tools mid-call), a compact grid, proof, integrations,
+ * enterprise readiness, FAQ, neighbouring pages and the closing CTA.
  */
+
+const PILLAR_ICONS = [NotePencilIcon, DatabaseIcon, SlidersHorizontalIcon]
+const GRID_ICONS = [MegaphoneIcon, ClockCounterClockwiseIcon, IdentificationCardIcon, PhoneTransferIcon, ClockIcon, GitBranchIcon, PhoneCallIcon, RobotIcon]
+const TRUST_ICONS = [ShieldCheckIcon, UsersThreeIcon, PhoneCallIcon, IdentificationCardIcon]
+
 export function AgentsPage() {
   return (
     <>
-      <Section id="agents-hero" spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
-        <Container>
-          <p className="reveal-blur text-small text-ink-muted">
-            <Link href="/platform" className="hover:text-foreground">
-              Platform
-            </Link>{" "}
-            / Agents
-          </p>
-          <h1 className="reveal-blur mt-3 max-w-[24ch] text-display font-normal" style={{ "--i": 1 } as React.CSSProperties}>
-            {agents.headline}
-          </h1>
-          <p
-            className="reveal-blur mt-5 max-w-[56ch] text-body-lg text-ink-secondary"
-            style={{ "--i": 2 } as React.CSSProperties}
-          >
-            {agents.body}
-          </p>
-          <div className="reveal-blur mt-8 flex flex-wrap gap-2" style={{ "--i": 3 } as React.CSSProperties}>
-            <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
-              {ctas.demo.label}
-            </Link>
-            <Link href="/#listen" className={buttonVariants({ variant: "secondary" })}>
-              {ctas.talk.label}
-            </Link>
-          </div>
-          <div className="reveal-blur mt-12 md:mt-16" style={{ "--i": 4 } as React.CSSProperties}>
-            <AgentBuilder className={`md:h-[34rem] ${CHROME}`} />
-          </div>
-        </Container>
-      </Section>
+      <PageHero
+        id="agents-hero"
+        crumb={c.crumb}
+        title={c.title}
+        line={c.line}
+        cta
+        screen={(cls) => <AgentBuilderScreen className={cls} focus="all" />}
+      />
+      <Logos label="Trusted by 100+ teams" />
+      <Pillars id="agents-pillars" items={c.pillars.map((p, i) => ({ ...p, icon: PILLAR_ICONS[i] }))} />
 
-      <Section id="agents-anatomy">
-        <Container>
-          <div className="flex max-w-[44rem] flex-col gap-3">
-            <h2 className="text-h2 font-normal">Inside the prompt.</h2>
-            <p className="text-body text-ink-secondary">Context before the first ring, conditions in CEL, answers from your documents and tools called by name, all in one place.</p>
+      <Showcase id="agents-anatomy" title={c.prompt.title} line={c.prompt.line}>
+        <AgentAnatomy />
+      </Showcase>
+      <FeaturePanel
+        id="agents-flows"
+        q={c.flows}
+        screen={() => (
+          <div className="absolute inset-0 flex items-center bg-[radial-gradient(circle,var(--line-strong)_1px,transparent_1px)] [background-size:14px_14px] p-5 sm:p-8">
+            <FlowsDiagram />
           </div>
-          <div className="mt-10">
-            <AgentAnatomy />
-          </div>
-        </Container>
-      </Section>
+        )}
+      />
+      <FeaturePanel id="agents-tools" q={c.tools} flip screen={(cls) => <LiveCallScreen className={cls} />} />
 
-      <ProductStageList stage={agents} start={1} productName="Agents" />
-      <VoiceSamples />
-      <ManageAgents />
-      <FinalCta id="agents-cta" title="Build your first agent with us." />
+      <FeatureGrid id="agents-grid" title={c.grid.title} items={c.grid.items.map((f, i) => ({ ...f, icon: GRID_ICONS[i] }))} />
+      <Proof id="agents-proof" {...c.proof} placeholder />
+      <IntegrationsStrip
+        id="agents-integrations"
+        title={c.integrations.title}
+        line={c.integrations.line}
+        logos={[
+          { name: "Zoho CRM", icon: siZoho },
+          { name: "Freshdesk" },
+          { name: "Zendesk", icon: siZendesk },
+          { name: "Google Calendar", icon: siGooglecalendar },
+          { name: "Your APIs" },
+          { name: "MCP" },
+        ]}
+        more="integrations"
+      />
+      <TrustRow id="agents-enterprise" title={c.enterprise.title} items={c.enterprise.items.map((t, i) => ({ ...t, icon: TRUST_ICONS[i] }))} more="security" />
+      <Faq id="agents-faq" items={c.faq} />
+      <WorksWith id="agents-related" pages={c.related} />
+      <FinalCta id="agents-cta" title="Build your first Hooman with us." />
     </>
   )
 }

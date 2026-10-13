@@ -79,6 +79,31 @@ export type SectionId =
   | "v3-talk"
   | "agents-anatomy"
   | "platform-workflow-anatomy"
+  // Agents page: one section per question (from the content sheet)
+  | "agents-pillars"
+  | "agents-flows"
+  | "agents-tools"
+  | "agents-grid"
+  | "agents-proof"
+  | "agents-integrations"
+  | "agents-enterprise"
+  | "agents-faq"
+  | "voice-hero"
+  | "voice-pillars"
+  | "voice-sound"
+  | "voice-turns"
+  | "voice-languages"
+  | "voice-wall"
+  | "voice-speed"
+  | "voice-hear"
+  | "voice-grid"
+  | "voice-providers"
+  | "voice-reliability"
+  | "voice-proof"
+  | "voice-faq"
+  | "voice-related"
+  | "voice-cta"
+  | "agents-related"
 
 export const sections: { id: SectionId; name: string; status: SectionStatus }[] = [
   { id: "hero", name: "Hero", status: "draft" },
@@ -157,6 +182,30 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "agents-anatomy", name: "Agents: annotated prompt editor", status: "draft" },
   { id: "platform-workflow-anatomy", name: "Platform: annotated workflow", status: "draft" },
   { id: "v3-talk", name: "v3: talk to an agent", status: "draft" },
+  { id: "agents-pillars", name: "Agents: three parts", status: "draft" },
+  { id: "agents-flows", name: "Agents: flows deep-dive", status: "draft" },
+  { id: "agents-tools", name: "Agents: tools deep-dive", status: "draft" },
+  { id: "agents-grid", name: "Agents: everything around the call", status: "draft" },
+  { id: "agents-proof", name: "Agents: customer proof", status: "draft" },
+  { id: "agents-integrations", name: "Agents: integrations", status: "draft" },
+  { id: "agents-enterprise", name: "Agents: enterprise readiness", status: "draft" },
+  { id: "agents-faq", name: "Agents: FAQ", status: "draft" },
+  { id: "voice-hero", name: "Voice page: hero", status: "draft" },
+  { id: "voice-pillars", name: "Voice: three parts", status: "draft" },
+  { id: "voice-sound", name: "Voice: voices deep-dive", status: "draft" },
+  { id: "voice-turns", name: "Voice: turn-taking deep-dive", status: "draft" },
+  { id: "voice-languages", name: "Voice: languages deep-dive", status: "draft" },
+  { id: "voice-wall", name: "Voice: language wall", status: "draft" },
+  { id: "voice-speed", name: "Voice: speed deep-dive", status: "draft" },
+  { id: "voice-hear", name: "Voice: hear it", status: "draft" },
+  { id: "voice-grid", name: "Voice: tuned for real calls", status: "draft" },
+  { id: "voice-providers", name: "Voice: providers", status: "draft" },
+  { id: "voice-reliability", name: "Voice: reliability", status: "draft" },
+  { id: "voice-proof", name: "Voice: proof", status: "draft" },
+  { id: "voice-faq", name: "Voice: FAQ", status: "draft" },
+  { id: "voice-related", name: "Voice: works with", status: "draft" },
+  { id: "voice-cta", name: "Voice: CTA", status: "draft" },
+  { id: "agents-related", name: "Agents: works with", status: "draft" },
 ]
 
 export function sectionMeta(id: SectionId) {
