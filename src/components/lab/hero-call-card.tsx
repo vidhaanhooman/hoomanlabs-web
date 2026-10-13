@@ -30,10 +30,14 @@ const FORMAT: Record<string, { length: number; groups: number[] }> = {
 const LANG: Record<string, string> = { English: "EN", Hindi: "HI", Spanish: "ES" }
 
 /** Deterministic bar heights (no hydration drift). */
-const BARS = Array.from({ length: 36 }, (_, i) => {
-  const env = 0.35 + 0.65 * Math.sin((Math.PI * (i + 0.5)) / 36)
-  return Math.round(4 + 18 * env * (0.45 + 0.55 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6))))
-})
+const bars = (n: number) =>
+  Array.from({ length: n }, (_, i) => {
+    const env = 0.35 + 0.65 * Math.sin((Math.PI * (i + 0.5)) / n)
+    return Math.round(4 + 18 * env * (0.45 + 0.55 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.6))))
+  })
+const BARS = bars(36)
+/** The plain layout's player runs the full width, so it gets more bars. */
+const BARS_WIDE = bars(90)
 
 function group(digits: string, groups: number[]) {
   const out: string[] = []
@@ -49,7 +53,11 @@ function group(digits: string, groups: number[]) {
 const mask = (d: string) => d.slice(0, 2) + "•".repeat(Math.max(0, d.length - 5)) + d.slice(-3)
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
-export function HeroCallCard() {
+/**
+ * `plain`: the flat site style, like the outcome cards: one grey surface,
+ * mono labels and hairline dividers instead of frosted glass and inner boxes.
+ */
+export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
   const [index, setIndex] = useState(0)
   const call = useCaseCalls[index]
 
@@ -138,13 +146,23 @@ export function HeroCallCard() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/40 bg-[oklch(0.99_0.01_85/0.42)] p-3 text-left shadow-[0_30px_80px_-40px_oklch(0.25_0.04_120/0.55),inset_0_1px_0_oklch(1_0_0/0.6)] backdrop-blur-2xl backdrop-saturate-150 sm:p-4">
+    <div
+      className={cn(
+        "mx-auto w-full text-left",
+        plain && "rounded-md bg-surface p-5 sm:p-8",
+        !plain &&
+          "max-w-4xl rounded-[2rem] border border-white/40 bg-[oklch(0.99_0.01_85/0.42)] p-3 shadow-[0_30px_80px_-40px_oklch(0.25_0.04_120/0.55),inset_0_1px_0_oklch(1_0_0/0.6)] backdrop-blur-2xl backdrop-saturate-150 sm:p-4"
+      )}
+    >
       {/* 1 Pick */}
-      <div className="flex justify-center px-2 pt-1 pb-3">
+      <div className={cn("flex", plain ? "flex-wrap items-center justify-between gap-x-6 gap-y-3 pb-6" : "justify-center px-2 pt-1 pb-3")}>
         <div
           role="radiogroup"
           aria-label="Use case"
-          className="flex max-w-full gap-1 overflow-x-auto rounded-full bg-white/35 p-1 [scrollbar-width:none]"
+          className={cn(
+            "flex max-w-full gap-1 overflow-x-auto rounded-full p-1 [scrollbar-width:none]",
+            plain ? "bg-placeholder" : "bg-white/35"
+          )}
         >
           {useCaseCalls.map((c, i) => (
             <button
@@ -157,7 +175,7 @@ export function HeroCallCard() {
                 setCalling(null)
               }}
               className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30",
+                "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:outline-none",
                 i === index ? "bg-background/90 text-foreground shadow-xs" : "text-foreground/70 hover:text-foreground"
               )}
             >
@@ -166,20 +184,33 @@ export function HeroCallCard() {
             </button>
           ))}
         </div>
+        {plain && (
+          <span className="font-mono text-label text-ink-muted">
+            {call.agent} · {call.useCase} agent · {call.direction} · {call.language}
+          </span>
+        )}
       </div>
 
       {/* 2 Listen (or the calling state) */}
-      <div className="rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5">
+      <div className={cn("@container", plain ? "border-y border-line py-6" : "rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5")}>
         {calling ? (
           <Calling call={call} number={calling} late={late} onReset={() => setCalling(null)} />
         ) : (
-          <Listen call={call} t={t} playing={playing} onToggle={toggleSample} />
+          plain ? (
+            <Stage call={call} t={t} playing={playing} onToggle={toggleSample} />
+          ) : (
+            <Listen call={call} t={t} playing={playing} onToggle={toggleSample} />
+          )
         )}
       </div>
 
       {/* 3 Get the call */}
       {!calling && (
-        <form onSubmit={submit} noValidate className="relative px-1 pt-4">
+        <form
+          onSubmit={submit}
+          noValidate
+          className={cn("relative", plain ? "grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 gap-y-4 pt-6 md:grid-cols-[1fr_minmax(0,30rem)]" : "px-1 pt-4")}
+        >
           <input
             ref={honeypot}
             type="text"
@@ -189,10 +220,18 @@ export function HeroCallCard() {
             aria-hidden
             className="absolute -left-[9999px] size-px opacity-0"
           />
-          <p className="px-1 pb-2 text-small text-foreground/75">Or get this call on your phone</p>
+          {plain ? (
+            <div className="flex flex-col gap-1 md:row-span-2">
+              <p className="text-body">Get this call on your phone</p>
+              <p className="text-small text-ink-secondary">{call.agent} calls you and runs this same call, live.</p>
+            </div>
+          ) : (
+            <p className="px-1 pb-2 text-small text-foreground/75">Or get this call on your phone</p>
+          )}
           <div
             className={cn(
-              "flex h-14 items-center rounded-full border bg-background/75 pr-1.5 transition-colors focus-within:border-foreground/45",
+              "flex h-14 items-center rounded-full border pr-1.5 transition-colors focus-within:border-foreground/45",
+              plain ? "bg-background" : "bg-background/75",
               error && consent ? "border-destructive/60" : "border-line-strong"
             )}
           >
@@ -249,7 +288,12 @@ export function HeroCallCard() {
           </div>
           <CallButton className="mt-2 flex h-12 w-full sm:hidden" sending={sending} ready={valid} />
 
-          <label className="flex cursor-pointer items-center gap-2.5 px-2 pt-3 pb-1 text-small text-foreground/75">
+          <label
+            className={cn(
+              "flex cursor-pointer items-center gap-2.5 text-small text-foreground/75",
+              plain ? "px-1 md:col-start-2" : "px-2 pt-3 pb-1"
+            )}
+          >
             <input
               type="checkbox"
               checked={consent}
@@ -355,6 +399,72 @@ function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; 
           ))
         )}
       </ol>
+    </div>
+  )
+}
+
+/**
+ * The plain layout's listen area: a compact player bar above large live
+ * captions.
+ */
+function Stage({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; playing: boolean; onToggle: () => void }) {
+  const progress = playing ? t / call.duration : 0
+  const current = playing ? call.lines.findLastIndex((l) => l.t <= t) : -1
+  return (
+    <div className="flex min-w-0 flex-col gap-6">
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={playing ? "Pause sample" : `Play a sample ${call.useCase.toLowerCase()} call`}
+          className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background outline-none transition-transform duration-150 ease-(--ease-out) hover:scale-105 focus-visible:ring-2 focus-visible:ring-foreground/30 active:scale-95"
+        >
+          {playing ? <PauseIcon weight="fill" className="size-4" /> : <PlayIcon weight="fill" className="ml-0.5 size-4" />}
+        </button>
+        <span aria-hidden className={cn("flex h-7 min-w-0 flex-1 items-center justify-between", playing && "ui-wave")}>
+          {BARS_WIDE.map((h, i) => (
+            <span
+              key={i}
+              className={cn("w-[3px] rounded-full transition-colors duration-200", i / BARS_WIDE.length < progress ? "bg-foreground" : "bg-foreground/15")}
+              style={{ height: h }}
+            />
+          ))}
+        </span>
+        <span className="shrink-0 font-mono text-label text-ink-muted tabular-nums">
+          {clock(playing ? t : 0)} / {clock(call.duration)}
+        </span>
+      </div>
+      <Captions call={call} current={current} />
+    </div>
+  )
+}
+
+/** The line being spoken, large, with the one before it fading out above. */
+function Captions({ call, current }: { call: UseCaseCall; current: number }) {
+  const line = call.lines[Math.max(current, 0)]
+  const prev = current > 0 ? call.lines[current - 1] : null
+  const who = (l: UseCaseCall["lines"][number]) => (l.speaker === "agent" ? call.agent : "Caller")
+  return (
+    <div aria-live="polite" className="flex min-h-36 flex-col justify-start gap-4">
+      {prev && (
+        <p key={`p-${prev.t}`} className="line-clamp-2 text-small text-ink-muted motion-safe:animate-[reveal-blur_450ms_var(--ease-out)_both]">
+          <span className="mr-2 font-mono text-label">{who(prev)}</span>
+          {prev.translation ?? prev.text}
+        </p>
+      )}
+      {current < 0 ? (
+        <div className="flex flex-col gap-2">
+          <span className="font-mono text-label text-ink-muted">On this call</span>
+          <p className="text-h3 font-normal">{call.summary}.</p>
+          <p className="text-small text-ink-secondary">Press play to hear it, with the transcript as it happens.</p>
+        </div>
+      ) : (
+        <div key={line.t} className="flex flex-col gap-2 motion-safe:animate-[reveal-blur_450ms_var(--ease-out)_both]">
+          <span className="font-mono text-label text-ink-muted">{who(line)}</span>
+          <p className="text-h3 font-normal">{line.text}</p>
+          {line.translation && <p className="text-small text-ink-secondary">{line.translation}</p>}
+        </div>
+      )}
     </div>
   )
 }

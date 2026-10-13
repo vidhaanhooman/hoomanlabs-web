@@ -1,23 +1,18 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
-import { HeroScene } from "@/components/lab/hero-scene"
+import { HeroCallCard } from "@/components/lab/hero-call-card"
 import { HowItWorksV3 } from "@/components/sections/how-it-works-v3"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
-import {
-  HomeFaq,
-  StatHeadline,
-} from "@/components/sections/structure"
+import { HomeFaq, StatHeadline } from "@/components/sections/structure"
 import { StartResources } from "@/components/sections/start-resources"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { VoiceWidget } from "@/components/sections/voice-widget"
-import { enterpriseBuild } from "@/content/landing"
 import { stories } from "@/content/structure"
 
 /**
@@ -47,35 +42,78 @@ function Header({ title, body, aside }: { title: string; body?: string; aside?: 
   )
 }
 
-
-
-/** Customer stories (placeholders until real customers and numbers are confirmed). */
-const CUSTOMERS = [
+/**
+ * Customer stories: joined plain tiles, each showing a typical call moment
+ * in the product's dark UI, with one factual line on what the agent
+ * handles. PLACEHOLDER: call wording and summaries are samples until each
+ * customer confirms their use case, direction and languages. PLACEHOLDER copy: results need the real figures, approved by
+ * each customer, before this goes live.
+ */
+const CUSTOMERS: {
+  name: string
+  tag: string
+  /** What the agent handles, in one factual line. */
+  summary: string
+  /** A typical call moment, shown as a small product snippet (sample wording). */
+  call: { who: "Caller" | "Agent"; text: string }[]
+  outcome: string
+  href: string
+}[] = [
   {
-    name: "Halden Energy",
-    tag: "Collections",
-    result: "71% of billing calls resolved without a person",
-    body: "Every billing call answered in the customer's language, payments and plans agreed on the call.",
-    art: stories.items[0].art,
+    name: "SaffronStays",
+    tag: "Bookings",
+    summary: "Answers villa enquiries: availability, pricing and booking.",
+    call: [
+      {
+        who: "Caller",
+        text: "Is the Alibaug villa free from 12 to 14 December?",
+      },
+      {
+        who: "Agent",
+        text: "Yes, both nights are open. Shall I send the quote on WhatsApp?",
+      },
+    ],
+    outcome: "Quote sent on WhatsApp",
     href: stories.items[0].href,
   },
   {
-    name: "Northfield Clinics",
-    tag: "Bookings",
-    result: "32% fewer no-shows across 40 clinics",
-    body: "Reminders, confirmations and reschedules handled before the appointment, straight into the calendar.",
-    art: stories.items[1].art,
+    name: "GIVA",
+    tag: "Support",
+    summary: "Handles order, return and exchange queries on the call.",
+    call: [
+      {
+        who: "Caller",
+        text: "My ring is the wrong size, I want to return it.",
+      },
+      {
+        who: "Agent",
+        text: "Found order #4821. I've booked a pickup for tomorrow.",
+      },
+    ],
+    outcome: "Return booked · pickup tomorrow",
     href: stories.items[1].href,
   },
   {
-    name: "Kestrel Retail",
-    tag: "Support",
-    result: "Order queries answered in Hindi, English and Tamil",
-    body: "Orders looked up and changed mid-call; the rest routed to the team with a full summary.",
-    art: stories.items[2].art,
+    name: "Be10x",
+    tag: "Sales",
+    summary: "Calls every new lead back, answers questions and books demos.",
+    call: [
+      {
+        who: "Agent",
+        text: "Hi Rohan, you signed up for the AI workshop. Is now a good time?",
+      },
+      {
+        who: "Caller",
+        text: "Yes. What does it cover, and when is the next one?",
+      },
+    ],
+    outcome: "Qualified · demo booked Thu 4 pm",
     href: stories.items[2].href,
   },
 ]
+
+/** Customer stories are hidden for now; flip to true to bring them back. */
+const SHOW_STORIES = false
 
 export function V3Landing() {
   return (
@@ -83,60 +121,64 @@ export function V3Landing() {
       {/* 1 Hero: headline, one CTA, the journey */}
       <V3Hero />
 
-      {/* 2 Customer showcase */}
+      {/* 2 Customer logos */}
       <Logos label="Trusted by 100+ teams" />
 
-      {/* 3 Customers, and the enterprise path, in one section */}
-      <Section id="v3-deployments">
-        <Container>
-          <Header
-            title="Deployed on real customer lines."
-            body="Live on billing, booking and support calls, with the exceptions and stakes that come with them."
-            aside={<TextLink href={stories.all.href}>All stories</TextLink>}
-          />
-          <ul className="mt-10 grid gap-4 md:grid-cols-3">
-            {CUSTOMERS.map((c) => (
-              <li key={c.name} className="flex">
-                <Link href={c.href} className="group flex w-full flex-col overflow-hidden rounded-xl border border-line bg-background transition-colors hover:border-line-strong">
-                  <span className="relative block aspect-[16/10] overflow-hidden">
-                    <Image src={c.art} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover transition-transform duration-500 ease-(--ease-out) group-hover:scale-[1.03]" />
-                  </span>
-                  <span className="flex flex-1 flex-col gap-2 border-t border-line p-5">
-                    <span className="flex items-center justify-between font-mono text-label text-ink-muted">
-                      <span>{c.name}</span>
-                      <span>{c.tag}</span>
-                    </span>
-                    <span className="text-h4 font-normal">{c.result}</span>
-                    <span className="text-small text-ink-secondary">{c.body}</span>
-                    <span className="mt-auto flex items-center gap-1 pt-2 text-small font-medium">
-                      Read the story
-                      <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex flex-col gap-6 rounded-xl border border-line bg-surface p-6 sm:p-8">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="flex flex-col gap-1.5">
-                <span className="font-mono text-label text-ink-muted">{enterpriseBuild.eyebrow}</span>
-                <h3 className="text-h3 font-normal">Start with one flow, live in 4–8 weeks.</h3>
-              </div>
-              <TextLink href="/enterprise">See the full timeline</TextLink>
+      {/* 3 Customer stories, then the enterprise path in one line. Hidden until
+          the stories have real, approved content (see SHOW_STORIES). */}
+      {SHOW_STORIES && (
+        <Section id="v3-deployments">
+          <Container>
+            <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3">
+              <h2 className="text-h2 font-normal">
+                Deployed on <span className="text-ink-muted">real customer lines.</span>
+              </h2>
+              <p className="max-w-[38ch] text-small text-ink-secondary">
+                Live on billing, booking and support calls, with the exceptions and stakes that come with them.
+              </p>
             </div>
-            <ol className="grid gap-4 sm:grid-cols-5">
-              {enterpriseBuild.steps.map((s, i) => (
-                <li key={s.name} className="flex flex-col gap-1.5 border-t border-line-strong pt-3 sm:pr-4">
-                  <span className="font-mono text-label text-ink-muted">0{i + 1}</span>
-                  <span className="text-body font-medium">{s.name}</span>
-                  <span className="text-small text-ink-secondary">{s.gate}</span>
+            <ul className="mt-8 grid gap-px overflow-hidden rounded-md border border-line bg-line md:grid-cols-3">
+              {CUSTOMERS.map((c) => (
+                <li key={c.name} className="flex">
+                  <Link href={c.href} className="group flex w-full flex-col gap-5 bg-surface p-5 transition-colors hover:bg-placeholder sm:p-6">
+                    <span className="font-mono text-label text-ink-muted">
+                      {c.name} · {c.tag}
+                    </span>
+                    {/* A typical call moment, in the product's own UI. */}
+                    <span aria-hidden className="ui-dark flex flex-1 flex-col gap-2.5 rounded-md p-3.5 text-[12px] leading-[1.5]">
+                      {c.call.map((l) => (
+                        <span key={l.text} className="flex flex-col gap-0.5">
+                          <span className="font-mono text-[10px] text-(--ui-muted) uppercase">{l.who}</span>
+                          <span className={l.who === "Agent" ? "text-(--ui-text)" : "text-(--ui-text)/75"}>{l.text}</span>
+                        </span>
+                      ))}
+                      <span className="mt-1 flex w-fit items-center gap-1.5 rounded-full bg-(--ui-raised) px-2.5 py-1 text-[11px]">
+                        <span className="size-1.5 rounded-full bg-(--ui-live)" />
+                        {c.outcome}
+                      </span>
+                    </span>
+                    <span className="flex items-end justify-between gap-4">
+                      <span className="text-small text-ink-secondary">{c.summary}</span>
+                      <ArrowRightIcon
+                        aria-label="Read the story"
+                        className="mb-0.5 size-4 shrink-0 text-ink-muted transition-[translate,color] [@media(hover:hover)_and_(pointer:fine)]:group-hover:translate-x-0.5 [@media(hover:hover)_and_(pointer:fine)]:group-hover:text-foreground"
+                      />
+                    </span>
+                  </Link>
                 </li>
               ))}
-            </ol>
-          </div>
-        </Container>
-      </Section>
+            </ul>
+            {/* The enterprise path as one line; the full timeline lives on /enterprise. */}
+            <div className="mt-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-line pt-6">
+              <p className="text-body">Start with one flow, live in 4–8 weeks.</p>
+              <span className="flex flex-wrap gap-x-6 gap-y-2">
+                <TextLink href={stories.all.href}>All stories</TextLink>
+                <TextLink href="/enterprise">See how we deploy</TextLink>
+              </span>
+            </div>
+          </Container>
+        </Section>
+      )}
 
       {/* 4 Impact */}
       <OutcomeDiagrams />
@@ -148,13 +190,12 @@ export function V3Landing() {
       {/* 5c The rest of the platform: simulations, QA, channels, tools */}
       <StartResources />
 
-
       {/* 7 Talk to an agent */}
       <Section id="v3-talk">
         <Container>
           <Header title="Talk to an agent." body="Play a real call, or have one of our agents call you now." />
           <div className="mt-10">
-            <HeroScene />
+            <HeroCallCard plain />
           </div>
         </Container>
       </Section>
