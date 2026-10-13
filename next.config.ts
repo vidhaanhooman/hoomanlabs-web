@@ -5,11 +5,15 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // The four product pages were folded into /platform (deprecated, not permanent yet).
   async redirects() {
-    return ["voice-ai", "chat-agents", "telephony", "qa", "lab/voice-ai"].map((path) => ({
-      source: `/${path}`,
-      destination: "/platform",
-      permanent: false,
-    }))
+    return [
+      ...["voice-ai", "chat-agents", "telephony", "qa", "lab/voice-ai"].map((path) => ({
+        source: `/${path}`,
+        destination: "/platform",
+        permanent: false,
+      })),
+      // The v3 homepage was promoted to /.
+      { source: "/lab/v3", destination: "/", permanent: false },
+    ]
   },
   partialPrefetching: true,
   turbopack: {

@@ -16,9 +16,7 @@ import { VoiceWidget } from "@/components/sections/voice-widget"
 import { stories } from "@/content/structure"
 
 /**
- * Homepage v3 (/lab/v3), FIRST PASS: the new order, built from existing
- * sections. Hero journey, deployment cards and the agent-builder animation
- * get their full versions next.
+ * The homepage (v3, promoted from /lab/v3 to /), built from existing sections.
  *
  * hero (journey) · logos + customer cards · deployments + enterprise ·
  * outcomes + stat · agent builder · workflow · everything in one platform ·

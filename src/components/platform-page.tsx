@@ -67,7 +67,7 @@ export function PlatformPage() {
             <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
-            <Link href="/#listen" className={buttonVariants({ variant: "secondary" })}>
+            <Link href="/#v3-talk" className={buttonVariants({ variant: "secondary" })}>
               {ctas.talk.label}
             </Link>
           </div>

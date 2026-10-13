@@ -12,7 +12,7 @@ const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
 export const metadata: Metadata = {
-  title: "HoomanLabs (draft)",
+  title: { default: "HoomanLabs (draft)", template: "%s | HoomanLabs" },
   description: "Draft marketing site. Not final copy.",
   robots: { index: false, follow: false },
 }
