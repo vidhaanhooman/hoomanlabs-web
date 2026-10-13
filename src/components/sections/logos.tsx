@@ -4,46 +4,96 @@ import { logos } from "@/content/draft"
 import { cn } from "@/lib/utils"
 
 /**
- * Customer logos. Until the official logo files are added (drop SVGs in
- * public/logos/ and set `src`), each customer shows as a typographic
- * wordmark in one muted grey, so the row reads as a set.
+ * Customer logos (public/logos), grey and faded at rest (greyscale, lower
+ * opacity), full colour on hover. White-only files use a dark copy
+ * (giva-dark.svg), the festive StayVista file a wordmark-only copy, and
+ * ShopDeck / Mosaic copies whose letter holes are real cut-outs, not pale
+ * fills (shopdeck-mono.svg, mosaic-mono.svg), so they grey cleanly. `crop` is the logo's drawn area in its own
+ * viewBox units (several files carry wide empty margins), and the display
+ * width grows with √aspect so wide wordmarks and compact marks carry about
+ * the same visual weight. Customers without a file show a text wordmark.
  */
-type Customer = { name: string; src?: string; className?: string }
+/** `full`: the file's own viewBox size; `crop`: the drawn logo inside it. */
+type Customer = {
+  name: string
+  src?: string
+  full?: [number, number]
+  crop?: [number, number, number, number]
+  /** Optical size nudge for logos that read small at the shared weight. */
+  scale?: number
+  /** Has light shapes inside (white cut-outs, pale fills): grey it by tone,
+   *  not as a flat silhouette, so the inner detail survives. */
+  detail?: boolean
+  className?: string
+}
 
 const CUSTOMERS: Customer[] = [
-  { name: "Vedantu", className: "font-semibold tracking-[-0.02em]" },
-  { name: "GIVA", className: "font-semibold tracking-[0.18em]" },
-  { name: "Pristyn Care", className: "font-medium tracking-[-0.01em]" },
-  { name: "Mosaic Wellness", className: "font-normal tracking-[-0.01em]" },
-  { name: "Be10x", className: "font-bold tracking-[-0.03em]" },
-  { name: "StayVista", className: "font-medium tracking-[-0.02em]" },
-  { name: "SaffronStays", className: "font-medium italic tracking-[-0.01em]" },
-  { name: "ShopDeck", className: "font-semibold tracking-[-0.02em]" },
-  { name: "ShareChat", className: "font-bold tracking-[-0.02em]" },
+  { name: "Vedantu", src: "/logos/Vedantu_idqes6hbls_0.svg", full: [210.8, 80], crop: [19, 6.5, 172.5, 47] },
+  { name: "GIVA", src: "/logos/giva-dark.svg", full: [848, 273], crop: [10.6, 16.9, 826.6, 239.5] },
+  { name: "Pristyn Care", src: "/logos/Pristyn.svg", full: [3840, 950], crop: [0, 0, 3840, 946.2], scale: 1.2 },
+  { name: "Mosaic Wellness", src: "/logos/mosaic-mono.svg", full: [1969, 1969], crop: [0, 728.5, 1969, 513.5], detail: true },
+  { name: "Be10x", src: "/logos/Be10X.svg", full: [639, 361], crop: [0, 0, 639, 361] },
+  { name: "StayVista", src: "/logos/stayvista-wordmark.svg", full: [187, 85], crop: [0, 0, 187, 85] },
+  { name: "SaffronStays", src: "/logos/SaffronStays_vector.svg", full: [410, 120], crop: [24.7, 16.4, 368.1, 85.6], scale: 1.2 },
+  { name: "ShopDeck", src: "/logos/shopdeck-mono.svg", full: [2168, 725], crop: [0, 155.8, 2168, 413.7], detail: true },
+  { name: "ShareChat", src: "/logos/ShareChat_idbYpuBuC1_0.svg", full: [1390.35, 375.16], crop: [0, 0, 1390.3, 375.2], detail: true },
 ]
 
-/** Logo row, directly under the hero. Muted at rest, full ink on hover. */
+/** Display width for a logo of this aspect ratio, in px. */
+const width = (w: number, h: number, scale = 1) => Math.round(50 * scale * Math.sqrt(w / h))
+
+/**
+ * Grey and faded at rest, so the row reads as detail; the logo under the
+ * pointer comes to full colour.
+ * Flat logos become one even grey (a silhouette); logos with inner detail
+ * are greyed by tone instead, and a little darker so they match the rest.
+ */
+// Class names are written out in full so Tailwind can find them.
+const BASE =
+  "transition-[opacity,filter] duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:[filter:none]"
+const TONE = cn("opacity-45 [filter:grayscale(1)_brightness(0)]", BASE)
+const TONE_DETAIL = cn("opacity-60 [filter:grayscale(1)_contrast(1.15)_brightness(0.7)]", BASE)
+
+function Logo({ c, size = 1, className = c.detail ? TONE_DETAIL : TONE }: { c: Customer; size?: number; className?: string }) {
+  if (!c.src || !c.crop || !c.full) {
+    return <span className={cn("text-[1.2rem] whitespace-nowrap text-foreground", className, c.className)}>{c.name}</span>
+  }
+  const [x, y, w, h] = c.crop
+  const px = width(w, h, (c.scale ?? 1) * size)
+  return (
+    <svg
+      role="img"
+      aria-label={c.name}
+      viewBox={`${x} ${y} ${w} ${h}`}
+      width={px}
+      height={Math.round((px * h) / w)}
+      className={className}
+    >
+      {/* The file is drawn at its own size; the viewBox crops to the logo. */}
+      <image href={c.src} x={0} y={0} width={c.full[0]} height={c.full[1]} />
+    </svg>
+  )
+}
+
+/**
+ * One customer's logo by name, at the row's balanced size times `size`.
+ * Pass `className` to replace the faded tone (e.g. white over art).
+ */
+export function CustomerLogo({ name, size, className }: { name: string; size?: number; className?: string }) {
+  const c = CUSTOMERS.find((x) => x.name === name)
+  return c ? <Logo c={c} size={size} className={className} /> : null
+}
+
+/** Logo row, directly under the hero. */
 export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
         <p className="text-center text-small text-ink-muted">{label}</p>
-        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-5 lg:flex-nowrap lg:justify-between lg:gap-x-6">
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 xl:flex-nowrap xl:justify-between xl:gap-x-6">
           {CUSTOMERS.map((c) => (
-            <li key={c.name} className="flex h-10 items-center">
-              {c.src ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={c.src} alt={c.name} className="h-7 w-auto opacity-60 grayscale transition-opacity hover:opacity-100" />
-              ) : (
-                <span
-                  className={cn(
-                    "text-[1.3rem] whitespace-nowrap lg:text-[1.2rem] text-ink-muted transition-colors duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground",
-                    c.className
-                  )}
-                >
-                  {c.name}
-                </span>
-              )}
+            <li key={c.name} className="group/logo flex h-12 shrink-0 items-center">
+              <Logo c={c} />
             </li>
           ))}
         </ul>
