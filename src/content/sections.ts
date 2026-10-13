@@ -150,7 +150,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "v3-journey", name: "v3: hero journey (inbound / outbound)", status: "draft" },
   { id: "v3-customers", name: "v3: customer cards", status: "draft" },
   { id: "v3-deployments", name: "v3: deployments + enterprise", status: "draft" },
-  { id: "v3-agent", name: "v3: agent builder", status: "draft" },
+  { id: "v3-agent", name: "v3: how it works (3 steps)", status: "draft" },
   { id: "v3-workflow", name: "v3: workflow", status: "draft" },
   { id: "v3-talk", name: "v3: talk to an agent", status: "draft" },
 ]

@@ -6,8 +6,7 @@ import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { HeroScene } from "@/components/lab/hero-scene"
-import { WorkflowAnatomy } from "@/components/product/workflow-anatomy"
-import { AgentAnatomy } from "@/components/product/agent-anatomy"
+import { HowItWorksV3 } from "@/components/sections/how-it-works-v3"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import {
@@ -143,33 +142,8 @@ export function V3Landing() {
       <OutcomeDiagrams />
       <StatHeadline />
 
-      {/* 5a Agent builder */}
-      <Section id="v3-agent">
-        <Container>
-          <Header
-            title="Everything an agent needs."
-            body="From the context it has before the first ring to the follow-up it does after goodbye."
-            aside={<TextLink href="/platform/agents">Explore Agents</TextLink>}
-          />
-          <div className="mt-10">
-            <AgentAnatomy />
-          </div>
-        </Container>
-      </Section>
-
-      {/* 5b Workflow */}
-      <Section id="v3-workflow">
-        <Container>
-          <Header
-            title="Automate the work around every conversation."
-            body="Triggers, campaigns, follow-ups and retries, so every call starts with context and ends with the next step done."
-            aside={<TextLink href="/platform#product-workflow">Explore Workflow</TextLink>}
-          />
-          <div className="mt-10">
-            <WorkflowAnatomy />
-          </div>
-        </Container>
-      </Section>
+      {/* 5 How it works: three calm steps (the detailed editor and canvas live on /platform) */}
+      <HowItWorksV3 />
 
       {/* 5c The rest of the platform: simulations, QA, channels, tools */}
       <StartResources />
