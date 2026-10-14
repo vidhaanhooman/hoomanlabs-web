@@ -47,3 +47,21 @@ export function UiCard({ children, className }: { children: React.ReactNode; cla
 export function UiLabel({ children }: { children: React.ReactNode }) {
   return <span className="font-mono text-[10px] tracking-wide text-(--ui-muted) uppercase">{children}</span>
 }
+
+/**
+ * A single piece of product (a card, a menu, a record) floating on the grey
+ * stage, for Chapter tiles. Sized to its content, never a whole window.
+ */
+export function UiFloat({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "ui-dark flex w-full max-w-[24rem] flex-col gap-2.5 rounded-lg border border-black/10 p-4 text-[12px] leading-[1.55] shadow-[0_1px_2px_oklch(0.2_0_0/0.12),0_12px_28px_-14px_oklch(0.2_0_0/0.35)]",
+        className
+      )}
+    >
+      {children}
+    </div>
+  )
+}

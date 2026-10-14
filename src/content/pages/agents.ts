@@ -1,104 +1,116 @@
-import type { Capability, Feature } from "@/components/product-page/blocks"
 import type { MenuPageId } from "@/content/platform"
 
 /**
- * /platform/agents, from the website content sheet ("Platform pages" tab for
- * the sections, written as features rather than questions; "Hoomanlabs" tab
- * for each feature's marketing pointer, with names reworded to plain SaaS
- * labels). Follows the product-page structure: hero, logos, three parts,
- * deep-dives, compact grid, proof, integrations, enterprise, FAQ, CTA.
+ * /platform/agents, from the website content sheet ("Platform pages" and
+ * "Platform v2" tabs for the sections, "Hoomanlabs" tab for each feature's
+ * marketing name and pointer). Sections are written as features, not the
+ * sheet's questions. Laid out in the homepage's language. Sample data
+ * (Halden Energy, Ria) throughout.
  */
 export const agentsPage = {
+  seo: {
+    title: "AI Voice Agent Builder for Customer Calls",
+    description: "Build AI voice agents that follow your process, use your data and take action in your systems, then test and publish safely.",
+  },
   crumb: "Agents",
-  title: "AI voice agents that follow your rules.",
-  line: "Write the job, connect your data, and your Hooman handles every call your way.",
+  title: "AI voice agents that follow your process and use your data.",
+  line: "Write the job, connect your knowledge and systems, and your Hooman handles every conversation your way.",
 
-  pillars: [
-    { title: "Write the job", body: "Describe the role, rules and goal in plain language, like a brief for a new hire." },
-    { title: "Connect your data", body: "Knowledge, tables, CRM context and tools, available on every call." },
-    { title: "Control every step", body: "Add flows, transfers and versions wherever you need certainty." },
-  ],
+  /** The sheet's "What is it?" definition block. */
+  definition: "A Hooman is an AI agent you configure with a job description, knowledge, data tables and skills, so it handles calls your way.",
+  /** Proof strip. */
+  proof: { quote: "The future of customer calls.", by: "GIVA" },
 
-  /** Deep-dive 1: the pinned prompt. */
-  prompt: {
-    title: "Write the job once. It adapts to every caller.",
-    line: "One prompt with your rules, your data and your tools, adjusting to each customer, language and case.",
+  panels: {
+    /** Sheet section 1. */
+    job: {
+      label: "Job description",
+      title: "Write the job once. It adapts to every caller.",
+      rows: [
+        { id: "job", title: "Job description", body: "Write the job like you would for a new hire; the Hooman follows it on every call." },
+        { id: "logic", title: "Prompt logic", body: "One prompt that adapts per customer, language or case, with no duplicate agents." },
+        { id: "personal", title: "Personalisation", body: "Greets by name, knows the time of day, adapts lines to each customer." },
+        { id: "intro", title: "First impression", body: "Open every call on brand, with a ring, pause and greeting you control." },
+      ],
+    },
+    /** Sheet section 4. */
+    skills: {
+      label: "Skills",
+      title: "Acts in your systems while it talks.",
+      rows: [
+        { id: "skills", title: "Skills", body: "Teach a Hooman to look up, book, update and pay inside your systems while it talks." },
+        { id: "multi", title: "Multitasking", body: "Keeps the conversation going while it books, checks or updates in the background." },
+        { id: "silence", title: "Fill-the-silence", body: "No dead air while systems respond." },
+        { id: "smart", title: "Smart responses", body: "Raw API data becomes a clean, short answer the Hooman can use instantly." },
+        { id: "builder", title: "Skill builder", body: "Describe the action; AI writes the skill and you test it in one click. Build it once, and every Hooman can use it." },
+      ],
+    },
+    /** Sheet section 3. */
+    knowledge: {
+      label: "Knowledge",
+      title: "Answers from your information, not guesses.",
+      rows: [
+        { id: "knowledge", title: "Knowledge", body: "Answers grounded in your SOPs, policies and FAQs." },
+        { id: "tables", title: "Live data tables", body: "Upload a sheet and your Hooman looks up every price, branch and slot, no integration required." },
+      ],
+    },
+    /** Sheet section 2 ("Playbooks" in the sheet; called Flow on the site). */
+    flow: {
+      label: "Flow",
+      title: "Exact steps where compliance needs them.",
+      rows: [
+        { id: "flow", title: "Flow", body: "Mix free conversation with exact scripted steps where compliance needs it." },
+        { id: "routing", title: "Smart routing", body: "Every caller starts on the right path, decided by your data." },
+        { id: "nodes", title: "Node types", body: "AI conversation, fixed lines, logic, API calls, handoff to a person and end call." },
+      ],
+    },
   },
 
-  /** Deep-dive 2: flows. */
-  flows: {
-    title: "Exact steps where compliance needs them.",
-    body: "For most calls the prompt is enough. When a call must follow a script, add a flow that mixes free conversation with fixed steps.",
-    features: [
-      { name: "Conversation flows", pointer: "Mix free conversation with exact scripted steps where compliance needs it." },
-      { name: "Conditional routing", pointer: "Every caller starts on the right path, decided by your data." },
-      { name: "7 node types", pointer: "AI conversation, fixed conversation, code, API, branch, transfer to human and end call." },
-    ],
-  } satisfies Capability,
-
-  /** Deep-dive 3: tools mid-call. */
-  tools: {
-    title: "Acts in your systems without breaking the conversation.",
-    body: "Your Hooman looks up, books, updates and pays while it talks, so callers never wait in silence.",
-    features: [
-      { name: "Background tool calls", pointer: "Keeps the conversation going while it books, checks or updates in the background." },
-      { name: "AI tool builder", pointer: "Describe the action; AI writes the tool and you test it in one click." },
-      { name: "Shared tools", pointer: "Build a tool once; every Hooman in the team can use it." },
-      { name: "Filler messages", pointer: "No dead air while systems respond." },
-      { name: "Response formatting", pointer: "Raw API data becomes a clean, short answer the Hooman can use instantly." },
-    ],
-  } satisfies Capability,
-
-  /** The compact grid (icons are set on the page). */
-  grid: {
-    title: "And everything around the call.",
+  /** The pinned "what it can do" section: actions a Hooman takes on a call. */
+  canDo: {
+    title: "What a Hooman can do on a call.",
     items: [
-      { name: "Outbound context", pointer: "Every outbound call starts with the right loan, order or lead details." },
-      { name: "Call history", pointer: "Picks up where the last call left off; customers never repeat themselves." },
-      { name: "Customer profiles", pointer: "Knows the customer's history, preferences and open issues before saying hello.", soon: true },
-      { name: "Warm transfer", pointer: "When a human is needed, the call moves with context, not a cold transfer." },
-      { name: "Transfer hours", pointer: "Handoffs respect shift timings; after hours the Hooman takes a callback." },
-      { name: "Version control", pointer: "Change anything without touching live calls; roll forward when tested." },
-      { name: "Test calls", pointer: "Talk to your Hooman by phone or chat before anyone else does." },
-      { name: "Agent types", pointer: "Talk, announce, or listen and score." },
-    ] satisfies Feature[],
-  },
-
-  /** PLACEHOLDER until a real, approved quote arrives. */
-  proof: {
-    quote: "We wrote our collections process once, and every call now follows it to the letter, in the customer's own language.",
-    name: "Name Surname",
-    role: "Head of Customer Operations, Company",
-    result: { figure: "71%", label: "of billing calls resolved without a person" },
-  },
-
-  integrations: {
-    title: "Works with the systems you already run.",
-    line: "Native connectors for your CRM, helpdesk and calendar, and your own APIs as tools.",
-  },
-
-  enterprise: {
-    title: "Built for enterprise teams.",
-    items: [
-      { title: "Model and voice failover", body: "If a model or voice provider fails, calls keep going on a backup." },
-      { title: "Workspaces and roles", body: "Separate brands, regions or teams, each with the right access." },
-      { title: "DND list built in", body: "Opted-out numbers are never called, automatically." },
-      { title: "Verified numbers", body: "KYC-verified business numbers for trust and pickup." },
+      { id: "answer", title: "Answers questions", body: "From your policies, FAQs and live data, not guesses." },
+      { id: "pay", title: "Takes payments", body: "Charges the card on file or sends a link, and confirms it on the call." },
+      { id: "book", title: "Books and reschedules", body: "Finds a free slot in your calendar and confirms it before hanging up." },
+      { id: "update", title: "Updates your records", body: "Writes the outcome and next step to your CRM while it talks." },
+      { id: "handoff", title: "Hands off to your team", body: "Transfers with a summary, so nobody asks the customer to start again." },
+      { id: "follow", title: "Follows up", body: "Sends the receipt, the link or the summary the moment the call ends." },
     ],
+  },
+
+  /** Sheet sections 5 to 7, as one call's timeline. */
+  around: {
+    title: "Everything around the conversation.",
+    line: "Context before the call, a person when needed, and safe changes after it.",
+    moments: [
+      { stage: "Before the call", title: "Knows the customer", body: "Pre-call briefing and recall: details arrive before hello, and nobody repeats themselves." },
+      { stage: "During the call", title: "Hands off with context", body: "Warm handoff inside office hours; outside them, the Hooman takes a callback." },
+      { stage: "After the call", title: "Changes safely", body: "Edit a draft, try it now, then publish. Live calls are never touched until you're ready." },
+    ],
+  },
+
+  talk: {
+    title: "Hear a Hooman on the phone.",
+    line: "Play a sample call, or have one of our agents call you now.",
   },
 
   faq: [
+    {
+      q: "What kinds of Hoomans can I build?",
+      a: "Three types: one that talks with your customers, one that announces (a one-way broadcast), and one that listens to recordings and scores them.",
+    },
     {
       q: "Can it follow our exact compliance script?",
       a: "Yes. Fixed conversation steps read your wording word for word, and branches decide when they apply. Everything else stays natural conversation.",
     },
     {
       q: "Do we need developers to set it up?",
-      a: "No. You write the job in plain language and set up tools in the console. Developers can go further with code steps, the API and MCP.",
+      a: "No. You write the job in plain language and set up skills in the console. Developers can go further with code steps, the API and MCP.",
     },
     {
       q: "Which systems does it connect to?",
-      a: "Zoho CRM, Freshdesk, Zendesk and Google Calendar natively, plus any system with an API through tools. Call events and data land back where your team works.",
+      a: "Zoho CRM, Freshdesk, Zendesk and Google Calendar natively, plus any system with an API through skills. Call events and data land back where your team works.",
     },
     {
       q: "What happens when it can't help?",
@@ -114,5 +126,6 @@ export const agentsPage = {
     },
   ],
 
-  related: ["voice", "workflows", "testing", "human-ai"] satisfies MenuPageId[],
+  /** Related pages; the first is the sheet's next step (Testing & Improvement). */
+  related: ["testing", "voice"] satisfies MenuPageId[],
 }

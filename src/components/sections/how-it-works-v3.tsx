@@ -220,7 +220,7 @@ function WorkflowScreen({ className, focus }: { className: string; focus: string
 type Row = { id: string; title: string; body: string }
 
 /** One product: copy with three rows, and its screen. */
-function ProductPanel({
+export function ProductPanel({
   id,
   label,
   title,

@@ -104,7 +104,7 @@ export function Showcase({ id, title, line, children }: { id: SectionId; title: 
   )
 }
 
-function FeatureList({ features }: { features: Feature[] }) {
+export function FeatureList({ features }: { features: Feature[] }) {
   return (
     <ul className="flex flex-col border-t border-line">
       {features.map((f) => (
@@ -378,6 +378,42 @@ export function WorksWith({ id, pages }: { id: SectionId; pages: MenuPageId[] })
               </li>
             )
           })}
+        </ul>
+      </Container>
+    </Section>
+  )
+}
+
+export type Tile = { title: string; body: string; visual: React.ReactNode; wide?: boolean }
+
+/**
+ * One chapter of a Platform page: a split header (the point on the left, one
+ * line and an optional link on the right), then its tiles. Each tile shows a
+ * single small piece of product on the grey stage, with a short caption.
+ */
+export function Chapter({ id, title, line, more, tiles }: { id: SectionId; title: string; line: string; more?: MenuPageId; tiles: Tile[] }) {
+  return (
+    <Section id={id}>
+      <Container>
+        <div className="grid gap-4 lg:grid-cols-2 lg:items-end lg:gap-16">
+          <h2 className="max-w-[16ch] text-h2 font-normal">{title}</h2>
+          <div className="flex flex-col items-start gap-4">
+            <p className="max-w-[44ch] text-body-lg text-ink-secondary">{line}</p>
+            {more && <TextLink href={menuHref(page(more))}>{`More on ${page(more).name}`}</TextLink>}
+          </div>
+        </div>
+        <ul className="mt-10 grid gap-3 md:grid-cols-2 lg:mt-12">
+          {tiles.map((t) => (
+            <li key={t.title} className={cn("flex", t.wide && "md:col-span-2")}>
+              <Panel className="flex w-full flex-col p-3">
+                <div className={cn(STAGE, "flex items-center justify-center p-6", t.wide ? "h-64 md:h-80" : "h-64")}>{t.visual}</div>
+                <div className="flex flex-col gap-1 px-3 pt-5 pb-3">
+                  <span className="text-body">{t.title}</span>
+                  <span className="max-w-[48ch] text-small text-ink-secondary">{t.body}</span>
+                </div>
+              </Panel>
+            </li>
+          ))}
         </ul>
       </Container>
     </Section>

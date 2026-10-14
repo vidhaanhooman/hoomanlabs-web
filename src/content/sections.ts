@@ -81,6 +81,20 @@ export type SectionId =
   | "platform-workflow-anatomy"
   // Agents page: one section per question (from the content sheet)
   | "agents-pillars"
+  | "agents-listen"
+  | "agents-prompt"
+  | "agents-can-do"
+  | "agents-next"
+  | "agents-definition"
+  | "agents-knowledge"
+  | "agents-around"
+  | "workflows-hero"
+  | "workflows-triggers"
+  | "workflows-followups"
+  | "workflows-sync"
+  | "workflows-proof"
+  | "workflows-related"
+  | "workflows-cta"
   | "agents-flows"
   | "agents-tools"
   | "agents-grid"
@@ -183,6 +197,20 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "platform-workflow-anatomy", name: "Platform: annotated workflow", status: "draft" },
   { id: "v3-talk", name: "v3: talk to an agent", status: "draft" },
   { id: "agents-pillars", name: "Agents: three parts", status: "draft" },
+  { id: "agents-listen", name: "Agents: hear it", status: "draft" },
+  { id: "agents-prompt", name: "Agents: prompt panel", status: "draft" },
+  { id: "agents-can-do", name: "Agents: what it can do (pinned)", status: "draft" },
+  { id: "agents-next", name: "Agents: next step", status: "draft" },
+  { id: "agents-definition", name: "Agents: definition and proof", status: "draft" },
+  { id: "agents-knowledge", name: "Agents: knowledge panel", status: "draft" },
+  { id: "agents-around", name: "Agents: everything around the call", status: "draft" },
+  { id: "workflows-hero", name: "Workflows: hero", status: "draft" },
+  { id: "workflows-triggers", name: "Workflows: chapter, starts on its own", status: "draft" },
+  { id: "workflows-followups", name: "Workflows: chapter, follows up", status: "draft" },
+  { id: "workflows-sync", name: "Workflows: chapter, updates your systems", status: "draft" },
+  { id: "workflows-proof", name: "Workflows: customer proof", status: "draft" },
+  { id: "workflows-related", name: "Workflows: works with", status: "draft" },
+  { id: "workflows-cta", name: "Workflows: CTA", status: "draft" },
   { id: "agents-flows", name: "Agents: flows deep-dive", status: "draft" },
   { id: "agents-tools", name: "Agents: tools deep-dive", status: "draft" },
   { id: "agents-grid", name: "Agents: everything around the call", status: "draft" },

@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 import { AgentsPage } from "@/components/agents-page"
 
 export const metadata: Metadata = {
-  title: "AI Voice Agents that follow your rules",
+  title: "AI Voice Agent Builder for Customer Calls",
   description:
-    "The most configurable AI voice agent for enterprise: write the job, connect your knowledge and systems, and your Hooman handles every call your way.",
+    "Build AI voice agents that follow your process, use your data and take action in your systems, then test and publish safely.",
 }
 
 export default function Agents() {

@@ -1,9 +1,7 @@
 "use client"
 
 import { useLayoutEffect, useRef, useState } from "react"
-import { useMotionValueEvent, useScroll } from "motion/react"
 
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import {
   BookOpenTextIcon,
   CheckIcon,
@@ -25,9 +23,8 @@ import { cn } from "@/lib/utils"
  * to its marker by a hairline that leaves the editor level with the marker. Hovering (or
  * focusing) a card spotlights its part: the rest of the editor dims.
  * Below lg the cards become a numbered list under the editor; tapping one
- * spotlights the same way. On large screens the editor stays pinned while
- * you scroll, and the cards arrive one by one (each spotlighting its part);
- * after the last, all stay and the spotlight clears. Sample content
+ * spotlights the same way. All cards are shown at once and nothing is
+ * spotlit until one is hovered or focused. Static, not pinned. Sample content
  * (fictional Halden Energy agent).
  */
 
@@ -218,29 +215,14 @@ const MIN_SPACE = 12
 
 type Pos = { n: number; y: number; top: number; h: number }
 
-/** The order cards arrive in: top to bottom through the editor. */
-const ORDER = [6, 1, 3, 2, 4]
-/** Scroll steps: one per card, then one with all shown and no spotlight. */
-const STEPS = ORDER.length + 1
-
 export function AgentAnatomy() {
-  const track = useRef<HTMLDivElement>(null)
   const box = useRef<HTMLDivElement>(null)
   const editor = useRef<HTMLDivElement>(null)
   const cards = useRef<Record<number, HTMLButtonElement | null>>({})
   const [pos, setPos] = useState<Pos[]>([])
   const [edge, setEdge] = useState({ left: 0, right: 0, width: 0 })
-  const [hover, setHover] = useState<number | null>(null)
-  const reduce = usePrefersReducedMotion()
-
-  // Scroll through a tall track while the editor stays pinned; each step brings in the next card.
-  const [step, setStep] = useState(0)
-  const { scrollYProgress } = useScroll({ target: track, offset: ["start 96px", "end end"] })
-  useMotionValueEvent(scrollYProgress, "change", (v) => setStep(Math.min(STEPS, Math.floor(v * (STEPS + 0.5)))))
-  const s = reduce ? STEPS : step
-  const shown = (n: number) => ORDER.indexOf(n) < s
-  const scrollFocus = s >= 1 && s <= ORDER.length ? ORDER[s - 1] : null
-  const focus = hover ?? scrollFocus
+  // Nothing is spotlit until a card is hovered or focused.
+  const [focus, setHover] = useState<number | null>(null)
 
   // Marker positions relative to the box, and each card's top placed level with
   // its marker (pushed down if the card above on the same side would overlap).
@@ -279,9 +261,8 @@ export function AgentAnatomy() {
 
   return (
     <div>
-      {/* Tall track on large screens; the stage inside stays pinned while it scrolls past */}
-      <div ref={track} className={cn(!reduce && "lg:h-[480vh]")}>
-        <div className={cn(!reduce && "lg:sticky lg:top-24")}>
+      <div>
+        <div>
           <div ref={box} className="relative lg:grid lg:grid-cols-[minmax(0,1fr)_19.5rem] lg:gap-x-16 lg:pt-4 lg:pb-14">
             <div ref={editor}>
               <Editor focus={focus} />
@@ -304,19 +285,17 @@ export function AgentAnatomy() {
                     fill="none"
                     strokeDasharray="1 1"
                     className={cn(
-                      "transition-[stroke,stroke-dashoffset] duration-500 ease-(--ease-out)",
+                      "transition-[stroke] duration-300 ease-(--ease-out)",
                       focus === p.n ? "stroke-foreground/50" : "stroke-line-strong"
                     )}
-                    style={{ strokeDashoffset: shown(p.n) ? 0 : 1 }}
                   />
                 )
               })}
             </svg>
 
-            {/* Callout cards, arriving one by one */}
+            {/* Callout cards, all shown, each level with its marker */}
             {MARKS.map((m) => {
               const p = at(m.n)
-              const on = shown(m.n)
               return (
                 <CalloutCard
                   key={m.n}
@@ -327,10 +306,8 @@ export function AgentAnatomy() {
                     cards.current[m.n] = el
                   }}
                   className={cn(
-                    "absolute hidden transition-[opacity,transform,border-color,background-color,box-shadow] duration-500 ease-(--ease-out) lg:flex",
-                    p && on ? "opacity-100" : "pointer-events-none opacity-0",
-                    !on && "translate-x-4",
-                    "right-0"
+                    "absolute right-0 hidden transition-[opacity,border-color,background-color,box-shadow] duration-300 ease-(--ease-out) lg:flex",
+                    p ? "opacity-100" : "opacity-0"
                   )}
                   style={{ top: p?.top ?? 0, width: CARD - GAP }}
                 />
@@ -344,7 +321,7 @@ export function AgentAnatomy() {
       <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:hidden">
         {MARKS.map((m) => (
           <li key={m.n} className="flex">
-            <CalloutCard m={m} on={hover === m.n} onFocus={setHover} number className="w-full" />
+            <CalloutCard m={m} on={focus === m.n} onFocus={setHover} number className="w-full" />
           </li>
         ))}
       </ol>
