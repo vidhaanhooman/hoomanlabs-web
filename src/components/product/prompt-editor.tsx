@@ -46,7 +46,7 @@ const DOC: Block[] = [
   { cel: true },
   {
     ol: [
-      ["Refunds over £50 need approval. Say so in one line, then use tool ", { tool: "create_ticket" }, " with a short summary and text them the reference."],
+      ["Refunds over $50 need approval. Say so in one line, then use tool ", { tool: "create_ticket" }, " with a short summary and text them the reference."],
     ],
   },
 ]

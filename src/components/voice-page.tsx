@@ -1,88 +1,47 @@
-import {
-  BrainIcon,
-  ChartLineIcon,
-  EarIcon,
-  HashIcon,
-  MicrophoneIcon,
-  ShieldCheckIcon,
-  SpeakerHighIcon,
-  TimerIcon,
-  TranslateIcon,
-  VoicemailIcon,
-} from "@phosphor-icons/react/dist/ssr"
-
-import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
-import { HeroCallCard } from "@/components/lab/hero-call-card"
-import { FeatureGrid, FeaturePanel, IntegrationsStrip, PageHero, Pillars, Proof, ScriptWall, TrustRow, WorksWith } from "@/components/product-page/blocks"
 import { Faq } from "@/components/product-page/faq"
-import { LanguageScreen, LatencyBar, TurnTimeline, VoiceStudioScreen, VoicesScreen } from "@/components/product/voice-visuals"
-import { FinalCta } from "@/components/sections/final-cta"
+import { Definition, NextStep } from "@/components/product-page/page-bits"
 import { Logos } from "@/components/sections/logos"
+import { TwoWayCta } from "@/components/sections/two-way-cta"
+import { Languages } from "@/components/voice/languages"
+import { SayRightPanel, SpeedPanel } from "@/components/voice/panels"
+import { VoiceHero } from "@/components/voice/hero"
+import { VoiceTrio } from "@/components/voice/sections"
+import { SpeechLayer } from "@/components/voice/speech-layer"
+import { Studio } from "@/components/voice/studio"
+import { Turns } from "@/components/voice/turns"
 import { voicePage as c } from "@/content/pages/voice"
 
 /**
- * /platform/voice, in the product-page structure: hero with the voice
- * studio, logos, three parts, the language wall, four deep-dives (voices,
- * turn-taking, languages, speed), hear it live, a compact grid, providers, reliability, proof,
- * FAQ, neighbouring pages and the closing CTA.
+ * /platform/voice, following the content sheet in the homepage's language
+ * (like Agents and Workflows): floating hero, logos, definition and proof,
+ * the voice studio you can hear, turn-taking (full width), languages with a
+ * clear-line before/after, pronunciation, speed, tuning and failover, the
+ * speech layer under the hood (speech-to-text and text-to-speech), FAQ,
+ * next step and the two-way close. SAMPLE audio and latency.
  */
 
-const PILLAR_ICONS = [SpeakerHighIcon, EarIcon, TranslateIcon]
-const GRID_ICONS = [HashIcon, VoicemailIcon, TimerIcon, ChartLineIcon]
-const TRUST_ICONS = [BrainIcon, SpeakerHighIcon, MicrophoneIcon, ShieldCheckIcon]
+/** The homepage's roomier section spacing. */
+const ROOMY = {
+  "--section-gap": "clamp(3.25rem, 2.25rem + 3vw, 5rem)",
+  "--section-pad": "calc(var(--section-gap) / 2)",
+} as React.CSSProperties
 
 export function VoicePage() {
   return (
-    <>
-      <PageHero id="voice-hero" crumb={c.crumb} title={c.title} line={c.line} cta screen={(cls) => <VoiceStudioScreen className={cls} />} />
+    <div style={ROOMY}>
+      <VoiceHero />
       <Logos label="Trusted by 100+ teams" />
-      <Pillars id="voice-pillars" items={c.pillars.map((p, i) => ({ ...p, icon: PILLAR_ICONS[i] }))} />
-      <ScriptWall id="voice-wall" title={c.wall.title} items={c.wall.items} />
-
-      <FeaturePanel id="voice-sound" q={c.sound} screen={(cls) => <VoicesScreen className={cls} />} />
-      <FeaturePanel
-        id="voice-turns"
-        q={c.turns}
-        flip
-        screen={() => (
-          <div className="absolute inset-0 flex items-center bg-background p-6 sm:p-10">
-            <TurnTimeline />
-          </div>
-        )}
-      />
-      <FeaturePanel id="voice-languages" q={c.languages} screen={(cls) => <LanguageScreen className={cls} />} />
-      <FeaturePanel
-        id="voice-speed"
-        q={c.speed}
-        flip
-        screen={() => (
-          <div className="absolute inset-0 flex items-center bg-background p-6 sm:p-10">
-            <LatencyBar />
-          </div>
-        )}
-      />
-
-      {/* Hear it: the same demo widget as the homepage */}
-      <Section id="voice-hear">
-        <Container>
-          <div className="flex max-w-[44rem] flex-col gap-3">
-            <h2 className="text-h2 font-normal">{c.hear.title}</h2>
-            <p className="text-body text-ink-secondary">{c.hear.line}</p>
-          </div>
-          <div className="mt-10">
-            <HeroCallCard plain />
-          </div>
-        </Container>
-      </Section>
-
-      <FeatureGrid id="voice-grid" title={c.grid.title} items={c.grid.items.map((f, i) => ({ ...f, icon: GRID_ICONS[i] }))} />
-      <IntegrationsStrip id="voice-providers" title={c.providers.title} line={c.providers.line} logos={c.providers.names.map((name) => ({ name }))} more="integrations" />
-      <TrustRow id="voice-reliability" title={c.reliability.title} items={c.reliability.items.map((t, i) => ({ ...t, icon: TRUST_ICONS[i] }))} more="security" />
-      <Proof id="voice-proof" {...c.proof} placeholder />
+      <Definition id="voice-definition" text={c.definition} proof={c.proof} placeholder />
+      <Studio />
+      <Turns />
+      <Languages />
+      <SayRightPanel />
+      <SpeedPanel />
+      <VoiceTrio />
+      <SpeechLayer />
       <Faq id="voice-faq" items={c.faq} />
-      <WorksWith id="voice-related" pages={c.related} />
-      <FinalCta id="voice-cta" title="Hear your Hooman before your customers do." />
-    </>
+      <NextStep id="voice-next" related={c.related} />
+      <TwoWayCta />
+    </div>
   )
 }

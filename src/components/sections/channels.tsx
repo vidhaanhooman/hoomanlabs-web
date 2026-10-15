@@ -187,7 +187,7 @@ function Diagram({ kind }: { kind: OnTheCallVisual }) {
       <div className="flex flex-col items-start gap-1">
         <span>Agent</span>
         <span className="rounded-md bg-background px-2 py-1 text-ink-secondary">
-          Your bill of £86 is due on the
+          Your bill of $86 is due on the
           <span className="text-ink-muted">…</span>
         </span>
       </div>

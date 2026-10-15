@@ -52,7 +52,7 @@ function Before() {
           Briefed
         </span>
       </div>
-      <Row first k="Balance" v="£86.40 · due 4 March" />
+      <Row first k="Balance" v="$86.40 · due 4 March" />
       <Row k="Plan" v="Green Fixed 12m" />
       <Row k="Last call" v="Promised to pay by 28 Feb" />
       <div className="mt-auto flex items-center justify-between border-t border-line bg-surface px-4 py-2 text-label text-ink-secondary">
@@ -79,7 +79,7 @@ function During() {
       </div>
       <div className="flex flex-col gap-2.5 px-4 py-3">
         <span className="text-label text-ink-muted">Summary for Priya</span>
-        {["Disputes a £40 estimated reading", "Meter photo received", "Identity verified"].map((t) => (
+        {["Disputes a $40 estimated reading", "Meter photo received", "Identity verified"].map((t) => (
           <span key={t} className="flex items-center gap-2.5">
             <Check />
             {t}

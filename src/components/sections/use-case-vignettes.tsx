@@ -92,7 +92,7 @@ function Collections() {
       </Chip>
       <Card className="w-full">
         <span className="mb-1 font-medium">March bill</span>
-        <Row k="Amount" v="£86.00" />
+        <Row k="Amount" v="$86.00" />
         <Row k="Due" v="28 Mar" />
         <Row k="Outcome" v={<Done>Promise to pay · Fri</Done>} />
       </Card>

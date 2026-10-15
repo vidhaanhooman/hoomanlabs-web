@@ -100,7 +100,7 @@ function Card({
 const MAPPING = [
   ["context.name", "Maya"],
   ["context.account", "HE-48213"],
-  ["context.balance", "£86.40"],
+  ["context.balance", "$86.40"],
   ["context.lastCall", "12 Feb"],
 ] as const
 

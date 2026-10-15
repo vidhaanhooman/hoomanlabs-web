@@ -265,6 +265,28 @@
 @keyframes flow-dash { to { stroke-dashoffset: -11; } }
 @media (prefers-reduced-motion: reduce) { .flow-dash { animation: none; } }
 
+/* A slow, endless drift for still hero backdrops (MeshStage with an image). */
+@media (prefers-reduced-motion: no-preference) {
+  .backdrop-drift { animation: backdrop-drift 40s ease-in-out infinite alternate; }
+}
+@keyframes backdrop-drift {
+  from { transform: scale(1.04) translate(-1.2%, 0.6%); }
+  to { transform: scale(1.12) translate(1.2%, -0.8%); }
+}
+
+/* Film grain that shifts a few times a second, like running film (MeshStage). */
+@media (prefers-reduced-motion: no-preference) {
+  .grain-flicker { animation: grain-flicker 0.9s steps(1) infinite; }
+}
+@keyframes grain-flicker {
+  0% { transform: translate(0, 0); }
+  17% { transform: translate(-7px, 4px); }
+  33% { transform: translate(5px, -9px); }
+  50% { transform: translate(-11px, -3px); }
+  67% { transform: translate(9px, 8px); }
+  83% { transform: translate(-3px, 11px); }
+}
+
 @keyframes blink { 50% { opacity: 0; } }
 /* A line filling left to right (autoplay progress). */
 @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }

@@ -104,7 +104,7 @@ export const platformFeatured: MenuPage = {
 }
 
 /** Menu pages that exist; add an id here when its page ships. */
-const BUILT = new Set<MenuPageId>(["agents", "voice"])
+const BUILT = new Set<MenuPageId>(["agents", "voice", "workflows", "campaigns", "channels", "integrations", "testing", "quality", "security"])
 export const menuHref = (p: MenuPage) => (BUILT.has(p.id) ? p.url : p.fallback)
 
 /** Components with their own page; the rest link to their section on /platform. */
@@ -325,7 +325,7 @@ export const channels = {
     {
       name: "Voice",
       surfaces: [
-        { name: "Phone", note: "Your numbers or SIP trunk" },
+        { name: "Phone", note: "HoomanLabs numbers or your carrier" },
         { name: "Web", note: "Call from your website" },
         { name: "App", note: "In-app voice, iOS and Android" },
         { name: "WhatsApp", note: "Voice calls", soon: true },

@@ -157,7 +157,7 @@ function Diagram({ mode, pick }: { mode: Mode; pick: number }) {
           )}
         >
           <ArrowLeftIcon className="size-3.5 text-ink-muted" />
-          <span className="text-label">£86.40 paid · ref PAY-77Q2</span>
+          <span className="text-label">$86.40 paid · ref PAY-77Q2</span>
         </div>
       </div>
 

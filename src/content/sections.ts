@@ -83,18 +83,82 @@ export type SectionId =
   | "agents-pillars"
   | "agents-listen"
   | "agents-prompt"
+  | "integrations-hero"
+  | "integrations-definition"
+  | "integrations-directory"
+  | "integrations-connect"
+  | "integrations-data"
+  | "integrations-api"
+  | "integrations-mcp"
+  | "integrations-faq"
+  | "integrations-next"
+  | "channels-hero"
+  | "channels-definition"
+  | "channels-devices"
+  | "channels-phone"
+  | "channels-carrier"
+  | "channels-web"
+  | "channels-journey"
+  | "channels-faq"
+  | "channels-next"
+  | "testing-hero"
+  | "testing-definition"
+  | "testing-callers"
+  | "testing-checks"
+  | "testing-suites"
+  | "testing-never"
+  | "testing-try"
+  | "testing-faq"
+  | "testing-next"
+  | "quality-hero"
+  | "quality-definition"
+  | "quality-judges"
+  | "quality-fault"
+  | "quality-watch"
+  | "quality-humans"
+  | "quality-improve"
+  | "quality-record"
+  | "quality-debrief"
+  | "quality-ask"
+  | "quality-dashboards"
+  | "quality-data"
+  | "quality-faq"
+  | "quality-next"
+  | "security-hero"
+  | "security-definition"
+  | "security-failover"
+  | "security-guardrails"
+  | "security-roles"
+  | "security-telecom"
+  | "security-data"
+  | "security-faq"
+  | "security-next"
+  | "campaigns-hero"
+  | "campaigns-definition"
+  | "campaigns-list"
+  | "campaigns-realtime"
+  | "campaigns-run"
+  | "campaigns-consent"
+  | "campaigns-split"
+  | "campaigns-faq"
+  | "campaigns-next"
+  | "workflows-hero"
+  | "workflows-definition"
+  | "workflows-explainer"
+  | "workflows-triggers"
+  | "workflows-ai"
+  | "workflows-connect"
+  | "workflows-days"
+  | "workflows-logic"
+  | "workflows-test"
+  | "workflows-faq"
+  | "workflows-next"
+  | "workflows-cta"
   | "agents-can-do"
   | "agents-next"
   | "agents-definition"
   | "agents-knowledge"
   | "agents-around"
-  | "workflows-hero"
-  | "workflows-triggers"
-  | "workflows-followups"
-  | "workflows-sync"
-  | "workflows-proof"
-  | "workflows-related"
-  | "workflows-cta"
   | "agents-flows"
   | "agents-tools"
   | "agents-grid"
@@ -103,6 +167,11 @@ export type SectionId =
   | "agents-enterprise"
   | "agents-faq"
   | "voice-hero"
+  | "voice-next"
+  | "voice-trio"
+  | "voice-say"
+  | "voice-studio"
+  | "voice-definition"
   | "voice-pillars"
   | "voice-sound"
   | "voice-turns"
@@ -114,6 +183,7 @@ export type SectionId =
   | "voice-providers"
   | "voice-reliability"
   | "voice-proof"
+  | "voice-speech"
   | "voice-faq"
   | "voice-related"
   | "voice-cta"
@@ -199,18 +269,82 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "agents-pillars", name: "Agents: three parts", status: "draft" },
   { id: "agents-listen", name: "Agents: hear it", status: "draft" },
   { id: "agents-prompt", name: "Agents: prompt panel", status: "draft" },
+  { id: "integrations-hero", name: "Integrations: hero", status: "draft" },
+  { id: "integrations-definition", name: "Integrations: definition", status: "draft" },
+  { id: "integrations-directory", name: "Integrations: directory", status: "draft" },
+  { id: "integrations-connect", name: "Integrations: connect panel", status: "draft" },
+  { id: "integrations-data", name: "Integrations: a call's data on its way out", status: "draft" },
+  { id: "integrations-api", name: "Integrations: API panel", status: "draft" },
+  { id: "integrations-mcp", name: "Integrations: MCP panel", status: "draft" },
+  { id: "integrations-faq", name: "Integrations: FAQ", status: "draft" },
+  { id: "integrations-next", name: "Integrations: next step", status: "draft" },
+  { id: "channels-hero", name: "Channels: hero", status: "draft" },
+  { id: "channels-definition", name: "Channels: definition and proof", status: "draft" },
+  { id: "channels-devices", name: "Channels: one agent on every surface (devices)", status: "draft" },
+  { id: "channels-phone", name: "Channels: phone lines panel", status: "draft" },
+  { id: "channels-carrier", name: "Channels: telephony panel", status: "draft" },
+  { id: "channels-web", name: "Channels: web and app panel", status: "draft" },
+  { id: "channels-journey", name: "Channels: one customer across channels", status: "draft" },
+  { id: "channels-faq", name: "Channels: FAQ", status: "draft" },
+  { id: "channels-next", name: "Channels: next step", status: "draft" },
+  { id: "testing-hero", name: "Testing: hero", status: "draft" },
+  { id: "testing-definition", name: "Testing: definition", status: "draft" },
+  { id: "testing-callers", name: "Testing: mystery callers", status: "draft" },
+  { id: "testing-checks", name: "Testing: spot checks", status: "draft" },
+  { id: "testing-suites", name: "Testing: test suites and versions", status: "draft" },
+  { id: "testing-never", name: "Testing: never-again tests", status: "draft" },
+  { id: "testing-try", name: "Testing: try it now", status: "draft" },
+  { id: "testing-faq", name: "Testing: FAQ", status: "draft" },
+  { id: "testing-next", name: "Testing: next step", status: "draft" },
+  { id: "quality-hero", name: "Quality: hero", status: "draft" },
+  { id: "quality-definition", name: "Quality: definition", status: "draft" },
+  { id: "quality-judges", name: "Quality: five judges, one scorecard", status: "draft" },
+  { id: "quality-fault", name: "Quality: fault finder", status: "draft" },
+  { id: "quality-watch", name: "Quality: scorecards, audits and alerts", status: "draft" },
+  { id: "quality-humans", name: "Quality: QA your human team", status: "draft" },
+  { id: "quality-improve", name: "Quality: gets better every week", status: "draft" },
+  { id: "quality-record", name: "Quality: every call on record", status: "draft" },
+  { id: "quality-debrief", name: "Quality: debrief", status: "draft" },
+  { id: "quality-ask", name: "Quality: Ask AI", status: "draft" },
+  { id: "quality-dashboards", name: "Quality: dashboards and reports", status: "draft" },
+  { id: "quality-data", name: "Quality: data to your systems", status: "draft" },
+  { id: "quality-faq", name: "Quality: FAQ", status: "draft" },
+  { id: "quality-next", name: "Quality: next step", status: "draft" },
+  { id: "security-hero", name: "Security: hero", status: "draft" },
+  { id: "security-definition", name: "Security: definition", status: "draft" },
+  { id: "security-failover", name: "Security: always on", status: "draft" },
+  { id: "security-guardrails", name: "Security: call guardrails", status: "draft" },
+  { id: "security-roles", name: "Security: workspaces and roles", status: "draft" },
+  { id: "security-telecom", name: "Security: telecom compliance", status: "draft" },
+  { id: "security-data", name: "Security: your data", status: "draft" },
+  { id: "security-faq", name: "Security: FAQ", status: "draft" },
+  { id: "security-next", name: "Security: next step", status: "draft" },
+  { id: "campaigns-hero", name: "Campaigns: hero", status: "draft" },
+  { id: "campaigns-definition", name: "Campaigns: definition and proof", status: "draft" },
+  { id: "campaigns-list", name: "Campaigns: list panel", status: "draft" },
+  { id: "campaigns-realtime", name: "Campaigns: always-on panel", status: "draft" },
+  { id: "campaigns-run", name: "Campaigns: a campaign running", status: "draft" },
+  { id: "campaigns-consent", name: "Campaigns: consent trio", status: "draft" },
+  { id: "campaigns-split", name: "Campaigns: A/B panel", status: "draft" },
+  { id: "campaigns-faq", name: "Campaigns: FAQ", status: "draft" },
+  { id: "campaigns-next", name: "Campaigns: next step", status: "draft" },
+  { id: "workflows-hero", name: "Workflows: hero", status: "draft" },
+  { id: "workflows-definition", name: "Workflows: definition and proof", status: "draft" },
+  { id: "workflows-explainer", name: "Workflows: how a workflow works", status: "draft" },
+  { id: "workflows-triggers", name: "Workflows: triggers panel", status: "draft" },
+  { id: "workflows-ai", name: "Workflows: AI steps panel", status: "draft" },
+  { id: "workflows-connect", name: "Workflows: connect panel", status: "draft" },
+  { id: "workflows-days", name: "Workflows: follows a customer over days", status: "draft" },
+  { id: "workflows-logic", name: "Workflows: business logic trio", status: "draft" },
+  { id: "workflows-test", name: "Workflows: build and test panel", status: "draft" },
+  { id: "workflows-faq", name: "Workflows: FAQ", status: "draft" },
+  { id: "workflows-next", name: "Workflows: next step", status: "draft" },
+  { id: "workflows-cta", name: "Workflows: CTA", status: "draft" },
   { id: "agents-can-do", name: "Agents: what it can do (pinned)", status: "draft" },
   { id: "agents-next", name: "Agents: next step", status: "draft" },
   { id: "agents-definition", name: "Agents: definition and proof", status: "draft" },
   { id: "agents-knowledge", name: "Agents: knowledge panel", status: "draft" },
   { id: "agents-around", name: "Agents: everything around the call", status: "draft" },
-  { id: "workflows-hero", name: "Workflows: hero", status: "draft" },
-  { id: "workflows-triggers", name: "Workflows: chapter, starts on its own", status: "draft" },
-  { id: "workflows-followups", name: "Workflows: chapter, follows up", status: "draft" },
-  { id: "workflows-sync", name: "Workflows: chapter, updates your systems", status: "draft" },
-  { id: "workflows-proof", name: "Workflows: customer proof", status: "draft" },
-  { id: "workflows-related", name: "Workflows: works with", status: "draft" },
-  { id: "workflows-cta", name: "Workflows: CTA", status: "draft" },
   { id: "agents-flows", name: "Agents: flows deep-dive", status: "draft" },
   { id: "agents-tools", name: "Agents: tools deep-dive", status: "draft" },
   { id: "agents-grid", name: "Agents: everything around the call", status: "draft" },
@@ -219,6 +353,11 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "agents-enterprise", name: "Agents: enterprise readiness", status: "draft" },
   { id: "agents-faq", name: "Agents: FAQ", status: "draft" },
   { id: "voice-hero", name: "Voice page: hero", status: "draft" },
+  { id: "voice-definition", name: "Voice: definition and proof", status: "draft" },
+  { id: "voice-studio", name: "Voice: studio", status: "draft" },
+  { id: "voice-say", name: "Voice: pronunciation", status: "draft" },
+  { id: "voice-trio", name: "Voice: tuning and failover", status: "draft" },
+  { id: "voice-next", name: "Voice: next step", status: "draft" },
   { id: "voice-pillars", name: "Voice: three parts", status: "draft" },
   { id: "voice-sound", name: "Voice: voices deep-dive", status: "draft" },
   { id: "voice-turns", name: "Voice: turn-taking deep-dive", status: "draft" },
@@ -230,6 +369,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "voice-providers", name: "Voice: providers", status: "draft" },
   { id: "voice-reliability", name: "Voice: reliability", status: "draft" },
   { id: "voice-proof", name: "Voice: proof", status: "draft" },
+  { id: "voice-speech", name: "Voice: under the hood (STT and TTS)", status: "draft" },
   { id: "voice-faq", name: "Voice: FAQ", status: "draft" },
   { id: "voice-related", name: "Voice: works with", status: "draft" },
   { id: "voice-cta", name: "Voice: CTA", status: "draft" },

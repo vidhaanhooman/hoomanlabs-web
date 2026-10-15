@@ -35,7 +35,7 @@ const MOMENTS: Record<string, Moment> = {
   },
   pay: {
     lines: [
-      ["Caller", "Can I just pay the £86.40 now?"],
+      ["Caller", "Can I just pay the $86.40 now?"],
       ["Ria", "Done. It's paid and your receipt is on its way."],
     ],
     chip: { icon: LightningIcon, text: "take_payment", ok: "1.2s" },

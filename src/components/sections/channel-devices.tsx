@@ -29,7 +29,7 @@ const TILE: Record<Surface, { focus: string; tone: "graphite" | "light" }> = {
 }
 
 const CAPTION: Record<Surface, string> = {
-  Phone: "Your numbers or SIP trunk",
+  Phone: "HoomanLabs numbers or your carrier",
   Web: "Widget on your website",
   App: "In-app, iOS and Android",
   WhatsApp: "Business messaging",
@@ -189,7 +189,7 @@ function WhatsAppChat() {
         </span>
       </div>
       <div className="flex flex-col gap-1.5">
-        <span className="self-start rounded-md bg-background px-2 py-1">Your bill of £86 is due Friday. Pay now?</span>
+        <span className="self-start rounded-md bg-background px-2 py-1">Your bill of $86 is due Friday. Pay now?</span>
         <span className="self-end rounded-md bg-foreground px-2 py-1 text-background">Yes please</span>
         <span className="self-start rounded-md bg-background px-2 py-1">
           Done. Receipt sent. <span className="text-ink-muted">✓✓</span>

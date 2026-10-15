@@ -87,7 +87,7 @@ function Line({ who, text, dim = false }: { who: string; text: string; dim?: boo
 export function LiveCallScreen({ className }: { className: string }) {
   return (
     <UiWindow className={className} title="Live call · Maya Patel" aside={<UiPill live>00:42</UiPill>}>
-      <Line who="Caller" text="Can I just pay the £86.40 now?" dim />
+      <Line who="Caller" text="Can I just pay the $86.40 now?" dim />
       <Line who="Ria" text="Of course. I'm setting that up, one moment." />
       <UiCard className="border-[oklch(0.74_0.16_150/0.35)]">
         <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export function LiveCallScreen({ className }: { className: string }) {
         </div>
         <span className="text-[11px] text-(--ui-muted)">Ran in the background while Ria kept talking</span>
       </UiCard>
-      <Line who="Ria" text="Done. £86.40 is paid and your receipt is on its way." />
+      <Line who="Ria" text="Done. $86.40 is paid and your receipt is on its way." />
     </UiWindow>
   )
 }

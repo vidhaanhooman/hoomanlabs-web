@@ -85,7 +85,7 @@ function PreCall() {
       <Snip className="w-full">
         <span className="pb-1 font-medium">Maya Patel</span>
         <Row k={<Code>context.account</Code>} v="HE-48213" />
-        <Row k={<Code>context.balance</Code>} v="£86.40" />
+        <Row k={<Code>context.balance</Code>} v="$86.40" />
         <Row k={<Code>context.dueDate</Code>} v="4 Mar" />
         <Row k={<Code>context.lastCall</Code>} v="Meter reading" />
       </Snip>

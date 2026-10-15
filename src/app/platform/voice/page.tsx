@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 
 import { VoicePage } from "@/components/voice-page"
+import { voicePage } from "@/content/pages/voice"
 
 export const metadata: Metadata = {
-  title: "AI voice agents that sound human, in every language",
-  description:
-    "Natural voices, human turn-taking and native Indian languages, fast enough that conversations flow. Mid-call language switching, noise reduction and failover built in.",
+  title: voicePage.seo.title,
+  description: voicePage.seo.description,
 }
 
 export default function Voice() {

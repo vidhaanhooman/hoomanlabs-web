@@ -63,9 +63,9 @@ export function VoiceStudioScreen({ className }: { className: string }) {
       <UiCard>
         <UiLabel>Reads naturally</UiLabel>
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2 text-[12px]">
-          <span className="font-mono text-(--ui-muted)">£86.40</span>
+          <span className="font-mono text-(--ui-muted)">$86.40</span>
           <span className="text-(--ui-muted)">→</span>
-          <span>&ldquo;eighty-six pounds forty&rdquo;</span>
+          <span>&ldquo;eighty-six dollars forty&rdquo;</span>
           <span className="font-mono text-(--ui-muted)">04/03</span>
           <span className="text-(--ui-muted)">→</span>
           <span>&ldquo;the fourth of March&rdquo;</span>
@@ -239,5 +239,79 @@ export function LatencyBar() {
         ))}
       </div>
     </div>
+  )
+}
+
+/** Say-it-right: how written names, codes, amounts and dates are spoken. */
+export function PronunciationScreen({ className }: { className: string }) {
+  const rows = [
+    ["HLD-482913", "H-L-D, four eight two, nine one three", "Code"],
+    ["$86.40", "eighty-six dollars forty", "Amount"],
+    ["04/03", "the fourth of March", "Date"],
+    ["Halden", "HAWL-den", "Dictionary"],
+    ["Indiranagar", "in-dee-ra-NUH-gur", "Dictionary"],
+  ]
+  return (
+    <UiWindow className={className} title="Pronunciation · Billing agent" aside={<UiPill>5 rules</UiPill>}>
+      <UiCard className="gap-0 p-0">
+        <div className="grid grid-cols-[7rem_1fr_5.5rem] gap-3 border-b border-(--ui-line) px-3.5 py-2 text-[11px] text-(--ui-muted)">
+          <span>Written</span>
+          <span>Spoken</span>
+          <span>Rule</span>
+        </div>
+        {rows.map(([w, s, r]) => (
+          <div key={w} className="grid grid-cols-[7rem_1fr_5.5rem] items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0">
+            <span className="font-mono text-[11.5px]">{w}</span>
+            <span className="flex items-center gap-2">
+              <PlayIcon weight="fill" className="size-3 shrink-0 text-(--ui-muted)" />
+              &ldquo;{s}&rdquo;
+            </span>
+            <span className="text-[11px] text-(--ui-muted)">{r}</span>
+          </div>
+        ))}
+      </UiCard>
+    </UiWindow>
+  )
+}
+
+/** Turn trace: one turn, stage by stage. SAMPLE timings. */
+export function TurnTraceScreen({ className }: { className: string }) {
+  const total = 780
+  const stages = [
+    { name: "End of turn detected", from: 0, to: 180 },
+    { name: "Transcript final", from: 180, to: 240 },
+    { name: "Model first token", from: 240, to: 520 },
+    { name: "First sentence ready", from: 520, to: 600 },
+    { name: "Voice first audio", from: 600, to: 780 },
+  ]
+  return (
+    <UiWindow className={className} title="Turn trace · turn 7" aside={<UiPill live>{total} ms</UiPill>}>
+      <UiCard>
+        <UiLabel>Caller stops speaking → Hooman speaks</UiLabel>
+        {stages.map((s) => (
+          <div key={s.name} className="grid grid-cols-[9.5rem_1fr_3rem] items-center gap-3 text-[11.5px]">
+            <span className="text-(--ui-muted)">{s.name}</span>
+            <span className="relative h-2 rounded-full bg-(--ui-raised)">
+              <span className="absolute inset-y-0 rounded-full bg-(--ui-text)/80" style={{ left: `${(s.from / total) * 100}%`, width: `${((s.to - s.from) / total) * 100}%` }} />
+            </span>
+            <span className="text-right font-mono tabular-nums">{s.to - s.from}</span>
+          </div>
+        ))}
+      </UiCard>
+      <UiCard>
+        <div className="flex items-center justify-between">
+          <UiLabel>Brain choice</UiLabel>
+          <UiPill>Per step</UiPill>
+        </div>
+        <div className="flex justify-between text-[12px]">
+          <span className="text-(--ui-muted)">Small talk</span>
+          <span>Fast model</span>
+        </div>
+        <div className="flex justify-between text-[12px]">
+          <span className="text-(--ui-muted)">Payments</span>
+          <span>Careful model</span>
+        </div>
+      </UiCard>
+    </UiWindow>
   )
 }

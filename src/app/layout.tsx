@@ -6,6 +6,7 @@ import { CalBooking } from "@/components/layout/cal-booking"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 import { productSections, sections } from "@/content/sections"
+import { THEME_SCRIPT } from "@/lib/theme"
 import "./globals.css"
 
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" })
@@ -22,7 +23,10 @@ const drafting = [...sections, ...productSections].some((s) => s.status === "dra
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-dvh">
         <a
           href="#main"

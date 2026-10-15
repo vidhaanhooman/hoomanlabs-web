@@ -19,7 +19,7 @@ type Card = { title: string; rows: [string, string][]; from?: number }
 
 const CARDS: Record<JourneyId, Partial<Record<number, Card>>> = {
   inbound: {
-    1: { title: "From your CRM", rows: [["Customer", "Maya Patel"], ["Balance", "£86.40 due 4 Mar"]], from: 1 },
+    1: { title: "From your CRM", rows: [["Customer", "Maya Patel"], ["Balance", "$86.40 due 4 Mar"]], from: 1 },
     3: { title: "Understood", rows: [["Intent", "Duplicate charge"], ["Sentiment", "Calm"]], from: 4 },
     4: { title: "Outcome", rows: [["Ticket", "#TCK-2291"], ["Sent to", "Zendesk"]] },
   },

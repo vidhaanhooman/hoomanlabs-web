@@ -1,6 +1,7 @@
 import { AgentPanels } from "@/components/agents/panels"
 import { Moments } from "@/components/agents/moments"
-import { AgentsHero, Definition, NextStep, Talk } from "@/components/agents/sections"
+import { AgentsHero, Talk } from "@/components/agents/sections"
+import { Definition, NextStep } from "@/components/product-page/page-bits"
 import { Faq } from "@/components/product-page/faq"
 import { Logos } from "@/components/sections/logos"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
@@ -25,12 +26,12 @@ export function AgentsPage() {
     <div style={ROOMY}>
       <AgentsHero />
       <Logos label="Trusted by 100+ teams" />
-      <Definition />
+      <Definition id="agents-definition" text={c.definition} proof={{ quote: `“${c.proof.quote}”`, by: c.proof.by }} />
       <AgentPanels />
       <Moments />
       <Talk />
       <Faq id="agents-faq" items={c.faq} />
-      <NextStep />
+      <NextStep id="agents-next" related={c.related} />
       <TwoWayCta />
     </div>
   )

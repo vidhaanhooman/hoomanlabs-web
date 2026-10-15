@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { MainNav } from "@/components/layout/main-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { Wordmark } from "@/components/layout/wordmark"
 import { ctas, nav } from "@/content/draft"
 
@@ -18,6 +19,7 @@ export function SiteHeader() {
         <MainNav />
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <div className="hidden items-center gap-2 sm:flex">
             <Link href={nav.signIn.href} className={buttonVariants({ variant: "ghost" })}>
               {nav.signIn.label}
