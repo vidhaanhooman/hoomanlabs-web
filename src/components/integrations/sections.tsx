@@ -15,7 +15,7 @@ export function IntegrationsHero() {
   return (
     <Section id="integrations-hero" spacing="none" className="pt-10 pb-(--section-pad) md:pt-16">
       <Container>
-        <HeroCopy crumb={c.crumb} title={c.title} line={c.line} link={{ label: "Follow a call's data", href: "#integrations-data" }} />
+        <HeroCopy crumb={c.crumb} title={c.title} line={c.line} link={{ label: "See how it connects", href: "#integrations-connect" }} />
       </Container>
 
       {/* A large integrations console on the landscape backdrop, with live call events */}

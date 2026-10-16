@@ -85,11 +85,10 @@ export type SectionId =
   | "agents-prompt"
   | "integrations-hero"
   | "integrations-definition"
-  | "integrations-directory"
   | "integrations-connect"
-  | "integrations-data"
-  | "integrations-api"
-  | "integrations-mcp"
+  | "integrations-actions"
+  | "integrations-webhooks"
+  | "integrations-systems"
   | "integrations-faq"
   | "integrations-next"
   | "channels-hero"
@@ -301,11 +300,10 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "agents-prompt", name: "Agents: prompt panel", status: "draft" },
   { id: "integrations-hero", name: "Integrations: hero", status: "draft" },
   { id: "integrations-definition", name: "Integrations: definition", status: "draft" },
-  { id: "integrations-directory", name: "Integrations: directory", status: "draft" },
-  { id: "integrations-connect", name: "Integrations: connect panel", status: "draft" },
-  { id: "integrations-data", name: "Integrations: a call's data on its way out", status: "draft" },
-  { id: "integrations-api", name: "Integrations: API panel", status: "draft" },
-  { id: "integrations-mcp", name: "Integrations: MCP panel", status: "draft" },
+  { id: "integrations-connect", name: "Integrations: connect anything (before, during, workflows)", status: "draft" },
+  { id: "integrations-actions", name: "Integrations: take actions (API and MCP)", status: "draft" },
+  { id: "integrations-webhooks", name: "Integrations: webhooks at key events", status: "draft" },
+  { id: "integrations-systems", name: "Integrations: already integrated", status: "draft" },
   { id: "integrations-faq", name: "Integrations: FAQ", status: "draft" },
   { id: "integrations-next", name: "Integrations: next step", status: "draft" },
   { id: "channels-hero", name: "Channels: hero", status: "draft" },
