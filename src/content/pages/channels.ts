@@ -5,48 +5,45 @@ import type { MenuPageId } from "@/content/platform"
  * for the sections, "Hoomanlabs" tab for each feature's name and pointer).
  * Sections are written as features, not the sheet's questions, in the
  * homepage's language like the other product pages.
- * SAMPLE: the proof metric. WhatsApp and customer profiles are not live yet
- * (shown as Coming soon); web and in-app packaging to be verified.
+ * SAMPLE: the proof metric. WhatsApp calls and customer profiles are not
+ * live yet (shown as Coming soon); web and in-app packaging to be verified.
  */
 export const channelsPage = {
   seo: {
     title: "AI Phone Agent for Inbound Calls, Web and App",
-    description: "The same AI agent answers your phone lines 24/7, your website and your app, with one memory of every customer. WhatsApp coming soon.",
+    description: "The same AI agent on voice and chat: phone lines 24/7, your website, your app and WhatsApp, with one memory of every customer.",
   },
   crumb: "Channels",
   title: "One Hooman, on every channel.",
-  line: "The same Hooman answers your phone line, your website and your app, with WhatsApp coming next.",
+  line: "The same Hooman answers your phone line, your website, your app and WhatsApp, by voice or chat.",
 
   /** The sheet's "What is it?" definition block. */
-  definition: "Channels are where your Hooman meets customers: phone lines, web voice and chat, in-app calls and soon WhatsApp.",
+  definition: "Channels are where your Hooman meets customers: phone calls, your website, your app and WhatsApp, by voice or chat.",
   /** SAMPLE: the sheet's proof strip is "TBD: inbound volume metric". */
   proof: { quote: "100% answered", by: "every inbound call picked up, day and night" },
 
+  /**
+   * Two sections, by how customers talk: Voice (phone, app, WhatsApp) and
+   * Chat (web, app, WhatsApp). Availability matches `channels.modes` in
+   * content/platform.ts: WhatsApp calls are coming soon.
+   */
   panels: {
-    /** Sheet section 1. */
-    phone: {
-      label: "Phone lines",
-      title: "Answers your phone line, day and night.",
-      rows: [{ id: "phone", title: "Phone lines", body: "Get numbers and handle inbound calls 24/7, with no queue and no hold music." }],
-    },
-    /** Sheet section 2. */
-    carrier: {
-      label: "Telephony",
-      title: "Our numbers, or your carrier.",
+    voice: {
+      label: "Voice",
+      title: "Customers call, and your Hooman answers.",
       rows: [
-        { id: "hooman", title: "HoomanLabs numbers", body: "Get numbers from us, ready to answer in minutes. No carrier account needed." },
-        { id: "byot", title: "Bring your own carrier", body: "Connect Exotel, Ozonetel, Plivo or Twilio and keep the numbers customers know." },
-        { id: "verified", title: "Verified calling", body: "Verified business numbers, for trust and better pickup." },
+        { id: "phone", title: "Phone", body: "HoomanLabs numbers, ready in minutes, or bring your own carrier (BYOT) and keep the numbers customers know. Answered 24/7." },
+        { id: "app", title: "In-app calls", body: "Your users call your Hooman from inside your iOS or Android app." },
+        { id: "whatsapp", title: "WhatsApp calls · Coming soon", body: "Voice calls on WhatsApp, with the same agent." },
       ],
-      // TO CONFIRM before adding: the countries numbers are offered in.
     },
-    /** Sheet section 3. */
-    web: {
-      label: "Web and app",
-      title: "Talks on your website and in your app.",
+    chat: {
+      label: "Chat",
+      title: "Customers type, and get answers right away.",
       rows: [
-        { id: "web", title: "Web & chat", body: "Voice and chat on your website, from one small snippet." },
-        { id: "app", title: "In-app voice", body: "Let your users call your Hooman from inside your app." },
+        { id: "web", title: "Website chat", body: "A chat widget on your site, added with one small snippet." },
+        { id: "app", title: "In-app chat", body: "Chat inside your iOS or Android app." },
+        { id: "whatsapp", title: "WhatsApp", body: "Business messaging, where customers already are." },
       ],
     },
   },
@@ -60,7 +57,6 @@ export const channelsPage = {
       { id: "continuity", title: "Session continuity", body: "A conversation carries on across channels, without starting again." },
       { id: "recall", title: "Recall", body: "Picks up where the last conversation left off; customers never repeat themselves." },
       { id: "profiles", title: "Customer profiles", body: "History, preferences and open issues, known before hello.", soon: true },
-      { id: "whatsapp", title: "WhatsApp", body: "Continue conversations where customers already are.", soon: true },
     ],
   },
 
@@ -75,15 +71,15 @@ export const channelsPage = {
     },
     {
       q: "How do we add it to our website?",
-      a: "Add one small snippet to your site for voice and chat. For your app, your users can call your Hooman from inside it.",
+      a: "Add one small snippet to your site for the chat widget. In your app, users can chat with your Hooman or call it.",
     },
     {
       q: "Is it the same agent on every channel?",
       a: "Yes. It's one Hooman with one memory of each customer, so a conversation that starts on the phone can continue on your website or app.",
     },
     {
-      q: "When is WhatsApp coming?",
-      a: "WhatsApp is next on our list. Talk to us if you'd like early access.",
+      q: "Does it work on WhatsApp?",
+      a: "Yes, for chat: your Hooman answers WhatsApp business messages. WhatsApp voice calls are coming soon; talk to us if you'd like early access.",
     },
   ],
 

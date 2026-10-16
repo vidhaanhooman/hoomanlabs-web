@@ -102,7 +102,8 @@ export function TestingConsole() {
     let raf = 0
     const start = performance.now()
     const tick = (now: number) => {
-      const p = Math.min(1, (now - start) / COUNT_MS)
+      // rAF can report a time just before `start`, so clamp at 0 (else counts go negative).
+      const p = Math.min(1, Math.max(0, (now - start) / COUNT_MS))
       setT(p)
       if (p < 1) raf = requestAnimationFrame(tick)
     }

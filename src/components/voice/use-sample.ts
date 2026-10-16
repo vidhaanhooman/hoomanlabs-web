@@ -7,13 +7,14 @@ import { useCallback, useEffect, useRef, useState } from "react"
  * one real recording we have) and can mix generated background sound under
  * it: a soft office murmur ("office") or louder street noise ("street"),
  * made in the browser with Web Audio, so the Ambience and Clear line
- * switches are audible without extra files.
+ * switches are audible without extra files. Pass `src` to play another
+ * recording (the Solutions call players do); the Voice page uses the default.
  */
 
 export const SAMPLE_SRC = "/audio/calls/feedback-en.mp3"
 
 /** Fired when any sample starts, so every other player on the page pauses. */
-const ONE_AT_A_TIME = "hooman-sample-play"
+export const ONE_AT_A_TIME = "hooman-sample-play"
 
 type Bed = "none" | "office" | "street"
 const GAIN: Record<Bed, number> = { none: 0, office: 0.035, street: 0.16 }
@@ -32,7 +33,7 @@ function noiseBuffer(ctx: AudioContext) {
   return buf
 }
 
-export function useSample() {
+export function useSample(src: string = SAMPLE_SRC) {
   const audio = useRef<HTMLAudioElement | null>(null)
   const ctx = useRef<AudioContext | null>(null)
   const gain = useRef<GainNode | null>(null)
@@ -42,7 +43,7 @@ export function useSample() {
   const [time, setTime] = useState(0)
 
   useEffect(() => {
-    const a = new Audio(SAMPLE_SRC)
+    const a = new Audio(src)
     a.preload = "none"
     const tick = () => setTime(a.currentTime)
     const end = () => setPlaying(null)
@@ -62,22 +63,23 @@ export function useSample() {
       a.removeEventListener("timeupdate", tick)
       a.removeEventListener("ended", end)
       ctx.current?.close()
+      ctx.current = null
     }
-  }, [])
+  }, [src])
 
   // Build the noise bed on first use (it needs a user gesture to start).
   const ensureBed = useCallback(() => {
     if (ctx.current) return
     const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     const c = new Ctx()
-    const src = c.createBufferSource()
-    src.buffer = noiseBuffer(c)
-    src.loop = true
+    const noise = c.createBufferSource()
+    noise.buffer = noiseBuffer(c)
+    noise.loop = true
     const f = c.createBiquadFilter()
     const g = c.createGain()
     g.gain.value = 0
-    src.connect(f).connect(g).connect(c.destination)
-    src.start()
+    noise.connect(f).connect(g).connect(c.destination)
+    noise.start()
     ctx.current = c
     gain.current = g
     filter.current = f
@@ -117,7 +119,10 @@ export function useSample() {
       // A different sample starts from the top; the same one resumes.
       if (a.ended || (playing !== null && playing !== id)) a.currentTime = 0
       window.dispatchEvent(new CustomEvent(ONE_AT_A_TIME, { detail: a }))
-      a.play().catch(() => setPlaying(null))
+      // Only reset if this element is still ours and stopped (a remount can abort an old play()).
+      a.play().catch(() => {
+        if (audio.current === a && a.paused) setPlaying(null)
+      })
       setPlaying(id)
       applyBed(bed.current, true)
     },

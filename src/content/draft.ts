@@ -6,7 +6,7 @@
 export const nav = {
   /** "Product" is a menu built from src/content/products.ts. */
   links: [
-    { label: "Solutions", href: "#platform" },
+    { label: "Solutions", href: "/solutions" },
     { label: "Customers", href: "#testimonials" },
     { label: "Pricing", href: "#" },
     { label: "Docs", href: "#" },
@@ -110,16 +110,17 @@ export const footer = {
       title: "Company",
       links: [
         { label: "About", href: "#" },
-        { label: "Careers", href: "#" },
+        { label: "Careers", href: "/careers" },
         { label: "Contact", href: "#" },
       ],
     },
     {
       title: "Resources",
       links: [
+        { label: "Blog", href: "/blog" },
         { label: "Docs", href: "#" },
         { label: "Changelog", href: "#" },
-        { label: "Status", href: "#" },
+        { label: "Status", href: "https://status.hoomanlabs.com/" },
       ],
     },
     {
@@ -127,7 +128,7 @@ export const footer = {
       links: [
         { label: "Privacy", href: "#" },
         { label: "Terms", href: "#" },
-        { label: "Security", href: "#" },
+        { label: "Security", href: "/platform/security" },
       ],
     },
   ],

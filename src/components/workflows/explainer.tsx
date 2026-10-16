@@ -25,7 +25,7 @@ const STEP_MS = 650
 const INSET = "flex h-32 flex-col justify-center gap-2 rounded-md border border-line bg-background px-3.5 text-small"
 
 function Ok() {
-  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-[oklch(0.55_0.13_150)]" />
+  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-success" />
 }
 
 const VISUALS: Record<string, () => React.ReactNode> = {
@@ -43,7 +43,7 @@ const VISUALS: Record<string, () => React.ReactNode> = {
     <div aria-hidden className={INSET}>
       <span className="text-label text-ink-secondary">&ldquo;I&apos;ll clear it on the 4th.&rdquo;</span>
       <span className="flex items-center gap-1.5 text-label text-ink-muted">
-        <SparkleIcon weight="fill" className="size-3 text-[oklch(0.6_0.15_295)]" />
+        <SparkleIcon weight="fill" className="size-3 text-ai" />
         AI step
         <ArrowRightIcon className="size-3" />
       </span>

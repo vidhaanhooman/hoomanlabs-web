@@ -3,16 +3,14 @@ import { Moments } from "@/components/agents/moments"
 import { AgentsHero, Talk } from "@/components/agents/sections"
 import { Definition, NextStep } from "@/components/product-page/page-bits"
 import { Faq } from "@/components/product-page/faq"
-import { Logos } from "@/components/sections/logos"
-import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { agentsPage as c } from "@/content/pages/agents"
 
 /**
  * /platform/agents, following the content sheet in the homepage's language:
- * hero, logos, what a Hooman is (with the GIVA proof), four product panels
+ * hero, what a Hooman is (with the GIVA proof), four product panels
  * (job description, knowledge, live data tables, flow); the pinned "what it
  * can do" section (agents/can-do.tsx) is off the page for now; everything around the
- * conversation as one call's timeline (before, during, after), a call to hear, FAQ, the next step and the two-way close.
+ * conversation as one call's timeline (before, during, after), a call to hear, FAQ, the next step.
  */
 
 /** The homepage's roomier section spacing. */
@@ -25,14 +23,12 @@ export function AgentsPage() {
   return (
     <div style={ROOMY}>
       <AgentsHero />
-      <Logos label="Trusted by 100+ teams" />
       <Definition id="agents-definition" text={c.definition} proof={{ quote: `“${c.proof.quote}”`, by: c.proof.by }} />
       <AgentPanels />
       <Moments />
       <Talk />
       <Faq id="agents-faq" items={c.faq} />
       <NextStep id="agents-next" related={c.related} />
-      <TwoWayCta />
     </div>
   )
 }

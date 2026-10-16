@@ -1,19 +1,20 @@
 import { Faq } from "@/components/product-page/faq"
 import { Definition, NextStep } from "@/components/product-page/page-bits"
-import { Logos } from "@/components/sections/logos"
-import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { DaysStory } from "@/components/workflows/days-story"
 import { Explainer } from "@/components/workflows/explainer"
-import { TestPanel, TopPanels } from "@/components/workflows/panels"
-import { LogicTrio, WorkflowsHero } from "@/components/workflows/sections"
+import { TestPanel } from "@/components/workflows/panels"
+import { WorkflowsHero } from "@/components/workflows/sections"
+import { ToolsStory } from "@/components/workflows/tools-story"
+import { BuildingBlocks, WorkflowTypes } from "@/components/workflows/types"
 import { workflowsPage as c } from "@/content/pages/workflows"
 
 /**
  * /platform/workflows, following the content sheet in the homepage's
- * language (like /platform/agents): floating hero, logos, definition and
- * proof, how a workflow works (plain-language explainer), three split panels (triggers, AI steps, connect), a customer
- * followed over days (full width), the business-logic trio, build and test,
- * FAQ, next step and the two-way close.
+ * language (like /platform/agents): floating hero, definition and
+ * proof, how a workflow works (plain-language explainer), the two kinds of
+ * workflow, workflows as tools (a live call handing heavy work to a tool
+ * workflow), workflows as journeys (a customer followed over days), the
+ * building blocks in one section, build and test, FAQ, next step.
  */
 
 /** The homepage's roomier section spacing. */
@@ -26,16 +27,15 @@ export function WorkflowsPage() {
   return (
     <div style={ROOMY}>
       <WorkflowsHero />
-      <Logos label="Trusted by 100+ teams" />
       <Definition id="workflows-definition" text={c.definition} proof={c.proof} placeholder />
       <Explainer />
-      <TopPanels />
+      <WorkflowTypes />
+      <ToolsStory />
       <DaysStory />
-      <LogicTrio />
+      <BuildingBlocks />
       <TestPanel />
       <Faq id="workflows-faq" items={c.faq} />
       <NextStep id="workflows-next" related={c.related} />
-      <TwoWayCta />
     </div>
   )
 }

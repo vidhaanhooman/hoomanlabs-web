@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils"
 const INSET = "flex h-60 flex-col overflow-hidden rounded-md border border-line bg-background text-small"
 
 function Check() {
-  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-[oklch(0.55_0.13_150)]" />
+  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-success" />
 }
 function LiveDot() {
   return <span className="size-1.5 rounded-full bg-[oklch(0.6_0.15_150)]" />

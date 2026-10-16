@@ -1,4 +1,4 @@
-import { MicrophoneIcon, PhoneDisconnectIcon, MicrophoneSlashIcon } from "@phosphor-icons/react/dist/ssr"
+import { MicrophoneIcon, MicrophoneSlashIcon, PhoneDisconnectIcon, SealCheckIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Halftone } from "@/components/layout/halftone"
 import { channels } from "@/content/platform"
@@ -84,7 +84,7 @@ export function ChannelDevices({ className }: { className?: string }) {
 /* ------------------------------------------------------------ devices */
 
 /** Phone body cropped at the bottom edge of the tile. */
-function Handset({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Handset({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div
       className={cn(
@@ -102,7 +102,7 @@ function Handset({ children, className }: { children: React.ReactNode; className
 
 const WAVE = [6, 12, 9, 15, 7, 13, 10, 5, 11, 8]
 
-function Wave({ className }: { className?: string }) {
+export function Wave({ className }: { className?: string }) {
   return (
     <span className={cn("flex h-4 items-center gap-[2px]", className)}>
       {WAVE.map((h, i) => (
@@ -178,22 +178,72 @@ function AppVoice() {
   )
 }
 
-function WhatsAppChat() {
+/* WhatsApp's own look (light theme): teal header, wallpaper, green outgoing bubbles, blue read ticks. */
+export const WA = {
+  header: "bg-[#008069] text-white",
+  wall: "bg-[#efeae2] bg-[radial-gradient(oklch(0.6_0.02_80/0.18)_1px,transparent_1px)] [background-size:9px_9px]",
+  in: "self-start rounded-lg rounded-tl-none bg-white text-[#111b21] shadow-[0_1px_0.5px_oklch(0_0_0/0.13)]",
+  out: "self-end rounded-lg rounded-tr-none bg-[#d9fdd3] text-[#111b21] shadow-[0_1px_0.5px_oklch(0_0_0/0.13)]",
+}
+
+/* WhatsApp's dark theme, for the Channels demos. */
+export const WA_DARK = {
+  header: "bg-[#1f2c34] text-[#e9edef]",
+  wall: "bg-[#0b141a] bg-[radial-gradient(oklch(1_0_0/0.045)_1px,transparent_1px)] [background-size:9px_9px]",
+  in: "self-start rounded-lg rounded-tl-none bg-[#202c33] text-[#e9edef]",
+  out: "self-end rounded-lg rounded-tr-none bg-[#005c4b] text-[#e9edef]",
+}
+
+export function Ticks() {
+  return (
+    <svg viewBox="0 0 16 11" className="inline-block h-[7px] w-[10px] fill-[#53bdeb]" aria-hidden>
+      <path d="M11.07.65 4.98 7.06 2.43 4.39 1.3 5.47l3.68 3.87 7.2-7.6zM15 .65 8.9 7.06l-.88-.92-1.13 1.08 2.01 2.12 7.2-7.6z" />
+    </svg>
+  )
+}
+
+function Bubble({ side, time, children }: { side: "in" | "out"; time: string; children: React.ReactNode }) {
+  return (
+    <span className={cn("max-w-[88%] px-2 pt-1 pb-0.5", WA[side])}>
+      {children}
+      <span className="ml-1.5 inline-flex translate-y-0.5 items-center gap-0.5 align-baseline text-[7.5px] text-[#667781]">
+        {time}
+        {side === "out" && <Ticks />}
+      </span>
+    </span>
+  )
+}
+
+/** A WhatsApp Business chat inside the handset: bill reminder, a quick-reply button, paid. */
+export function WhatsAppChat() {
   return (
     <Handset>
-      <div className="-mx-3 -mt-3 mb-2 flex items-center gap-2 border-b border-line bg-background px-3 py-2">
-        <span className="size-5 rounded-full bg-line" />
-        <span className="flex flex-col">
-          <span className="font-medium">Halden Energy</span>
-          <span className="text-ink-muted">Business account</span>
-        </span>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <span className="self-start rounded-md bg-background px-2 py-1">Your bill of $86 is due Friday. Pay now?</span>
-        <span className="self-end rounded-md bg-foreground px-2 py-1 text-background">Yes please</span>
-        <span className="self-start rounded-md bg-background px-2 py-1">
-          Done. Receipt sent. <span className="text-ink-muted">✓✓</span>
-        </span>
+      <div className="-mx-3 -mt-3 flex flex-1 flex-col">
+        <div className={cn("flex items-center gap-2 px-2.5 py-2", WA.header)}>
+          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white/90 text-[8px] font-medium text-[#008069]">H</span>
+          <span className="flex min-w-0 flex-col leading-tight">
+            <span className="flex items-center gap-1 font-medium">
+              Halden Energy
+              <SealCheckIcon weight="fill" className="size-2.5 text-[#25d366]" />
+            </span>
+            <span className="text-[8px] text-white/75">Business account</span>
+          </span>
+        </div>
+        <div className={cn("flex flex-1 flex-col gap-1.5 px-2 pt-2", WA.wall)}>
+          <span className="self-center rounded-md bg-white/90 px-1.5 py-px text-[7.5px] text-[#54656f]">TODAY</span>
+          <span className="flex max-w-[88%] flex-col self-start">
+            <Bubble side="in" time="10:42">
+              Hi Maya, your bill of $86.40 is due Friday.
+            </Bubble>
+            <span className="mt-px rounded-lg bg-white py-1 text-center font-medium text-[#008069] shadow-[0_1px_0.5px_oklch(0_0_0/0.13)]">Pay now</span>
+          </span>
+          <Bubble side="out" time="10:43">
+            Pay now
+          </Bubble>
+          <Bubble side="in" time="10:43">
+            Paid. Receipt sent ✓
+          </Bubble>
+        </div>
       </div>
     </Handset>
   )

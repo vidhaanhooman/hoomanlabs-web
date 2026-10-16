@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
-import { ChatCircleTextIcon, CheckIcon, DeviceMobileIcon, PhoneIcon, WhatsappLogoIcon, type Icon } from "@phosphor-icons/react"
+import { ChatCircleTextIcon, CheckIcon, DeviceMobileIcon, PhoneIcon, type Icon } from "@phosphor-icons/react"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -13,8 +13,8 @@ import { cn } from "@/lib/utils"
 /**
  * "One customer, one memory, on every channel", full width on the
  * console's charcoal canvas: Maya calls about a high bill, sends the meter
- * photo on the website two days later, and pays in the app on Thursday,
- * with WhatsApp shown next as coming soon. Each channel lights up in turn;
+ * photo on the website two days later, and pays in the app on Thursday.
+ * Each channel lights up in turn;
  * two light cards float over the canvas edge, as in the hero: what was said
  * on that channel, and what the Hooman remembers so far. Laid out at a
  * design size and scaled to fit. Plays once when on screen, then holds;
@@ -74,15 +74,6 @@ const STEPS: Step[] = [
     ],
     remember: "Paid $62.10 in the app",
   },
-  {
-    id: "whatsapp",
-    icon: WhatsappLogoIcon,
-    channel: "WhatsApp",
-    when: "Coming soon",
-    title: "Receipt and reminders",
-    say: [["Ria", "Next: the same conversation, carried on in WhatsApp."]],
-    soon: true,
-  },
 ]
 const LIVE = STEPS.filter((s) => !s.soon)
 const LAST = LIVE.length - 1
@@ -94,7 +85,7 @@ const VH = 400
 const NW = 200
 const NH = 92
 const NY = 80
-const nx = (i: number) => 30 + i * 245
+const nx = (i: number) => 30 + i * ((VW - 60 - NW) / (STEPS.length - 1))
 const DESIGN_W = 1100
 const DESIGN_H = 460
 
@@ -229,7 +220,7 @@ export function Journey() {
               <ol className="flex flex-col gap-2">
                 {memory.map((s, i) => (
                   <li key={s.id} className={cn("flex items-center gap-2", i === memory.length - 1 ? "text-foreground" : "text-ink-secondary")}>
-                    <CheckIcon weight="bold" className="size-3.5 shrink-0 text-[oklch(0.55_0.13_150)]" />
+                    <CheckIcon weight="bold" className="size-3.5 shrink-0 text-success" />
                     {s.remember}
                   </li>
                 ))}

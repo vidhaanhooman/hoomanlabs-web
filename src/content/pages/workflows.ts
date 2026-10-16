@@ -17,7 +17,7 @@ export const workflowsPage = {
   line: "Visual workflows connect every conversation to your systems, with AI steps, logic and code.",
 
   /** The sheet's "What is it?" definition block. */
-  definition: "Workflows are visual automations that run before, during and after conversations, so the work gets done, not just discussed.",
+  definition: "Workflows are the work your Hooman hands off: quick tools it calls in the middle of a conversation, and journeys that carry on for days after it.",
   /** PLACEHOLDER: the sheet's proof strip is "TBD: customer automation metric". */
   proof: { quote: "4 min", by: "of after-call work saved on every call" },
 
@@ -25,7 +25,7 @@ export const workflowsPage = {
   explainer: {
     title: "How a workflow works.",
     intro:
-      "A workflow is a set of steps that runs on its own. It starts when something happens, decides what to do, does the work in your systems, and tells your team what it did.",
+      "A workflow is a set of steps that runs on its own. It starts when something happens, decides what to do, does the work in your systems, and tells your team what it did. Some finish in seconds while your Hooman is still talking; others carry on for days.",
     analogy: "Think of the checklist your team follows after every call. A workflow follows it for them, the same way every time, in seconds.",
     steps: [
       {
@@ -55,32 +55,97 @@ export const workflowsPage = {
     ],
   },
 
+  /** The two kinds of workflow, introduced side by side. */
+  types: {
+    label: "Two kinds of workflow",
+    title: "Tools for the moment, journeys for the long run.",
+    items: [
+      {
+        id: "tools",
+        name: "Workflows as tools",
+        span: "Seconds, inside a live call",
+        body: "Your Hooman calls a workflow mid-conversation. It does the heavy lifting in parallel and hands back a short answer, so the call keeps flowing.",
+        href: "#workflows-tools",
+      },
+      {
+        id: "journeys",
+        name: "Workflows as journeys",
+        span: "Days or longer, many steps",
+        body: "A workflow follows a customer over time: a call, a payment link, a wait, then the right next step based on what they did.",
+        href: "#workflows-days",
+      },
+    ],
+  },
+
+  /**
+   * Workflows as tools: a small, fast model keeps the conversation going; a
+   * tool workflow does the heavy work (parallel lookups, a larger reasoning
+   * model, an action) and returns a concise summary the main model answers
+   * from. Sample data and timings.
+   */
+  tools: {
+    label: "Workflows as tools",
+    title: "Heavy thinking off the call, so the conversation keeps flowing.",
+    line: "A smaller, faster model holds the conversation. When it needs more, it calls a workflow: the workflow works with several systems at once, brings in a larger reasoning model, and returns a short summary. The main model answers from that, so the agent keeps talking and costs stay low.",
+    notes: [
+      { id: "fast", title: "Fast where it matters", body: "The model on the call stays small and quick, so replies never wait on heavy work." },
+      { id: "parallel", title: "Many systems at once", body: "The workflow checks your billing, CRM and policies in parallel, not one after another." },
+      { id: "reason", title: "Big reasoning, only when needed", body: "A larger model weighs the results inside the workflow, and only for the moments that need it." },
+      { id: "summary", title: "A short answer back", body: "The main model gets a concise summary, not raw data, so it can respond in a sentence." },
+    ],
+  },
+
+  /** One section for the building blocks (replaces separate triggers / AI / connect panels). */
+  blocks: {
+    label: "Building blocks",
+    title: "Three kinds of step, on one canvas.",
+    line: "Every workflow is built from the same few pieces. The journey above shows them working together, with waits in between.",
+    items: [
+      {
+        id: "trigger",
+        name: "Triggers",
+        body: "Start from a call, a webhook or a schedule.",
+        head: ["Trigger", "Starts when"],
+        rows: [
+          { k: "Call ended", v: "A call wraps up" },
+          { k: "Webhook", v: "Your system sends an event" },
+          { k: "Schedule", v: "A time you set" },
+          { k: "Tool call", v: "Your Hooman, mid-call" },
+        ],
+        foot: { code: "POST /hooks/billing", text: "from Halden Energy" },
+        link: "Read about triggers",
+      },
+      {
+        id: "ai",
+        name: "AI steps",
+        body: "Classify, decide, or clean up data for the next step.",
+        head: ["Call with Maya · 2:18", "AI step"],
+        rows: [
+          { k: "Classify", v: "Billing dispute" },
+          { k: "Decide", v: "Refund eligible" },
+          { k: "Extract & clean", v: "Amount $86.40" },
+        ],
+        foot: { code: '{ "intent": "refund" }', text: "returned to the next step" },
+        link: "Read about AI steps",
+      },
+      {
+        id: "act",
+        name: "Code and actions",
+        body: "The steps that follow, in parallel when you want.",
+        head: ["Step", "Does"],
+        rows: [
+          { k: "API call", v: "Any system you run" },
+          { k: "Ready-made action", v: "Send an SMS" },
+          { k: "Code", v: "Your own JavaScript" },
+          { k: "Call-back", v: "Puts a Hooman on the phone" },
+        ],
+        foot: { code: "issue_refund", text: "your own actions, called by name" },
+        link: "See integrations",
+      },
+    ],
+  },
+
   panels: {
-    /** Sheet section 1. */
-    triggers: {
-      label: "Triggers",
-      title: "Starts on its own.",
-      rows: [
-        { id: "triggers", title: "Triggers", body: "Start from a call, a webhook, your app or a schedule." },
-        { id: "events", title: "Call events", body: "Your CRM knows the moment a call starts, ends or transfers." },
-      ],
-    },
-    /** Sheet section 2. */
-    ai: {
-      label: "AI steps",
-      title: "Turns conversations into clean decisions.",
-      rows: [{ id: "ai", title: "AI steps", body: "Classify, extract and decide, returning clean, structured data the next step can use." }],
-    },
-    /** Sheet section 3. */
-    connect: {
-      label: "Connect",
-      title: "Updates your systems and sends messages.",
-      rows: [
-        { id: "http", title: "Connect anything", body: "Call any API, with a fixed IP for bank and enterprise systems that require allow-listing." },
-        { id: "presets", title: "Ready-made steps", body: "Common actions in one click." },
-        { id: "code", title: "Code steps", body: "Full control when you need it, in JavaScript." },
-      ],
-    },
     /** Sheet section 7. */
     test: {
       label: "Build & test",
@@ -91,24 +156,13 @@ export const workflowsPage = {
 
   /** Sheet sections 5 and 6: one customer over several days. */
   days: {
-    label: "Follow-ups",
-    title: "Follows a customer over days, not just one call.",
+    label: "Workflows as journeys",
+    title: "Journeys that follow a customer over days.",
     rows: [
       { id: "timing", title: "Logic & timing", body: "If this, then that, after a delay you choose." },
       { id: "callback", title: "Call-back step", body: "Any workflow can put a Hooman on the phone." },
       { id: "outreach", title: "Always-on outreach", body: "A new lead gets a call in seconds, automatically." },
       { id: "recall", title: "Recall", body: "Every step is remembered, so the next call picks up where the last left off." },
-    ],
-  },
-
-  /** Sheet section 4. */
-  logic: {
-    title: "Built for real business logic.",
-    line: "Branches, waits, parallel steps and predictable error handling.",
-    items: [
-      { id: "branch", title: "Logic & timing", body: "Branch on any condition and wait between steps." },
-      { id: "parallel", title: "Parallel steps", body: "Update the CRM, notify the team and send a message at the same time." },
-      { id: "reliable", title: "Reliable runs", body: "Predictable behaviour when an API is slow or fails." },
     ],
   },
 
@@ -130,8 +184,16 @@ export const workflowsPage = {
       a: "Each step has its own timeout and error policy, so a run behaves predictably: it takes the path you set for failures and reports the result back to your system.",
     },
     {
-      q: "How is this different from a flow inside a call?",
-      a: "A flow shapes what happens during a conversation. Workflows do the work around it: before a call, after it ends, and across the days in between.",
+      q: "What's the difference between a tool and a journey?",
+      a: "A tool workflow runs in seconds while your Hooman is on the call and returns a short summary it answers from. A journey runs for days or longer, with several steps and waits, such as a call, a payment link and a follow-up.",
+    },
+    {
+      q: "Why not let the main model do everything?",
+      a: "Keeping the model on the call small keeps replies fast and costs low. Heavy work, like checking several systems or reasoning with a larger model, happens inside a tool workflow, and only when it's needed.",
+    },
+    {
+      q: "Does a workflow decide what the agent says?",
+      a: "No. Your Hooman leads the conversation. A workflow is work it hands off and gets back: an answer mid-call, or the follow-up after it.",
     },
   ],
 

@@ -23,7 +23,12 @@ export function ThemeToggle() {
 
   const toggle = () => {
     const next = !dark
-    document.documentElement.classList.toggle("dark", next)
+    // Switch instantly: pause colour transitions for one frame so nothing
+    // animates from the old theme's colours.
+    const root = document.documentElement
+    root.classList.add("theme-switching")
+    root.classList.toggle("dark", next)
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-switching")))
     try {
       localStorage.setItem(THEME_KEY, next ? "dark" : "light")
     } catch {}

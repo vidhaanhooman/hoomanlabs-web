@@ -77,7 +77,7 @@ function Card({
     <div className={cn("flex flex-col gap-4 rounded-xl border border-line bg-surface p-4", className)}>
       <div className="flex flex-col gap-1 px-1">
         <span className="flex items-center gap-2 text-body font-medium">
-          <Ico className={cn("size-4 transition-colors duration-500", on ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
+          <Ico className={cn("size-4 transition-colors duration-500", on ? "text-success" : "text-ink-muted")} aria-hidden />
           {title}
           <span className="ml-auto font-mono text-[10.5px] font-normal tracking-wide text-ink-muted uppercase">{phase}</span>
         </span>
@@ -230,7 +230,7 @@ export function AgentJourney() {
         <div className="flex h-[36rem] min-h-0 flex-col gap-4 rounded-xl border border-line bg-surface p-4 lg:col-span-8 lg:row-span-2 lg:h-auto">
           <div className="flex flex-col gap-1 px-1">
             <span className="flex items-center gap-2 text-body font-medium">
-              <NotePencilIcon className={cn("size-4 transition-colors duration-500", false ? "text-[oklch(0.55_0.13_150)]" : "text-ink-muted")} aria-hidden />
+              <NotePencilIcon className={cn("size-4 transition-colors duration-500", false ? "text-success" : "text-ink-muted")} aria-hidden />
               Prompt
               <span className="ml-auto font-mono text-[10.5px] font-normal tracking-wide text-ink-muted uppercase">During the call</span>
             </span>

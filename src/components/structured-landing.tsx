@@ -67,7 +67,7 @@ const MINI: Record<string, React.ReactNode> = {
           {[c.voice, c.chat].map((v, i) => (
             <span key={i} className="flex justify-center">
               {v === "yes" ? (
-                <CheckIcon weight="bold" className="size-4 text-[oklch(0.55_0.13_150)]" />
+                <CheckIcon weight="bold" className="size-4 text-success" />
               ) : v === "soon" ? (
                 <span className="rounded-full border border-dashed border-line-strong px-1.5 text-[10px] text-ink-muted">Soon</span>
               ) : (
@@ -125,7 +125,7 @@ const MINI: Record<string, React.ReactNode> = {
           <div key={m.k} className="flex flex-col">
             <dt className="text-label text-ink-muted">{m.k}</dt>
             <dd className="text-h4 font-normal tabular-nums">{m.v}</dd>
-            <span className="text-label whitespace-nowrap text-[oklch(0.55_0.13_150)]">{m.d}</span>
+            <span className="text-label whitespace-nowrap text-success">{m.d}</span>
           </div>
         ))}
       </dl>

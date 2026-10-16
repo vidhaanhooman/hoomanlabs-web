@@ -40,7 +40,7 @@ export function SiteFooter() {
                 <ul className="flex flex-col gap-2.5">
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <Link href={link.href} className={LINK}>
+                      <Link href={link.href} className={LINK} {...(link.href.startsWith("http") && { target: "_blank", rel: "noreferrer" })}>
                         {link.label}
                       </Link>
                     </li>

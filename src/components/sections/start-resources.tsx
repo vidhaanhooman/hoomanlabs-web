@@ -59,7 +59,7 @@ export function StartResources() {
                     <li key={k} className="flex items-center justify-between gap-3 border-t border-line py-2">
                       <span className="text-ink-muted">{k}</span>
                       <span className="flex items-center gap-1.5">
-                        <CheckIcon weight="bold" className="size-3.5 text-[oklch(0.55_0.13_150)]" />
+                        <CheckIcon weight="bold" className="size-3.5 text-success" />
                         {v}
                       </span>
                     </li>

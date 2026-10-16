@@ -1,3 +1,5 @@
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/ssr"
+
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { HeroCopy } from "@/components/product-page/page-bits"
@@ -37,7 +39,14 @@ export function SecurityData() {
           {d.items.map((it) => (
             <li key={it.id} className="flex items-center justify-between gap-6 border-b border-line py-4 last:border-0">
               <span className="text-body">{it.title}</span>
-              <span className="text-small text-ink-muted">{it.value}</span>
+              {"href" in it && it.href ? (
+                <a href={it.href} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-small text-foreground underline decoration-line-strong underline-offset-4 hover:decoration-foreground">
+                  {it.value}
+                  <ArrowUpRightIcon className="size-3.5" />
+                </a>
+              ) : (
+                <span className="text-small text-ink-muted">{it.value}</span>
+              )}
             </li>
           ))}
         </ul>

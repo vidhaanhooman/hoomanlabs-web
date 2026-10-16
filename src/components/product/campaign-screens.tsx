@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon, FileCsvIcon, PhoneCallIcon } from "@phosphor-icons/react/dist/ssr"
+import { CheckIcon, FileCsvIcon, PhoneCallIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-window"
 import { cn } from "@/lib/utils"
@@ -140,45 +140,6 @@ export function RealtimeQueueScreen({ className }: { className: string }) {
           </div>
         ))}
       </UiCard>
-    </UiWindow>
-  )
-}
-
-/** A/B: live traffic split between two versions. */
-export function SplitTestScreen({ className }: { className: string }) {
-  const arms = [
-    { name: "Ria · v12", note: "Current script", share: 50, pickup: 61, promise: 44 },
-    { name: "Ria · v13", note: "Shorter opening", share: 50, pickup: 66, promise: 52, lead: true },
-  ]
-  return (
-    <UiWindow className={className} title="March reminders · A/B" aside={<UiPill>50 / 50 split</UiPill>}>
-      {arms.map((a) => (
-        <UiCard key={a.name} className={cn(a.lead && "border-[oklch(0.74_0.16_150/0.35)]")}>
-          <div className="flex items-center justify-between">
-            <span className="flex flex-col">
-              <span className="text-[13px]">{a.name}</span>
-              <span className="text-[11px] text-(--ui-muted)">{a.note}</span>
-            </span>
-            {a.lead && <Ok>Ahead</Ok>}
-          </div>
-          {[
-            ["Pickup", a.pickup],
-            ["Promise to pay", a.promise],
-          ].map(([k, v]) => (
-            <div key={k} className="grid grid-cols-[7rem_1fr_2.5rem] items-center gap-3 text-[11.5px]">
-              <span className="text-(--ui-muted)">{k}</span>
-              <span className="h-1.5 rounded-full bg-(--ui-raised)">
-                <span className="block h-full rounded-full bg-(--ui-text)/80" style={{ width: `${v}%` }} />
-              </span>
-              <span className="text-right font-mono tabular-nums">{v}%</span>
-            </div>
-          ))}
-        </UiCard>
-      ))}
-      <span className="flex items-center gap-1.5 px-1 text-[11px] text-(--ui-muted)">
-        <ClockIcon className="size-3" />
-        Edited live 2 hours ago · no calls dropped
-      </span>
     </UiWindow>
   )
 }

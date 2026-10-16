@@ -54,7 +54,7 @@ function Spin() {
   return <CircleNotchIcon className="size-3.5 shrink-0 text-ink-muted motion-safe:animate-spin" />
 }
 function Ok() {
-  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-[oklch(0.55_0.13_150)]" />
+  return <CheckIcon weight="bold" className="size-3.5 shrink-0 text-success" />
 }
 
 /** A small light card floating over the diagram (the live call, a reply). */
@@ -140,7 +140,7 @@ function Diagram({ mode, pick }: { mode: Mode; pick: number }) {
             </span>
             <span className="rounded-md bg-surface px-2 py-1.5 text-label">&ldquo;Send a payment link by SMS&rdquo;</span>
             <span className="flex items-center gap-1.5 text-label text-ink-secondary">
-              <SparkleIcon weight="fill" className="size-3 text-[oklch(0.6_0.15_295)]" />
+              <SparkleIcon weight="fill" className="size-3 text-ai" />
               AI wrote it
               <span className="ml-auto flex items-center gap-1 text-foreground">
                 <Ok />

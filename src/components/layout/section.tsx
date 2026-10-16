@@ -23,6 +23,7 @@ export function Section({
     <section
       id={id}
       data-section={id}
+      data-spacing={spacing}
       className={cn(
         "relative",
         spacing !== "none" && "py-(--section-pad)",

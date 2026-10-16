@@ -245,7 +245,7 @@ export function DaysStory() {
               <ol className="flex flex-col gap-2">
                 {STEPS.slice(0, Math.max(1, step + 1)).map((s, i) => (
                   <li key={s.id} className={cn("flex items-center gap-2", i === Math.max(0, step) ? "text-foreground" : "text-ink-secondary")}>
-                    <CheckIcon weight="bold" className="size-3.5 shrink-0 text-[oklch(0.55_0.13_150)]" />
+                    <CheckIcon weight="bold" className="size-3.5 shrink-0 text-success" />
                     {s.remember}
                   </li>
                 ))}

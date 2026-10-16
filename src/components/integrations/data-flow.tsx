@@ -186,7 +186,7 @@ export function DataFlow() {
                 <span key={e as string} className={cn("flex items-center gap-3 font-mono text-[11.5px] transition-opacity", on ? "opacity-100" : "opacity-35")}>
                   <span className="text-ink-muted">{t}</span>
                   {e}
-                  <span className="ml-auto text-[oklch(0.5_0.13_150)]">{on ? "200" : ""}</span>
+                  <span className="ml-auto text-success">{on ? "200" : ""}</span>
                 </span>
               ))}
             </div>

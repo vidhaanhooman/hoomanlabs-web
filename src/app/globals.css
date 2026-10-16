@@ -59,7 +59,18 @@
   --radius: 0.375rem;
 }
 
-/* Dark grey scale. Used by the footer (class="dark"); the page itself stays light. */
+/* Accents on page surfaces (not product UI, which uses --ui-*). Light values
+   here, dark values in the .dark block below; use the Tailwind names
+   (text-success, text-ai, bg-highlight-warm…), never literal oklch. */
+:root {
+  --success: oklch(0.55 0.13 150);
+  --ai: oklch(0.6 0.15 295);
+  --highlight-warm: oklch(0.95 0.04 70);
+  --highlight-cool: oklch(0.95 0.03 245);
+}
+
+/* Dark grey scale: the whole page in dark mode (class="dark" on <html>), and
+   the footer always. */
 .dark {
   --gray-0: oklch(0.16 0 0);
   --gray-50: oklch(0.2 0 0);
@@ -70,6 +81,10 @@
   --gray-600: oklch(0.76 0 0);
   --gray-900: oklch(0.96 0 0);
   --gray-950: oklch(0.985 0 0);
+  --success: oklch(0.74 0.15 150);
+  --ai: oklch(0.78 0.12 295);
+  --highlight-warm: oklch(0.34 0.05 70);
+  --highlight-cool: oklch(0.32 0.04 245);
 }
 /* Graphite: a lighter dark for small UI cards on light sections, so several
    dark cards don't read as heavy black blocks. Use with .dark. */
@@ -110,6 +125,10 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-ai: var(--ai);
+  --color-highlight-warm: var(--highlight-warm);
+  --color-highlight-cool: var(--highlight-cool);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -285,6 +304,24 @@
   50% { transform: translate(-11px, -3px); }
   67% { transform: translate(9px, 8px); }
   83% { transform: translate(-3px, 11px); }
+}
+
+/* Theme switch: no colour transitions while the theme flips (ThemeToggle). */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* A stage swapping content (the industry switcher): a quick fade and settle. */
+@keyframes stage-in {
+  from { opacity: 0.4; transform: scale(0.995); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lang-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes blink { 50% { opacity: 0; } }

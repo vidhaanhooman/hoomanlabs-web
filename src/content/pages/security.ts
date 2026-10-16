@@ -80,8 +80,8 @@ export const securityPage = {
       { id: "retention", title: "Retention", value: "Shared during evaluation" },
       // TO CONFIRM: whether customer data is used to train models.
       { id: "training", title: "Model training", value: "Shared during evaluation" },
-      // TO CONFIRM: uptime commitment and status page.
-      { id: "uptime", title: "Uptime", value: "Shared during evaluation" },
+      // TO CONFIRM: uptime commitment. The live status page is public.
+      { id: "uptime", title: "Uptime", value: "Live status page", href: "https://status.hoomanlabs.com/" },
     ],
   },
 

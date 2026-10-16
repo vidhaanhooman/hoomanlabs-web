@@ -19,15 +19,36 @@ import { cn } from "@/lib/utils"
 const allPages = () => [...platformMenu.flatMap((g) => g.pages), platformFeatured]
 export const pageHref = (id: MenuPageId) => menuHref(allPages().find((p) => p.id === id)!)
 
-/** Breadcrumb, H1, line, the demo button and an optional text link. */
-export function HeroCopy({ crumb, title, line, link }: { crumb: string; title: string; line: string; link?: { label: string; href: string } }) {
+/**
+ * Breadcrumb, H1, line, the demo button and an optional text link. The
+ * crumb's parent defaults to Platform; pass `parent` for another section
+ * (Solutions), or null for a section's own top page.
+ */
+export function HeroCopy({
+  crumb,
+  title,
+  line,
+  link,
+  parent = { label: "Platform", href: "/platform" },
+}: {
+  crumb: string
+  title: string
+  line: string
+  link?: { label: string; href: string }
+  parent?: { label: string; href: string } | null
+}) {
   return (
     <>
       <p className="reveal text-small text-ink-muted">
-        <Link href="/platform" className="hover:text-foreground">
-          Platform
-        </Link>{" "}
-        / {crumb}
+        {parent && (
+          <>
+            <Link href={parent.href} className="hover:text-foreground">
+              {parent.label}
+            </Link>{" "}
+            /{" "}
+          </>
+        )}
+        {crumb}
       </p>
       <h1 className="reveal mt-3 max-w-[20ch] text-display font-normal" style={{ "--i": 1 } as React.CSSProperties}>
         {title}
