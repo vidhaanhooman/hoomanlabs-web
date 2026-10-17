@@ -12,86 +12,81 @@ import type { MenuPageId } from "@/content/platform"
 export const testingPage = {
   seo: {
     title: "Voice Agent Testing and Simulation",
-    description: "Test every agent version with simulated customers, targeted checks and full suites before a real customer ever hears it.",
+    description: "Talk to your agent in minutes, test every version with simulated customers and full suites, fix any turn and A/B test changes before they go live.",
   },
   crumb: "Testing",
   title: "Know it's ready before a customer hears it.",
-  line: "Simulated customers, targeted checks and full test suites run against every version of your Hooman before it goes live.",
+  line: "Talk to it in minutes, run simulated customers against every version, fix any turn, and A/B test changes before they go live.",
 
   /** The sheet's "What is it?" definition block. */
-  definition: "Testing lets you prove a Hooman works before launch, with simulated customers and repeatable tests for every version.",
+  definition: "Testing is how you try, simulate and fix a Hooman before customers meet it, then prove each change before everyone gets it.",
 
-  /** Sheet section 1, full width: simulated personas against a checklist. */
-  callers: {
-    label: "Mystery callers",
-    title: "Simulated customers call before real ones do.",
-    line: "Personas hold full conversations with your Hooman, and every conversation is scored against a checklist and the outcome you expect.",
+  /** Try it now, first: build an agent and talk to it on a web call. */
+  try: {
+    label: "Try it now",
+    title: "Build an agent and talk to it in minutes.",
     rows: [
-      { id: "personas", title: "Personas", body: "Rushed, angry, elderly or switching language: choose who calls and how they behave." },
-      { id: "checklist", title: "Checklist", body: "Every conversation is scored against the steps that must happen." },
-      { id: "outcome", title: "Expected outcome", body: "Say how the conversation should end, and see whether it did." },
+      { id: "talk", title: "Talk to it on the web", body: "Start a web call or chat with your Hooman from the editor, with sample customer data." },
+      { id: "loop", title: "Build-test loop", body: "Edit, talk and check the logs in one screen, without leaving the agent." },
+    ],
+  },
+
+  /** Simulations and test suites, in one section (full width): personas scored against a checklist. */
+  callers: {
+    label: "Simulations & test suites",
+    title: "Simulated customers talk to your Hooman before real ones do.",
+    line: "Create personas, run them all as a suite against each draft, and score every conversation against a checklist and the outcome you expect.",
+    rows: [
+      { id: "personas", title: "Personas", body: "Rushed, angry, elderly or switching language: create who talks to your Hooman and how they behave." },
+      { id: "checklist", title: "Checklist and outcome", body: "Each conversation is scored on the steps that must happen and how it should end." },
+      { id: "suite", title: "Test suites", body: "Run every persona against a draft before each release; live conversations stay on the published version." },
     ],
   },
 
   panels: {
-    /** Sheet section 2. */
+    /** Spot checks and turn replay, in one: find, re-run, save as a scenario. */
     checks: {
-      label: "Spot checks",
-      title: "Lock in the right answer for the moments that matter.",
+      label: "Spot checks & replay",
+      title: "Find an issue, fix it, and never see it again.",
       rows: [
-        { id: "reply", title: "Exact replies", body: "Check what your Hooman says at a specific turn in the conversation." },
-        { id: "tool", title: "Tool calls", body: "Check that the right tool is called at the right turn, with the right details." },
+        { id: "find", title: "Flag the moment", body: "Spot a wrong reply or tool call at a specific turn, in a simulation or a real conversation in post-call analytics." },
+        { id: "rerun", title: "Replay the turn", body: "Fix it and replay that exact turn to see the new answer straight away." },
+        { id: "save", title: "Simulate and save it", body: "Simulate that moment and save it as a scenario or match case, so every future version is tested against it." },
       ],
     },
-    /** Sheet section 3. */
-    suites: {
-      label: "Test suites",
-      title: "Check every scenario before each release.",
+    /** A/B testing, inbound and outbound. */
+    ab: {
+      label: "A/B testing",
+      title: "Prove a change works before everyone gets it.",
       rows: [
-        { id: "suite", title: "Test suites", body: "Run every scenario against a draft version in one go, before you go live." },
-        { id: "versions", title: "Versioning", body: "Change anything in a draft without touching live calls, and publish when the tests pass." },
-      ],
-    },
-    /** Sheet section 4. */
-    never: {
-      label: "Never-again tests",
-      title: "Every mistake becomes a test.",
-      rows: [
-        { id: "scenario", title: "Never-again tests", body: "Turn any moment from a real conversation into a test with one click, so it doesn't happen twice." },
-        { id: "replay", title: "Replay & re-run", body: "Fix the prompt, replay the exact moment and see the new answer straight away." },
-      ],
-    },
-    /** Sheet section 5. */
-    try: {
-      label: "Try it now",
-      title: "Talk to your Hooman in seconds.",
-      rows: [
-        { id: "try", title: "Try-it-now", body: "Call or chat with your Hooman using sample customer data, before anyone else does." },
-        { id: "loop", title: "Build-test loop", body: "Edit, simulate and check the logs in one screen, without leaving the agent." },
+        { id: "change", title: "Scripts, voices or flows", body: "Send a share of conversations to the new version and compare outcomes before rolling it out." },
+        { id: "both", title: "Inbound and outbound", body: "Works on conversations customers start and the ones your Hooman starts." },
       ],
     },
   },
 
   faq: [
+    // TO CONFIRM: simulated chat conversations (web chat is shown in Try it now).
     {
-      q: "Do we need real calls to test a Hooman?",
-      a: "No. Mystery callers are simulated customers with their own personas, so you can test full conversations before a single real customer calls.",
+      q: "Does testing work for chat as well as voice?",
+      a: "Yes. You can talk to or chat with a draft from the editor, and simulated customers can hold either kind of conversation.",
+    },
+    // TO CONFIRM: whether suites can run automatically on publish.
+    {
+      q: "When do test suites run?",
+      a: "Whenever you choose, on any draft. Run the suite before you publish, and a version with failing scenarios is flagged so you can fix it first.",
     },
     {
-      q: "What does a test actually check?",
-      a: "A simulated conversation is scored against a checklist and the outcome you expect. A spot check looks at one moment: the exact reply or tool call at a specific turn.",
+      q: "Where do test scenarios come from?",
+      a: "From personas you create, and from any turn you save, in a simulation or in a real conversation from post-call analytics.",
     },
     {
-      q: "Can we change the Hooman without affecting live calls?",
-      a: "Yes. Changes go into a draft version, which you can test with your full suite. Live calls keep using the published version until you publish the new one.",
+      q: "Do tests affect live customers?",
+      a: "No. Simulations and spot checks run against a draft; live conversations stay on the published version until you publish.",
     },
     {
-      q: "How do real mistakes become tests?",
-      a: "From any turn in a real conversation, create a scenario in one click. It joins your tests, so every later version is checked against that moment.",
-    },
-    {
-      q: "Can we try it ourselves?",
-      a: "Yes. Call or chat with your Hooman from the agent editor using sample customer data, and check the logs in the same screen.",
+      q: "How is A/B testing different from a test suite?",
+      a: "A suite proves a draft with simulated customers before release. An A/B test sends a share of real conversations, inbound or outbound, to a new version so you can compare outcomes before everyone gets it.",
     },
   ],
 

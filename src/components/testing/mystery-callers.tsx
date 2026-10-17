@@ -2,257 +2,138 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
-import { CheckIcon, XIcon } from "@phosphor-icons/react"
+import { CheckIcon, UserIcon, XIcon } from "@phosphor-icons/react"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-window"
 import { testingPage as c } from "@/content/pages/testing"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
- * "Simulated customers call before real ones do", full width on the
- * console's charcoal canvas (as on Channels): five mystery callers, each a
- * persona (rushed, angry, elderly, switches language, reads numbers slowly),
- * hold a short exchange with Ria, then their checklist ticks one item at a
- * time and the outcome lands. The callers start one after another. One fails
- * (interrupted while the caller read a card number), as in the hero run.
- * Plays once when on screen, then holds. Below lg: a list. Reduced motion:
- * finished. Sample data (Halden Energy, Ria).
+ * "Simulated customers talk to your Hooman before real ones do"
+ * (simulations and test suites in one). Where the hero shows the whole
+ * suite, this shows depth: one simulated conversation, in the product UI.
+ * Three columns: the persona you created, the conversation as it plays,
+ * and its scorecard (the checklist, then the expected outcome) filling in.
+ * It fails on the turn where Ria interrupts the card number, the same
+ * turn Spot checks & replay fixes further down. Plays once when on screen;
+ * reduced motion shows the finished scorecard. Sample data.
  */
 
-type Caller = {
-  id: string
-  persona: string
-  scenario: string
-  say: [string, string][]
-  checks: [string, boolean][]
-  outcome: string
-  passed: boolean
-}
-
-const CALLERS: Caller[] = [
-  {
-    id: "rushed",
-    persona: "Rushed",
-    scenario: "Update a phone number",
-    say: [
-      ["Caller", "Two minutes, that's all I have. New number is 555 0142."],
-      ["Ria", "Done. Your number is now 555 0142."],
-    ],
-    checks: [
-      ["Verified identity", true],
-      ["Confirmed the new number", true],
-      ["Kept it short", true],
-    ],
-    outcome: "Passed · 4 turns",
-    passed: true,
-  },
-  {
-    id: "angry",
-    persona: "Angry",
-    scenario: "Wants a refund",
-    say: [
-      ["Caller", "You charged me twice. I want my money back."],
-      ["Ria", "I'm sorry. I can see both charges, and I'll refund $86.40 now."],
-    ],
-    checks: [
-      ["Stayed calm", true],
-      ["Verified identity", true],
-      ["Correct amount", true],
-    ],
-    outcome: "Passed · 9 turns",
-    passed: true,
-  },
-  {
-    id: "elderly",
-    persona: "Elderly",
-    scenario: "Asks to repeat",
-    say: [
-      ["Caller", "Sorry, could you say that again, a bit slower?"],
-      ["Ria", "Of course. Your bill is $62.10, due on the 4th."],
-    ],
-    checks: [
-      ["Repeated clearly", true],
-      ["Read disclosure", true],
-      ["Correct amount", true],
-    ],
-    outcome: "Passed · 12 turns",
-    passed: true,
-  },
-  {
-    id: "language",
-    persona: "Switches language",
-    scenario: "Moves to Hindi",
-    say: [
-      ["Caller", "Kya aap Hindi mein bata sakte hain?"],
-      ["Ria", "Haan, zaroor. Aapka bill ₹1,240 ka hai."],
-    ],
-    checks: [
-      ["Replied in Hindi", true],
-      ["Kept the account details", true],
-      ["Correct amount", true],
-    ],
-    outcome: "Passed · 7 turns",
-    passed: true,
-  },
-  {
-    id: "numbers",
-    persona: "Reads numbers slowly",
-    scenario: "Pays by card",
-    say: [
-      ["Caller", "It's four, two, seven… one…"],
-      ["Ria", "Thanks. And the expiry date?"],
-    ],
-    checks: [
-      ["Verified identity", true],
-      ["Read disclosure", true],
-      ["Waited for every digit", false],
-    ],
-    outcome: "Failed · interrupted at turn 6",
-    passed: false,
-  },
+const TURNS: [string, string, boolean?][] = [
+  ["Ria", "Hi, this is Ria from Halden Energy. Am I speaking with Maya?"],
+  ["Customer", "Yes, it's Maya. I want to pay my bill."],
+  ["Ria", "Thanks, Maya. Your bill is $62.10. Shall I take your card number?"],
+  ["Customer", "Sure. It's four, two, seven… one…"],
+  ["Ria", "Thanks. And the expiry date?", true],
 ]
-
-/** Each caller: two lines, three checks, then the outcome. */
-const STEPS = 6
-const STAGGER = 1
-const LAST = (CALLERS.length - 1) * STAGGER + STEPS - 1
-const BEAT_MS = 700
-
-const GREEN = "text-[oklch(0.78_0.15_150)]"
-const AMBER = "text-[oklch(0.8_0.14_70)]"
+const CHECKS: { label: string; pass: boolean; at: number; note?: string }[] = [
+  { label: "Confirms who it's talking to", pass: true, at: 1 },
+  { label: "Reads the correct amount", pass: true, at: 3 },
+  { label: "Waits for every digit", pass: false, at: 5, note: "Interrupted at turn 5" },
+]
+const STEP_MS = 1100
+const LAST = TURNS.length + 1
 
 export function MysteryCallers() {
   const { label, title, line, rows } = c.callers
   const ref = useRef<HTMLDivElement>(null)
   const seen = useInView(ref, { amount: 0.35, once: true })
   const reduce = usePrefersReducedMotion()
-  const [beat, setBeat] = useState(-1)
+  const [step, setStep] = useState(0)
+  const s = reduce ? LAST : step
 
   useEffect(() => {
-    if (!seen || reduce || beat >= LAST) return
-    const t = setTimeout(() => setBeat((b) => b + 1), beat < 0 ? 300 : BEAT_MS)
+    if (!seen || reduce || step >= LAST) return
+    const t = setTimeout(() => setStep((x) => x + 1), STEP_MS)
     return () => clearTimeout(t)
-  }, [seen, reduce, beat])
+  }, [seen, reduce, step])
 
-  const b = reduce ? LAST : beat
-  const finished = b >= LAST
-  const passed = CALLERS.filter((x, i) => x.passed && b - i * STAGGER >= STEPS - 1).length
-  const ended = CALLERS.filter((_, i) => b - i * STAGGER >= STEPS - 1).length
-
+  const done = s >= LAST
   return (
     <Section id="testing-callers">
       <Container>
-        <div className="flex max-w-[44rem] flex-col gap-3">
+        <div className="flex max-w-[48rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
           <h2 className="text-h2 font-normal">{title}</h2>
           <p className="text-body text-ink-secondary">{line}</p>
         </div>
 
-        <div
-          ref={ref}
-          className="relative mt-10 hidden overflow-hidden rounded-xl border border-black/10 bg-[oklch(0.23_0.005_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] p-8 text-[oklch(0.95_0_0)] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] lg:block"
-        >
-          <div className="flex items-center justify-between font-mono text-[10.5px] text-white/45">
-            <span>Mystery callers · Ria, Billing · v13 draft</span>
-            <span className="tabular-nums">{finished ? `${passed} of ${CALLERS.length} passed · 1 to fix` : `${ended} of ${CALLERS.length} finished`}</span>
-          </div>
+        <div ref={ref} className="mt-10">
+          <UiWindow
+            className="rounded-xl border border-black/10 shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] [&>div:first-child]:pr-4 [&>div:last-child]:pr-5 [&>div:last-child]:[mask-image:none]"
+            title="Billing suite · Ria · v13 draft"
+            aside={<UiPill live={!done}>{done ? "1 to fix" : "Simulating"}</UiPill>}
+          >
+            <div className="grid gap-4 lg:grid-cols-[1fr_1.5fr_1.1fr]">
+              {/* The persona */}
+              <UiCard>
+                <UiLabel>Persona</UiLabel>
+                <span className="flex items-center gap-2.5">
+                  <span className="grid size-9 place-items-center rounded-full bg-(--ui-raised)">
+                    <UserIcon className="size-4" />
+                  </span>
+                  <span className="flex flex-col leading-tight">
+                    <span className="text-[13.5px]">Reads numbers slowly</span>
+                    <span className="text-[11px] text-(--ui-muted)">1 of 12 personas in the suite</span>
+                  </span>
+                </span>
+                <dl className="mt-1 flex flex-col gap-1.5 text-[12px]">
+                  {[
+                    ["Behaviour", "Patient, pauses between digits"],
+                    ["Goal", "Pay the March bill by card"],
+                    ["Data", "Maya Patel · $62.10"],
+                  ].map(([k, v]) => (
+                    <div key={k} className="grid grid-cols-[4.5rem_1fr] gap-2">
+                      <dt className="text-(--ui-muted)">{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </UiCard>
 
-          <div className="mt-5 grid grid-cols-5 gap-3">
-            {CALLERS.map((x, i) => {
-              const p = b - i * STAGGER
-              const started = p >= 0
-              const active = started && p < STEPS - 1
-              const done = p >= STEPS - 1
-              return (
-                <div
-                  key={x.id}
-                  className={cn(
-                    "flex flex-col gap-3 rounded-xl border bg-[oklch(0.28_0.005_260)] p-4 text-[12px] leading-[1.5] transition-[opacity,border-color,box-shadow] duration-500 ease-(--ease-out)",
-                    active ? "border-white/70 shadow-[0_0_0_3px_oklch(1_0_0/0.08)]" : "border-white/15",
-                    !started && "opacity-45"
-                  )}
-                >
-                  <div className="flex flex-col gap-1">
-                    <span className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] tracking-wide text-white/50 uppercase">Persona</span>
-                      <span className="ml-auto">
-                        {active && <span className="block size-1.5 rounded-full bg-[oklch(0.78_0.15_150)] motion-safe:animate-pulse" />}
+              {/* The conversation */}
+              <UiCard className="gap-2">
+                <UiLabel>Conversation</UiLabel>
+                {TURNS.map(([who, text, flag], i) => (
+                  <div key={i} className={cn("grid grid-cols-[2rem_4.5rem_1fr] items-baseline gap-2 text-[12.5px] transition-opacity duration-500", s > i ? "opacity-100" : "opacity-0")}>
+                    <span className="font-mono text-[10.5px] text-(--ui-muted)">T{i + 1}</span>
+                    <span className="text-[11px] text-(--ui-muted)">{who}</span>
+                    <span className={cn(flag && done && "underline decoration-[oklch(0.8_0.14_70)] decoration-wavy underline-offset-4")}>{text}</span>
+                  </div>
+                ))}
+              </UiCard>
+
+              {/* The scorecard */}
+              <UiCard className="gap-2">
+                <UiLabel>Scorecard</UiLabel>
+                {CHECKS.map((ch) => {
+                  const shown = s > ch.at
+                  return (
+                    <span key={ch.label} className="flex items-start gap-2 text-[12.5px]">
+                      <span className={cn("mt-0.5 grid size-4 shrink-0 place-items-center rounded-full", !shown ? "bg-(--ui-raised)" : ch.pass ? "bg-[oklch(0.74_0.16_150/0.2)]" : "bg-[oklch(0.8_0.14_70/0.2)]")}>
+                        {shown && (ch.pass ? <CheckIcon weight="bold" className="size-2.5 text-(--ui-live)" /> : <XIcon weight="bold" className="size-2.5 text-[oklch(0.82_0.14_70)]" />)}
+                      </span>
+                      <span className="flex flex-col leading-snug">
+                        <span className={cn(!shown && "text-(--ui-muted)")}>{ch.label}</span>
+                        {shown && ch.note && <span className="text-[11px] text-[oklch(0.82_0.14_70)]">{ch.note}</span>}
                       </span>
                     </span>
-                    <span className="text-[13px]">{x.persona}</span>
-                    <span className="text-white/55">{x.scenario}</span>
-                  </div>
-
-                  {/* The exchange */}
-                  <div className="flex min-h-[7.5rem] flex-col gap-2 border-t border-white/10 pt-3">
-                    {x.say.map(([who, t], j) => (
-                      <p
-                        key={t}
-                        className={cn(
-                          "transition-[opacity,translate] duration-500 ease-(--ease-out)",
-                          p >= j ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0",
-                          who === "Ria" ? "text-white" : "text-white/65"
-                        )}
-                      >
-                        <span className="text-white/45">{who}: </span>
-                        {t}
-                      </p>
-                    ))}
-                  </div>
-
-                  {/* The checklist */}
-                  <ul className="flex flex-col gap-1.5 border-t border-white/10 pt-3">
-                    {x.checks.map(([check, ok], j) => {
-                      const ticked = p >= 2 + j
-                      return (
-                        <li key={check} className={cn("flex items-start gap-2 transition-colors duration-300", ticked ? "text-white/90" : "text-white/40")}>
-                          <span className="mt-[3px] grid size-3.5 shrink-0 place-items-center">
-                            {ticked ? (
-                              ok ? (
-                                <CheckIcon weight="bold" className={cn("size-3.5", GREEN)} />
-                              ) : (
-                                <XIcon weight="bold" className={cn("size-3.5", AMBER)} />
-                              )
-                            ) : (
-                              <span className="size-2.5 rounded-full border border-white/25" />
-                            )}
-                          </span>
-                          {check}
-                        </li>
-                      )
-                    })}
-                  </ul>
-
-                  <span
-                    className={cn(
-                      "self-start rounded-full px-2 py-0.5 text-[11px] transition-[opacity,translate] duration-500",
-                      x.passed ? "bg-[oklch(0.74_0.16_150/0.2)] text-[oklch(0.85_0.12_150)]" : "bg-[oklch(0.8_0.14_70/0.18)] text-[oklch(0.88_0.1_70)]",
-                      done ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
-                    )}
-                  >
-                    {x.outcome}
+                  )
+                })}
+                <div className="mt-2 flex flex-col gap-1 border-t border-(--ui-line) pt-3 text-[12.5px]">
+                  <span className="text-[11px] text-(--ui-muted)">Expected outcome</span>
+                  <span className="flex items-center justify-between gap-2">
+                    Payment taken
+                    <span className={cn("text-[11px]", done ? "text-[oklch(0.82_0.14_70)]" : "text-(--ui-muted)")}>{done ? "Not reached" : "Waiting"}</span>
                   </span>
                 </div>
-              )
-            })}
-          </div>
+              </UiCard>
+            </div>
+          </UiWindow>
         </div>
-
-        {/* Below lg: the callers as a list */}
-        <ol className="mt-8 flex flex-col gap-3 lg:hidden">
-          {CALLERS.map((x) => (
-            <li key={x.id} className="flex flex-col gap-1.5 rounded-xl bg-[oklch(0.23_0.005_260)] p-4 text-small text-[oklch(0.95_0_0)]">
-              <span className="flex items-center justify-between gap-3 font-mono text-label text-white/55">
-                {x.persona}
-                <span className={x.passed ? "text-[oklch(0.85_0.12_150)]" : "text-[oklch(0.88_0.1_70)]"}>{x.outcome}</span>
-              </span>
-              <span>{x.scenario}</span>
-              <span className="text-white/60">{x.checks.map(([check, ok]) => `${check} ${ok ? "✓" : "✕"}`).join(" · ")}</span>
-            </li>
-          ))}
-        </ol>
 
         <ul className="mt-10 grid gap-6 sm:grid-cols-3">
           {rows.map((r) => (

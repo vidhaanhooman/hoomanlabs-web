@@ -35,7 +35,7 @@ type Scenario = { name: string; persona: string; checked: string; turns: number;
 const SCENARIOS: Scenario[] = [
   { name: "Angry caller wants a refund", persona: "Angry", checked: "Stayed calm, refunded the double charge of $86.40", turns: 9, result: "passed" },
   { name: "Switches to Hindi mid-call", persona: "Switches language", checked: "Replied in Hindi and kept the account details", turns: 7, result: "passed" },
-  { name: "Reads card number slowly", persona: "Reads numbers slowly", checked: "Waited for every digit before replying", turns: 8, result: "failed", note: "Interrupted at turn 6" },
+  { name: "Reads card number slowly", persona: "Reads numbers slowly", checked: "Waited for every digit before replying", turns: 8, result: "failed", note: "Interrupted at turn 5" },
   { name: "Asks for a human", persona: "Rushed", checked: "Handed over to the billing team with a summary", turns: 4, result: "transferred" },
   { name: "Disputes the amount", persona: "Calm", checked: "Read the correct amount, $142.00, and the due date", turns: 11, result: "passed" },
   { name: "Elderly caller, asks to repeat", persona: "Elderly", checked: "Repeated clearly, at a slower pace", turns: 12, result: "passed" },

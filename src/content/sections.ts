@@ -141,8 +141,7 @@ export type SectionId =
   | "testing-definition"
   | "testing-callers"
   | "testing-checks"
-  | "testing-suites"
-  | "testing-never"
+  | "testing-ab"
   | "testing-try"
   | "testing-faq"
   | "testing-next"
@@ -354,10 +353,9 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "ds-next", name: "Components: next step demo", status: "draft" },
   { id: "testing-hero", name: "Testing: hero", status: "draft" },
   { id: "testing-definition", name: "Testing: definition", status: "draft" },
-  { id: "testing-callers", name: "Testing: mystery callers", status: "draft" },
-  { id: "testing-checks", name: "Testing: spot checks", status: "draft" },
-  { id: "testing-suites", name: "Testing: test suites and versions", status: "draft" },
-  { id: "testing-never", name: "Testing: never-again tests", status: "draft" },
+  { id: "testing-callers", name: "Testing: simulations and test suites", status: "draft" },
+  { id: "testing-checks", name: "Testing: spot checks and replay", status: "draft" },
+  { id: "testing-ab", name: "Testing: A/B testing", status: "draft" },
   { id: "testing-try", name: "Testing: try it now", status: "draft" },
   { id: "testing-faq", name: "Testing: FAQ", status: "draft" },
   { id: "testing-next", name: "Testing: next step", status: "draft" },

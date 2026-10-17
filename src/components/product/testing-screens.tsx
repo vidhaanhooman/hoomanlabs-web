@@ -1,17 +1,17 @@
-import { ArrowCounterClockwiseIcon, ChatCircleTextIcon, CheckIcon, PhoneIcon, PlusIcon, WarningCircleIcon, WrenchIcon, XIcon } from "@phosphor-icons/react/dist/ssr"
+import { ArrowClockwiseIcon, ArrowCounterClockwiseIcon, CheckIcon, CopyIcon, FlagIcon, FlaskIcon, PlayIcon, TerminalIcon, WrenchIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-window"
+import { UiCard, UiPill, UiWindow } from "@/components/product/ui-window"
 import { cn } from "@/lib/utils"
 
 /**
  * Screens for /platform/testing, recreated from the console in its dark
  * style (each takes the window class from the page; content keeps to the
- * part left visible when the window runs past the stage's right edge).
+ * part left visible when the window runs past the stage's right edge, and
+ * where it reacts to the panel's rows, the hovered row as `focus`).
  * Fictional data (Halden Energy, Ria, Maya Patel). Tool names, versions and
  * run numbers are illustrative.
  */
 
-const AMBER = "text-[oklch(0.8_0.14_70)]"
 
 function Ok({ children }: { children: React.ReactNode }) {
   return (
@@ -22,187 +22,206 @@ function Ok({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Fail({ children }: { children: React.ReactNode }) {
+const fade = (focus: string, ids: string[]) => cn("transition-opacity duration-300", focus !== "all" && !ids.includes(focus) && "opacity-35")
+
+/**
+ * Spot checks & replay, as the console's conversation log (for recall): the
+ * conversation header, the timestamped transcript with the per-turn toolbar
+ * (play, replay, simulate, logs, copy, flag), an inline tool result, and a
+ * slim Details column (outcome with flag and re-run, end reason, tools).
+ * The flagged turn is the one the simulation failed on (Ria cut in while
+ * the card number was read). The hovered row drives the toolbar: flag
+ * (find), replay (the replayed answer), or simulate and save (scenario).
+ */
+const TURNS: [string, "User" | "Agent", string][] = [
+  ["0:00", "Agent", "Hi, this is Ria from Halden Energy. Am I speaking with Maya?"],
+  ["0:06", "User", "Yes. I'd like to pay my bill."],
+  ["0:11", "Agent", "Your bill is $62.10. Shall I take your card number?"],
+  ["0:18", "User", "Sure. It's four, two, seven… one…"],
+]
+
+export function ReplayScreen({ className, focus }: { className: string; focus: string }) {
+  const step = focus === "rerun" ? "rerun" : focus === "save" ? "save" : "find"
+  const tools: [React.ElementType, string, boolean][] = [
+    [PlayIcon, "Play", false],
+    [ArrowCounterClockwiseIcon, "Replay", step === "rerun"],
+    [FlaskIcon, "Simulate and save as scenario", step === "save"],
+    [TerminalIcon, "Logs", false],
+    [CopyIcon, "Copy", false],
+  ]
   return (
-    <span className={cn("flex items-center gap-1 text-[11px]", AMBER)}>
-      <XIcon weight="bold" className="size-3" />
-      {children}
-    </span>
+    <div aria-hidden className={cn("ui-dark flex flex-col overflow-hidden text-[12px] leading-[1.5]", className)}>
+      {/* Conversation header */}
+      <div className="flex items-start gap-6 border-b border-(--ui-line) px-4 py-2.5 pr-[22%] text-[11px]">
+        {[
+          ["Conversation Id", "cv_8Hq2Lm"],
+          ["Type", "Simulation"],
+          ["Start time", "12 Mar, 10:02 am"],
+        ].map(([k, v]) => (
+          <span key={k} className="flex flex-col leading-tight">
+            <span className="text-(--ui-muted)">{k}</span>
+            <span className={cn("text-[12px]", k === "Conversation Id" && "font-mono")}>{v}</span>
+          </span>
+        ))}
+        <span className="ml-auto flex items-center gap-1.5 rounded-md bg-(--ui-raised) px-2.5 py-1.5 text-[11.5px]">
+          <FlagIcon className="size-3.5" />
+          Review
+        </span>
+      </div>
+
+      <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,2.1fr)_minmax(0,1fr)] pr-[22%]">
+        {/* Transcript */}
+        <div className="flex flex-col gap-0.5 border-r border-(--ui-line) px-3 pt-3">
+          <span className="flex items-center justify-between px-1 pb-2">
+            <span className="text-[13px]">Transcript</span>
+            <span className="text-[11px] text-(--ui-muted)">0:38 · 9 turns</span>
+          </span>
+          {TURNS.map(([t, who, line]) => (
+            <Line key={t} t={t} who={who}>
+              {line}
+            </Line>
+          ))}
+
+          {/* The flagged turn, with its toolbar */}
+          <div className="relative mt-1 rounded-md bg-(--ui-raised)/70 py-1">
+            <div className="absolute top-1/2 right-1 z-10 flex -translate-y-1/2 items-center gap-0.5 rounded-md border border-(--ui-line) bg-(--ui-panel) p-0.5">
+              {tools.map(([I, label, on]) => (
+                <span key={label} className={cn("relative grid size-6 place-items-center rounded", on ? "bg-(--ui-raised) text-(--ui-text)" : "text-(--ui-muted)")}>
+                  <I className="size-3.5" />
+                  {on && <span className="absolute bottom-full mb-1.5 rounded-md bg-white px-2 py-0.5 text-[10.5px] whitespace-nowrap text-black">{label}</span>}
+                </span>
+              ))}
+              <span className={cn("grid size-6 place-items-center rounded", step === "find" && "bg-[oklch(0.62_0.2_25/0.18)]")}>
+                <FlagIcon weight={step === "find" ? "fill" : "regular"} className="size-3.5 text-[oklch(0.68_0.2_25)]" />
+              </span>
+            </div>
+            <Line t="0:22" who="Agent">
+              <span className="underline decoration-[oklch(0.68_0.2_25)] decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
+            </Line>
+          </div>
+          <span className="flex items-center gap-2 px-1 py-1.5 text-[11px]">
+            <WrenchIcon className="size-3 text-(--ui-muted)" />
+            take_payment
+            <Pill tone="fail">Failed</Pill>
+            <span className="text-(--ui-muted)">card number incomplete</span>
+          </span>
+
+          {/* What the toolbar did */}
+          {step === "rerun" && (
+            <div className="mt-1 rounded-md border border-(--ui-line) p-2.5">
+              <span className="flex items-center justify-between text-[11px] text-(--ui-muted)">
+                Replay on v13 draft
+                <Pill tone="ok">Waited for every digit</Pill>
+              </span>
+              <p className="mt-1">…one, nine, nine, zero. Got all 16 digits, thank you. And the expiry date?</p>
+            </div>
+          )}
+          {step === "save" && (
+            <div className="mt-1 flex items-center gap-2 rounded-md border border-(--ui-line) p-2.5">
+              <FlaskIcon className="size-3.5 text-(--ui-muted)" />
+              <span className="flex flex-col leading-tight">
+                <span>Saved as scenario · Reads numbers slowly</span>
+                <span className="text-[11px] text-(--ui-muted)">Billing suite · checked on every version</span>
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Details */}
+        <div className="flex flex-col gap-3 px-3.5 pt-3 text-[11.5px]">
+          <span className="text-[13px]">Details</span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-(--ui-muted)">Outcome</span>
+            <span className="font-mono text-[12px]">payment_not_taken</span>
+          </span>
+          <span className="flex gap-1.5">
+            <span className="grid size-7 place-items-center rounded-md bg-(--ui-raised)">
+              <FlagIcon className="size-3.5" />
+            </span>
+            <span className={cn("flex items-center gap-1.5 rounded-md px-2.5", step === "rerun" ? "bg-(--ui-text) text-(--ui-bg)" : "bg-(--ui-raised)")}>
+              <ArrowClockwiseIcon className="size-3.5" />
+              Re-run
+            </span>
+          </span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-(--ui-muted)">End reason</span>
+            <span className="font-mono text-[12px]">customer_end</span>
+          </span>
+          <span className="border-t border-(--ui-line) pt-3 text-[12px]">Tools</span>
+          {(
+            [
+              ["get_balance", "ok", "Success"],
+              ["take_payment", "fail", "Failed"],
+            ] as const
+          ).map(([name, tone, label]) => (
+            <span key={name} className="flex items-center gap-2 rounded-md bg-(--ui-raised)/70 px-2.5 py-2">
+              <WrenchIcon className="size-3 text-(--ui-muted)" />
+              <span className="font-mono">{name}</span>
+              <span className="ml-auto">
+                <Pill tone={tone}>{label}</Pill>
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
 
-function Turn({ n, who, children, dim = false }: { n: number; who: string; children: React.ReactNode; dim?: boolean }) {
+function Line({ t, who, children }: { t: string; who: string; children: React.ReactNode }) {
   return (
-    <div className={cn("grid grid-cols-[2.5rem_3.5rem_1fr] items-baseline gap-2", dim && "text-(--ui-muted)")}>
-      <span className="font-mono text-[10.5px] text-(--ui-muted)">T{n}</span>
+    <div className="grid grid-cols-[2.25rem_3rem_1fr] items-baseline gap-2 px-1 py-1">
+      <span className="font-mono text-[10.5px] text-(--ui-muted)">{t}</span>
       <span className="text-[11px] text-(--ui-muted)">{who}</span>
       <span>{children}</span>
     </div>
   )
 }
 
-/** Spot checks: the expected reply and tool call at one turn. */
-export function SpotCheckScreen({ className }: { className: string }) {
-  return (
-    <UiWindow className={className} title="Scenario · balance enquiry" aside={<UiPill>Spot check</UiPill>}>
-      <UiCard className="gap-2">
-        <UiLabel>Conversation so far</UiLabel>
-        <Turn n={1} who="Ria" dim>
-          Hi, this is Ria from Halden Energy. How can I help?
-        </Turn>
-        <Turn n={2} who="Customer" dim>
-          What do I owe this month?
-        </Turn>
-        <Turn n={3} who="Ria">
-          You owe $142.00, due on 4 March.
-        </Turn>
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Expected at turn 3</UiLabel>
-          <Ok>Passed on v13</Ok>
-        </div>
-        <div className="flex items-center gap-3 rounded-md border border-(--ui-line) px-3 py-2">
-          <WrenchIcon className="size-3.5 text-(--ui-muted)" />
-          <span className="font-mono text-[11.5px]">get_balance(account_id)</span>
-          <span className="ml-auto">
-            <Ok>Called</Ok>
-          </span>
-        </div>
-        <div className="flex items-center gap-3 rounded-md border border-(--ui-line) px-3 py-2">
-          <span className="text-[11px] text-(--ui-muted)">Reply mentions</span>
-          <span className="rounded bg-(--ui-raised) px-1.5 py-px font-mono text-[11.5px]">$142.00</span>
-          <span className="rounded bg-(--ui-raised) px-1.5 py-px font-mono text-[11.5px]">due 4 March</span>
-          <span className="ml-auto">
-            <Ok>Matched</Ok>
-          </span>
-        </div>
-      </UiCard>
-    </UiWindow>
-  )
+function Pill({ tone, children }: { tone: "ok" | "fail"; children: React.ReactNode }) {
+  return <span className={cn("rounded-md px-1.5 py-px text-[10.5px]", tone === "ok" ? "bg-[oklch(0.74_0.16_150/0.16)] text-(--ui-live)" : "bg-[oklch(0.62_0.2_25/0.18)] text-[oklch(0.75_0.16_25)]")}>{children}</span>
 }
 
-/** Test suites and versions: every scenario against a draft before publishing. */
-export function SuiteScreen({ className }: { className: string }) {
-  const versions = [
-    { v: "v13", state: "Draft", note: "Shorter greeting, new refund policy", result: "118 of 120", ok: false },
-    { v: "v12", state: "Live", note: "Hindi replies for billing", result: "117 of 117", ok: true },
-    { v: "v11", state: "", note: "Card payments", result: "112 of 112", ok: true },
+/** A/B testing: two versions, split across inbound and outbound conversations. */
+export function AbScreen({ className, focus }: { className: string; focus: string }) {
+  const arms = [
+    { name: "v12 · current", note: "Current script and voice", inbound: 71, outbound: 44 },
+    { name: "v13 · test", note: "Shorter opening, warmer voice", inbound: 78, outbound: 52, lead: true },
   ]
   return (
-    <UiWindow className={className} title="Ria · Billing · versions" aside={<UiPill live>v12 live</UiPill>}>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Billing suite · v13 draft</UiLabel>
-          <span className="text-[11px] text-(--ui-muted)">120 scenarios</span>
-        </div>
-        <div className="flex h-1.5 overflow-hidden rounded-full bg-(--ui-raised)">
-          <span className="h-full bg-(--ui-live)" style={{ width: "98.3%" }} />
-          <span className="h-full bg-[oklch(0.8_0.14_70)]" style={{ width: "1.7%" }} />
-        </div>
-        <div className="flex items-center gap-4 text-[11.5px]">
-          <Ok>118 passed</Ok>
-          <Fail>2 failed</Fail>
-          <span className="ml-auto flex items-center gap-1 text-[11px] text-(--ui-muted)">
-            <WarningCircleIcon className={cn("size-3", AMBER)} />2 to fix before publishing
+    <UiWindow className={className} title="Ria · Billing · A/B test" aside={<UiPill live>20% on v13</UiPill>}>
+      <div className={cn("flex flex-wrap gap-1.5", fade(focus, ["change"]))}>
+        {["Script", "Voice", "Flow"].map((x, i) => (
+          <span key={x} className={cn("rounded-full px-2.5 py-0.5 text-[11px]", i < 2 ? "bg-(--ui-raised) text-(--ui-text)" : "border border-(--ui-line) text-(--ui-muted)")}>
+            {x} {i < 2 ? "changed" : "same"}
           </span>
-        </div>
-      </UiCard>
-      <UiCard className="gap-0 p-0">
-        <div className="grid grid-cols-[3rem_1fr_6rem] gap-3 border-b border-(--ui-line) px-3.5 py-2 text-[11px] text-(--ui-muted)">
-          <span>Version</span>
-          <span>Notes</span>
-          <span className="text-right">Suite</span>
-        </div>
-        {versions.map((x) => (
-          <div key={x.v} className="grid grid-cols-[3rem_1fr_6rem] items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0">
-            <span className="font-mono text-[11.5px]">{x.v}</span>
-            <span className="flex min-w-0 items-center gap-2">
-              <span className="truncate">{x.note}</span>
-              {x.state && <span className={cn("shrink-0 rounded-full px-2 py-px text-[10.5px]", x.state === "Live" ? "bg-(--ui-live)/15 text-(--ui-live)" : "bg-(--ui-raised) text-(--ui-muted)")}>{x.state}</span>}
-            </span>
-            <span className={cn("text-right font-mono text-[11px]", x.ok ? "text-(--ui-muted)" : AMBER)}>{x.result}</span>
-          </div>
         ))}
-      </UiCard>
-    </UiWindow>
-  )
-}
-
-/** Never-again tests: a real turn becomes a scenario, then is replayed. */
-export function NeverAgainScreen({ className }: { className: string }) {
-  return (
-    <UiWindow className={className} title="Conversation · Maya Patel" aside={<UiPill>Real call · 12 Mar</UiPill>}>
-      <UiCard className="gap-2">
-        <Turn n={4} who="Maya" dim>
-          So what&apos;s the corrected amount?
-        </Turn>
-        <Turn n={5} who="Ria">
-          Your corrected bill is <span className={cn("underline decoration-wavy underline-offset-4", "decoration-[oklch(0.8_0.14_70)]")}>$26.10</span>.
-        </Turn>
-        <div className="mt-1 flex items-center gap-1.5 pl-[6.5rem]">
-          <span className="flex items-center gap-1 rounded-md bg-(--ui-raised) px-2 py-1 text-[11px]">
-            <PlusIcon className="size-3" />
-            Create scenario
-          </span>
-          <span className="flex items-center gap-1 rounded-md border border-(--ui-line) px-2 py-1 text-[11px] text-(--ui-muted)">
-            <ArrowCounterClockwiseIcon className="size-3" />
-            Re-run this turn
-          </span>
-        </div>
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Re-run on v13 draft</UiLabel>
-          <Ok>Correct amount</Ok>
-        </div>
-        <p className="text-[12.5px]">Your corrected bill is $62.10, due on the 4th.</p>
-      </UiCard>
-      <UiCard className="flex-row items-center gap-3 py-3">
-        <CheckIcon weight="bold" className="size-3.5 text-(--ui-live)" />
-        <span>Added to the Billing suite</span>
-        <span className="ml-auto text-[11px] text-(--ui-muted)">Checked on every version</span>
-      </UiCard>
-    </UiWindow>
-  )
-}
-
-/** Try it now: call or chat with sample data, logs alongside. */
-export function TryItScreen({ className }: { className: string }) {
-  const sample: [string, string][] = [
-    ["customer_name", "Maya Patel"],
-    ["balance_due", "$62.10"],
-    ["due_date", "4 March"],
-  ]
-  return (
-    <UiWindow className={className} title="Ria · Billing · test" aside={<UiPill>v13 draft</UiPill>}>
-      <div className="flex gap-1 self-start rounded-full bg-(--ui-raised) p-0.5 text-[11.5px]">
-        <span className="flex items-center gap-1.5 rounded-full bg-(--ui-panel) px-3 py-1">
-          <PhoneIcon className="size-3" />
-          Call
-        </span>
-        <span className="flex items-center gap-1.5 px-3 py-1 text-(--ui-muted)">
-          <ChatCircleTextIcon className="size-3" />
-          Chat
-        </span>
       </div>
-      <UiCard className="gap-1.5">
-        <UiLabel>Sample data</UiLabel>
-        {sample.map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between">
-            <span className="font-mono text-[11px] text-(--ui-muted)">{k}</span>
-            <span>{v}</span>
+      {arms.map((a) => (
+        <UiCard key={a.name} className={cn(a.lead && "border-[oklch(0.74_0.16_150/0.35)]")}>
+          <div className="flex items-center justify-between">
+            <span className="flex flex-col">
+              <span className="text-[13px]">{a.name}</span>
+              <span className="text-[11px] text-(--ui-muted)">{a.note}</span>
+            </span>
+            {a.lead && <Ok>Ahead</Ok>}
           </div>
-        ))}
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Test call · 0:38</UiLabel>
-          <UiPill live>Connected</UiPill>
-        </div>
-        <p className="text-[12.5px]">Hi Maya, this is Ria from Halden Energy. Your bill of $62.10 is due on the 4th. Would you like to pay it now?</p>
-        <span className="font-mono text-[10.5px] text-(--ui-muted)">log · get_balance → 200 · 212ms</span>
-      </UiCard>
+          {(
+            [
+              ["Inbound · resolved", a.inbound],
+              ["Outbound · promise to pay", a.outbound],
+            ] as [string, number][]
+          ).map(([k, v]) => (
+            <div key={k} className={cn("grid grid-cols-[10rem_1fr_2.5rem] items-center gap-3 text-[11.5px]", fade(focus, ["both"]))}>
+              <span className="text-(--ui-muted)">{k}</span>
+              <span className="h-1.5 rounded-full bg-(--ui-raised)">
+                <span className="block h-full rounded-full bg-(--ui-text)/80" style={{ width: `${v}%` }} />
+              </span>
+              <span className="text-right font-mono tabular-nums">{v}%</span>
+            </div>
+          ))}
+        </UiCard>
+      ))}
     </UiWindow>
   )
 }

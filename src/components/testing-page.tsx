@@ -1,14 +1,15 @@
 import { Faq } from "@/components/product-page/faq"
 import { Definition, NextStep } from "@/components/product-page/page-bits"
 import { MysteryCallers } from "@/components/testing/mystery-callers"
-import { TestingPanels } from "@/components/testing/panels"
+import { TestingPanels, TryPanel } from "@/components/testing/panels"
 import { TestingHero } from "@/components/testing/sections"
 import { testingPage as c } from "@/content/pages/testing"
 
 /**
  * /platform/testing, following the content sheet in the homepage's
- * language (like the other product pages): floating hero,  * definition, mystery callers (full width), spot checks, test suites and
- * versions, never-again tests, try it now, FAQ, next step.
+ * language (like the other product pages): floating hero, definition, then
+ * try it now (a web call), simulations and test suites (full width), spot
+ * checks and replay, A/B testing (inbound and outbound), FAQ, next step.
  */
 
 /** The homepage's roomier section spacing. */
@@ -22,6 +23,7 @@ export function TestingPage() {
     <div style={ROOMY}>
       <TestingHero />
       <Definition id="testing-definition" text={c.definition} />
+      <TryPanel />
       <MysteryCallers />
       <TestingPanels />
       <Faq id="testing-faq" items={c.faq} />
