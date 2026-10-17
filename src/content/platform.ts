@@ -59,6 +59,7 @@ export type MenuPageId =
   | "integrations"
   | "testing"
   | "quality"
+  | "observability"
   | "security"
   | "human-ai"
 
@@ -88,7 +89,8 @@ export const platformMenu: { group: "Build" | "Reach" | "Trust"; line: string; p
     line: "Know it works, on every conversation",
     pages: [
       { id: "testing", name: "Testing", blurb: "Know it's ready before a customer hears it.", url: "/platform/testing", fallback: "/platform#product-simulations" },
-      { id: "quality", name: "Quality & Insights", blurb: "See, score and fix every conversation.", url: "/platform/quality", fallback: "/platform#product-qa" },
+      { id: "quality", name: "QA", blurb: "Score every conversation, fix what fails.", url: "/platform/quality", fallback: "/platform#product-qa" },
+      { id: "observability", name: "Observability", blurb: "Dashboards, alerts and every conversation's log.", url: "/platform/observability", fallback: "/platform#product-qa" },
       { id: "security", name: "Security & Reliability", blurb: "Always on, compliant, in your control.", url: "/platform/security", fallback: "/platform" },
     ],
   },
@@ -104,7 +106,7 @@ export const platformFeatured: MenuPage = {
 }
 
 /** Menu pages that exist; add an id here when its page ships. */
-const BUILT = new Set<MenuPageId>(["agents", "voice", "workflows", "campaigns", "channels", "integrations", "testing", "quality", "security"])
+const BUILT = new Set<MenuPageId>(["agents", "voice", "workflows", "campaigns", "channels", "integrations", "testing", "quality", "observability", "security"])
 export const menuHref = (p: MenuPage) => (BUILT.has(p.id) ? p.url : p.fallback)
 
 /** Components with their own page; the rest link to their section on /platform. */

@@ -11,11 +11,11 @@ import { cn } from "@/lib/utils"
 /**
  * The /platform/quality hero visual, two panes on the landscape backdrop.
  * Left, one call's transcript: Maya Patel calls Halden Energy's billing line
- * and agrees a payment date with Ria. Right, the call's scorecard with five
- * judges, one of each kind. On view the judges resolve one by one; when the
+ * and agrees a payment date with Ria. Right, the call's scorecard with the
+ * four judges, one of each kind. On view the judges resolve one by one; when the
  * code judge fails ("Disclosure read"), the turn where the disclosure should
  * have been read lights up in the transcript with a fault marker (the fault
- * finder). The team review stays pending in the queue. Plays once, then
+ * finder), and the call goes to team review. Plays once, then
  * holds. Reduced motion: finished. Sample data (Halden Energy).
  */
 
@@ -48,7 +48,6 @@ const JUDGES: Judge[] = [
   { kind: "Classifier", rule: "Customer sentiment: improved", pass: true, detail: "Worried → relieved · 0.92 confidence" },
   { kind: "Code judge", rule: "Disclosure read", pass: false, detail: "Not heard before the date was agreed.", turn: FAULT_TURN },
   { kind: "Audio judge", rule: "No talk-over", pass: true, detail: "Stopped cleanly when cut in" },
-  { kind: "Team review", rule: "Pending", pass: null, detail: "In the review queue" },
 ]
 
 export function QualityConsole() {
@@ -233,7 +232,7 @@ export function QualityConsole() {
             >
               <span className="text-(--ui-text) tabular-nums">Score 3/4</span>
               · 1 issue · turn {FAULT_TURN}
-              <span className="ml-auto">1 review pending</span>
+              <span className="ml-auto">Sent to team review</span>
             </div>
           </div>
         </div>

@@ -1,36 +1,28 @@
 "use client"
 
-import { AskScreen, AuditScreen, CallRecordScreen, DashboardScreen, DebriefScreen, FaultScreen, ReviewScreen } from "@/components/product/quality-screens"
+import { AnalyticsScreen, FailureModesScreen, ReviewScreen } from "@/components/product/quality-screens"
 import { ProductPanel } from "@/components/sections/how-it-works-v3"
 import { qualityPage as c } from "@/content/pages/quality"
 
 /**
- * Split panels in the homepage's ProductPanel, alternating sides: the
- * Quality half (fault finder, audits and alerts, human review) and the
- * Insights half (call record, debrief, Ask AI, dashboards).
+ * Split panels in the homepage's ProductPanel, alternating sides. Quality
+ * analysis: post-conversation analytics first, then (after the four judges)
+ * team review and failure modes. Dashboards, alerts and logs live on
+ * /platform/observability.
  */
 
 const DOCS = "https://docs.hoomanlabs.com"
 
-export function QualityPanels() {
-  const { fault, watch, humans } = c
-  return (
-    <>
-      <ProductPanel id="quality-fault" {...fault} link="Read about fault finder" linkHref={DOCS} screen={(cls) => <FaultScreen className={cls} />} />
-      <ProductPanel id="quality-watch" {...watch} link="Read about audits" linkHref={DOCS} media="start" screen={(cls) => <AuditScreen className={cls} />} />
-      <ProductPanel id="quality-humans" {...humans} link="Read about reviews" linkHref={DOCS} screen={(cls) => <ReviewScreen className={cls} />} />
-    </>
-  )
+export function AnalyticsPanel() {
+  return <ProductPanel id="quality-analytics" {...c.analytics} link="Read about post-conversation analytics" linkHref={DOCS} screen={(cls, f) => <AnalyticsScreen className={cls} focus={f} />} />
 }
 
-export function InsightsPanels() {
-  const { record, debrief, ask, dashboards } = c
+export function QualityPanels() {
+  const { humans, fault } = c
   return (
     <>
-      <ProductPanel id="quality-record" {...record} link="Read about the call record" linkHref={DOCS} media="start" screen={(cls) => <CallRecordScreen className={cls} />} />
-      <ProductPanel id="quality-debrief" {...debrief} link="Read about post-call analysis" linkHref={DOCS} screen={(cls) => <DebriefScreen className={cls} />} />
-      <ProductPanel id="quality-ask" {...ask} link="Read about Ask AI" linkHref={DOCS} media="start" screen={(cls) => <AskScreen className={cls} />} />
-      <ProductPanel id="quality-dashboards" {...dashboards} link="Read about dashboards" linkHref={DOCS} screen={(cls) => <DashboardScreen className={cls} />} />
+      <ProductPanel id="quality-humans" {...humans} link="Read about team review" linkHref={DOCS} media="start" screen={(cls) => <ReviewScreen className={cls} />} />
+      <ProductPanel id="quality-fault" {...fault} link="Read about failure modes" linkHref={DOCS} screen={(cls, f) => <FailureModesScreen className={cls} focus={f} />} />
     </>
   )
 }

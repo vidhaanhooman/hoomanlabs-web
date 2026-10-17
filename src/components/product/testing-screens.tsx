@@ -40,13 +40,14 @@ const TURNS: [string, "User" | "Agent", string][] = [
   ["0:18", "User", "Sure. It's four, two, seven… one…"],
 ]
 
-export function ReplayScreen({ className, focus }: { className: string; focus: string }) {
-  const step = focus === "rerun" ? "rerun" : focus === "save" ? "save" : "find"
+export function ReplayScreen({ className, focus, type = "Simulation" }: { className: string; focus: string; type?: string }) {
+  // On Quality's conversation logs the rows are turns / actions / review.
+  const step = focus === "rerun" ? "rerun" : focus === "save" || focus === "review" ? "save" : focus === "actions" ? "actions" : "find"
   const tools: [React.ElementType, string, boolean][] = [
     [PlayIcon, "Play", false],
     [ArrowCounterClockwiseIcon, "Replay", step === "rerun"],
     [FlaskIcon, "Simulate and save as scenario", step === "save"],
-    [TerminalIcon, "Logs", false],
+    [TerminalIcon, "Agent actions", step === "actions"],
     [CopyIcon, "Copy", false],
   ]
   return (
@@ -55,7 +56,7 @@ export function ReplayScreen({ className, focus }: { className: string; focus: s
       <div className="flex items-start gap-6 border-b border-(--ui-line) px-4 py-2.5 pr-[22%] text-[11px]">
         {[
           ["Conversation Id", "cv_8Hq2Lm"],
-          ["Type", "Simulation"],
+          ["Type", type],
           ["Start time", "12 Mar, 10:02 am"],
         ].map(([k, v]) => (
           <span key={k} className="flex flex-col leading-tight">
@@ -99,7 +100,7 @@ export function ReplayScreen({ className, focus }: { className: string; focus: s
               <span className="underline decoration-[oklch(0.68_0.2_25)] decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
             </Line>
           </div>
-          <span className="flex items-center gap-2 px-1 py-1.5 text-[11px]">
+          <span className={cn("flex items-center gap-2 rounded-md px-1 py-1.5 text-[11px]", step === "actions" && "bg-(--ui-raised) ring-1 ring-white/15")}>
             <WrenchIcon className="size-3 text-(--ui-muted)" />
             take_payment
             <Pill tone="fail">Failed</Pill>
@@ -154,7 +155,7 @@ export function ReplayScreen({ className, focus }: { className: string; focus: s
               ["take_payment", "fail", "Failed"],
             ] as const
           ).map(([name, tone, label]) => (
-            <span key={name} className="flex items-center gap-2 rounded-md bg-(--ui-raised)/70 px-2.5 py-2">
+            <span key={name} className={cn("flex items-center gap-2 rounded-md bg-(--ui-raised)/70 px-2.5 py-2", step === "actions" && "ring-1 ring-white/15")}>
               <WrenchIcon className="size-3 text-(--ui-muted)" />
               <span className="font-mono">{name}</span>
               <span className="ml-auto">

@@ -147,17 +147,18 @@ export type SectionId =
   | "testing-next"
   | "quality-hero"
   | "quality-definition"
+  | "quality-analytics"
   | "quality-judges"
-  | "quality-fault"
-  | "quality-watch"
   | "quality-humans"
-  | "quality-improve"
-  | "quality-record"
-  | "quality-debrief"
-  | "quality-ask"
-  | "quality-dashboards"
-  | "quality-data"
+  | "quality-fault"
   | "quality-faq"
+  | "observability-hero"
+  | "observability-definition"
+  | "observability-dashboards"
+  | "observability-alerts"
+  | "observability-logs"
+  | "observability-faq"
+  | "observability-next"
   | "quality-next"
   | "security-hero"
   | "security-definition"
@@ -361,18 +362,19 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "testing-next", name: "Testing: next step", status: "draft" },
   { id: "quality-hero", name: "Quality: hero", status: "draft" },
   { id: "quality-definition", name: "Quality: definition", status: "draft" },
-  { id: "quality-judges", name: "Quality: five judges, one scorecard", status: "draft" },
-  { id: "quality-fault", name: "Quality: fault finder", status: "draft" },
-  { id: "quality-watch", name: "Quality: scorecards, audits and alerts", status: "draft" },
-  { id: "quality-humans", name: "Quality: QA your human team", status: "draft" },
-  { id: "quality-improve", name: "Quality: gets better every week", status: "draft" },
-  { id: "quality-record", name: "Quality: every call on record", status: "draft" },
-  { id: "quality-debrief", name: "Quality: debrief", status: "draft" },
-  { id: "quality-ask", name: "Quality: Ask AI", status: "draft" },
-  { id: "quality-dashboards", name: "Quality: dashboards and reports", status: "draft" },
-  { id: "quality-data", name: "Quality: data to your systems", status: "draft" },
+  { id: "quality-analytics", name: "Quality: post-conversation analytics", status: "draft" },
+  { id: "quality-judges", name: "Quality: advanced metrics, four judges", status: "draft" },
+  { id: "quality-humans", name: "Quality: team review", status: "draft" },
+  { id: "quality-fault", name: "Quality: failure modes and fixes", status: "draft" },
   { id: "quality-faq", name: "Quality: FAQ", status: "draft" },
   { id: "quality-next", name: "Quality: next step", status: "draft" },
+  { id: "observability-hero", name: "Observability: hero", status: "draft" },
+  { id: "observability-definition", name: "Observability: definition", status: "draft" },
+  { id: "observability-dashboards", name: "Observability: dashboards", status: "draft" },
+  { id: "observability-alerts", name: "Observability: alerts", status: "draft" },
+  { id: "observability-logs", name: "Observability: conversation logs", status: "draft" },
+  { id: "observability-faq", name: "Observability: FAQ", status: "draft" },
+  { id: "observability-next", name: "Observability: next step", status: "draft" },
   { id: "security-hero", name: "Security: hero", status: "draft" },
   { id: "security-definition", name: "Security: definition", status: "draft" },
   { id: "security-failover", name: "Security: always on", status: "draft" },

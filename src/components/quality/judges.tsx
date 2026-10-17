@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useInView } from "motion/react"
-import { CheckIcon, CodeIcon, ListChecksIcon, SparkleIcon, UsersThreeIcon, WaveformIcon, XIcon, type Icon } from "@phosphor-icons/react"
+import { CheckIcon, CodeIcon, ListChecksIcon, SparkleIcon, WaveformIcon, XIcon, type Icon } from "@phosphor-icons/react"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -11,9 +11,9 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
- * "Five judges, one scorecard", full width on the console's charcoal canvas:
- * the five kinds of judge side by side (LLM, classifier, code, audio and
- * your team), each with what it's for, an example rule and a tiny sample
+ * "Advanced metrics" with four judges, full width on the console's charcoal
+ * canvas: the four kinds of judge side by side (LLM, classifier, code and
+ * audio; human review has its own section), each with what it's for, an example rule and a tiny sample
  * result from Maya Patel's call in the hero. On view the cards' results
  * land one by one, then the scorecard they add up to; then it holds. Below
  * lg: a list. Reduced motion: finished. Sample data (Halden Energy).
@@ -61,17 +61,8 @@ const JUDGES: Judge[] = [
     reads: "The recording itself",
     result: { tone: "pass", text: "Pass" },
   },
-  {
-    id: "team",
-    icon: UsersThreeIcon,
-    kind: "Team review",
-    forWhat: "For the final word",
-    example: <span>Tag issues in one click: ignored question, cut off, repetition.</span>,
-    reads: "AI, self and team reviews",
-    result: { tone: "pending", text: "Pending" },
-  },
 ]
-const LAST = JUDGES.length + 1 // the scorecard total lands after the five results
+const LAST = JUDGES.length + 1 // the scorecard total lands after the four results
 const BEAT_MS = 650
 
 const TONE = {
@@ -115,7 +106,7 @@ export function Judges() {
           <p className="text-body text-ink-secondary">{line}</p>
         </div>
 
-        {/* lg+: the five judges on the charcoal canvas, adding up to one scorecard */}
+        {/* lg+: the four judges on the charcoal canvas, adding up to one scorecard */}
         <div
           ref={ref}
           aria-hidden
@@ -127,7 +118,7 @@ export function Judges() {
             <span>Maya Patel · today, 18:42</span>
           </div>
 
-          <ol className="grid grid-cols-5 gap-3">
+          <ol className="grid grid-cols-4 gap-3">
             {JUDGES.map((j, i) => {
               const landed = b > i
               return (
@@ -168,8 +159,6 @@ export function Judges() {
               <span className="text-white tabular-nums">3</span> pass
               <span className="text-white/30">·</span>
               <span className="text-white tabular-nums">1</span> fail
-              <span className="text-white/30">·</span>
-              <span className="text-white tabular-nums">1</span> pending
             </span>
             <span className="ml-auto flex items-center gap-1.5 text-white/60">
               Fault finder points to
@@ -195,7 +184,7 @@ export function Judges() {
           ))}
         </ol>
 
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2">
+        <ul className="mt-10 grid gap-6 sm:grid-cols-3">
           {rows.map((r) => (
             <li key={r.id} className="flex flex-col gap-1 border-t border-line pt-4">
               <span className="text-body">{r.title}</span>

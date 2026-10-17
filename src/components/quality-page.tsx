@@ -1,18 +1,16 @@
 import { Faq } from "@/components/product-page/faq"
 import { Definition, NextStep } from "@/components/product-page/page-bits"
 import { Judges } from "@/components/quality/judges"
-import { InsightsPanels, QualityPanels } from "@/components/quality/panels"
-import { InsightsDivider, QualityData, QualityHero, QualityImprove } from "@/components/quality/sections"
+import { AnalyticsPanel, QualityPanels } from "@/components/quality/panels"
+import { QualityHero } from "@/components/quality/sections"
 import { qualityPage as c } from "@/content/pages/quality"
 
 /**
- * /platform/quality ("Quality & Insights"), following the content sheet in
- * the homepage's language (like the other product pages), merging its
- * "AI QA" and "Post-call analysis" pages. Floating hero, definition
- * (no proof: the sheet's metric is TBD), then the Quality half: five judges
- * (full width), fault finder, audits and alerts, human review, every
- * finding a fix; then the Insights half: call record, debrief, Ask AI,
- * dashboards, your systems; FAQ, next step.
+ * /platform/quality ("QA"), in the homepage's language like the other
+ * product pages. Floating hero and definition, then post-conversation
+ * analytics (summarize, extract, classify), advanced metrics with four
+ * judges (full width), team review, and failure modes with their fixes;
+ * FAQ, next step. Dashboards, alerts and logs: /platform/observability.
  */
 
 /** The homepage's roomier section spacing. */
@@ -26,12 +24,9 @@ export function QualityPage() {
     <div style={ROOMY}>
       <QualityHero />
       <Definition id="quality-definition" text={c.definition} />
+      <AnalyticsPanel />
       <Judges />
       <QualityPanels />
-      <QualityImprove />
-      <InsightsDivider />
-      <InsightsPanels />
-      <QualityData />
       <Faq id="quality-faq" items={c.faq} />
       <NextStep id="quality-next" related={c.related} />
     </div>

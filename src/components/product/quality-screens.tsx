@@ -1,17 +1,17 @@
-import { CheckIcon, PlayIcon, SparkleIcon, WarningIcon, XIcon } from "@phosphor-icons/react"
+import { ArrowCounterClockwiseIcon, BellIcon, CheckIcon, FlaskIcon, PlusIcon, XIcon } from "@phosphor-icons/react"
 
+import { Funnel, OverTime } from "@/components/observability/dashboard"
 import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-window"
 import { cn } from "@/lib/utils"
 
 /**
  * Screens for /platform/quality, recreated from the console in its dark
  * style (each takes the window class from the page; content keeps to the
- * part left visible when the window runs past the stage's right edge).
- * Static on purpose. Fictional data (Halden Energy, Ria, Maya Patel).
+ * part left visible when the window runs past the stage's right edge, and
+ * the hovered row as `focus` where it reacts). Static otherwise. Fictional data (Halden Energy, Ria, Maya Patel).
  */
 
 const FAIL = "text-[oklch(0.72_0.17_25)]"
-const FAIL_PILL = "rounded bg-[oklch(0.72_0.17_25/0.18)] px-1.5 font-mono text-[10.5px] text-[oklch(0.85_0.1_25)]"
 
 function Pass({ children = "Pass" }: { children?: React.ReactNode }) {
   return (
@@ -31,117 +31,40 @@ function Fail({ children = "Fail" }: { children?: React.ReactNode }) {
   )
 }
 
-/** Fault finder: the failed score, the turn behind it and its trace. */
-export function FaultScreen({ className }: { className: string }) {
-  const stages: [string, number][] = [
-    ["End of speech", 180],
-    ["First token", 420],
-    ["Tool · get_balance", 610],
-    ["Voice", 160],
-  ]
-  const total = stages.reduce((a, [, v]) => a + v, 0)
-  return (
-    <UiWindow className={className} title="Maya Patel · turn 4" aside={<UiPill>Debug</UiPill>}>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Code judge · Disclosure read</UiLabel>
-          <Fail />
-        </div>
-        <p className="text-[12.5px]">
-          <span className="text-(--ui-muted)">Ria: </span>
-          <span className="rounded bg-[oklch(0.72_0.17_25/0.2)] px-0.5">Yes, that&apos;s fine. I&apos;ve set the 4th as your payment date.</span>
-        </p>
-        <span className="flex items-center gap-2 text-[11px] text-(--ui-muted)">
-          <WarningIcon weight="fill" className={cn("size-3", FAIL)} />
-          Payment-date disclosure not heard by the caller
-          <span className={FAIL_PILL}>turn 4</span>
-        </span>
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Turn trace</UiLabel>
-          <span className="font-mono text-[11px] text-(--ui-muted)">{total} ms</span>
-        </div>
-        {stages.map(([name, ms]) => (
-          <div key={name} className="grid grid-cols-[8.5rem_1fr_3.5rem] items-center gap-3">
-            <span className="text-(--ui-muted)">{name}</span>
-            <span className="h-1.5 rounded-full bg-(--ui-raised)">
-              <span className={cn("block h-full rounded-full", ms > 500 ? "bg-[oklch(0.8_0.14_80)]" : "bg-(--ui-text)/50")} style={{ width: `${(ms / 700) * 100}%` }} />
-            </span>
-            <span className="text-right font-mono text-[11px] text-(--ui-muted)">{ms} ms</span>
-          </div>
-        ))}
-      </UiCard>
-      <UiCard>
-        <UiLabel>Heard vs said</UiLabel>
-        <div className="grid grid-cols-[4.5rem_1fr] gap-x-3 gap-y-1.5 text-[12px]">
-          <span className="text-(--ui-muted)">Planned</span>
-          <span>
-            I&apos;ve set the 4th as your payment date. <span className="rounded bg-[oklch(0.72_0.17_25/0.2)] px-0.5">If it&apos;s missed, a $5 late fee applies, and you can change the date any time.</span>
-          </span>
-          <span className="text-(--ui-muted)">Heard</span>
-          <span>
-            I&apos;ve set the 4th as your payment date.<span className="text-(--ui-muted)"> · Maya cut in</span>
-          </span>
-        </div>
-      </UiCard>
-    </UiWindow>
-  )
-}
 
-/** Audits and alerts: a sampled run, and the alerts watching it. */
-export function AuditScreen({ className }: { className: string }) {
-  /** Scorecard, pass rate, alert line; an alert is sent below the line. */
-  const metrics: [string, number, number][] = [
-    ["Polite and on-policy", 98, 90],
-    ["Disclosure read", 91, 95],
-    ["No repetition loops", 99, 95],
-    ["Customer sentiment", 94, 85],
-  ]
+const fade = (focus: string, ids: string[]) => cn("transition-opacity duration-300", focus !== "all" && !ids.includes(focus) && "opacity-35")
+
+/** Post-conversation analytics: the summary, extracted fields and classification of one conversation. */
+export function AnalyticsScreen({ className, focus }: { className: string; focus: string }) {
   return (
-    <UiWindow className={className} title="Monitor & QA · audits" aside={<UiPill live>Running</UiPill>}>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Audit · billing calls</UiLabel>
-          <span className="text-[11px] text-(--ui-muted)">Random sample · 500 calls</span>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {["Agent: Ria · Billing", "Campaign: March reminders", "Last 7 days", "Duration > 30s"].map((f) => (
-            <span key={f} className="rounded-md border border-(--ui-line) bg-(--ui-raised) px-2 py-0.5 text-[11px]">
-              {f}
+    <UiWindow className={className} title="Maya Patel · analysis" aside={<UiPill>Re-run analysis</UiPill>}>
+      <UiCard className={fade(focus, ["summary"])}>
+        <UiLabel>Summary</UiLabel>
+        <p className="text-[12.5px]">Maya can&apos;t pay the $86.40 March bill until payday. Agreed to pay on 4 March; confirmation sent by SMS and a reminder set.</p>
+      </UiCard>
+      <UiCard className={fade(focus, ["extract"])}>
+        <UiLabel>Extracted</UiLabel>
+        <div className="grid grid-cols-[6.5rem_1fr] gap-x-3 gap-y-1.5">
+          {[
+            ["pay_by", "2026-03-04"],
+            ["amount", "86.40 USD"],
+            ["reason", "Waiting for payday"],
+            ["contact_pref", "SMS"],
+          ].map(([k, v]) => (
+            <span key={k} className="contents">
+              <span className="font-mono text-[11.5px] text-(--ui-muted)">{k}</span>
+              <span className="font-mono text-[11.5px]">{v}</span>
             </span>
           ))}
         </div>
       </UiCard>
-      <UiCard className="gap-0 p-0">
-        <div className="grid grid-cols-[1fr_4rem_5.5rem] gap-3 border-b border-(--ui-line) px-3.5 py-2 text-[11px] text-(--ui-muted)">
-          <span>Scorecard</span>
-          <span className="text-right">Pass rate</span>
-          <span className="text-right">Alert below</span>
+      <UiCard className={fade(focus, ["classify"])}>
+        <UiLabel>Classified</UiLabel>
+        <div className="flex flex-wrap gap-1.5 text-[11.5px]">
+          <span className="rounded-full bg-[oklch(0.74_0.16_150/0.2)] px-2.5 py-0.5 text-[oklch(0.85_0.12_150)]">Outcome · Promise to pay</span>
+          <span className="rounded-full bg-(--ui-raised) px-2.5 py-0.5">Category · Billing</span>
+          <span className="rounded-full bg-(--ui-raised) px-2.5 py-0.5">Sentiment · Improved</span>
         </div>
-        {metrics.map(([name, rate, line]) => (
-          <div key={name} className="grid grid-cols-[1fr_4rem_5.5rem] items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0">
-            <span>{name}</span>
-            <span className={cn("text-right font-mono text-[11.5px]", rate < line && FAIL)}>{rate}%</span>
-            <span className="flex justify-end">{rate < line ? <Fail>{line}% · sent</Fail> : <span className="font-mono text-[11px] text-(--ui-muted)">{line}%</span>}</span>
-          </div>
-        ))}
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Watchtower</UiLabel>
-          <span className="text-[11px] text-(--ui-muted)">Email · qa-team@</span>
-        </div>
-        {[
-          ["Pickup rate below 40%", "Watching"],
-          ["Call volume up 50% in an hour", "Watching"],
-          ["Disclosure read pass rate below 95%", "Triggered 09:12"],
-        ].map(([rule, state]) => (
-          <div key={rule} className="flex items-center justify-between gap-3">
-            <span>{rule}</span>
-            <span className={cn("text-[11px]", state.startsWith("Triggered") ? FAIL : "text-(--ui-muted)")}>{state}</span>
-          </div>
-        ))}
       </UiCard>
     </UiWindow>
   )
@@ -217,194 +140,192 @@ export function ReviewScreen({ className }: { className: string }) {
   )
 }
 
-/** Call record: recording, transcript with actions inline, health. */
-export function CallRecordScreen({ className }: { className: string }) {
-  const health: [string, string, boolean][] = [
-    ["Responsiveness", "0.9s", true],
-    ["Pacing", "152 wpm", true],
-    ["Talk ratio", "46%", true],
-    ["Interruptions", "1", true],
+/** Failure modes: failed metrics grouped into patterns, the turn behind the top one, and its fix. */
+export function FailureModesScreen({ className, focus }: { className: string; focus: string }) {
+  const modes: [string, string, string, number][] = [
+    ["Cuts in while numbers are read", "Waits for every digit", "Code judge", 14],
+    ["Reads the wrong amount", "Correct amount", "LLM judge", 6],
+    ["Repeats the same question", "No repetition", "Classifier judge", 3],
   ]
   return (
-    <UiWindow className={className} title="Conversations · Maya Patel" aside={<UiPill>Promise to pay</UiPill>}>
-      <UiCard>
-        <div className="flex items-center gap-3">
-          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-(--ui-raised)">
-            <PlayIcon weight="fill" className="size-3" />
+    <UiWindow className={className} title="Failure modes · last 7 days" aside={<UiPill>23 failed conversations</UiPill>}>
+      <UiCard className={cn("gap-0 p-0", fade(focus, ["modes"]))}>
+        <div className="grid grid-cols-[1fr_8rem_3rem] gap-3 border-b border-(--ui-line) px-3.5 py-2 font-mono text-[10.5px] text-(--ui-muted)">
+          <span>failure mode</span>
+          <span>metric</span>
+          <span className="text-right">count</span>
+        </div>
+        {modes.map(([name, metric, judge, n], i) => (
+          <div key={name} className={cn("grid grid-cols-[1fr_8rem_3rem] items-center gap-3 border-b border-(--ui-line) px-3.5 py-2 last:border-0", i === 0 && "bg-(--ui-raised)/60")}>
+            <span>{name}</span>
+            <span className="flex flex-col leading-tight">
+              <span className="truncate text-[11.5px]">{metric}</span>
+              <span className="text-[10.5px] text-(--ui-muted)">{judge}</span>
+            </span>
+            <span className="text-right font-mono tabular-nums">{n}</span>
+          </div>
+        ))}
+      </UiCard>
+      <UiCard className={cn("gap-2", fade(focus, ["turn"]))}>
+        <UiLabel>The turn behind it · Maya Patel</UiLabel>
+        <span className="grid grid-cols-[3rem_1fr] gap-2 text-[12.5px]">
+          <span className="text-[11px] text-(--ui-muted)">Maya</span>
+          <span className="text-(--ui-muted)">It&apos;s four, two, seven… one…</span>
+          <span className="text-[11px] text-(--ui-muted)">Ria</span>
+          <span className="underline decoration-[oklch(0.72_0.17_25)] decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
+        </span>
+      </UiCard>
+      <UiCard className={cn("flex-row flex-wrap items-center gap-2 py-3", fade(focus, ["fix"]))}>
+        <span className="flex items-center gap-1 rounded-md border border-(--ui-line) px-2 py-1 text-[11px]">
+          <ArrowCounterClockwiseIcon className="size-3" />
+          Replay on fix
+        </span>
+        <span className="flex items-center gap-1 rounded-md border border-(--ui-line) px-2 py-1 text-[11px]">
+          <FlaskIcon className="size-3" />
+          Save as scenario
+        </span>
+        <span className="ml-auto">
+          <Pass>Fixed in v13 · 0 since</Pass>
+        </span>
+      </UiCard>
+    </UiWindow>
+  )
+}
+
+const VIEWS = ["Inbound", "Outbound", "Campaigns", "Tools", "Custom"]
+
+function ViewTabs({ active }: { active: string }) {
+  return (
+    <div className="flex flex-wrap gap-1 self-start rounded-lg bg-(--ui-raised) p-0.5 text-[11.5px]">
+      {VIEWS.map((t) => (
+        <span key={t} className={cn("rounded-md px-2.5 py-1", t === active ? "bg-(--ui-panel) text-(--ui-text)" : "text-(--ui-muted)", t === "Custom" && "border-l border-(--ui-line)")}>
+          {t}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Dashboards: a prebuilt view (tabs over the calling funnel and calls over
+ * time); hovering "Custom dashboards and widgets" switches to a dashboard
+ * of your own, built from widgets of different kinds, with Add widget.
+ */
+export function DashboardScreen({ className, focus }: { className: string; focus: string }) {
+  if (focus === "custom") return <CustomDashboardScreen className={className} />
+  return (
+    <UiWindow className={className} title="Dashboards · Billing" aside={<UiPill>Last 30 days</UiPill>}>
+      <ViewTabs active="Outbound" />
+      <Funnel compact />
+      <OverTime height={92} />
+      <UiCard className="flex-row items-center gap-2 border-dashed py-2.5">
+        <PlusIcon className="size-3.5" />
+        <span className="text-[12px]">New dashboard · build your own from widgets</span>
+      </UiCard>
+    </UiWindow>
+  )
+}
+
+function CustomDashboardScreen({ className }: { className: string }) {
+  const trend = [31, 33, 32, 35, 34, 37, 38, 36, 39, 41]
+  const modes: [string, number][] = [
+    ["Cuts in on numbers", 14],
+    ["Wrong amount", 6],
+    ["Repeats a question", 3],
+  ]
+  return (
+    <UiWindow className={className} title="Collections · my dashboard" aside={<UiPill>Custom · 4 widgets</UiPill>}>
+      <ViewTabs active="Custom" />
+      <div className="grid grid-cols-2 gap-3">
+        {/* Line widget */}
+        <UiCard className="gap-2">
+          <UiLabel>Promise to pay rate</UiLabel>
+          <span className="text-[18px] leading-none tabular-nums">41%</span>
+          <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="h-8 w-full">
+            <polyline points={trend.map((v, i) => `${(i / (trend.length - 1)) * 100},${30 - (v - 28) * 2}`).join(" ")} fill="none" stroke="#f5c04e" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+          </svg>
+        </UiCard>
+        {/* Number widget */}
+        <UiCard className="gap-2">
+          <UiLabel>QA pass rate</UiLabel>
+          <span className="text-[18px] leading-none tabular-nums">93%</span>
+          <span className="h-1.5 rounded-full bg-(--ui-raised)">
+            <span className="block h-full w-[93%] rounded-full bg-(--ui-live)" />
           </span>
-          <span className="flex h-6 flex-1 items-center gap-[3px]">
-            {Array.from({ length: 48 }, (_, i) => (
-              <span key={i} className={cn("w-[3px] rounded-full", i < 18 ? "bg-(--ui-text)/70" : "bg-(--ui-text)/25")} style={{ height: `${25 + ((i * 37) % 70)}%` }} />
+          <span className="text-[11px] text-(--ui-muted)">Target 95%</span>
+        </UiCard>
+        {/* Bar widget */}
+        <UiCard className="gap-2">
+          <UiLabel>Top failure modes</UiLabel>
+          {modes.map(([k, n]) => (
+            <span key={k} className="grid grid-cols-[1fr_2rem] items-center gap-2 text-[11.5px]">
+              <span className="flex flex-col gap-0.5">
+                {k}
+                <span className="h-1 rounded-full bg-(--ui-raised)">
+                  <span className="block h-full rounded-full bg-(--ui-text)/70" style={{ width: `${(n / 14) * 100}%` }} />
+                </span>
+              </span>
+              <span className="text-right font-mono tabular-nums">{n}</span>
+            </span>
+          ))}
+        </UiCard>
+        {/* Adding a widget */}
+        <UiCard className="gap-2 border-dashed">
+          <span className="flex items-center gap-1.5 text-[12px]">
+            <PlusIcon className="size-3.5" />
+            Add widget
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {["Line", "Number", "Bar", "Table"].map((w, i) => (
+              <span key={w} className={cn("rounded-md border px-2 py-0.5 text-[11px]", i === 0 ? "border-white/40 bg-white/10" : "border-(--ui-line) text-(--ui-muted)")}>
+                {w}
+              </span>
             ))}
-          </span>
-          <span className="font-mono text-[11px] text-(--ui-muted)">0:18 / 0:48</span>
-        </div>
-      </UiCard>
-      <UiCard>
-        <UiLabel>Transcript</UiLabel>
-        <p>
-          <span className="text-(--ui-muted)">Ria: </span>Thanks for calling, Maya. Your March bill is $86.40.
-        </p>
-        <span className="flex items-center gap-2 rounded-md bg-(--ui-raised) px-2.5 py-1.5 font-mono text-[11px]">
-          <CheckIcon weight="bold" className="size-3 text-(--ui-live)" />
-          get_balance · Halden billing · 310 ms
-        </span>
-        <p>
-          <span className="text-(--ui-muted)">Maya: </span>The 3rd. Could I pay it on the 4th?
-        </p>
-        <span className="flex items-center gap-2 rounded-md bg-(--ui-raised) px-2.5 py-1.5 font-mono text-[11px]">
-          <CheckIcon weight="bold" className="size-3 text-(--ui-live)" />
-          set_payment_date · 2026-03-04 · 240 ms
-        </span>
-      </UiCard>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Call health check</UiLabel>
-          <Pass>In typical range</Pass>
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {health.map(([k, v]) => (
-            <span key={k} className="flex flex-col gap-0.5 rounded-md bg-(--ui-raised) px-2.5 py-2">
-              <span className="text-[10.5px] text-(--ui-muted)">{k}</span>
-              <span className="font-mono text-[12px]">{v}</span>
-            </span>
-          ))}
-        </div>
-      </UiCard>
-    </UiWindow>
-  )
-}
-
-/** Debrief: the summary, the outcome, fields and the checklist. */
-export function DebriefScreen({ className }: { className: string }) {
-  return (
-    <UiWindow className={className} title="Maya Patel · details" aside={<UiPill>Re-run analysis</UiPill>}>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Debrief</UiLabel>
-          <span className="rounded-full bg-[oklch(0.74_0.16_150/0.2)] px-2 py-0.5 text-[10.5px] text-[oklch(0.85_0.12_150)]">Promise to pay</span>
-        </div>
-        <p className="text-[12.5px]">Maya can&apos;t pay the $86.40 March bill until payday. Agreed to pay on 4 March; confirmation sent by SMS and a reminder call set.</p>
-      </UiCard>
-      <UiCard>
-        <UiLabel>Data capture</UiLabel>
-        <div className="grid grid-cols-[6.5rem_1fr] gap-x-3 gap-y-1.5">
-          {[
-            ["pay_by", "2026-03-04"],
-            ["amount", "86.40 USD"],
-            ["reason", "Waiting for payday"],
-            ["contact_pref", "SMS"],
-          ].map(([k, v]) => (
-            <span key={k} className="contents">
-              <span className="font-mono text-[11.5px] text-(--ui-muted)">{k}</span>
-              <span className="font-mono text-[11.5px]">{v}</span>
-            </span>
-          ))}
-        </div>
-      </UiCard>
-      <UiCard>
-        <UiLabel>Call checklist</UiLabel>
-        {[
-          ["Identity verified?", "Yes"],
-          ["Payment date agreed?", "Yes"],
-          ["Asked for a payment plan?", "No"],
-        ].map(([q, a]) => (
-          <div key={q} className="flex items-center justify-between gap-3">
-            <span>{q}</span>
-            <span className="font-mono text-[11.5px] text-(--ui-muted)">{a}</span>
           </div>
-        ))}
-      </UiCard>
+          <span className="text-[11px] text-(--ui-muted)">Any metric, outcome or extracted field</span>
+        </UiCard>
+      </div>
     </UiWindow>
   )
 }
 
-/** Ask AI: a plain-language question across every call. */
-export function AskScreen({ className }: { className: string }) {
-  const reasons: [string, number][] = [
-    ["Waiting for payday", 46],
-    ["Bill higher than expected", 27],
-    ["Disputes a meter reading", 15],
-    ["Other", 12],
+/** Alerts: presets, QA metric thresholds and custom alerts, with one that's fired. */
+export function AlertsScreen({ className, focus }: { className: string; focus: string }) {
+  const alerts: { id: string; type: string; when: string; to: string; fired?: string }[] = [
+    { id: "presets", type: "Preset", when: "Conversations drop 30% vs last week", to: "Email" },
+    { id: "presets", type: "Preset", when: "A tool fails on over 5% of calls", to: "Email" },
+    { id: "qa", type: "QA threshold", when: "“Waits for every digit” below 95%", to: "#billing-qa", fired: "Fired 10:14" },
+    { id: "custom", type: "Custom", when: "Promise to pay under 35% on March reminders", to: "#billing" },
   ]
   return (
-    <UiWindow className={className} title="Conversations · Ask AI" aside={<UiPill>1,912 calls this week</UiPill>}>
-      <UiCard>
-        <UiLabel>You asked</UiLabel>
-        <p className="text-[13px]">Why did customers ask to pay late this week?</p>
-      </UiCard>
-      <UiCard>
-        <span className="flex items-center gap-1.5">
-          <SparkleIcon weight="fill" className="size-3.5 text-[oklch(0.78_0.12_295)]" />
-          <UiLabel>Answer · from 318 calls</UiLabel>
-        </span>
-        <p className="text-[12.5px]">Most were waiting for payday, usually a date in the first week of the month. About a quarter said the bill was higher than expected.</p>
-        {reasons.map(([k, pct]) => (
-          <div key={k} className="grid grid-cols-[11rem_1fr_2.5rem] items-center gap-3">
-            <span className="text-(--ui-muted)">{k}</span>
-            <span className="h-1.5 rounded-full bg-(--ui-raised)">
-              <span className="block h-full rounded-full bg-[oklch(0.78_0.12_295)]" style={{ width: `${pct * 2}%` }} />
-            </span>
-            <span className="text-right font-mono text-[11px] text-(--ui-muted)">{pct}%</span>
-          </div>
-        ))}
-      </UiCard>
+    <UiWindow className={className} title="Alerts · Billing" aside={<UiPill live>1 firing</UiPill>}>
       <UiCard className="gap-0 p-0">
-        {[
-          ["Maya Patel", "I get paid on the 3rd, so could I pay on the 4th?"],
-          ["Arjun Rao", "It's about double last month's bill."],
-        ].map(([who, quote]) => (
-          <div key={who} className="flex items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0">
-            <span className="w-20 shrink-0">{who}</span>
-            <span className="truncate text-(--ui-muted)">&ldquo;{quote}&rdquo;</span>
+        <div className="grid grid-cols-[6.5rem_1fr_6rem] gap-3 border-b border-(--ui-line) px-3.5 py-2 font-mono text-[10.5px] text-(--ui-muted)">
+          <span>type</span>
+          <span>when</span>
+          <span>send to</span>
+        </div>
+        {alerts.map((a) => (
+          <div key={a.when} className={cn("grid grid-cols-[6.5rem_1fr_6rem] items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0", fade(focus, [a.id]))}>
+            <span className="text-(--ui-muted)">{a.type}</span>
+            <span className="flex flex-col leading-snug">
+              <span>{a.when}</span>
+              {a.fired && (
+                <span className={cn("flex items-center gap-1 text-[11px]", FAIL)}>
+                  <BellIcon weight="fill" className="size-3" />
+                  {a.fired}
+                </span>
+              )}
+            </span>
+            <span className="truncate font-mono text-[11px] text-(--ui-muted)">{a.to}</span>
           </div>
         ))}
       </UiCard>
-    </UiWindow>
-  )
-}
-
-/** Insights and custom dashboards: widgets picked from any metric. */
-export function DashboardScreen({ className }: { className: string }) {
-  const bars = [42, 55, 48, 61, 58, 70, 66]
-  const days = ["M", "T", "W", "T", "F", "S", "S"]
-  return (
-    <UiWindow className={className} title="Insights · Billing team" aside={<UiPill>Export report</UiPill>}>
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          ["Calls", "1,912"],
-          ["Promise to pay", "38%"],
-          ["Scorecard pass", "93%"],
-        ].map(([k, v]) => (
-          <UiCard key={k} className="gap-1">
-            <UiLabel>{k}</UiLabel>
-            <span className="text-[18px] tabular-nums">{v}</span>
-          </UiCard>
-        ))}
-      </div>
-      <UiCard>
-        <div className="flex items-center justify-between">
-          <UiLabel>Promises to pay · this week</UiLabel>
-          <span className="text-[11px] text-(--ui-muted)">Widget</span>
-        </div>
-        <div className="flex h-28 items-end gap-2">
-          {bars.map((h, i) => (
-            <span key={i} className="flex flex-1 flex-col items-center gap-1">
-              <span className="w-full max-w-8 rounded-sm bg-(--ui-text)/35" style={{ height: `${h * 1.3}px` }} />
-              <span className="text-[10px] text-(--ui-muted)">{days[i]}</span>
-            </span>
-          ))}
-        </div>
-      </UiCard>
-      <UiCard className="border-dashed">
-        <UiLabel>Add widget</UiLabel>
-        <div className="flex flex-wrap gap-1.5">
-          {["Outcomes", "Scorecard pass rate", "Call volume", "Pickup rate", "Avg duration"].map((m, i) => (
-            <span key={m} className={cn("rounded-md border px-2 py-0.5 text-[11px]", i === 1 ? "border-white/40 bg-white/10" : "border-(--ui-line) text-(--ui-muted)")}>
-              {m}
-            </span>
-          ))}
-        </div>
+      <UiCard className={cn("border-dashed", fade(focus, ["custom"]))}>
+        <span className="flex items-center gap-1.5 text-[12.5px]">
+          <PlusIcon className="size-3.5" />
+          New alert · any metric, any condition
+        </span>
       </UiCard>
     </UiWindow>
   )
