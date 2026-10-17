@@ -5,18 +5,22 @@ import { cn } from "@/lib/utils"
  * (six stages, each with its bar, share of attempted, and the conversion
  * from the stage before), calls over time (a line per stage), and the
  * disposition (the split bar and end reasons, grouped by whether a call was
- * ever dialled). Dark, in the product UI. Sample numbers only.
+ * ever dialled). Dark, in the product UI, in one neutral ramp with the
+ * outcome (Success) as the only accent. Sample numbers only.
  */
 
 type Stage = { name: string; value: number; tone: string }
 
+/** A neutral ramp, brighter further down the funnel; Success takes the live accent. */
+const gray = (p: number) => `color-mix(in oklch, var(--ui-text) ${p}%, transparent)`
+
 export const STAGES: Stage[] = [
-  { name: "Calls attempted", value: 12480, tone: "#7aa7ff" },
-  { name: "Calls dialled", value: 12451, tone: "#3b82f6" },
-  { name: "Calls connected", value: 6102, tone: "#f5c04e" },
-  { name: "Human answered", value: 3904, tone: "#f59e0b" },
-  { name: "Engaged", value: 3320, tone: "#fb923c" },
-  { name: "Success", value: 2410, tone: "#fcd34d" },
+  { name: "Calls attempted", value: 12480, tone: gray(28) },
+  { name: "Calls dialled", value: 12451, tone: gray(38) },
+  { name: "Calls connected", value: 6102, tone: gray(50) },
+  { name: "Human answered", value: 3904, tone: gray(62) },
+  { name: "Engaged", value: 3320, tone: gray(78) },
+  { name: "Success", value: 2410, tone: "var(--ui-live)" },
 ]
 
 const fmt = (n: number) => n.toLocaleString("en-US")
@@ -45,7 +49,7 @@ export function Funnel({ compact = false }: { compact?: boolean }) {
             </span>
             {i > 0 && <span className="font-mono text-[9.5px] text-(--ui-muted)">{pct(s.value, top)} of attempted</span>}
             {i > 0 && (
-              <span className="absolute -left-[1.4rem] bottom-[-0.9rem] rounded-full px-1.5 font-mono text-[9px] text-black" style={{ background: s.tone }}>
+              <span className="absolute -left-[1.4rem] bottom-[-0.9rem] rounded-full border border-(--ui-line) bg-(--ui-raised) px-1.5 font-mono text-[9px] text-(--ui-muted)">
                 {pct(s.value, STAGES[i - 1].value)}
               </span>
             )}
@@ -63,7 +67,7 @@ const series = STAGES.map((s, i) =>
     const wave = 1 + 0.14 * Math.sin(t / 3.2 + i * 0.4) + 0.06 * Math.sin(t / 1.4)
     const tail = t > DAYS - 3 ? 0.55 + (DAYS - 1 - t) * 0.2 : 1
     return (s.value / DAYS) * wave * tail
-  })
+  }),
 )
 const MAX = Math.max(...series.flat()) * 1.15
 
@@ -89,7 +93,7 @@ export function OverTime({ height = 150 }: { height?: number }) {
           <line key={y} x1={0} x2={W} y1={height * y} y2={height * y} stroke="oklch(1 0 0 / 0.06)" strokeWidth={1} />
         ))}
         {series.map((pts, i) => (
-          <path key={i} d={path(pts)} fill="none" stroke={STAGES[i].tone} strokeWidth={1.6} strokeLinejoin="round" vectorEffect="non-scaling-stroke" opacity={i === 0 ? 0.55 : 1} />
+          <path key={i} d={path(pts)} fill="none" stroke={STAGES[i].tone} strokeWidth={1.6} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         ))}
       </svg>
       <span className="mt-1.5 flex justify-between font-mono text-[9.5px] text-(--ui-muted)">
@@ -102,7 +106,13 @@ export function OverTime({ height = 150 }: { height?: number }) {
 }
 
 const DISPOSITION: { group: string; rows: [string, string, number][] }[] = [
-  { group: "Never dialled", rows: [["Initiation failed", "init_failed", 26], ["Blocked", "forbidden", 3]] },
+  {
+    group: "Never dialled",
+    rows: [
+      ["Initiation failed", "init_failed", 26],
+      ["Blocked", "forbidden", 3],
+    ],
+  },
   {
     group: "Dialled, not connected",
     rows: [
@@ -127,8 +137,8 @@ export function Disposition() {
         <span className="text-[10.5px] text-(--ui-muted)">calls attempted</span>
       </span>
       <span className="mt-2 flex h-1.5 overflow-hidden rounded-full">
-        <span className="bg-[#3b82f6]" style={{ width: `${((total - connected) / total) * 100}%` }} />
-        <span className="flex-1 bg-[#f5c04e]" />
+        <span className="bg-(--ui-text)/25" style={{ width: `${((total - connected) / total) * 100}%` }} />
+        <span className="flex-1 bg-(--ui-text)/70" />
       </span>
       <div className="mt-3 grid grid-cols-[1fr_4.5rem_4rem] gap-x-3 font-mono text-[10px] text-(--ui-muted)">
         <span>End reason</span>
@@ -139,7 +149,7 @@ export function Disposition() {
         <div key={g.group}>
           <div className="mt-2 grid grid-cols-[1fr_4.5rem_4rem] gap-x-3">
             <span className="flex items-center gap-1.5">
-              <span className={cn("size-1.5 rounded-full", g.group === "Connected" ? "bg-[#f5c04e]" : "bg-[#3b82f6]")} />
+              <span className={cn("size-1.5 rounded-full", g.group === "Connected" ? "bg-(--ui-text)/70" : "bg-(--ui-text)/25")} />
               {g.group}
             </span>
             {g.group === "Connected" && (

@@ -106,7 +106,7 @@ export const platformFeatured: MenuPage = {
 }
 
 /** Menu pages that exist; add an id here when its page ships. */
-const BUILT = new Set<MenuPageId>(["agents", "voice", "workflows", "campaigns", "channels", "integrations", "testing", "quality", "observability", "security"])
+const BUILT = new Set<MenuPageId>(["agents", "voice", "workflows", "campaigns", "channels", "integrations", "testing", "quality", "observability", "security", "human-ai"])
 export const menuHref = (p: MenuPage) => (BUILT.has(p.id) ? p.url : p.fallback)
 
 /** Components with their own page; the rest link to their section on /platform. */

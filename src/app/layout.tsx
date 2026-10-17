@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { OutlineToggle } from "@/components/draft/outline-toggle"
 import { CalBooking } from "@/components/layout/cal-booking"
+import { SiteChrome } from "@/components/layout/site-chrome"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 import { productSections, sections } from "@/content/sections"
@@ -34,9 +35,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <SiteHeader />
+        <SiteChrome>
+          <SiteHeader />
+        </SiteChrome>
         <main id="main">{children}</main>
-        <SiteFooter />
+        <SiteChrome>
+          <SiteFooter />
+        </SiteChrome>
         {drafting ? <OutlineToggle /> : null}
         <CalBooking />
       </body>

@@ -11,7 +11,7 @@ export const nav = {
     { label: "Pricing", href: "#" },
     { label: "Docs", href: "#" },
   ],
-  signIn: { label: "Sign in", href: "#" },
+  signIn: { label: "Platform", href: "/login" },
 }
 
 /** Cal.com booking for "Book a demo". */

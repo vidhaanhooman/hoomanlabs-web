@@ -159,6 +159,13 @@ export type SectionId =
   | "observability-logs"
   | "observability-faq"
   | "observability-next"
+  | "human-ai-hero"
+  | "human-ai-definition"
+  | "human-ai-transfer"
+  | "human-ai-qa"
+  | "human-ai-learn"
+  | "human-ai-faq"
+  | "human-ai-next"
   | "quality-next"
   | "security-hero"
   | "security-definition"
@@ -375,6 +382,13 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "observability-logs", name: "Observability: conversation logs", status: "draft" },
   { id: "observability-faq", name: "Observability: FAQ", status: "draft" },
   { id: "observability-next", name: "Observability: next step", status: "draft" },
+  { id: "human-ai-hero", name: "Human + AI: hero", status: "draft" },
+  { id: "human-ai-definition", name: "Human + AI: definition", status: "draft" },
+  { id: "human-ai-transfer", name: "Human + AI: transfer with context", status: "draft" },
+  { id: "human-ai-qa", name: "Human + AI: QA of human calls", status: "draft" },
+  { id: "human-ai-learn", name: "Human + AI: learn from transfers", status: "draft" },
+  { id: "human-ai-faq", name: "Human + AI: FAQ", status: "draft" },
+  { id: "human-ai-next", name: "Human + AI: next step", status: "draft" },
   { id: "security-hero", name: "Security: hero", status: "draft" },
   { id: "security-definition", name: "Security: definition", status: "draft" },
   { id: "security-failover", name: "Security: always on", status: "draft" },

@@ -3,8 +3,9 @@ import type { MenuPageId } from "@/content/platform"
 /**
  * /platform/observability, split out of Quality & Insights per review:
  * dashboards (prebuilt views and custom widgets), alerts (presets, QA
- * thresholds, custom) and conversation logs (turns and agent actions, with
- * review, save a scenario or replay). In the homepage's language like the
+ * thresholds, custom) and conversation logs (the turn debugger, changing
+ * the agent then replaying and simulating from the log, and the actions on
+ * every turn). In the homepage's language like the
  * other product pages. Figures on the screens are sample data.
  * TO CONFIRM: alert channels (email, Slack) and the preset alert list.
  */
@@ -42,9 +43,9 @@ export const observabilityPage = {
     label: "Conversation logs",
     title: "Every turn, and everything the agent did.",
     rows: [
-      { id: "turns", title: "Turn by turn", body: "The recording and transcript, with timings for every turn." },
-      { id: "actions", title: "Agent actions", body: "Every tool, API and lookup, shown at the moment it happened, with its result." },
-      { id: "review", title: "Review, save or replay", body: "Flag a turn for review, save it as a scenario or replay it on a fix." },
+      { id: "turns", title: "Turn deep dive", body: "Debug any turn: what was said, what the agent generated and actually spoke, and a timeline of every step with its latency." },
+      { id: "act", title: "Act from the log", body: "Change the agent, then replay the turn and simulate the conversation to check the fix, without leaving the log." },
+      { id: "actions", title: "Actions on every turn", body: "Every tool, API and lookup, shown on the turn it ran, with what was sent, what came back and how long it took." },
     ],
   },
   faq: [
@@ -58,7 +59,7 @@ export const observabilityPage = {
     },
     {
       q: "What's in a conversation log?",
-      a: "The recording and transcript with timings for every turn, and every tool, API and lookup the agent used, with its result.",
+      a: "The recording and transcript, a debug view of every turn with each step's latency, and every tool, API and lookup the agent ran on that turn, with its result.",
     },
     {
       q: "Can we act on what we find?",

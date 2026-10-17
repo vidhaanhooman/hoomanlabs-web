@@ -242,7 +242,7 @@ function CustomDashboardScreen({ className }: { className: string }) {
           <UiLabel>Promise to pay rate</UiLabel>
           <span className="text-[18px] leading-none tabular-nums">41%</span>
           <svg viewBox="0 0 100 30" preserveAspectRatio="none" className="h-8 w-full">
-            <polyline points={trend.map((v, i) => `${(i / (trend.length - 1)) * 100},${30 - (v - 28) * 2}`).join(" ")} fill="none" stroke="#f5c04e" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
+            <polyline points={trend.map((v, i) => `${(i / (trend.length - 1)) * 100},${30 - (v - 28) * 2}`).join(" ")} fill="none" stroke="var(--ui-text)" strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
           </svg>
         </UiCard>
         {/* Number widget */}
