@@ -1,14 +1,18 @@
 "use client"
 
-import { ChatDemo } from "@/components/channels/chat-demo"
-import { VoiceDemo } from "@/components/channels/voice-demo"
+import { ChatScreen, VoiceScreen } from "@/components/product/channel-screens"
+import { ProductPanel } from "@/components/sections/how-it-works-v3"
+import { channelsPage as c } from "@/content/pages/channels"
 
-/** Voice and Chat on /platform/channels: each a split panel whose rows pick what plays on the stage. */
+const DOCS = "https://docs.hoomanlabs.com"
+
+/** Voice and Chat, in the homepage's split ProductPanel; hovering a row focuses its part of the screen. */
 export function ChannelPanels() {
+  const { voice, chat } = c.panels
   return (
     <>
-      <VoiceDemo />
-      <ChatDemo />
+      <ProductPanel id="channels-voice" {...voice} link="Read about voice channels" linkHref={DOCS} screen={(cls, f) => <VoiceScreen className={cls} focus={f} />} />
+      <ProductPanel id="channels-chat" {...chat} link="Read about chat channels" linkHref={DOCS} media="start" screen={(cls, f) => <ChatScreen className={cls} focus={f} />} />
     </>
   )
 }

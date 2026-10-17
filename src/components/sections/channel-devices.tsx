@@ -186,14 +186,6 @@ export const WA = {
   out: "self-end rounded-lg rounded-tr-none bg-[#d9fdd3] text-[#111b21] shadow-[0_1px_0.5px_oklch(0_0_0/0.13)]",
 }
 
-/* WhatsApp's dark theme, for the Channels demos. */
-export const WA_DARK = {
-  header: "bg-[#1f2c34] text-[#e9edef]",
-  wall: "bg-[#0b141a] bg-[radial-gradient(oklch(1_0_0/0.045)_1px,transparent_1px)] [background-size:9px_9px]",
-  in: "self-start rounded-lg rounded-tl-none bg-[#202c33] text-[#e9edef]",
-  out: "self-end rounded-lg rounded-tr-none bg-[#005c4b] text-[#e9edef]",
-}
-
 export function Ticks() {
   return (
     <svg viewBox="0 0 16 11" className="inline-block h-[7px] w-[10px] fill-[#53bdeb]" aria-hidden>
