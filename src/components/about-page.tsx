@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRightIcon, MapPinIcon } from "@phosphor-icons/react/dist/ssr"
+import { MapPinIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Container } from "@/components/layout/container"
 import { Panel } from "@/components/layout/panel"
@@ -77,10 +77,6 @@ export function AboutPage() {
               <div className="flex flex-wrap gap-3">
                 <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
                   {ctas.demo.label}
-                </Link>
-                <Link href="/careers" className={buttonVariants({ variant: "outline" })}>
-                  See open roles
-                  <ArrowRightIcon />
                 </Link>
               </div>
             </div>

@@ -67,9 +67,6 @@ export function PlatformPage() {
             <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
               {ctas.demo.label}
             </Link>
-            <Link href="/#v3-talk" className={buttonVariants({ variant: "secondary" })}>
-              {ctas.talk.label}
-            </Link>
           </div>
           <div
             className="reveal-blur mt-12 rounded-md border border-line bg-surface px-4 py-6 sm:px-8 sm:py-8 md:mt-16 lg:px-10 lg:py-10"

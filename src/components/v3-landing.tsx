@@ -12,7 +12,6 @@ import { HomeFaq, StatHeadline } from "@/components/sections/structure"
 import { StartResources } from "@/components/sections/start-resources"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { V3Hero } from "@/components/sections/v3-hero"
-import { VoiceWidget } from "@/components/sections/voice-widget"
 import { stories } from "@/content/structure"
 
 /**
@@ -200,7 +199,6 @@ export function V3Landing() {
 
       <HomeFaq />
       <TwoWayCta />
-      <VoiceWidget after="v3-journey" hideOver="v3-talk" />
     </div>
   )
 }

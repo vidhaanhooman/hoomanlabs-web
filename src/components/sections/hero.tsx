@@ -48,9 +48,6 @@ export function Hero({
           <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
             {ctas.demo.label}
           </Link>
-          <Link href={ctas.talk.href} className={buttonVariants({ variant: "secondary" })}>
-            {ctas.talk.label}
-          </Link>
         </div>
 
         <div className="reveal mt-12 md:mt-16" style={{ "--i": 2 } as React.CSSProperties}>

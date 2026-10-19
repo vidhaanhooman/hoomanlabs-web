@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/layout/section-header"
 import { ctas, finalCta } from "@/content/draft"
 import type { SectionId } from "@/content/sections"
 
-/** Closing ask. Same CTA label as nav + hero (one label per intent). */
+/** Closing ask: one CTA, Book a demo (same label as nav and hero). */
 export function FinalCta({
   id = "cta",
   title = finalCta.title,
@@ -19,14 +19,9 @@ export function FinalCta({
     <Section id={id} spacing="none" className="pt-(--section-pad) pb-(--section-gap)">
       <Container id="book-demo" className="scroll-mt-24 flex flex-col items-center gap-8 text-center">
         <SectionHeader title={title} align="center" />
-        <div className="flex flex-wrap justify-center gap-2">
-          <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
-            {ctas.demo.label}
-          </Link>
-          <Link href={ctas.talk.href} className={buttonVariants({ variant: "secondary" })}>
-            {ctas.talk.label}
-          </Link>
-        </div>
+        <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
+          {ctas.demo.label}
+        </Link>
       </Container>
     </Section>
   )

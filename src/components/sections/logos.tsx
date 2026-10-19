@@ -49,10 +49,11 @@ const width = (w: number, h: number, scale = 1) => Math.round(50 * scale * Math.
  * are greyed by tone instead, and a little darker so they match the rest.
  */
 // Class names are written out in full so Tailwind can find them.
-// In dark mode the silhouettes are inverted to white, and stay white on hover
-// (most files are dark ink, so their own colours would vanish on black).
+// In dark mode the silhouettes are inverted to white; on hover the logo shows
+// in colour, with its lightness flipped (dark ink turns light) but its hue
+// kept, so brand colours read on the dark page.
 const BASE =
-  "transition-[opacity,filter] duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:[:root:not(.dark)_&]:group-hover/logo:[filter:none]"
+  "transition-[opacity,filter] duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:[filter:none] dark:[@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:[filter:invert(1)_hue-rotate(180deg)]"
 const TONE = cn("opacity-45 [filter:grayscale(1)_brightness(0)] dark:opacity-55 dark:[filter:grayscale(1)_brightness(0)_invert(1)]", BASE)
 const TONE_DETAIL = cn("opacity-60 [filter:grayscale(1)_contrast(1.15)_brightness(0.7)] dark:opacity-65 dark:[filter:grayscale(1)_contrast(1.15)_brightness(0.7)_invert(1)]", BASE)
 
