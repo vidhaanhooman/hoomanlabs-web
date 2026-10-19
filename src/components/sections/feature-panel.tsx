@@ -81,7 +81,7 @@ export function FeaturePanel({
             {backdrop && softBackdrop ? <span aria-hidden className="absolute inset-0 bg-background/10" /> : null}
             {screen ? (
               screen(
-                `${airy ? WINDOW_AIRY : WINDOW_CLASS} z-10 rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]`
+                `${airy ? WINDOW_AIRY : WINDOW_CLASS} z-10 rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]`
               )
             ) : (
               <Placeholder variant="frame" label={visual} className={`${airy ? WINDOW_AIRY : WINDOW_CLASS} z-10`} />

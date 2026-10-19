@@ -181,7 +181,7 @@ export function VideoCaseStudy() {
                   aria-label={`Play the ${caseStudy.customer} case study video`}
                   className="absolute inset-0 grid place-items-center"
                 >
-                  <span className="grid size-16 place-items-center rounded-full bg-white text-foreground shadow-lg transition-transform duration-150 hover:scale-105">
+                  <span className="grid size-16 place-items-center rounded-full bg-white text-black shadow-lg transition-transform duration-150 hover:scale-105">
                     <PlayIcon weight="fill" className="ml-0.5 size-5" />
                   </span>
                 </button>
@@ -410,7 +410,7 @@ export function AgentsWorkflowSwitch() {
           </button>
         ))}
       </div>
-      <div aria-hidden className="overflow-hidden rounded-md border border-black/10">
+      <div aria-hidden className="overflow-hidden rounded-md border border-black/10 dark:border-white/10">
         {view === "agent" ? (
           <AgentBuilder className="md:h-[30rem]" />
         ) : (

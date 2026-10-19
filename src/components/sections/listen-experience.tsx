@@ -115,7 +115,7 @@ export function ListenExperience({ backdrop = "sound" }: { backdrop?: "sound" | 
                     <span
                       key={i}
                       className={cn(
-                        "absolute size-[1.1%] -translate-1/2 rounded-full bg-[oklch(0.86_0.15_75)] opacity-(--glow) mix-blend-screen blur-[3px]",
+                        "absolute size-[1.1%] -translate-1/2 rounded-full bg-(--warn) opacity-(--glow) mix-blend-screen blur-[3px]",
                         i === RING_WINDOW && "listen-ring-window"
                       )}
                       style={{ left: `${w.x}%`, top: `${w.y}%`, scale: w.s }}

@@ -40,8 +40,8 @@ function Brand({ icon, className }: { icon: SimpleIcon; className?: string }) {
   )
 }
 
-const OK = "bg-[oklch(0.62_0.15_150)]"
-const WARN = "bg-[oklch(0.8_0.14_80)]"
+const OK = "bg-(--ok)"
+const WARN = "bg-(--warn)"
 
 const MINI: Record<string, React.ReactNode> = {
   /* Channels: one tile per surface, with its logo and the modes it supports */
@@ -133,7 +133,7 @@ const MINI: Record<string, React.ReactNode> = {
         <span className={OK} style={{ width: "71%" }} />
         <span className={WARN} style={{ width: "14%" }} />
         <span className="bg-ink-muted" style={{ width: "9%" }} />
-        <span className="bg-[oklch(0.65_0.19_25)]" style={{ width: "6%" }} />
+        <span className="bg-(--fail)" style={{ width: "6%" }} />
       </div>
       <svg viewBox="0 0 300 48" preserveAspectRatio="none" className="h-[4.75rem] w-full" aria-hidden>
         <path

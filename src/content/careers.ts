@@ -1,10 +1,11 @@
 /**
- * /careers and /careers/[slug]. One open role for now (Product Designer).
+ * /careers and /careers/[slug]. One open role for now (Forward Deployed
+ * Engineer). The hiring process shows on each role's page.
  *
  * PLACEHOLDERS, marked TO CONFIRM: location and work setup, the application
- * address, benefits, team size, the hiring steps' timings and any salary
- * band. Values and how-we-work lines are drafted from how the product is
- * described on the site; edit them to match the team.
+ * address, the hiring steps' timings, any salary band, and the FDE role's
+ * details (drafted from how the product is described on the site; edit them
+ * to match the team).
  */
 
 export type Role = {
@@ -32,34 +33,9 @@ export const careersPage = {
   title: "Build the people your customers talk to.",
   line: "We make AI employees that hold real customer conversations, in their language, on every channel. We're a small team, and every hire shapes what we become.",
 
-  values: [
-    { title: "Calm over clever", body: "Customers should feel looked after, not impressed. We choose the quiet, clear option." },
-    { title: "Real calls, not demos", body: "We judge work by how it sounds on a noisy line in Hindi at 9pm, not in a slide." },
-    { title: "Own the outcome", body: "A call isn't done when it ends. We care whether the payment landed and the booking stuck." },
-    { title: "Show, then tell", body: "We prototype early, listen to recordings together and let the work make the argument." },
-  ],
-
-  /** TO CONFIRM: every line. */
-  how: [
-    { label: "Where", value: "Bengaluru, hybrid" },
-    { label: "Team", value: "Small, product-led team" },
-    { label: "Stage", value: "Early, with customers live in production" },
-    { label: "Hours", value: "Flexible, with shared overlap hours" },
-  ],
-
-  /** TO CONFIRM: every benefit. */
-  benefits: [
-    { title: "Meaningful equity", body: "Share in what we build together." },
-    { title: "Health cover", body: "For you and your family." },
-    { title: "Your setup", body: "A laptop and tools of your choice." },
-    { title: "Learning budget", body: "Courses, books and conferences." },
-    { title: "Time off", body: "Generous leave, and we mean it." },
-    { title: "Team offsites", body: "A few times a year, in person." },
-  ],
-
   process: [
     { step: "Intro call", body: "30 minutes with the founders about you, us and the role." },
-    { step: "Portfolio review", body: "Walk us through two pieces of work you're proud of." },
+    { step: "Technical deep dive", body: "Walk us through something you built and shipped: the problem, your choices and what broke." },
     { step: "Working session", body: "A short, paid exercise on a real problem, done together." },
     { step: "Meet the team", body: "Conversations with the people you'd work with, then an offer." },
   ],
@@ -67,44 +43,44 @@ export const careersPage = {
   nobody: { title: "Don't see your role?", body: "If you'd make the product better, write to us anyway with what you'd work on." },
 }
 
+/** TO CONFIRM: the FDE role's details, location and type. */
 export const roles: Role[] = [
   {
-    slug: "product-designer",
-    title: "Product Designer",
-    team: "Design",
+    slug: "forward-deployed-engineer",
+    title: "Forward Deployed Engineer",
+    team: "Engineering",
     location: "Bengaluru · Hybrid",
     type: "Full-time",
-    summary: "Design the console teams use to build, test and run AI voice agents, and the site that explains it.",
+    summary: "Work with our customers to take their AI agents from first call to thousands a day, in their systems and their language.",
     intro:
-      "You'll own the experience of building and running a Hooman: writing its job, connecting it to systems, testing it with simulated callers and reading what happened on every call. It's a product where the hardest design problems are about trust, clarity and time, and where a good interface means a customer somewhere gets a better phone call.",
+      "You'll sit between our customers and the product. You'll learn how a customer's team really works, design the agent, flow and tools that fit, connect it to their systems, and stay until it holds up on real calls at scale. What you learn in the field comes straight back into the product.",
     sections: [
       {
         title: "What you'll do",
         items: [
-          "Design end-to-end flows in the console, from first agent to thousands of calls a day.",
-          "Turn complex systems (prompts, workflows, call traces, QA scores) into interfaces that feel simple.",
-          "Prototype in Figma and in code, and test with real customers and real call recordings.",
-          "Own and grow our design system, in light and dark.",
-          "Shape how we explain the product, on the website and in demos.",
-          "Work daily with engineering and the founders, from idea to shipped.",
+          "Own customer launches end to end: scope the use case, build the agent, test it and take it live.",
+          "Write prompts, flows and conditions, and design the tools, pre-call APIs and webhooks they need.",
+          "Connect agents to customers' CRMs, helpdesks, telephony and internal APIs.",
+          "Read call logs and QA results, find why a call went wrong, and fix it.",
+          "Build reusable tools, templates and scripts so the next launch is faster.",
+          "Bring what you see with customers back to product and engineering.",
         ],
       },
       {
         title: "What we're looking for",
         items: [
-          "4+ years designing software products, with work you can walk us through end to end.",
-          "Strong interaction and visual craft: hierarchy, type, spacing and motion that feel calm.",
-          "Comfort with complex, data-heavy tools, and the judgement to make them simple.",
-          "You write clearly and explain your decisions.",
-          "You like being close to customers and the messy reality of how they work.",
+          "3+ years as a software engineer, solutions engineer or similar, shipping to real users.",
+          "Strong with APIs and integrations: REST, webhooks, auth, and debugging other people's systems.",
+          "Comfortable writing code (TypeScript or Python) and reading logs under pressure.",
+          "You enjoy working directly with customers and explain technical things clearly.",
+          "You care whether the outcome landed, not just whether the code shipped.",
         ],
       },
       {
         title: "Nice to have",
         items: [
-          "Experience with AI products, conversational interfaces or developer tools.",
-          "You prototype in code (React, Tailwind) or are keen to.",
-          "You've built or run a design system.",
+          "Experience with LLMs, prompt design or voice and telephony (SIP, IVR, contact centres).",
+          "You've worked in a customer-facing engineering role at a startup.",
           "You speak an Indian language besides English.",
         ],
       },

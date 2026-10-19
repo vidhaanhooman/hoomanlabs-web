@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { ListIcon } from "@phosphor-icons/react"
+import { ListIcon, SignInIcon } from "@phosphor-icons/react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -60,6 +60,7 @@ export function MobileNav() {
         </nav>
         <div className="mt-auto flex flex-col gap-2 p-(--gutter)">
           <Link href={nav.signIn.href} onClick={close} className={buttonVariants({ variant: "outline" })}>
+            <SignInIcon />
             {nav.signIn.label}
           </Link>
           <Link data-demo href={ctas.demo.href} onClick={close} className={buttonVariants()}>

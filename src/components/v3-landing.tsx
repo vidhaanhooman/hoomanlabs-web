@@ -120,7 +120,7 @@ export function V3Landing() {
       <V3Hero />
 
       {/* 2 Customer logos */}
-      <Logos label="Trusted by 100+ teams" />
+      <Logos />
 
       {/* 3 Customer stories, then the enterprise path in one line. Hidden until
           the stories have real, approved content (see SHOW_STORIES). */}

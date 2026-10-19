@@ -6,6 +6,7 @@ import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-windo
 import { ProductPanel } from "@/components/sections/how-it-works-v3"
 import { integrationsPage as c } from "@/content/pages/integrations"
 import { cn } from "@/lib/utils"
+import { MockAction } from "@/components/product/mock-action"
 
 /**
  * The first three sections of /platform/integrations, as product screens
@@ -157,8 +158,8 @@ function McpChatScreen({ className }: { className: string }) {
         <p className="max-w-[78%] self-end rounded-2xl rounded-br-md bg-(--ui-text) px-3.5 py-2 text-(--ui-bg)">Call Maya Patel about her overdue March bill. Use the billing agent.</p>
         <p className="max-w-[85%] self-start rounded-2xl rounded-bl-md bg-(--ui-raised) px-3.5 py-2">I&apos;ll start the call with Ria, your billing agent.</p>
         <span className="flex items-center gap-2 self-start rounded-full border border-(--ui-line) bg-(--ui-panel) py-1 pr-3 pl-1.5 text-[11.5px]">
-          <span className="grid size-5 place-items-center rounded-full bg-[oklch(0.8_0.13_80/0.18)]">
-            <LightningIcon weight="fill" className="size-3 text-[oklch(0.85_0.12_80)]" />
+          <span className="grid size-5 place-items-center rounded-full bg-(--warn)/18">
+            <LightningIcon weight="fill" className="size-3 text-(--warn-fg)" />
           </span>
           Used Hooman · <span className="font-mono">start_call</span>
           <CheckIcon weight="bold" className="size-3 text-(--ui-live)" />
@@ -257,10 +258,10 @@ function WebhookScreen({ className, focus }: { className: string; focus: string 
             </span>
             <span className="flex shrink-0 gap-1">
               <span className="rounded-md bg-(--ui-raised) px-2 py-1 text-[11px]">Import cURL</span>
-              <span className="flex items-center gap-1 rounded-md bg-(--ui-text) px-2 py-1 text-[11px] text-(--ui-bg)">
+              <MockAction done="200 OK" className="gap-1 rounded-md bg-(--ui-text) px-2 py-1 text-[11px] text-(--ui-bg)">
                 <PlayIcon weight="fill" className="size-2.5" />
                 Test
-              </span>
+              </MockAction>
             </span>
           </div>
           <div className="flex gap-1.5">

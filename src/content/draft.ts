@@ -7,7 +7,6 @@ export const nav = {
   /** "Product" is a menu built from src/content/products.ts. */
   links: [
     { label: "Solutions", href: "/solutions" },
-    { label: "Customers", href: "#testimonials" },
     { label: "Pricing", href: "#" },
     { label: "Docs", href: "#" },
   ],
@@ -109,9 +108,9 @@ export const footer = {
     {
       title: "Company",
       links: [
-        { label: "About", href: "#" },
+        { label: "About", href: "/about" },
         { label: "Careers", href: "/careers" },
-        { label: "Contact", href: "#" },
+        { label: "Contact", href: "/about#about-contact" },
       ],
     },
     {
@@ -126,8 +125,8 @@ export const footer = {
     {
       title: "Legal",
       links: [
-        { label: "Privacy", href: "#" },
-        { label: "Terms", href: "#" },
+        { label: "Privacy", href: "/privacy-policy" },
+        { label: "Terms", href: "/terms" },
         { label: "Security", href: "/platform/security" },
       ],
     },

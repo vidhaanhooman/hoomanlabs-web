@@ -44,17 +44,17 @@ const MARKS: Mark[] = [
 /** A small marker right beside the part it explains. */
 function Marker({ n }: { n: number }) {
   return (
-    <span data-marker={n} aria-hidden className="mx-1 inline-grid size-4 shrink-0 translate-y-[-1px] place-items-center rounded-full bg-white align-middle font-mono text-[9.5px] text-black">
+    <span data-marker={n} aria-hidden className="mx-1 inline-grid size-4 shrink-0 translate-y-[-1px] place-items-center rounded-full bg-(--ui-text) align-middle font-mono text-[9.5px] text-(--ui-bg)">
       {n}
     </span>
   )
 }
 
 const Var = ({ children }: { children: React.ReactNode }) => (
-  <span className="rounded-[4px] bg-[oklch(0.72_0.14_295/0.18)] px-1 py-px font-mono text-[0.92em] text-[oklch(0.86_0.08_295)]">{`{{${children}}}`}</span>
+  <span className="rounded-[4px] bg-(--var)/18 px-1 py-px font-mono text-[0.92em] text-(--var-fg)">{`{{${children}}}`}</span>
 )
-const op = "text-[oklch(0.72_0.14_295)]"
-const vr = "text-[oklch(0.78_0.11_240)]"
+const op = "text-(--var)"
+const vr = "text-(--data)"
 
 function Editor({ focus }: { focus: number | null }) {
   /** Dim a block unless it belongs to the spotlit part. */
@@ -117,7 +117,7 @@ function Editor({ focus }: { focus: number | null }) {
           </li>
           <li className={dim()}>Otherwise, follow the instructions for this account&rsquo;s status:</li>
         </ol>
-        <div className={cn("relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dim(4))}>
+        <div className={cn("relative rounded-md bg-(--var)/10 px-4 py-3 font-mono text-[12px] leading-[1.8] ring-1 ring-(--var)/25", dim(4))}>
           <div>
             <span className={op}>{"{{ "}</span>
             <span className={vr}>context.balance</span>
@@ -139,7 +139,7 @@ function Editor({ focus }: { focus: number | null }) {
         </div>
         <ol start={4} className="flex list-decimal flex-col gap-1.5 pl-5 text-(--ui-text)/85 marker:text-(--ui-muted)">
           <li className={dim(5)}>
-            To take a payment, use <span className="rounded-[3px] font-mono text-[0.92em] text-[oklch(0.82_0.12_80)]">[take_payment]</span>
+            To take a payment, use <span className="rounded-[3px] font-mono text-[0.92em] text-(--tool)">[take_payment]</span>
             <Marker n={5} /> and read the amount back first.
           </li>
         </ol>

@@ -33,7 +33,7 @@ export function Swatch({ token, note, className }: { token: string; note?: strin
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <span ref={ref} className="size-9 shrink-0 rounded-md border border-black/10" style={{ background: `var(${token})` }} />
+      <span ref={ref} className="size-9 shrink-0 rounded-md border border-black/10 dark:border-white/10" style={{ background: `var(${token})` }} />
       <span className="flex min-w-0 flex-col leading-tight">
         <span className="truncate font-mono text-[12px]">{token}</span>
         <span className="truncate font-mono text-[11px] opacity-60">{value || "—"}</span>
@@ -47,7 +47,7 @@ export function Swatch({ token, note, className }: { token: string; note?: strin
 export function Literal({ value, name }: { value: string; name: string }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="size-9 shrink-0 rounded-md border border-black/10" style={{ background: value }} />
+      <span className="size-9 shrink-0 rounded-md border border-black/10 dark:border-white/10" style={{ background: value }} />
       <span className="flex min-w-0 flex-col leading-tight">
         <span className="truncate text-[12px]">{name}</span>
         <span className="truncate font-mono text-[11px] opacity-60">{value}</span>

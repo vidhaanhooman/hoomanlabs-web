@@ -26,8 +26,8 @@ const FAULT_STEP = 2
 const LAST = 4
 const FAULT_TURN = 4
 
-const FAIL = "text-[oklch(0.72_0.17_25)]"
-const AMBER = "text-[oklch(0.82_0.13_80)]"
+const FAIL = "text-(--fail)"
+const AMBER = "text-(--warn-fg)"
 const LABEL = "font-mono text-[10.5px] tracking-wide text-(--ui-muted) uppercase"
 
 const TURNS: { who: "Maya" | "Ria"; t: string; at: string }[] = [
@@ -102,7 +102,7 @@ export function QualityConsole() {
                     key={i}
                     className={cn(
                       "h-1.5 flex-1 rounded-full transition-colors duration-500",
-                      faulted && i + 1 === FAULT_TURN ? "bg-[oklch(0.72_0.17_25)]" : t.who === "Ria" ? "bg-white/30" : "bg-white/12"
+                      faulted && i + 1 === FAULT_TURN ? "bg-(--fail)" : t.who === "Ria" ? "bg-white/30" : "bg-white/12"
                     )}
                   />
                 ))}
@@ -122,7 +122,7 @@ export function QualityConsole() {
                       className={cn(
                         "flex max-w-[68%] flex-col rounded-lg border px-3.5 py-1.5 transition-[border-color,background-color,box-shadow] duration-500",
                         ria ? "bg-(--ui-raised)" : "bg-(--ui-panel)",
-                        fault ? "border-[oklch(0.72_0.17_25/0.7)] bg-[oklch(0.72_0.17_25/0.1)] shadow-[0_0_0_3px_oklch(0.72_0.17_25/0.12)]" : "border-(--ui-line)"
+                        fault ? "border-(--fail)/40 bg-(--fail)/10 shadow-[0_0_0_3px_oklch(0.72_0.17_25/0.12)]" : "border-(--ui-line)"
                       )}
                     >
                       <span className="flex items-center gap-2 text-[10.5px] leading-[1.6] text-(--ui-muted)">
@@ -135,7 +135,7 @@ export function QualityConsole() {
                     {n === FAULT_TURN && (
                       <span
                         className={cn(
-                          "flex items-center gap-1.5 self-center rounded-full bg-[oklch(0.72_0.17_25/0.18)] px-2.5 py-1 text-[11px] whitespace-nowrap text-[oklch(0.85_0.1_25)] transition-[opacity,translate] duration-500",
+                          "flex items-center gap-1.5 self-center rounded-full bg-(--fail)/18 px-2.5 py-1 text-[11px] whitespace-nowrap text-(--fail-fg) transition-[opacity,translate] duration-500",
                           fault ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"
                         )}
                       >
@@ -180,7 +180,7 @@ export function QualityConsole() {
                     key={j.kind}
                     className={cn(
                       "flex flex-col gap-1 rounded-lg border bg-(--ui-panel) px-3.5 py-2.5 transition-[border-color,opacity] duration-500",
-                      fail ? "border-[oklch(0.72_0.17_25/0.55)]" : "border-(--ui-line)",
+                      fail ? "border-(--fail)/40" : "border-(--ui-line)",
                       !resolved && !running && "opacity-55"
                     )}
                   >
@@ -217,7 +217,7 @@ export function QualityConsole() {
                     <span className="text-[13px]">{j.rule}</span>
                     <span className={cn("flex items-center gap-2 text-[11.5px] text-(--ui-muted) transition-opacity duration-500", resolved ? "opacity-100" : "opacity-0")}>
                       <span className="min-w-0 truncate">{j.detail}</span>
-                      {j.turn && <span className="ml-auto shrink-0 rounded bg-[oklch(0.72_0.17_25/0.18)] px-1.5 font-mono text-[10.5px] text-[oklch(0.85_0.1_25)]">turn {j.turn}</span>}
+                      {j.turn && <span className="ml-auto shrink-0 rounded bg-(--fail)/18 px-1.5 font-mono text-[10.5px] text-(--fail-fg)">turn {j.turn}</span>}
                     </span>
                   </div>
                 )

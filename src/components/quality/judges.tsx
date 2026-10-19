@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils"
 type Result = { tone: "pass" | "fail" | "pending"; text: string }
 type Judge = { id: string; icon: Icon; kind: string; forWhat: string; example: React.ReactNode; reads: string; result: Result }
 
-const MONO = "rounded-md bg-black/25 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-white/80"
+const MONO = "rounded-md bg-black/25 px-2.5 py-2 font-mono text-[11px] leading-relaxed text-(--ui-text)"
 
 const JUDGES: Judge[] = [
   {
@@ -66,9 +66,9 @@ const LAST = JUDGES.length + 1 // the scorecard total lands after the four resul
 const BEAT_MS = 650
 
 const TONE = {
-  pass: "bg-[oklch(0.74_0.16_150/0.2)] text-[oklch(0.85_0.12_150)]",
-  fail: "bg-[oklch(0.68_0.19_25/0.22)] text-[oklch(0.85_0.1_25)]",
-  pending: "bg-[oklch(0.8_0.14_80/0.18)] text-[oklch(0.88_0.1_80)]",
+  pass: "bg-(--ok)/18 text-(--ok-fg)",
+  fail: "bg-(--fail)/18 text-(--fail-fg)",
+  pending: "bg-(--warn)/18 text-(--warn-fg)",
 }
 
 function ResultPill({ r }: { r: Result }) {
@@ -98,7 +98,7 @@ export function Judges() {
   const b = reduce ? LAST : beat
 
   return (
-    <Section id="quality-judges">
+    <Section id="quality-judges" className="ui-scope">
       <Container>
         <div className="flex max-w-[44rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
@@ -110,9 +110,9 @@ export function Judges() {
         <div
           ref={ref}
           aria-hidden
-          className="relative mt-10 hidden overflow-hidden rounded-xl border border-black/10 bg-[oklch(0.23_0.005_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] p-8 text-[12.5px] leading-[1.5] text-[oklch(0.95_0_0)] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] lg:block xl:p-10"
+          className="relative mt-10 hidden overflow-hidden rounded-xl border border-black/10 dark:border-(--ui-line) bg-(--ui-panel) bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] p-8 text-[12.5px] leading-[1.5] text-(--ui-text) shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] lg:block xl:p-10"
         >
-          <div className="mb-5 flex items-center gap-3 font-mono text-[10.5px] text-white/45">
+          <div className="mb-5 flex items-center gap-3 font-mono text-[10.5px] text-(--ui-muted)/60">
             <span>Scorecard · Billing calls</span>
             <span>·</span>
             <span>Maya Patel · today, 18:42</span>
@@ -125,19 +125,19 @@ export function Judges() {
                 <li
                   key={j.id}
                   className={cn(
-                    "flex flex-col gap-3 rounded-xl border bg-[oklch(0.28_0.005_260)] p-4 transition-[border-color,opacity] duration-500 ease-(--ease-out)",
-                    landed ? "border-white/20" : "border-white/10",
+                    "flex flex-col gap-3 rounded-xl border bg-(--ui-raised) p-4 transition-[border-color,opacity] duration-500 ease-(--ease-out)",
+                    landed ? "border-white/20" : "border-(--ui-line)",
                     b >= 0 && !landed && b !== i && "opacity-60"
                   )}
                 >
                   <span className="flex items-center gap-2">
-                    <j.icon weight="fill" className="size-4 shrink-0 text-[oklch(0.75_0.12_245)]" />
+                    <j.icon weight="fill" className="size-4 shrink-0 text-(--data)" />
                     <span className="text-[13px]">{j.kind}</span>
                   </span>
-                  <span className="font-mono text-[10.5px] tracking-wide text-white/50 uppercase">{j.forWhat}</span>
-                  <div className="min-h-[4.5rem] text-white/80">{j.example}</div>
-                  <span className="text-[11px] text-white/45">{j.reads}</span>
-                  <div className="mt-auto border-t border-white/10 pt-3">
+                  <span className="font-mono text-[10.5px] tracking-wide text-(--ui-muted) uppercase">{j.forWhat}</span>
+                  <div className="min-h-[4.5rem] text-(--ui-text)">{j.example}</div>
+                  <span className="text-[11px] text-(--ui-muted)/60">{j.reads}</span>
+                  <div className="mt-auto border-t border-(--ui-line) pt-3">
                     <span className={cn("block transition-[opacity,translate] duration-500 ease-(--ease-out)", landed ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0")}>
                       <ResultPill r={j.result} />
                     </span>
@@ -150,19 +150,19 @@ export function Judges() {
           {/* What they add up to */}
           <div
             className={cn(
-              "mt-3 flex items-center gap-4 rounded-xl border border-white/15 bg-[oklch(0.28_0.005_260)] px-4 py-3 transition-opacity duration-500",
+              "mt-3 flex items-center gap-4 rounded-xl border border-white/15 bg-(--ui-raised) px-4 py-3 transition-opacity duration-500",
               b >= LAST ? "opacity-100" : "opacity-40"
             )}
           >
             <span className="text-[13px]">One scorecard</span>
-            <span className="flex items-center gap-1.5 text-white/60">
-              <span className="text-white tabular-nums">3</span> pass
-              <span className="text-white/30">·</span>
-              <span className="text-white tabular-nums">1</span> fail
+            <span className="flex items-center gap-1.5 text-(--ui-muted)">
+              <span className="text-(--ui-text) tabular-nums">3</span> pass
+              <span className="text-(--ui-muted)/60">·</span>
+              <span className="text-(--ui-text) tabular-nums">1</span> fail
             </span>
-            <span className="ml-auto flex items-center gap-1.5 text-white/60">
+            <span className="ml-auto flex items-center gap-1.5 text-(--ui-muted)">
               Fault finder points to
-              <span className="rounded bg-[oklch(0.68_0.19_25/0.22)] px-1.5 font-mono text-[11px] text-[oklch(0.85_0.1_25)]">turn 4</span>
+              <span className="rounded bg-(--fail)/18 px-1.5 font-mono text-[11px] text-(--fail-fg)">turn 4</span>
             </span>
           </div>
         </div>
@@ -170,15 +170,15 @@ export function Judges() {
         {/* Below lg: the judges as a list */}
         <ol className="mt-8 flex flex-col gap-3 lg:hidden">
           {JUDGES.map((j) => (
-            <li key={j.id} className="flex flex-col gap-2 rounded-xl bg-[oklch(0.23_0.005_260)] p-4 text-small text-[oklch(0.95_0_0)]">
+            <li key={j.id} className="flex flex-col gap-2 rounded-xl bg-(--ui-panel) p-4 text-small text-(--ui-text)">
               <span className="flex items-center justify-between gap-3">
                 <span className="flex items-center gap-2">
-                  <j.icon weight="fill" className="size-4 shrink-0 text-[oklch(0.75_0.12_245)]" />
+                  <j.icon weight="fill" className="size-4 shrink-0 text-(--data)" />
                   {j.kind}
                 </span>
-                <span className="font-mono text-label text-white/55">{j.forWhat}</span>
+                <span className="font-mono text-label text-(--ui-muted)">{j.forWhat}</span>
               </span>
-              <span className="text-white/75">{j.example}</span>
+              <span className="text-(--ui-muted)">{j.example}</span>
               <ResultPill r={j.result} />
             </li>
           ))}

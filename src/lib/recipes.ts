@@ -12,4 +12,4 @@ export const STAGE = "relative overflow-hidden rounded-md border border-line bg-
  * stays tight so the stage around it stays clean.
  */
 export const SCREEN_BLEED =
-  "absolute top-[8%] -bottom-[6%] left-[7%] w-[118%] rounded-tl-lg border border-black/10 shadow-[0_1px_2px_oklch(0.2_0_0/0.12),0_6px_12px_-6px_oklch(0.2_0_0/0.2),-4px_0_10px_-6px_oklch(0.2_0_0/0.12)]"
+  "absolute top-[8%] -bottom-[6%] left-[7%] w-[118%] rounded-tl-lg border border-black/10 dark:border-white/10 shadow-[0_1px_2px_oklch(0.2_0_0/0.12),0_6px_12px_-6px_oklch(0.2_0_0/0.2),-4px_0_10px_-6px_oklch(0.2_0_0/0.12)]"

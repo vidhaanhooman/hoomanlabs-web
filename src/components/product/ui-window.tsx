@@ -28,11 +28,29 @@ export function UiWindow({ className, title, aside, children }: { className: str
   )
 }
 
-/** A small status pill for window title bars. */
-export function UiPill({ children, live = false }: { children: React.ReactNode; live?: boolean }) {
+/** Status tones: ok / fail / warn get a tint of their colour, with a dot. */
+export type UiTone = "ok" | "fail" | "warn"
+const TONE: Record<UiTone, string> = {
+  ok: "bg-(--ok)/18 text-(--ok-fg) [--dot:var(--ok)]",
+  fail: "bg-(--fail)/18 text-(--fail-fg) [--dot:var(--fail)]",
+  warn: "bg-(--warn)/18 text-(--warn-fg) [--dot:var(--warn)]",
+}
+
+/**
+ * The one status pill for product screens. Plain (raised fill), `live` (a
+ * green dot, for title bars), or a `tone` (tinted, for pass / fail / warn).
+ */
+export function UiPill({ children, live = false, tone, dot = true, className }: { children: React.ReactNode; live?: boolean; tone?: UiTone; dot?: boolean; className?: string }) {
   return (
-    <span className="flex items-center gap-1.5 rounded-full bg-(--ui-raised) px-2.5 py-0.5 text-[11px] text-(--ui-text)">
-      {live && <span className="size-1.5 rounded-full bg-(--ui-live)" />}
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] whitespace-nowrap transition-colors duration-300",
+        tone ? TONE[tone] : "bg-(--ui-raised) text-(--ui-text)",
+        className
+      )}
+    >
+      {live && !tone && <span className="size-1.5 rounded-full bg-(--ui-live)" />}
+      {tone && dot && <span aria-hidden className="size-1.5 rounded-full bg-(--dot)" />}
       {children}
     </span>
   )
@@ -57,7 +75,7 @@ export function UiFloat({ children, className }: { children: React.ReactNode; cl
     <div
       aria-hidden
       className={cn(
-        "ui-dark flex w-full max-w-[24rem] flex-col gap-2.5 rounded-lg border border-black/10 p-4 text-[12px] leading-[1.55] shadow-[0_1px_2px_oklch(0.2_0_0/0.12),0_12px_28px_-14px_oklch(0.2_0_0/0.35)]",
+        "ui-dark flex w-full max-w-[24rem] flex-col gap-2.5 rounded-lg border border-black/10 dark:border-white/10 p-4 text-[12px] leading-[1.55] shadow-[0_1px_2px_oklch(0.2_0_0/0.12),0_12px_28px_-14px_oklch(0.2_0_0/0.35)]",
         className
       )}
     >

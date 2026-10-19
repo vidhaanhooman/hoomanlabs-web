@@ -134,7 +134,7 @@ export function IntegrationsConsole() {
                       className={cn(
                         "-mx-1.5 w-fit rounded px-1.5 transition-colors duration-700",
                         fresh ? "bg-(--ui-live)/20" : "bg-transparent",
-                        f.label === "Stage" && changed && "text-[oklch(0.85_0.12_150)]"
+                        f.label === "Stage" && changed && "text-(--ok-fg)"
                       )}
                     >
                       {changed ? f.to : f.from}

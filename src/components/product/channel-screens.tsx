@@ -52,7 +52,7 @@ export function VoiceScreen({ className, focus }: { className: string; focus: st
             <span className="flex items-center gap-2">
               <span className="rounded-md bg-(--ui-raised) px-2 py-0.5 text-[11.5px]">{x.tag}</span>
               <span className="flex items-center gap-1 text-[11.5px] text-(--ui-muted)">
-                {x.note === "Verified" && <SealCheckIcon weight="fill" className="size-3 text-[oklch(0.8_0.12_150)]" />}
+                {x.note === "Verified" && <SealCheckIcon weight="fill" className="size-3 text-(--ok-fg)" />}
                 {x.note}
               </span>
             </span>

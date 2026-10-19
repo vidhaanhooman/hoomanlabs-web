@@ -1,3 +1,4 @@
+import { SignInIcon } from "@phosphor-icons/react/dist/ssr"
 import Link from "next/link"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -21,7 +22,9 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           <div className="hidden items-center gap-2 sm:flex">
+            {/* An account action, so it doesn't read as a second "Platform" menu */}
             <Link href={nav.signIn.href} className={buttonVariants({ variant: "ghost" })}>
+              <SignInIcon />
               {nav.signIn.label}
             </Link>
             <Link data-demo href={ctas.demo.href} className={buttonVariants()}>

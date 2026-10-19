@@ -25,7 +25,7 @@ const TURNS: [string, string, boolean?][] = [
 
 export function HumanAiConsole() {
   return (
-    <HeroConsole designW={DESIGN_W} designH={DESIGN_H}>
+    <HeroConsole image="/art/product/human-ai-backdrop.webp" designW={DESIGN_W} designH={DESIGN_H}>
       <div className={CONSOLE}>
         <div className="flex h-12 shrink-0 items-center gap-3 border-b border-(--ui-line) px-5">
           <span className="flex gap-1.5">
@@ -44,7 +44,7 @@ export function HumanAiConsole() {
           {/* The AI's side of the call */}
           <div className="flex flex-col gap-3 border-r border-(--ui-line) p-6">
             <span className="flex items-center gap-2 text-[12px] text-(--ui-muted)">
-              <SparkleIcon weight="fill" className="size-3.5 text-[oklch(0.75_0.12_295)]" />
+              <SparkleIcon weight="fill" className="size-3.5 text-(--var)" />
               Ria · AI
             </span>
             {TURNS.map(([who, text, handoff], i) => (

@@ -82,7 +82,7 @@ export function VoiceHero() {
                   <span
                     className={cn(
                       "grid size-6 place-items-center rounded-full text-[11px]",
-                      v.on ? "bg-[oklch(0.74_0.16_150/0.25)] text-[oklch(0.88_0.12_150)]" : "bg-white/12 text-white/75"
+                      v.on ? "bg-(--ok)/18 text-(--ok-fg)" : "bg-white/12 text-white/75"
                     )}
                   >
                     {v.name[0]}

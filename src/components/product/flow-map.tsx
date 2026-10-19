@@ -58,7 +58,7 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
   if (kind === "js")
     return (
       <g>
-        <rect x={x} y={y - 6} width={13} height={12} rx={2.5} fill="oklch(0.78 0.15 75)" />
+        <rect x={x} y={y - 6} width={13} height={12} rx={2.5} fill="var(--warn)" />
         <text x={x + 6.5} y={y + 3} fontSize={6.5} fontWeight={700} textAnchor="middle" fill="oklch(0.2 0 0)">
           JS
         </text>
@@ -66,9 +66,9 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
     )
   if (kind === "cond")
     return (
-      <path d={`M${x + 2},${y - 5} L${x + 6.5},${y + 1} L${x + 11},${y - 5} M${x + 6.5},${y + 1} L${x + 6.5},${y + 6}`} fill="none" stroke="oklch(0.68 0.16 290)" strokeWidth={1.6} strokeLinecap="round" />
+      <path d={`M${x + 2},${y - 5} L${x + 6.5},${y + 1} L${x + 11},${y - 5} M${x + 6.5},${y + 1} L${x + 6.5},${y + 6}`} fill="none" stroke="var(--var)" strokeWidth={1.6} strokeLinecap="round" />
     )
-  return <path d={`M${x + 6.5},${y - 6} L${x + 8},${y - 1.5} L${x + 12.5},${y} L${x + 8},${y + 1.5} L${x + 6.5},${y + 6} L${x + 5},${y + 1.5} L${x + 0.5},${y} L${x + 5},${y - 1.5} Z`} fill="oklch(0.68 0.13 245)" />
+  return <path d={`M${x + 6.5},${y - 6} L${x + 8},${y - 1.5} L${x + 12.5},${y} L${x + 8},${y + 1.5} L${x + 6.5},${y + 6} L${x + 5},${y + 1.5} L${x + 0.5},${y} L${x + 5},${y - 1.5} Z`} fill="var(--data)" />
 }
 
 function Node({ n }: { n: N }) {

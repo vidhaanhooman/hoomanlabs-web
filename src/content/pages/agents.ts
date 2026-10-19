@@ -14,26 +14,36 @@ export const agentsPage = {
   },
   crumb: "Agents",
   title: "AI voice agents that follow your process and use your data.",
-  line: "Write the job, connect your knowledge and systems, and your Hooman handles every conversation your way.",
+  line: "Write the job, lay out the steps, connect your data and tools, and your Hooman handles every conversation your way.",
 
   /** The sheet's "What is it?" definition block. */
-  definition: "A Hooman is an AI agent you configure with a job description, knowledge, data tables and skills, so it handles calls your way.",
+  definition: "A Hooman is an AI agent you build from a prompt, a flow, and the context and tools it needs, so it handles every conversation your way.",
   /** Proof strip. */
   proof: { quote: "The future of customer calls.", by: "GIVA" },
+
+  /** The three agent types, as cards under the definition. */
+  types: {
+    label: "Types",
+    title: "One builder for every kind of conversation.",
+    items: [
+      { id: "voice", name: "Voice", body: "Takes and makes phone calls, and talks in your app or on your website." },
+      { id: "chat", name: "Chat", body: "Replies on your website, in your app and on WhatsApp, with the same prompt and tools." },
+      { id: "broadcast", name: "Broadcast", body: "One-way voice announcements to a list: reminders, alerts and updates." },
+    ],
+  },
 
   panels: {
     /** Sheet section 1. */
     job: {
-      label: "Job description",
-      title: "Write the job once. It adapts to every caller.",
+      label: "Prompt",
+      title: "Write the job once. It adapts to every customer.",
       rows: [
-        { id: "job", title: "Job description", body: "Write the job like you would for a new hire; the Hooman follows it on every call." },
-        { id: "logic", title: "Prompt logic", body: "One prompt that adapts per customer, language or case, with no duplicate agents." },
-        { id: "personal", title: "Personalisation", body: "Greets by name, knows the time of day, adapts lines to each customer." },
-        { id: "intro", title: "First impression", body: "Open every call on brand, with a ring, pause and greeting you control." },
+        { id: "instructions", title: "Instructions", body: "Write the job like you would for a new hire: who it is, what done looks like and the steps to get there." },
+        { id: "variables", title: "Personalisation", body: "Variables bring in each customer's name, account and details, so every conversation is about them." },
+        { id: "conditions", title: "Conditions", body: "CEL expressions switch instructions per customer, language or case, so one prompt covers them all." },
       ],
     },
-    /** Sheet section 4. */
+    /** Kept for the Skills diagram (components/agents/skills.tsx, off the page for now). */
     skills: {
       label: "Skills",
       title: "Acts in your systems while it talks.",
@@ -45,23 +55,34 @@ export const agentsPage = {
         { id: "builder", title: "Skill builder", body: "Describe the action; AI writes the skill and you test it in one click. Build it once, and every Hooman can use it." },
       ],
     },
-    /** Sheet section 3. */
-    knowledge: {
-      label: "Knowledge",
-      title: "Answers from your information, not guesses.",
-      rows: [
-        { id: "knowledge", title: "Knowledge", body: "Answers grounded in your SOPs, policies and FAQs." },
-        { id: "tables", title: "Live data tables", body: "Upload a sheet and your Hooman looks up every price, branch and slot, no integration required." },
-      ],
-    },
-    /** Sheet section 2 ("Playbooks" in the sheet; called Flow on the site). */
     flow: {
       label: "Flow",
-      title: "Exact steps where compliance needs them.",
+      title: "Exact steps where your process needs them.",
       rows: [
-        { id: "flow", title: "Flow", body: "Mix free conversation with exact scripted steps where compliance needs it." },
-        { id: "routing", title: "Smart routing", body: "Every caller starts on the right path, decided by your data." },
-        { id: "nodes", title: "Node types", body: "AI conversation, fixed lines, logic, API calls, handoff to a person and end call." },
+        { id: "nodes", title: "Nodes", body: "Lay the conversation out as steps: AI conversation, fixed lines, conditions, API calls, handoff and end call." },
+        { id: "prompts", title: "A smaller prompt per step", body: "Each step gets its own focused instructions, so the agent only thinks about the job in front of it." },
+        { id: "tools", title: "Tools per step", body: "Give each step only the tools it needs, like taking a payment only once the caller is verified." },
+      ],
+    },
+    context: {
+      label: "Context & actions",
+      title: "Knows the customer. Acts in your systems.",
+      rows: [
+        { id: "precall", title: "Pre-call API", body: "Fetch the customer's account before hello, so the agent starts the conversation already knowing them." },
+        { id: "memory", title: "Memory", body: "Remembers what happened in earlier conversations, so nobody repeats themselves." },
+        { id: "library", title: "Library", body: "Answers from your SOPs, policies and FAQs, not guesses." },
+        { id: "tables", title: "Data tables", body: "Upload a sheet and the agent looks up every price, branch and slot, no integration needed." },
+        { id: "tools", title: "Tools", body: "Looks up, books, updates and takes payments in your systems while it talks." },
+      ],
+    },
+    scale: {
+      label: "Production ready",
+      title: "Built to run at scale.",
+      rows: [
+        { id: "versions", title: "Versions", body: "Edit a draft, compare it with what's live, publish when ready and roll back in one click." },
+        { id: "reuse", title: "Build once, use everywhere", body: "Tools, library documents and data tables are shared: build them once and use them in every agent." },
+        { id: "channels", title: "Every channel", body: "The same agent answers on the phone, on your website, in your app and on WhatsApp." },
+        { id: "testing", title: "Tested before it's live", body: "Run your scenarios against every draft, so a change never reaches customers untested." },
       ],
     },
   },
@@ -79,17 +100,6 @@ export const agentsPage = {
     ],
   },
 
-  /** Sheet sections 5 to 7, as one call's timeline. */
-  around: {
-    title: "Everything around the conversation.",
-    line: "Context before the call, a person when needed, and safe changes after it.",
-    moments: [
-      { stage: "Before the call", title: "Knows the customer", body: "Pre-call briefing and recall: details arrive before hello, and nobody repeats themselves." },
-      { stage: "During the call", title: "Hands off with context", body: "Warm handoff inside office hours; outside them, the Hooman takes a callback." },
-      { stage: "After the call", title: "Changes safely", body: "Edit a draft, try it now, then publish. Live calls are never touched until you're ready." },
-    ],
-  },
-
   talk: {
     title: "Hear a Hooman on the phone.",
     line: "Play a sample call, or have one of our agents call you now.",
@@ -98,7 +108,7 @@ export const agentsPage = {
   faq: [
     {
       q: "What kinds of Hoomans can I build?",
-      a: "Three types: one that talks with your customers, one that announces (a one-way broadcast), and one that listens to recordings and scores them.",
+      a: "Three types: Voice, for phone calls and in-app or web calls; Chat, for your website, app and WhatsApp; and Broadcast, for one-way voice announcements to a list.",
     },
     {
       q: "Can it follow our exact compliance script?",
@@ -106,11 +116,11 @@ export const agentsPage = {
     },
     {
       q: "Do we need developers to set it up?",
-      a: "No. You write the job in plain language and set up skills in the console. Developers can go further with code steps, the API and MCP.",
+      a: "No. You write the job in plain language and set up tools in the console. Developers can go further with code steps, the API and MCP.",
     },
     {
       q: "Which systems does it connect to?",
-      a: "Zoho CRM, Freshdesk, Zendesk and Google Calendar natively, plus any system with an API through skills. Call events and data land back where your team works.",
+      a: "Zoho CRM, Freshdesk, Zendesk and Google Calendar natively, plus any system with an API through tools. Call events and data land back where your team works.",
     },
     {
       q: "What happens when it can't help?",

@@ -219,11 +219,11 @@ function SampleCard({
                   <span
                     className={cn(
                       "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-label",
-                      side === "b" ? "border-[oklch(0.62_0.15_150/0.4)] text-foreground" : "border-[oklch(0.65_0.18_30/0.4)] text-foreground"
+                      side === "b" ? "border-(--ok)/40 text-foreground" : "border-(--fail)/40 text-foreground"
                     )}
                   >
                     <span
-                      className={cn("size-1.5 rounded-full", side === "b" ? "bg-[oklch(0.62_0.15_150)]" : "bg-[oklch(0.65_0.18_30)]")}
+                      className={cn("size-1.5 rounded-full", side === "b" ? "bg-(--ok)" : "bg-(--fail)")}
                     />
                     {l.text}
                   </span>

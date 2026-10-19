@@ -3,9 +3,9 @@ import { Label, Pill, ScreenBar, ScreenShell } from "@/components/product/ui-bit
 // Fictional demo data.
 const SPLIT = [
   { label: "Resolved", pct: 71.4, color: "bg-(--ui-live)" },
-  { label: "Callback", pct: 13.8, color: "bg-[oklch(0.8_0.14_80)]" },
+  { label: "Callback", pct: 13.8, color: "bg-(--warn)" },
   { label: "Transferred", pct: 9.1, color: "bg-(--ui-text)/60" },
-  { label: "Unresolved", pct: 5.7, color: "bg-[oklch(0.68_0.19_25)]" },
+  { label: "Unresolved", pct: 5.7, color: "bg-(--fail)" },
 ]
 
 const RECENT: { who: string; channel: string; time: string; outcome: string; tone: "live" | "warn" | "muted" | "bad" }[] = [

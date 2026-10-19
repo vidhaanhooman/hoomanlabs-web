@@ -10,6 +10,7 @@ import { Section } from "@/components/layout/section"
 import { Pill } from "@/components/product/ui-bits"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
+import { MockAction } from "@/components/product/mock-action"
 
 /**
  * Agents: how easy they are to manage, two ways side by side. In the
@@ -19,7 +20,7 @@ import { cn } from "@/lib/utils"
  * Fictional demo data.
  */
 
-const CHROME = "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
+const CHROME = "rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
 
 const POINTS = [
   { title: "Versions for every change", body: "Draft, compare and publish. Roll back in one click." },
@@ -99,7 +100,9 @@ function ConsoleVersions() {
       <div className="flex h-11 items-center gap-3 border-b border-(--ui-line) px-4">
         <span className="font-medium">Billing assistant</span>
         <Pill tone="live">v4 · Live</Pill>
-        <span className="ml-auto rounded-full bg-(--ui-text) px-2.5 py-0.5 text-[11px] font-medium text-(--ui-bg)">Publish v5</span>
+        <MockAction done="v5 is live" className="ml-auto rounded-full bg-(--ui-text) px-2.5 py-0.5 text-[11px] font-medium text-(--ui-bg)">
+          Publish v5
+        </MockAction>
       </div>
       <ul className="flex flex-1 flex-col justify-center px-4 py-2">
         {VERSIONS.map((r) => (
@@ -191,22 +194,22 @@ function McpSession() {
           <li key={i} className="whitespace-pre-wrap">
             {l.kind === "you" && (
               <span className="mt-1.5 block text-white">
-                <span className="mr-2 text-[oklch(0.78_0.15_150)]">❯</span>
+                <span className="mr-2 text-(--ok)">❯</span>
                 {l.text}
               </span>
             )}
             {l.kind === "tool" && (
               <span className="block">
-                <span className="mr-2 text-[oklch(0.75_0.12_250)]">⏺</span>
+                <span className="mr-2 text-(--data)">⏺</span>
                 <span className="text-white/55">hoomanlabs</span>
                 <span className="text-white/35"> · </span>
-                <span className="text-[oklch(0.8_0.1_250)]">{l.text}</span>
+                <span className="text-(--data)">{l.text}</span>
               </span>
             )}
             {l.kind === "ok" && (
               <span className="block pl-4 text-white/55">
                 <span className="mr-2 text-white/30">⎿</span>
-                <span className="text-[oklch(0.78_0.15_150)]">✓ </span>
+                <span className="text-(--ok)">✓ </span>
                 {l.text}
               </span>
             )}
@@ -219,7 +222,7 @@ function McpSession() {
           </li>
         ))}
         <li>
-          <span className="mr-2 text-[oklch(0.78_0.15_150)]">❯</span>
+          <span className="mr-2 text-(--ok)">❯</span>
           <span className="inline-block h-[1.05em] w-[0.55em] translate-y-[2px] bg-white/80 motion-safe:animate-[blink_1s_steps(1)_infinite]" />
         </li>
       </ol>

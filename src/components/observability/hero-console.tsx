@@ -4,17 +4,17 @@ import { BellIcon, ChatCircleIcon, PhoneIcon, WrenchIcon } from "@phosphor-icons
 
 import { CONSOLE, HeroConsole } from "@/components/product-page/hero-console"
 import { cn } from "@/lib/utils"
+import { UiPill } from "@/components/product/ui-window"
 
 /**
- * The /platform/observability hero: a large console on the backdrop (the
- * mesh gradient until a photo is chosen) with the live overview, one look
+ * The /platform/observability hero: a large console on the misty-lake backdrop with the live overview, one look
  * at all three parts of the page: the day's numbers (dashboards), what's firing (alerts) and the conversations happening now,
  * with the latest failed action (logs). The calling funnel stays in the
  * Dashboards section below. Static. Sample numbers.
  */
 
 const DESIGN_W = 1100
-const DESIGN_H = 620
+const DESIGN_H = 560
 
 const KPIS: [string, string, string][] = [
   ["Conversations today", "1,284", "+6% vs last week"],
@@ -31,11 +31,14 @@ const LIVE: { who: string; via: "phone" | "chat"; what: string; at: string; stat
   { who: "Asha Menon", via: "phone", what: "Outbound · Payment plan", at: "2:56", state: "Transferred" },
 ]
 
-const FAIL = "text-[oklch(0.72_0.17_25)]"
+/** Sample conversations per hour, 8:00 to now (the last hour is still filling). */
+const HOURS = [42, 88, 131, 156, 140, 118, 126, 149, 137, 104, 61]
+
+const FAIL = "text-(--fail)"
 
 export function ObservabilityConsole() {
   return (
-    <HeroConsole designW={DESIGN_W} designH={DESIGN_H}>
+    <HeroConsole image="/art/product/observability-backdrop.webp" designW={DESIGN_W} designH={DESIGN_H}>
       <div className={CONSOLE}>
         {/* Title bar */}
         <div className="flex h-12 shrink-0 items-center gap-3 border-b border-(--ui-line) px-5">
@@ -111,9 +114,24 @@ export function ObservabilityConsole() {
                 <span className="flex items-center gap-2 text-[12.5px]">
                   <WrenchIcon className="size-3.5 text-(--ui-muted)" />
                   <span className="font-mono">take_payment</span>
-                  <span className={cn("rounded-md bg-[oklch(0.62_0.2_25/0.18)] px-1.5 py-px text-[10.5px]", FAIL)}>Failed</span>
+                  <UiPill tone="fail" dot={false} className="px-1.5 py-px text-[10.5px]">
+                    Failed
+                  </UiPill>
                 </span>
                 <span className="text-[11px] text-(--ui-muted)">Card number incomplete · agent cut in</span>
+              </div>
+
+              {/* Today, by the hour: fills the column, the current hour still filling */}
+              <div className="flex min-h-0 flex-1 flex-col gap-2 rounded-lg border border-(--ui-line) bg-(--ui-panel) p-3.5">
+                <span className="flex items-center justify-between text-[11px] text-(--ui-muted)">
+                  Conversations by hour
+                  <span>8:00 – now</span>
+                </span>
+                <div className="flex min-h-0 flex-1 items-end gap-1.5">
+                  {HOURS.map((v, i) => (
+                    <span key={i} className={cn("flex-1 rounded-sm", i === HOURS.length - 1 ? "bg-(--ok)/40" : "bg-(--ui-text)/25")} style={{ height: `${(v / 160) * 100}%` }} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

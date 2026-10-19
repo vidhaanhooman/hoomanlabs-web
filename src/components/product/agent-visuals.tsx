@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils"
  */
 
 const NODE = {
-  branch: "oklch(0.6 0.16 295)",
-  ai: "oklch(0.6 0.14 240)",
-  fixed: "oklch(0.72 0.14 70)",
-  api: "oklch(0.6 0.14 150)",
-  human: "oklch(0.62 0.13 160)",
-  end: "oklch(0.6 0.18 25)",
+  branch: "var(--var)",
+  ai: "var(--data)",
+  fixed: "var(--warn)",
+  api: "var(--ok)",
+  human: "var(--ok)",
+  end: "var(--fail)",
 }
 
 /** The billing flow as a light diagram: white step boxes on a dotted canvas. */
@@ -89,9 +89,9 @@ export function LiveCallScreen({ className }: { className: string }) {
     <UiWindow className={className} title="Live call · Maya Patel" aside={<UiPill live>00:42</UiPill>}>
       <Line who="Caller" text="Can I just pay the $86.40 now?" dim />
       <Line who="Ria" text="Of course. I'm setting that up, one moment." />
-      <UiCard className="border-[oklch(0.74_0.16_150/0.35)]">
+      <UiCard className="border-(--ok)/40">
         <div className="flex items-center gap-2">
-          <LightningIcon weight="fill" className="size-3.5 text-[oklch(0.82_0.12_80)]" />
+          <LightningIcon weight="fill" className="size-3.5 text-(--warn-fg)" />
           <span className="font-medium">Take payment</span>
           <span className="font-mono text-[11px] text-(--ui-muted)">POST /payments</span>
           <span className="ml-auto flex items-center gap-1 text-(--ui-live)">

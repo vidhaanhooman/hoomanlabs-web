@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useInView } from "motion/react"
 import {
   CaretDownIcon,
   ChatsIcon,
@@ -23,6 +24,7 @@ import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import type { SectionId } from "@/content/sections"
 import { SCREEN_BLEED, STAGE } from "@/lib/recipes"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
 /**
@@ -34,10 +36,10 @@ import { cn } from "@/lib/utils"
  * version on /platform.
  */
 
-const op = "text-[oklch(0.72_0.14_295)]"
-const vr = "text-[oklch(0.78_0.11_240)]"
+const op = "text-(--var)"
+const vr = "text-(--data)"
 const Var = ({ children }: { children: React.ReactNode }) => (
-  <span className="rounded-[4px] bg-[oklch(0.72_0.14_295/0.18)] px-1 font-mono text-[10.5px] text-[oklch(0.86_0.08_295)]">{`{{${children}}}`}</span>
+  <span className="rounded-[4px] bg-(--var)/18 px-1 font-mono text-[10.5px] text-(--var-fg)">{`{{${children}}}`}</span>
 )
 
 function WindowBar({ title, aside }: { title: string; aside?: React.ReactNode }) {
@@ -164,11 +166,11 @@ export function AgentBuilderScreen({ className, focus }: { className: string; fo
                 </span>
                 <span className={cn("pt-0.5 font-medium", dimUnless(focus, "playbook"))}>Instructions</span>
                 <span className={cn("text-(--ui-text)/80", dimUnless(focus, "playbook"))}>Keep replies short, one question per turn, and confirm amounts before taking a payment.</span>
-                <span className={cn("mt-0.5 w-fit rounded bg-[oklch(0.72_0.14_295/0.1)] px-1.5 py-0.5 font-mono text-[10px] ring-1 ring-[oklch(0.72_0.14_295/0.3)]", dimUnless(focus, "playbook"))}>
+                <span className={cn("mt-0.5 w-fit rounded bg-(--var)/10 px-1.5 py-0.5 font-mono text-[10px] ring-1 ring-(--var)/25", dimUnless(focus, "playbook"))}>
                   <span className={op}>{"{{ "}</span>
                   <span className={vr}>context.balance</span>
                   <span className={op}>{" > 0 ? "}</span>
-                  <span className="text-[oklch(0.82_0.12_80)]">[take_payment]</span>
+                  <span className="text-(--tool)">[take_payment]</span>
                   <span className={op}>{" }}"}</span>
                 </span>
               </div>
@@ -219,7 +221,18 @@ function WorkflowScreen({ className, focus }: { className: string; focus: string
 
 type Row = { id: string; title: string; body: string }
 
-/** One product: copy with three rows, and its screen. */
+/** How long each row stays selected while the panel cycles on its own. */
+const CYCLE_MS = 5000
+
+/**
+ * One product: copy with rows, and its screen. The rows are buttons: hover,
+ * tap, click or keyboard focus shows that row on the screen. While the panel
+ * is on screen it also steps through the rows by itself, with a thin line
+ * filling under the active one; it pauses while the pointer or focus is in
+ * the rows, and stops for good once someone taps or clicks a row. The last
+ * row shown stays selected. Reduced motion: no cycling, until a row is chosen
+ * the screen shows everything.
+ */
 export function ProductPanel({
   id,
   label,
@@ -239,36 +252,89 @@ export function ProductPanel({
   media?: "start" | "end"
   screen: (className: string, focus: string) => React.ReactNode
 }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { amount: 0.5 })
+  const reduce = usePrefersReducedMotion()
   const [focus, setFocus] = useState("all")
+  const [paused, setPaused] = useState(false)
+  const [chosen, setChosen] = useState(false)
+  const cycling = inView && !reduce && !chosen && rows.length > 1
+  const dense = rows.length > 3
+
+  // The first row is shown once the panel cycles; after that, the last row picked.
+  const shown = focus === "all" && cycling ? rows[0].id : focus
+
+  // Step to the next row, unless paused.
+  useEffect(() => {
+    if (!cycling || paused) return
+    const t = setTimeout(() => {
+      const i = rows.findIndex((r) => r.id === shown)
+      setFocus(rows[(i + 1) % rows.length].id)
+    }, CYCLE_MS)
+    return () => clearTimeout(t)
+  }, [cycling, paused, shown, rows])
+
   return (
     <Section id={id} spacing="tight">
       <Container>
-        <Panel className="grid items-center gap-8 p-4 sm:p-6 lg:grid-cols-3 lg:gap-0 lg:p-3">
-          <div className={cn("flex flex-col gap-5 px-2 pt-4 sm:px-4 lg:px-10 lg:py-10", media === "start" && "lg:order-2")}>
+        <Panel ref={ref} className="grid gap-8 p-4 sm:p-6 lg:grid-cols-3 lg:items-stretch lg:gap-0 lg:p-3">
+          <div className={cn("flex flex-col gap-5 px-2 pt-4 sm:px-4 lg:self-center lg:px-10 lg:py-10", media === "start" && "lg:order-2")}>
             <div className="flex flex-col gap-2">
               <span className="font-mono text-label text-ink-muted">{label}</span>
               <h2 className="text-h3 font-normal">{title}</h2>
             </div>
-            <ul className="flex flex-col border-t border-line" onMouseLeave={() => setFocus("all")}>
-              {rows.map((r) => (
-                <li
-                  key={r.id}
-                  onMouseEnter={() => setFocus(r.id)}
-                  className={cn(
-                    "flex flex-col gap-1 border-b border-line py-4 transition-opacity duration-300 ease-out",
-                    focus !== "all" && focus !== r.id && "opacity-50"
-                  )}
-                >
-                  <span className="text-body">{r.title}</span>
-                  <span className="text-small text-ink-secondary">{r.body}</span>
-                </li>
-              ))}
+            <ul
+              className="flex flex-col border-t border-line"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onFocus={() => setPaused(true)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false)
+              }}
+            >
+              {rows.map((r) => {
+                const on = shown === r.id
+                return (
+                  <li key={r.id} className="relative border-b border-line">
+                    <button
+                      type="button"
+                      aria-pressed={on}
+                      onMouseEnter={() => setFocus(r.id)}
+                      onFocus={() => setFocus(r.id)}
+                      onClick={() => {
+                        setFocus(r.id)
+                        setChosen(true)
+                      }}
+                      className={cn(
+                        dense ? "py-3" : "py-4",
+                        "flex w-full cursor-pointer flex-col gap-1 text-left transition-opacity duration-300 ease-out outline-none focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                        shown !== "all" && !on && "opacity-50"
+                      )}
+                    >
+                      <span className="text-body">{r.title}</span>
+                      <span className="text-small text-ink-secondary">{r.body}</span>
+                    </button>
+                    {/* The active row's line: fills while cycling, full when held */}
+                    {on && (
+                      <span aria-hidden className="absolute inset-x-0 -bottom-px h-px overflow-hidden">
+                        <span
+                          key={`${r.id}-${cycling && !paused}`}
+                          className="block h-full origin-left bg-foreground"
+                          style={cycling && !paused ? { animation: `progress ${CYCLE_MS}ms linear both` } : undefined}
+                        />
+                      </span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
             <TextLink href={linkHref}>{link}</TextLink>
           </div>
           {/* Grey stage with a hairline: the screen runs past the panel edge, as if the app is open. */}
-          <div className={cn(STAGE, "aspect-[4/3] lg:col-span-2 lg:aspect-[16/11]", media === "start" && "lg:order-1")}>
-            {screen(SCREEN_BLEED, focus)}
+          <div className={cn(STAGE, "aspect-[4/3] lg:col-span-2 lg:aspect-auto", media === "start" && "lg:order-1")}>
+            {/* Keeps the stage at least 16:11 on desktop; it grows taller when the copy beside it is taller */}
+            <div aria-hidden className="hidden aspect-[16/11] w-full lg:block" />
+            {screen(SCREEN_BLEED, shown)}
           </div>
         </Panel>
       </Container>

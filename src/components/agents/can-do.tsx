@@ -71,7 +71,7 @@ const MOMENTS: Record<string, Moment> = {
 function CallCard({ id }: { id: string }) {
   const m = MOMENTS[id]
   return (
-    <div className="ui-dark flex w-full max-w-[26rem] flex-col overflow-hidden rounded-xl border border-black/10 text-[13px] leading-[1.55] shadow-[0_24px_60px_-28px_oklch(0.2_0.02_260/0.55)]">
+    <div className="ui-dark flex w-full max-w-[26rem] flex-col overflow-hidden rounded-xl border border-black/10 dark:border-white/10 text-[13px] leading-[1.55] shadow-[0_24px_60px_-28px_oklch(0.2_0.02_260/0.55)]">
       <div className="flex items-center justify-between border-b border-(--ui-line) px-4 py-3 text-[12px] text-(--ui-muted)">
         <span>{m.header ?? "Live call · Maya Patel"}</span>
         {!m.header && (
@@ -97,7 +97,7 @@ function CallCard({ id }: { id: string }) {
           ))}
         {id !== "follow" && (
           <span className="flex items-center gap-2 rounded-lg border border-(--ui-line) bg-(--ui-panel) px-3 py-2 text-[12px]">
-            <m.chip.icon weight="fill" className="size-3.5 shrink-0 text-[oklch(0.82_0.12_80)]" />
+            <m.chip.icon weight="fill" className="size-3.5 shrink-0 text-(--warn-fg)" />
             <span className="truncate font-mono text-[11.5px]">{m.chip.text}</span>
             {m.chip.ok && (
               <span className="ml-auto flex shrink-0 items-center gap-1 text-(--ui-live)">

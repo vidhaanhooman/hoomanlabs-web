@@ -63,7 +63,7 @@ export function MysteryCallers() {
 
         <div ref={ref} className="mt-10">
           <UiWindow
-            className="rounded-xl border border-black/10 shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] [&>div:first-child]:pr-4 [&>div:last-child]:pr-5 [&>div:last-child]:[mask-image:none]"
+            className="rounded-xl border border-black/10 dark:border-white/10 shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] [&>div:first-child]:pr-4 [&>div:last-child]:pr-5 [&>div:last-child]:[mask-image:none]"
             title="Billing suite · Ria · v13 draft"
             aside={<UiPill live={!done}>{done ? "1 to fix" : "Simulating"}</UiPill>}
           >
@@ -101,7 +101,7 @@ export function MysteryCallers() {
                   <div key={i} className={cn("grid grid-cols-[2rem_4.5rem_1fr] items-baseline gap-2 text-[12.5px] transition-opacity duration-500", s > i ? "opacity-100" : "opacity-0")}>
                     <span className="font-mono text-[10.5px] text-(--ui-muted)">T{i + 1}</span>
                     <span className="text-[11px] text-(--ui-muted)">{who}</span>
-                    <span className={cn(flag && done && "underline decoration-[oklch(0.8_0.14_70)] decoration-wavy underline-offset-4")}>{text}</span>
+                    <span className={cn(flag && done && "underline decoration-(--fail) decoration-wavy underline-offset-4")}>{text}</span>
                   </div>
                 ))}
               </UiCard>
@@ -113,12 +113,12 @@ export function MysteryCallers() {
                   const shown = s > ch.at
                   return (
                     <span key={ch.label} className="flex items-start gap-2 text-[12.5px]">
-                      <span className={cn("mt-0.5 grid size-4 shrink-0 place-items-center rounded-full", !shown ? "bg-(--ui-raised)" : ch.pass ? "bg-[oklch(0.74_0.16_150/0.2)]" : "bg-[oklch(0.8_0.14_70/0.2)]")}>
-                        {shown && (ch.pass ? <CheckIcon weight="bold" className="size-2.5 text-(--ui-live)" /> : <XIcon weight="bold" className="size-2.5 text-[oklch(0.82_0.14_70)]" />)}
+                      <span className={cn("mt-0.5 grid size-4 shrink-0 place-items-center rounded-full", !shown ? "bg-(--ui-raised)" : ch.pass ? "bg-(--ok)/18" : "bg-(--fail)/18")}>
+                        {shown && (ch.pass ? <CheckIcon weight="bold" className="size-2.5 text-(--ui-live)" /> : <XIcon weight="bold" className="size-2.5 text-(--fail-fg)" />)}
                       </span>
                       <span className="flex flex-col leading-snug">
                         <span className={cn(!shown && "text-(--ui-muted)")}>{ch.label}</span>
-                        {shown && ch.note && <span className="text-[11px] text-[oklch(0.82_0.14_70)]">{ch.note}</span>}
+                        {shown && ch.note && <span className="text-[11px] text-(--fail-fg)">{ch.note}</span>}
                       </span>
                     </span>
                   )
@@ -127,7 +127,7 @@ export function MysteryCallers() {
                   <span className="text-[11px] text-(--ui-muted)">Expected outcome</span>
                   <span className="flex items-center justify-between gap-2">
                     Payment taken
-                    <span className={cn("text-[11px]", done ? "text-[oklch(0.82_0.14_70)]" : "text-(--ui-muted)")}>{done ? "Not reached" : "Waiting"}</span>
+                    <span className={cn("text-[11px]", done ? "text-(--fail-fg)" : "text-(--ui-muted)")}>{done ? "Not reached" : "Waiting"}</span>
                   </span>
                 </div>
               </UiCard>

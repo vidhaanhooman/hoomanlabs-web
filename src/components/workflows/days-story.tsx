@@ -125,9 +125,9 @@ const DESIGN_H = 640
 const FLOAT = "absolute z-10 flex flex-col gap-3 rounded-lg border border-line bg-background p-4 text-small shadow-[0_1px_2px_oklch(0.2_0_0/0.06),0_16px_40px_-16px_oklch(0.2_0.02_260/0.3)]"
 
 const TONE: Record<Tone, string> = {
-  neutral: "bg-white/10 text-white/80",
-  warn: "bg-[oklch(0.8_0.12_75/0.18)] text-[oklch(0.86_0.1_80)]",
-  good: "bg-[oklch(0.74_0.16_150/0.2)] text-[oklch(0.85_0.12_150)]",
+  neutral: "bg-(--ui-raised) text-(--ui-text)",
+  warn: "bg-(--warn)/18 text-(--warn-fg)",
+  good: "bg-(--ok)/18 text-(--ok-fg)",
 }
 
 export function DaysStory() {
@@ -159,7 +159,7 @@ export function DaysStory() {
   const cur = STEPS[Math.max(0, step)]
 
   return (
-    <Section id="workflows-days">
+    <Section id="workflows-days" className="ui-scope">
       <Container>
         <div className="flex max-w-[44rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
@@ -169,7 +169,7 @@ export function DaysStory() {
         {/* Canvas with the run's detail floating over its edges (lg up) */}
         <div ref={ref} className="relative mt-10 hidden lg:block" style={{ height: DESIGN_H * scale }}>
           <div className="absolute top-0 left-0 px-[55px] py-8" style={{ width: DESIGN_W, transform: `scale(${scale})`, transformOrigin: "0 0" }}>
-            <div className="relative aspect-[1000/520] overflow-hidden rounded-xl border border-black/10 bg-[oklch(0.23_0.005_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
+            <div className="relative aspect-[1000/520] overflow-hidden rounded-xl border border-black/10 dark:border-(--ui-line) bg-(--ui-panel) bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
               {/* The track between steps; the wait is dashed, as time passes. */}
               <svg aria-hidden viewBox={`0 0 ${VW} ${VH}`} className="absolute inset-0 size-full" preserveAspectRatio="xMidYMid meet">
                 {STEPS.slice(0, -1).map((s, i) => {
@@ -186,7 +186,7 @@ export function DaysStory() {
                         y1={y}
                         x2={x2}
                         y2={y}
-                        stroke="oklch(0.95 0 0)"
+                        stroke="var(--ui-text)"
                         strokeWidth={1.5}
                         pathLength={1}
                         strokeDasharray="1 1"
@@ -202,26 +202,26 @@ export function DaysStory() {
                 return (
                   <div key={s.id} onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
                     <span
-                      className={cn("absolute font-mono text-[10.5px] transition-colors duration-300", state === "idle" ? "text-white/35" : "text-white/70")}
+                      className={cn("absolute font-mono text-[10.5px] transition-colors duration-300", state === "idle" ? "text-(--ui-muted)/60" : "text-(--ui-muted)")}
                       style={{ left: `${(nx(i) / VW) * 100}%`, top: `${((NY - 30) / VH) * 100}%` }}
                     >
                       {s.day}
                     </span>
                     <div
                       className={cn(
-                        "absolute flex flex-col justify-center gap-1.5 rounded-lg border bg-[oklch(0.28_0.005_260)] px-2.5 text-[11.5px] leading-none text-[oklch(0.95_0_0)] transition-[opacity,border-color,box-shadow] duration-500 ease-(--ease-out)",
+                        "absolute flex flex-col justify-center gap-1.5 rounded-lg border bg-(--ui-raised) px-2.5 text-[11.5px] leading-none text-(--ui-text) transition-[opacity,border-color,box-shadow] duration-500 ease-(--ease-out)",
                         state === "active" ? "border-white/85 shadow-[0_0_0_3px_oklch(1_0_0/0.12),0_0_40px_-6px_oklch(1_0_0/0.25)]" : "border-white/15",
                         state === "idle" && "opacity-50"
                       )}
                       style={{ left: `${(nx(i) / VW) * 100}%`, top: `${(NY / VH) * 100}%`, width: `${(NW / VW) * 100}%`, height: `${(NH / VH) * 100}%` }}
                     >
                       <span className="flex items-center gap-1.5">
-                        <s.icon weight="fill" className="size-3.5 shrink-0 text-[oklch(0.75_0.12_245)]" />
+                        <s.icon weight="fill" className="size-3.5 shrink-0 text-(--data)" />
                         <span className="truncate">{s.title}</span>
-                        {state === "done" && <CheckIcon weight="bold" className="ml-auto size-3 shrink-0 text-[oklch(0.78_0.15_150)]" />}
-                        {state === "active" && <span className="ml-auto size-1.5 shrink-0 rounded-full bg-[oklch(0.78_0.15_150)] motion-safe:animate-pulse" />}
+                        {state === "done" && <CheckIcon weight="bold" className="ml-auto size-3 shrink-0 text-(--ok)" />}
+                        {state === "active" && <span className="ml-auto size-1.5 shrink-0 rounded-full bg-(--ok) motion-safe:animate-pulse" />}
                       </span>
-                      <span className="truncate text-[10.5px] text-white/55">{s.sub}</span>
+                      <span className="truncate text-[10.5px] text-(--ui-muted)">{s.sub}</span>
                     </div>
                     {/* Outcome, once reached */}
                     <span
@@ -270,13 +270,13 @@ export function DaysStory() {
         {/* Below lg: the run as a list */}
         <ol className="mt-8 flex flex-col gap-3 lg:hidden">
           {STEPS.map((s) => (
-            <li key={s.id} className="flex flex-col gap-2 rounded-xl bg-[oklch(0.23_0.005_260)] p-4 text-small text-[oklch(0.95_0_0)]">
-              <span className="flex items-center justify-between font-mono text-label text-white/55">
+            <li key={s.id} className="flex flex-col gap-2 rounded-xl bg-(--ui-panel) p-4 text-small text-(--ui-text)">
+              <span className="flex items-center justify-between font-mono text-label text-(--ui-muted)">
                 {s.day}
                 <span className={cn("rounded-full px-2 py-0.5 font-sans text-[11px]", TONE[s.outcome.tone])}>{s.outcome.text}</span>
               </span>
               <span>{s.title}</span>
-              <span className="text-white/60">{s.sub}</span>
+              <span className="text-(--ui-muted)">{s.sub}</span>
             </li>
           ))}
         </ol>

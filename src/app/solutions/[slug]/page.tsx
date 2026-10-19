@@ -3,11 +3,11 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { IndustryPage } from "@/components/solutions/industry-page"
-import { UseCasePage } from "@/components/solutions/use-case-page"
-import { allSolutions, solutionBySlug } from "@/content/solutions"
+import { industries, industryBySlug } from "@/content/solutions"
 
 /**
- * /solutions/[slug]: one page per use case and per industry, all prerendered.
+ * /solutions/[slug]: one page per industry, all prerendered. Use cases have
+ * no page of their own (they are cards on /solutions; old links redirect).
  * The params read sits inside Suspense so navigations stay instant (Cache
  * Components' instant validation); the known slugs prerender in full.
  */
@@ -15,12 +15,12 @@ import { allSolutions, solutionBySlug } from "@/content/solutions"
 type Props = { params: Promise<{ slug: string }> }
 
 export function generateStaticParams() {
-  return allSolutions.map((s) => ({ slug: s.slug }))
+  return industries.map((s) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const s = solutionBySlug(slug)
+  const s = industryBySlug(slug)
   if (!s) return {}
   return { title: s.title, description: s.line }
 }
@@ -35,7 +35,7 @@ export default function Solution({ params }: Props) {
 
 async function SolutionContent({ params }: Props) {
   const { slug } = await params
-  const s = solutionBySlug(slug)
+  const s = industryBySlug(slug)
   if (!s) notFound()
-  return s.kind === "use-case" ? <UseCasePage useCase={s} /> : <IndustryPage industry={s} />
+  return <IndustryPage industry={s} />
 }

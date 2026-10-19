@@ -10,7 +10,7 @@ import { TextLink } from "@/components/layout/text-link"
 import { HeroCopy } from "@/components/product-page/page-bits"
 import { CallPlayer } from "@/components/solutions/call-player"
 import { MiniCall, Tag, Tile } from "@/components/solutions/cards"
-import { industryBySlug, solutionHref, caseBySlug, type UseCase } from "@/content/solutions"
+import { caseHref, industryBySlug, caseBySlug, type UseCase } from "@/content/solutions"
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -50,7 +50,7 @@ export function IndustryCalls({ slug }: { slug: string }) {
         </Container>
         <Container className="reveal mt-10 md:mt-14">
           <div ref={stage} className="scroll-mt-24">
-            <MeshStage image="/art/product/channels-mountains.webp" className="px-3 py-6 sm:p-[5%]">
+            <MeshStage className="px-3 py-6 sm:p-[5%]">
               <div className="mx-auto w-full max-w-[46rem]">
                 <CallPlayer key={pick.u.slug} id={`industry-${ind.slug}-${pick.u.slug}`} call={pick.u.call} autoPlay={pick.auto} />
               </div>
@@ -88,7 +88,7 @@ export function IndustryCalls({ slug }: { slug: string }) {
                 <p className="-mt-1 text-small text-ink-secondary">{j.how}</p>
                 <span className="flex flex-wrap items-center justify-between gap-2">
                   <Tag>{j.u.result}</Tag>
-                  <TextLink href={solutionHref(j.u.slug)}>See the use case</TextLink>
+                  <TextLink href={caseHref(j.u.slug)}>See the use case</TextLink>
                 </span>
               </li>
             ))}

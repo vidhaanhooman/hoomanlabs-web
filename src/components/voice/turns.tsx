@@ -114,7 +114,7 @@ export function Turns() {
   const heard = at >= 47
 
   return (
-    <Section id="voice-turns">
+    <Section id="voice-turns" className="ui-scope">
       <Container>
         <div className="flex max-w-[44rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
@@ -124,13 +124,13 @@ export function Turns() {
 
         <div ref={ref} className="relative mt-10 hidden lg:block" style={{ height: DESIGN_H * scale }}>
           <div className="absolute top-0 left-0 px-[55px] py-8" style={{ width: DESIGN_W, transform: `scale(${scale})`, transformOrigin: "0 0" }}>
-            <div className="relative aspect-[1000/440] overflow-hidden rounded-xl border border-black/10 bg-[oklch(0.23_0.005_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
+            <div className="relative aspect-[1000/440] overflow-hidden rounded-xl border border-black/10 dark:border-(--ui-line) bg-(--ui-panel) bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
               <svg aria-hidden viewBox={`0 0 ${VW} ${VH}`} className="absolute inset-0 size-full" preserveAspectRatio="xMidYMid meet">
                 {/* Lane labels */}
                 <text x={40} y={CALLER_Y + 4} fontSize={13} fill="oklch(1 0 0 / 0.6)" fontFamily="var(--font-mono)">
                   Caller
                 </text>
-                <text x={40} y={HOOMAN_Y + 4} fontSize={13} fill="oklch(0.8 0.1 245)" fontFamily="var(--font-mono)">
+                <text x={40} y={HOOMAN_Y + 4} fontSize={13} fill="var(--data)" fontFamily="var(--font-mono)">
                   Hooman
                 </text>
 
@@ -141,7 +141,7 @@ export function Turns() {
                     <g key={m.label} opacity={lit ? 1 : 0.25} style={{ transition: "opacity 400ms" }}>
                       <line x1={px(m.at)} y1={72} x2={px(m.at)} y2={HOOMAN_Y + 46} stroke="oklch(1 0 0 / 0.45)" strokeDasharray="3 4" />
                       <g transform={`translate(${px(m.at)},${48})`}>
-                        <rect x={-92} y={-16} width={184} height={34} rx={7} fill={lit ? "oklch(0.95 0 0)" : "oklch(0.3 0 0)"} />
+                        <rect x={-92} y={-16} width={184} height={34} rx={7} fill={lit ? "var(--ui-text)" : "var(--ui-raised)"} />
                         <text y={-1} textAnchor="middle" fontSize={11} fill={lit ? "oklch(0.2 0 0)" : "oklch(1 0 0 / 0.7)"}>
                           {m.label}
                         </text>
@@ -155,10 +155,10 @@ export function Turns() {
 
                 {/* Waveforms: played part bright, the rest dim */}
                 {CALLER_BARS.map((b) => (
-                  <rect key={`c${b.x}`} x={b.x} y={CALLER_Y - b.h / 2} width={2.2} height={b.h} rx={1.1} fill="oklch(0.95 0 0)" opacity={b.p <= at ? (b.on ? 0.9 : 0.35) : b.on ? 0.22 : 0.12} />
+                  <rect key={`c${b.x}`} x={b.x} y={CALLER_Y - b.h / 2} width={2.2} height={b.h} rx={1.1} fill="var(--ui-text)" opacity={b.p <= at ? (b.on ? 0.9 : 0.35) : b.on ? 0.22 : 0.12} />
                 ))}
                 {HOOMAN_BARS.map((b) => (
-                  <rect key={`h${b.x}`} x={b.x} y={HOOMAN_Y - b.h / 2} width={2.2} height={b.h} rx={1.1} fill="oklch(0.78 0.12 245)" opacity={b.p <= at ? (b.on ? 0.95 : 0.35) : b.on ? 0.25 : 0.12} />
+                  <rect key={`h${b.x}`} x={b.x} y={HOOMAN_Y - b.h / 2} width={2.2} height={b.h} rx={1.1} fill="var(--data)" opacity={b.p <= at ? (b.on ? 0.95 : 0.35) : b.on ? 0.25 : 0.12} />
                 ))}
                 {/* What it would have said: outlined, never filled */}
                 {UNSAID_BARS.map((b) => (
@@ -170,7 +170,7 @@ export function Turns() {
                     height={b.h}
                     rx={1.1}
                     fill="none"
-                    stroke="oklch(0.78 0.12 245)"
+                    stroke="var(--data)"
                     strokeWidth={0.6}
                     opacity={heard ? 0.6 : 0}
                     style={{ transition: "opacity 400ms" }}
@@ -179,8 +179,8 @@ export function Turns() {
 
                 {/* Playhead */}
                 <g transform={`translate(${px(at)},0)`} opacity={at > 0 && at < 100 ? 1 : 0}>
-                  <line y1={78} y2={HOOMAN_Y + 52} stroke="oklch(0.95 0 0)" strokeWidth={1.4} />
-                  <circle cy={HOOMAN_Y + 52} r={4} fill="oklch(0.95 0 0)" />
+                  <line y1={78} y2={HOOMAN_Y + 52} stroke="var(--ui-text)" strokeWidth={1.4} />
+                  <circle cy={HOOMAN_Y + 52} r={4} fill="var(--ui-text)" />
                 </g>
               </svg>
             </div>
@@ -213,8 +213,8 @@ export function Turns() {
         {/* Below lg: the four moments as a list */}
         <ol className="mt-8 flex flex-col gap-3 lg:hidden">
           {[...MOMENTS.map((m) => ({ k: m.feature, t: m.label })), { k: "Heard vs said", t: "Planned words the caller never heard, struck through" }].map((m) => (
-            <li key={m.k} className="flex flex-col gap-1 rounded-xl bg-[oklch(0.23_0.005_260)] p-4 text-small text-[oklch(0.95_0_0)]">
-              <span className="font-mono text-label text-white/55">{m.k}</span>
+            <li key={m.k} className="flex flex-col gap-1 rounded-xl bg-(--ui-panel) p-4 text-small text-(--ui-text)">
+              <span className="font-mono text-label text-(--ui-muted)">{m.k}</span>
               {m.t}
             </li>
           ))}

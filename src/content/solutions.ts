@@ -62,8 +62,6 @@ export type Industry = {
   systems: string[]
   compliance: { title: string; body: string }[]
   proof: { value: string; label: string; sample: true }
-  /** Backdrop for the industry stage. PLACEHOLDER: the product landscapes, until a photo per industry is generated (see docs/product-art-prompts.md). */
-  image: string
   faq: { q: string; a: string }[]
 }
 
@@ -345,7 +343,6 @@ export const industries: Industry[] = [
       { title: "Human handoff", body: "Clinical questions go straight to your staff with the context." },
     ],
     proof: { value: "−30%", label: "no-shows", sample: true },
-    image: "/art/product/integrations-backdrop.webp",
     faq: [
       { q: "Can it give medical advice?", a: "No. It handles bookings and admin questions and hands anything clinical to your staff." },
       { q: "Which languages can patients use?", a: "English and major Indian languages, switching mid-call if they do." },
@@ -376,7 +373,6 @@ export const industries: Industry[] = [
       { title: "Do-not-call", body: "Numbers on DND lists are skipped automatically." },
     ],
     proof: { value: "2 min", label: "from enquiry to first call", sample: true },
-    image: "/art/product/workflows-backdrop.webp",
     faq: [
       { q: "Can it talk to parents as well as learners?", a: "Yes. The same Hooman adapts its script to who answers." },
       { q: "Does it work with our CRM?", a: "Zoho CRM natively, and any CRM with an API as a skill." },
@@ -407,7 +403,6 @@ export const industries: Industry[] = [
       { title: "Opt-outs", body: "Anyone who opts out is never called again." },
     ],
     proof: { value: "70%", label: "of order calls resolved", sample: true },
-    image: "/art/product/campaigns-backdrop.webp",
     faq: [
       { q: "Can it confirm cash-on-delivery orders?", a: "Yes. It calls, confirms the order and address, and updates your system." },
       { q: "Can it handle returns?", a: "It explains your policy, starts the return and books the pickup through your system." },
@@ -437,7 +432,6 @@ export const industries: Industry[] = [
       { title: "Human handoff", body: "Complaints go straight to your team with the details." },
     ],
     proof: { value: "4×", label: "more guest feedback", sample: true },
-    image: "/art/product/voice-backdrop.webp",
     faq: [
       { q: "Can it take bookings at night?", a: "Yes. It answers every call, 24/7, and books straight into your system." },
       { q: "Can it upsell?", a: "It can offer the add-ons you set, such as late checkout or meals." },
@@ -467,7 +461,6 @@ export const industries: Industry[] = [
       { title: "DND and calling hours", body: "DND numbers are skipped and calls stay within allowed hours." },
     ],
     proof: { value: "+18%", label: "on-time payments", sample: true },
-    image: "/art/product/agents-backdrop.webp",
     faq: [
       { q: "How do we know every call was compliant?", a: "Every call is scored, including a check that each disclosure was read, and any miss points to the exact turn." },
       { q: "Can it handle hardship cases?", a: "It follows your rules, offers plans you allow and hands sensitive cases to your team." },
@@ -475,8 +468,8 @@ export const industries: Industry[] = [
   },
 ]
 
-export const allSolutions = [...useCases, ...industries]
-export const solutionBySlug = (slug: string) => allSolutions.find((s) => s.slug === slug)
 export const caseBySlug = (slug: string) => useCases.find((u) => u.slug === slug)
 export const industryBySlug = (slug: string) => industries.find((i) => i.slug === slug)
 export const solutionHref = (slug: string) => `/solutions/${slug}`
+/** Use cases have no page of their own: they live as cards on /solutions, each with its slug as the anchor. */
+export const caseHref = (slug: string) => `/solutions#${slug}`

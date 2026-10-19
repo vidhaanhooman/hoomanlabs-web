@@ -110,12 +110,14 @@ export type SectionId =
   | "post-hero"
   | "post-body"
   | "post-related"
+  | "privacy-body"
+  | "terms-body"
+  | "about-hero"
+  | "about-story"
+  | "about-principles"
+  | "about-contact"
   | "careers-hero"
   | "careers-roles"
-  | "careers-values"
-  | "careers-how"
-  | "careers-benefits"
-  | "careers-process"
   | "role-hero"
   | "role-body"
   | "role-process"
@@ -195,8 +197,9 @@ export type SectionId =
   | "agents-can-do"
   | "agents-next"
   | "agents-definition"
-  | "agents-knowledge"
-  | "agents-around"
+  | "agents-types"
+  | "agents-context"
+  | "agents-scale"
   | "agents-flows"
   | "agents-tools"
   | "agents-grid"
@@ -332,12 +335,14 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "post-hero", name: "Post: header", status: "draft" },
   { id: "post-body", name: "Post: body", status: "draft" },
   { id: "post-related", name: "Post: related posts", status: "draft" },
+  { id: "privacy-body", name: "Privacy Policy: text", status: "draft" },
+  { id: "terms-body", name: "Terms: text", status: "draft" },
+  { id: "about-hero", name: "About: hero", status: "draft" },
+  { id: "about-story", name: "About: our story", status: "draft" },
+  { id: "about-principles", name: "About: how we build", status: "draft" },
+  { id: "about-contact", name: "About: contact", status: "draft" },
   { id: "careers-hero", name: "Careers: hero", status: "draft" },
   { id: "careers-roles", name: "Careers: open roles", status: "draft" },
-  { id: "careers-values", name: "Careers: values", status: "draft" },
-  { id: "careers-how", name: "Careers: how we work", status: "draft" },
-  { id: "careers-benefits", name: "Careers: benefits", status: "draft" },
-  { id: "careers-process", name: "Careers: hiring process", status: "draft" },
   { id: "role-hero", name: "Role: hero", status: "draft" },
   { id: "role-body", name: "Role: details", status: "draft" },
   { id: "role-process", name: "Role: hiring process", status: "draft" },
@@ -417,8 +422,9 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "agents-can-do", name: "Agents: what it can do (pinned)", status: "draft" },
   { id: "agents-next", name: "Agents: next step", status: "draft" },
   { id: "agents-definition", name: "Agents: definition and proof", status: "draft" },
-  { id: "agents-knowledge", name: "Agents: knowledge panel", status: "draft" },
-  { id: "agents-around", name: "Agents: everything around the call", status: "draft" },
+  { id: "agents-types", name: "Agents: types (voice, chat, broadcast)", status: "draft" },
+  { id: "agents-context", name: "Agents: context & actions panel", status: "draft" },
+  { id: "agents-scale", name: "Agents: production ready panel", status: "draft" },
   { id: "agents-flows", name: "Agents: flows deep-dive", status: "draft" },
   { id: "agents-tools", name: "Agents: tools deep-dive", status: "draft" },
   { id: "agents-grid", name: "Agents: everything around the call", status: "draft" },

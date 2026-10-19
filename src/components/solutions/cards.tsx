@@ -4,7 +4,7 @@ import { ArrowRightIcon, CheckCircleIcon } from "@phosphor-icons/react/dist/ssr"
 import { Halftone } from "@/components/layout/halftone"
 import { pageHref } from "@/components/product-page/page-bits"
 import { platformFeatured, platformMenu, type MenuPageId } from "@/content/platform"
-import { industryBySlug, solutionHref, caseBySlug, type Industry, type UseCase } from "@/content/solutions"
+import { caseHref, industryBySlug, solutionHref, caseBySlug, type Industry, type UseCase } from "@/content/solutions"
 import { cn } from "@/lib/utils"
 
 /**
@@ -79,18 +79,15 @@ function MiniProof({ industry }: { industry: Industry }) {
   )
 }
 
-/** A use case: call mockup, name, short line, result and the industries it serves. */
+/** A use case: call mockup, name, short line, result and the industries it serves. Anchored by its slug (use cases have no page of their own). */
 export function UseCaseCard({ useCase, i, line }: { useCase: UseCase; i: number; line?: string }) {
   return (
-    <li className="flex">
-      <Link href={solutionHref(useCase.slug)} className="group flex w-full flex-col gap-3 rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background focus-visible:outline-none">
-        <Tile i={i} className="transition-colors group-hover:border-line-strong">
+    <li id={useCase.slug} className="flex scroll-mt-24">
+      <div className="flex w-full flex-col gap-3">
+        <Tile i={i}>
           <MiniCall useCase={useCase} />
         </Tile>
-        <span className="flex items-center justify-between gap-2">
-          <h3 className="text-body font-normal">{useCase.name}</h3>
-          <ArrowRightIcon aria-hidden className="size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5" />
-        </span>
+        <h3 className="text-body font-normal">{useCase.name}</h3>
         <span className="-mt-1 text-small text-ink-secondary">{line ?? useCase.short}</span>
         <span className="text-small">
           <span className="text-ink-muted">Result · </span>
@@ -101,7 +98,7 @@ export function UseCaseCard({ useCase, i, line }: { useCase: UseCase; i: number;
             <Tag key={s}>{industryBySlug(s)?.name ?? s}</Tag>
           ))}
         </span>
-      </Link>
+      </div>
     </li>
   )
 }
@@ -158,7 +155,7 @@ export function IndustryRow({ industry, i }: { industry: Industry; i: number }) 
             return (
               <li key={j.useCase} className="flex">
                 <Link
-                  href={solutionHref(u.slug)}
+                  href={caseHref(u.slug)}
                   className="group flex w-full flex-col gap-1.5 rounded-md border border-line p-4 transition-colors hover:border-line-strong hover:bg-surface focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:p-5"
                 >
                   <span className="flex items-center justify-between gap-3">

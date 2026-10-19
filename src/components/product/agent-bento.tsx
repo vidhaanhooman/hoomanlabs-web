@@ -100,9 +100,9 @@ const CEL_LINES: [string, string][][] = [
   [['  : """Confirm nothing is owed.""" ', "str"], ["}}", "op"]],
 ]
 const TONE: Record<string, string> = {
-  op: "text-[oklch(0.72_0.14_295)]",
-  var: "text-[oklch(0.78_0.11_240)]",
-  tool: "text-[oklch(0.82_0.12_80)]",
+  op: "text-(--var)",
+  var: "text-(--data)",
+  tool: "text-(--tool)",
   str: "text-foreground/85",
 }
 
@@ -119,7 +119,7 @@ function Prompt() {
         2. If they mention a charge they don&rsquo;t recognise, check it with <Code>[get_payments]</Code>.
       </p>
       <p className="text-ink-secondary">3. Otherwise, follow the instructions for this account&rsquo;s status:</p>
-      <div className="relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-3 py-2.5 font-mono text-[11px] leading-[1.7] ring-1 ring-[oklch(0.72_0.14_295/0.25)]">
+      <div className="relative rounded-md bg-(--var)/10 px-3 py-2.5 font-mono text-[11px] leading-[1.7] ring-1 ring-(--var)/25">
         {CEL_LINES.map((line, i) => (
           <div key={i} className="whitespace-pre-wrap sm:whitespace-pre">
             {line.map(([t, k], j) => (

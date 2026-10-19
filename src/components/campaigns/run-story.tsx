@@ -59,7 +59,7 @@ const LAST = Math.max(...CALLS.map(end)) + 2
 const TICK_MS = 950
 
 const CANVAS =
-  "rounded-xl border border-black/10 bg-[oklch(0.21_0.004_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.08)_1px,transparent_1px)] [background-size:18px_18px] p-4 text-[oklch(0.95_0_0)] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] sm:p-6"
+  "rounded-xl border border-black/10 dark:border-(--ui-line) bg-(--ui-panel) bg-[radial-gradient(circle,oklch(1_0_0/0.08)_1px,transparent_1px)] [background-size:18px_18px] p-4 text-(--ui-text) shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)] sm:p-6"
 
 export function RunStory() {
   const { label, title, line } = c.run
@@ -84,7 +84,7 @@ export function RunStory() {
   const live = CALLS.filter((x) => t >= x.start && t <= end(x)).length
 
   return (
-    <Section id="campaigns-run">
+    <Section id="campaigns-run" className="ui-scope">
       <Container>
         <div className="flex max-w-[48rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
@@ -97,10 +97,10 @@ export function RunStory() {
           <div className="flex flex-wrap items-center justify-between gap-3 px-1 text-[13px]">
             <span className="flex items-center gap-2.5">
               March payment reminders
-              <span className="rounded-full bg-white/8 px-2 py-0.5 text-[11px] text-white/65">Outreach · Batch</span>
+              <span className="rounded-full bg-(--ui-raised) px-2 py-0.5 text-[11px] text-(--ui-muted)">Outreach · Batch</span>
             </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-white/8 px-2.5 py-0.5 text-[11.5px] text-white/80">
-              <span className={cn("size-1.5 rounded-full", t >= LAST ? "bg-white/40" : "bg-[oklch(0.74_0.16_150)] motion-safe:animate-pulse")} />
+            <span className="flex items-center gap-1.5 rounded-full bg-(--ui-raised) px-2.5 py-0.5 text-[11.5px] text-(--ui-text)">
+              <span className={cn("size-1.5 rounded-full", t >= LAST ? "bg-white/40" : "bg-(--ok) motion-safe:animate-pulse")} />
               {t >= LAST ? "Pass complete" : `${live} of 3 lines calling`}
             </span>
           </div>
@@ -110,14 +110,14 @@ export function RunStory() {
             {LANES.map((num, lane) => {
               const cur = CALLS.find((x) => x.lane === lane && t >= x.start && t <= end(x))
               return (
-                <li key={num} className="grid items-center gap-x-4 gap-y-2 rounded-xl border border-white/8 bg-white/[0.03] p-3 sm:grid-cols-[9.5rem_1fr]">
-                  <span className="flex items-center gap-2 text-[11.5px] text-white/55 sm:flex-col sm:items-start sm:gap-0.5">
+                <li key={num} className="grid items-center gap-x-4 gap-y-2 rounded-xl border border-(--ui-line) bg-white/[0.03] p-3 sm:grid-cols-[9.5rem_1fr]">
+                  <span className="flex items-center gap-2 text-[11.5px] text-(--ui-muted) sm:flex-col sm:items-start sm:gap-0.5">
                     <span>Line {lane + 1}</span>
-                    <span className="font-mono text-white/80">{num}</span>
+                    <span className="font-mono text-(--ui-text)">{num}</span>
                   </span>
                   <div className="relative flex h-14 items-center">
-                    <span aria-hidden className="absolute inset-x-0 top-1/2 border-t border-dashed border-white/10" />
-                    {cur ? <CallCard key={`${cur.name}-${cur.start}`} call={cur} t={t} /> : <span className="relative rounded-full bg-[oklch(0.21_0.004_260)] px-2 text-[11.5px] text-white/35">{t >= LAST ? "Line free" : "Next contact…"}</span>}
+                    <span aria-hidden className="absolute inset-x-0 top-1/2 border-t border-dashed border-(--ui-line)" />
+                    {cur ? <CallCard key={`${cur.name}-${cur.start}`} call={cur} t={t} /> : <span className="relative rounded-full bg-(--ui-panel) px-2 text-[11.5px] text-(--ui-muted)/60">{t >= LAST ? "Line free" : "Next contact…"}</span>}
                   </div>
                 </li>
               )
@@ -126,9 +126,9 @@ export function RunStory() {
 
           {/* Trays */}
           <div className="grid gap-2 md:grid-cols-3">
-            <Tray icon={CheckIcon} title="Done" tone="text-[oklch(0.82_0.14_150)]" items={done.map((x) => [x.name + (x.retryOf ? " (retry)" : ""), x.outcome])} />
-            <Tray icon={ArrowClockwiseIcon} title="Retry later" tone="text-[oklch(0.85_0.11_80)]" items={retry.map((x) => [x.name, `${x.outcome} · ${x.next}`])} />
-            <Tray icon={ProhibitIcon} title="Skipped before dialling" tone="text-white/55" items={skipped.map((x) => [x.name, x.reason])} />
+            <Tray icon={CheckIcon} title="Done" tone="text-(--ok-fg)" items={done.map((x) => [x.name + (x.retryOf ? " (retry)" : ""), x.outcome])} />
+            <Tray icon={ArrowClockwiseIcon} title="Retry later" tone="text-(--warn-fg)" items={retry.map((x) => [x.name, `${x.outcome} · ${x.next}`])} />
+            <Tray icon={ProhibitIcon} title="Skipped before dialling" tone="text-(--ui-muted)" items={skipped.map((x) => [x.name, x.reason])} />
           </div>
         </div>
       </Container>
@@ -142,14 +142,14 @@ function CallCard({ call, t }: { call: Call; t: number }) {
   const talking = !ringing && t < end(call)
   const outcome = t >= end(call)
   return (
-    <div className="relative flex min-w-0 items-center gap-3 rounded-full border border-white/12 bg-[oklch(0.27_0.005_260)] py-1.5 pr-4 pl-1.5 shadow-[0_8px_20px_-10px_oklch(0_0_0/0.6)] motion-safe:animate-[lang-in_350ms_ease-out]">
-      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white/10 text-[12px]">{call.name.split(" ").map((p) => p[0]).join("")}</span>
+    <div className="relative flex min-w-0 items-center gap-3 rounded-full border border-(--ui-line) bg-(--ui-raised) py-1.5 pr-4 pl-1.5 shadow-[0_8px_20px_-10px_oklch(0_0_0/0.6)] motion-safe:animate-[lang-in_350ms_ease-out]">
+      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-(--ui-raised) text-[12px]">{call.name.split(" ").map((p) => p[0]).join("")}</span>
       <span className="flex min-w-0 flex-col leading-tight">
         <span className="truncate text-[13px]">
           {call.name}
-          {call.retryOf && <span className="ml-1.5 text-[11px] text-white/50">retry</span>}
+          {call.retryOf && <span className="ml-1.5 text-[11px] text-(--ui-muted)">retry</span>}
         </span>
-        <span className="flex items-center gap-1.5 text-[11.5px] text-white/60">
+        <span className="flex items-center gap-1.5 text-[11.5px] text-(--ui-muted)">
           {ringing && (
             <>
               <PhoneIcon weight="fill" className="size-3 motion-safe:animate-pulse" />
@@ -163,7 +163,7 @@ function CallCard({ call, t }: { call: Call; t: number }) {
             </>
           )}
           {outcome && (
-            <span className={cn("rounded-full px-2 py-px text-[11px]", call.kind === "done" ? "bg-[oklch(0.74_0.16_150/0.2)] text-[oklch(0.86_0.12_150)]" : "bg-[oklch(0.8_0.12_75/0.18)] text-[oklch(0.88_0.1_80)]")}>
+            <span className={cn("rounded-full px-2 py-px text-[11px]", call.kind === "done" ? "bg-(--ok)/18 text-(--ok-fg)" : "bg-(--warn)/18 text-(--warn-fg)")}>
               {call.outcome}
               {call.next && ` · retry ${call.next}`}
             </span>
@@ -186,19 +186,19 @@ function Wave() {
 
 function Tray({ icon: Icon, title, tone, items }: { icon: React.ElementType; title: string; tone: string; items: [string, string][] }) {
   return (
-    <div className="flex min-h-[8.5rem] flex-col rounded-xl border border-white/8 bg-white/[0.03] p-3">
+    <div className="flex min-h-[8.5rem] flex-col rounded-xl border border-(--ui-line) bg-white/[0.03] p-3">
       <span className="flex items-center justify-between px-1 pb-2 text-[12px]">
         <span className={cn("flex items-center gap-1.5", tone)}>
           <Icon weight="bold" className="size-3.5" />
           {title}
         </span>
-        <span className="font-mono text-white/50 tabular-nums">{items.length}</span>
+        <span className="font-mono text-(--ui-muted) tabular-nums">{items.length}</span>
       </span>
       <ul className="flex flex-col gap-1">
         {items.map(([name, note]) => (
           <li key={name} className="flex items-baseline justify-between gap-3 rounded-md bg-white/[0.04] px-2.5 py-1.5 text-[12px] motion-safe:animate-[lang-in_350ms_ease-out]">
             <span className="truncate">{name}</span>
-            <span className="shrink-0 text-[11px] text-white/50">{note}</span>
+            <span className="shrink-0 text-[11px] text-(--ui-muted)">{note}</span>
           </li>
         ))}
       </ul>

@@ -206,7 +206,7 @@ export function ChatPlayground() {
                 Load agent
               </button>
               <span className="flex h-10 items-center gap-2 rounded-full border border-line px-3.5 text-small">
-                <span className={cn("size-2 rounded-full", ended ? "bg-ink-muted" : connected ? "bg-[oklch(0.62_0.15_150)]" : "bg-[oklch(0.75_0.14_75)]")} />
+                <span className={cn("size-2 rounded-full", ended ? "bg-ink-muted" : connected ? "bg-(--ok)" : "bg-(--warn)")} />
                 {ended ? "Ended" : connected ? "Live" : "Disconnected"}
                 <span className="font-mono text-label text-ink-muted">{conversationId}</span>
               </span>

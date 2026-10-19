@@ -1,13 +1,5 @@
 import Link from "next/link"
-import {
-  ArrowRightIcon,
-  BooksIcon,
-  CalendarCheckIcon,
-  ChartLineUpIcon,
-  HeartbeatIcon,
-  LaptopIcon,
-  UsersThreeIcon,
-} from "@phosphor-icons/react/dist/ssr"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { MeshStage } from "@/components/layout/art-stage"
 import { Container } from "@/components/layout/container"
@@ -19,8 +11,8 @@ import { cn } from "@/lib/utils"
 
 /**
  * /careers, in the product pages' calm language: the hero (who we are, with
- * the open role floating on a backdrop), open roles grouped by team, values,
- * how we work, benefits and the hiring process. One role for now; the list
+ * the open role floating on a backdrop) and open roles grouped by team.
+ * One role for now; the list
  * and counts come from content/careers.ts. Placeholders there are marked
  * TO CONFIRM.
  */
@@ -29,8 +21,6 @@ const ROOMY = {
   "--section-gap": "clamp(3.25rem, 2.25rem + 3vw, 5rem)",
   "--section-pad": "calc(var(--section-gap) / 2)",
 } as React.CSSProperties
-
-const BENEFIT_ICONS = [ChartLineUpIcon, HeartbeatIcon, LaptopIcon, BooksIcon, CalendarCheckIcon, UsersThreeIcon]
 
 function Header({ label, title, line }: { label: string; title: string; line?: string }) {
   return (
@@ -145,74 +135,6 @@ export function CareersPage() {
         </Container>
       </Section>
 
-      {/* Values */}
-      <Section id="careers-values">
-        <Container>
-          <Header label="What we value" title="How we like to work." />
-          <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-            {c.values.map((v, i) => (
-              <li key={v.title} className="flex flex-col gap-2 border-t border-line pt-5">
-                <span className="font-mono text-label text-ink-muted">0{i + 1}</span>
-                <span className="text-body">{v.title}</span>
-                <span className="text-small text-ink-secondary">{v.body}</span>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </Section>
-
-      {/* How we work + benefits */}
-      <Section id="careers-how">
-        <Container className="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
-          <div className="flex flex-col gap-8">
-            <Header label="How we work" title="Small team, close to the work." />
-            <dl className="flex flex-col">
-              {c.how.map((h) => (
-                <div key={h.label} className="grid grid-cols-[6rem_1fr] gap-4 border-t border-line py-3.5 text-small">
-                  <dt className="text-ink-muted">{h.label}</dt>
-                  <dd>{h.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div id="careers-benefits" className="flex flex-col gap-8">
-            <Header label="Benefits" title="Looked after, so you can do your best work." />
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {c.benefits.map((b, i) => {
-                const Icon = BENEFIT_ICONS[i % BENEFIT_ICONS.length]
-                return (
-                  <li key={b.title} className="flex flex-col gap-3 rounded-xl border border-line p-5">
-                    <span className="grid size-9 place-items-center rounded-lg bg-surface">
-                      <Icon className="size-4 text-ink-secondary" />
-                    </span>
-                    <span className="flex flex-col gap-1">
-                      <span className="text-body">{b.title}</span>
-                      <span className="text-small text-ink-secondary">{b.body}</span>
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Hiring process */}
-      <Section id="careers-process">
-        <Container>
-          <Header label="Hiring process" title="Four steps, no surprises." line="We aim to keep it short and respectful of your time." />
-          <ol className="mt-10 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
-            {c.process.map((p, i) => (
-              <li key={p.step} className="relative flex flex-col gap-2 border-t border-line pt-5">
-                <span className="absolute -top-[5px] left-0 size-2.5 rounded-full border-2 border-background bg-foreground" />
-                <span className="font-mono text-label text-ink-muted">Step {i + 1}</span>
-                <span className="text-body">{p.step}</span>
-                <span className="text-small text-ink-secondary">{p.body}</span>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </Section>
     </div>
   )
 }

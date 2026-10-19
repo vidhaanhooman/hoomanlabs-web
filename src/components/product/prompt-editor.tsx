@@ -65,18 +65,18 @@ const CEL_TOKENS = (() => {
       at += t.length
       if (t === '"""') {
         inString = !inString
-        return { t, start, cls: "text-[oklch(0.78_0.1_150)]" }
+        return { t, start, cls: "text-(--ok)" }
       }
       const cls =
         t === "{{" || t === "}}"
-          ? "text-[oklch(0.72_0.14_295)]"
+          ? "text-(--var)"
           : /^context\./.test(t)
-            ? "text-[oklch(0.78_0.11_240)]"
+            ? "text-(--data)"
             : /^\[/.test(t)
-              ? "text-[oklch(0.82_0.12_80)]"
+              ? "text-(--tool)"
               : inString
                 ? "text-(--ui-text)/85"
-                : "text-[oklch(0.72_0.14_295)]"
+                : "text-(--var)"
       return { t, start, cls }
     })
 })()
@@ -111,13 +111,13 @@ function Segs({ segs }: { segs: Seg[] }) {
         typeof s === "string" ? (
           <span key={i}>{s}</span>
         ) : "v" in s ? (
-          <span key={i} className="rounded-[4px] bg-[oklch(0.72_0.14_295/0.18)] px-1 py-px font-mono text-[0.92em] text-[oklch(0.86_0.08_295)]">
-            <span className="text-[oklch(0.72_0.14_295)]">{"{{"}</span>
+          <span key={i} className="rounded-[4px] bg-(--var)/18 px-1 py-px font-mono text-[0.92em] text-(--var-fg)">
+            <span className="text-(--var)">{"{{"}</span>
             {s.v}
-            <span className="text-[oklch(0.72_0.14_295)]">{"}}"}</span>
+            <span className="text-(--var)">{"}}"}</span>
           </span>
         ) : (
-          <span key={i} className="rounded-[4px] bg-[oklch(0.82_0.12_80/0.14)] px-1 py-px font-mono text-[0.92em] text-[oklch(0.86_0.1_80)]">
+          <span key={i} className="rounded-[4px] bg-(--tool)/18 px-1 py-px font-mono text-[0.92em] text-(--tool)">
             [{s.tool}]
           </span>
         )
@@ -238,7 +238,7 @@ export function PromptEditor({
             tools
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="rounded border border-(--ui-line) bg-(--ui-raised) px-1.5 font-mono text-[11px] text-[oklch(0.72_0.14_295)]">{"{{"}</kbd>
+            <kbd className="rounded border border-(--ui-line) bg-(--ui-raised) px-1.5 font-mono text-[11px] text-(--var)">{"{{"}</kbd>
             variables and conditional expressions
           </span>
         </div>
@@ -293,7 +293,7 @@ export function PromptEditor({
                 )
               }
               return (
-                <div key={i} ref={cel} className="relative rounded-md bg-[oklch(0.72_0.14_295/0.1)] px-3.5 py-3 font-mono text-[12.5px] leading-[1.75] ring-1 ring-[oklch(0.72_0.14_295/0.25)]">
+                <div key={i} ref={cel} className="relative rounded-md bg-(--var)/10 px-3.5 py-3 font-mono text-[12.5px] leading-[1.75] ring-1 ring-(--var)/25">
                   <Cel chars={shown} />
                   {!valid && <span className="ml-px inline-block h-[1.1em] w-px translate-y-[3px] bg-(--ui-text) motion-safe:animate-[blink_1s_steps(1)_infinite]" />}
                   <span

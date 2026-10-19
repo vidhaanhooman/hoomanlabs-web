@@ -32,7 +32,7 @@ const COPY: Record<ComponentId, { title: string; body: string }> = {
   tools: { title: "Tools & integrations", body: "Act mid-call and connect the systems you already run." },
 }
 
-const CHROME = "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
+const CHROME = "rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
 
 /** Painted texture per tile; sage and dusk alternate so neighbours differ. */
 const SAGE = { src: "/art/backdrops/home-deploy.png" }
@@ -115,9 +115,9 @@ function SimulationsMini() {
 
 const OUTCOMES = [
   { label: "Resolved", pct: 71, color: "bg-(--ui-live)" },
-  { label: "Callback", pct: 14, color: "bg-[oklch(0.8_0.14_80)]" },
+  { label: "Callback", pct: 14, color: "bg-(--warn)" },
   { label: "Transferred", pct: 9, color: "bg-(--ui-muted)" },
-  { label: "Unresolved", pct: 6, color: "bg-[oklch(0.68_0.19_25)]" },
+  { label: "Unresolved", pct: 6, color: "bg-(--fail)" },
 ]
 
 function QaMini() {

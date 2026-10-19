@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { UiPill } from "@/components/product/ui-window"
 
 /**
  * Small shared pieces for the recreated product screens (dark `.ui-dark`
@@ -34,27 +35,12 @@ export function Label({ className, children }: { className?: string; children: R
 
 type Tone = "live" | "muted" | "warn" | "bad"
 
-const TONE: Record<Tone, string> = {
-  live: "border-(--ui-live)/40 text-(--ui-text) [--dot:var(--ui-live)]",
-  muted: "border-(--ui-line) bg-(--ui-raised) text-(--ui-muted) [--dot:var(--ui-muted)]",
-  warn: "border-[oklch(0.8_0.14_80/0.4)] text-(--ui-text) [--dot:oklch(0.8_0.14_80)]",
-  bad: "border-[oklch(0.68_0.19_25/0.45)] text-(--ui-text) [--dot:oklch(0.68_0.19_25)]",
-}
-
-/** Status pill with a leading dot. */
+/** Status pill: the shared UiPill under the older tone names (live, muted, warn, bad). */
 export function Pill({ tone = "muted", className, children }: { tone?: Tone; className?: string; children: React.ReactNode }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] whitespace-nowrap transition-colors duration-300",
-        TONE[tone],
-        className
-      )}
-    >
-      <span className="size-1.5 rounded-full bg-(--dot)" aria-hidden />
-      {children}
-    </span>
-  )
+  if (tone === "live") return <UiPill live className={className}>{children}</UiPill>
+  if (tone === "warn") return <UiPill tone="warn" className={className}>{children}</UiPill>
+  if (tone === "bad") return <UiPill tone="fail" className={className}>{children}</UiPill>
+  return <UiPill className={cn("text-(--ui-muted)", className)}>{children}</UiPill>
 }
 
 export function Toggle({ on }: { on: boolean }) {
@@ -77,4 +63,4 @@ export function Toggle({ on }: { on: boolean }) {
 }
 
 /** Shadow + border used when a screen sits on a backdrop. */
-export const WINDOW_CHROME = "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"
+export const WINDOW_CHROME = "rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0_0/0.45)]"

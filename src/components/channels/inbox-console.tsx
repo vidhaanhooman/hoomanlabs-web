@@ -147,7 +147,7 @@ export function InboxConsole() {
             ))}
 
             <span className="mt-auto flex items-center gap-2.5 rounded-lg border border-(--ui-line) bg-(--ui-panel) p-2.5">
-              <span className="grid size-7 place-items-center rounded-full bg-[oklch(0.74_0.16_150/0.2)] text-[11px] text-[oklch(0.85_0.12_150)]">R</span>
+              <span className="grid size-7 place-items-center rounded-full bg-(--ok)/18 text-[11px] text-(--ok-fg)">R</span>
               <span className="flex flex-col leading-tight">
                 <span>Ria</span>
                 <span className="text-[11px] text-(--ui-muted)">One agent, every channel</span>
@@ -240,7 +240,7 @@ export function InboxConsole() {
                     Ria remembers · Monday&apos;s call · payment moved to Friday
                   </span>
 
-                  <span className={cn("max-w-[80%] self-end rounded-2xl rounded-br-sm bg-white px-3.5 py-2 text-black transition-opacity duration-300", shown > 0 ? "opacity-100" : "opacity-0")}>
+                  <span className={cn("max-w-[80%] self-end rounded-2xl rounded-br-sm bg-(--ui-text) px-3.5 py-2 text-(--ui-bg) transition-opacity duration-300", shown > 0 ? "opacity-100" : "opacity-0")}>
                     {REPLY.slice(0, Math.max(1, shown))}
                     {shown > 0 && shown < REPLY.length && <span className="ml-0.5 inline-block h-3.5 w-px translate-y-0.5 animate-pulse bg-black" />}
                   </span>

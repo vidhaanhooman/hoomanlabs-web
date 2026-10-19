@@ -3,7 +3,7 @@ import { Section } from "@/components/layout/section"
 import { Faq } from "@/components/product-page/faq"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
 import { UseCaseCard } from "@/components/solutions/cards"
-import { IndustryCarousel } from "@/components/solutions/industry-carousel"
+import { IndustryCards } from "@/components/solutions/industry-cards"
 import { SolutionsHero } from "@/components/solutions/hub-hero"
 import { useCases } from "@/content/solutions"
 
@@ -11,8 +11,8 @@ import { useCases } from "@/content/solutions"
  * /solutions, in the product pages' roomy language: one hero (the copy, two
  * ways in, and the use cases as frosted pills over one call player, opening
  * on the real survey recording), then the use cases (dotted tiles) and, in
- * their own section, the industries as one big horizontal scroll (each on
- * its own photo, with its top use cases as tabs and a live call card), all linking to /solutions/[slug]. A short FAQ and the two-way
+ * their own section, the industries as cards (promise, sample proof and top
+ * use cases), all linking to /solutions/[slug]. A short FAQ and the two-way
  * close. Everything comes from content/solutions.ts (placeholder content,
  * sample figures marked as such).
  */
@@ -54,10 +54,10 @@ export function SolutionsPage() {
           <div className="flex max-w-[44rem] flex-col gap-3">
             <span className="font-mono text-label text-ink-muted">Industries</span>
             <h2 className="text-h2 font-normal">Or from your industry.</h2>
-            <p className="text-body text-ink-secondary">Scroll through, then pick a use case to watch the call it handles.</p>
+            <p className="text-body text-ink-secondary">The jobs each industry relies on most, and what they change.</p>
           </div>
+          <IndustryCards />
         </Container>
-        <IndustryCarousel />
       </Section>
 
       <Faq id="solutions-faq" items={FAQ} />

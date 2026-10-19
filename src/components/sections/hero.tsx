@@ -33,7 +33,7 @@ export function Hero({
   const frame =
     screen === "conversation" ? (
       <ConversationScreen
-        className={`${FRAME_CLASS} rounded-md border border-black/10 shadow-[0_24px_60px_-24px_oklch(0.25_0.03_150/0.55)]`}
+        className={`${FRAME_CLASS} rounded-md border border-black/10 dark:border-white/10 shadow-[0_24px_60px_-24px_oklch(0.25_0.03_150/0.55)]`}
       />
     ) : (
       <Placeholder variant="frame" label="Product UI: default screen TBD, 16:10" className={FRAME_CLASS} />

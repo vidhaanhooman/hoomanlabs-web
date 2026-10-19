@@ -21,7 +21,7 @@ type Edge = { from: string; to: string; label?: string; dashed?: boolean }
 type State = "idle" | "active" | "done"
 
 const H = 52
-const LIVE = "oklch(0.78 0.15 150)"
+const LIVE = "var(--ok)"
 
 const BG =
   "bg-[oklch(0.13_0_0)] [background-image:radial-gradient(oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:16px_16px]"
@@ -63,7 +63,7 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
   if (kind === "js")
     return (
       <g>
-        <rect x={x} y={y - 6} width={13} height={13} rx={2.5} fill="oklch(0.83 0.16 85)" />
+        <rect x={x} y={y - 6} width={13} height={13} rx={2.5} fill="var(--warn)" />
         <text x={x + 6.5} y={y + 4} fontSize={7} fontWeight={700} textAnchor="middle" fill="oklch(0.2 0 0)">
           JS
         </text>
@@ -82,7 +82,7 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
       <path
         d={`M${x + 2},${y - 5} L${x + 6.5},${y + 1} L${x + 11},${y - 5} M${x + 6.5},${y + 1} L${x + 6.5},${y + 6}`}
         fill="none"
-        stroke="oklch(0.72 0.14 295)"
+        stroke="var(--var)"
         strokeWidth={1.5}
         strokeLinecap="round"
       />
@@ -92,11 +92,11 @@ function Icon({ kind, x, y }: { kind: Kind; x: number; y: number }) {
       <path d={`M${x + 11},${y - 4} A6 6 0 1 0 ${x + 12},${y + 3}`} fill="none" stroke={LIVE} strokeWidth={1.6} strokeLinecap="round" />
     )
   if (kind === "input")
-    return <path d={`M${x + 7},${y - 7} L${x + 2},${y + 1} L${x + 6},${y + 1} L${x + 5},${y + 7} L${x + 11},${y - 1} L${x + 7},${y - 1} Z`} fill="oklch(0.7 0.14 250)" />
+    return <path d={`M${x + 7},${y - 7} L${x + 2},${y + 1} L${x + 6},${y + 1} L${x + 5},${y + 7} L${x + 11},${y - 1} L${x + 7},${y - 1} Z`} fill="var(--data)" />
   return (
     <path
       d={`M${x + 6.5},${y - 7} L${x + 8.3},${y - 1.8} L${x + 13},${y} L${x + 8.3},${y + 1.8} L${x + 6.5},${y + 7} L${x + 4.7},${y + 1.8} L${x},${y} L${x + 4.7},${y - 1.8} Z`}
-      fill="oklch(0.7 0.14 250)"
+      fill="var(--data)"
     />
   )
 }
@@ -110,7 +110,7 @@ function NodeBox({ n, w, state, vertical = false }: { n: Node; w: number; state:
         height={H}
         rx={7}
         fill="oklch(0.17 0 0)"
-        stroke={state === "active" ? "oklch(0.95 0 0)" : state === "done" ? "oklch(0.5 0.08 150)" : "oklch(0.32 0 0)"}
+        stroke={state === "active" ? "oklch(0.95 0 0)" : state === "done" ? "var(--ok)" : "oklch(0.32 0 0)"}
         strokeWidth={state === "active" ? 1.6 : 1}
         style={{ transition: "stroke 400ms" }}
       />
@@ -134,7 +134,7 @@ function NodeBox({ n, w, state, vertical = false }: { n: Node; w: number; state:
       )}
       {state === "done" && (
         <g transform={`translate(${w - 14},14)`}>
-          <circle r={6} fill="oklch(0.4 0.1 150)" />
+          <circle r={6} fill="var(--ok)" />
           <path d="M-2.5,0 L-0.5,2 L3,-2" fill="none" stroke="oklch(0.95 0 0)" strokeWidth={1.4} strokeLinecap="round" />
         </g>
       )}
@@ -162,7 +162,7 @@ function EdgeLine({ d, state, dashed }: { d: string; state: State; dashed?: bool
     <path
       d={d}
       fill="none"
-      stroke={state === "idle" ? "oklch(0.36 0 0)" : state === "active" ? LIVE : "oklch(0.55 0.06 150)"}
+      stroke={state === "idle" ? "oklch(0.36 0 0)" : state === "active" ? LIVE : "var(--ok)"}
       strokeWidth={state === "active" ? 1.8 : 1.1}
       strokeDasharray={state === "active" ? "6 5" : dashed ? "4 4" : undefined}
       className={state === "active" ? "flow-dash" : undefined}
@@ -255,7 +255,7 @@ export function WorkflowCanvas({
   return (
     <div ref={ref} aria-hidden className={cn("relative overflow-hidden", BG, className)}>
       <div className="absolute top-2.5 left-3 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-2.5 py-1 font-mono text-[10px] text-white/80 backdrop-blur">
-        <span className={cn("size-1.5 rounded-full", stage === 5 ? "bg-[oklch(0.78_0.15_150)]" : "bg-[oklch(0.8_0.14_80)] motion-safe:animate-pulse")} />
+        <span className={cn("size-1.5 rounded-full", stage === 5 ? "bg-(--ok)" : "bg-(--warn) motion-safe:animate-pulse")} />
         <span key={stage} className="motion-safe:animate-[reveal-blur_350ms_var(--ease-out)_both]">
           {WF_STATUS[stage]}
         </span>
@@ -399,7 +399,7 @@ export function AgentBuilder({ className }: { className?: string }) {
       {/* Editor: follows the active node */}
       <div className="ui-dark hidden flex-col overflow-hidden border-r border-white/10 text-[11px] leading-snug md:flex">
         <div className="flex items-center gap-2 border-b border-(--ui-line) px-3.5 py-2.5">
-          <span className={n.kind === "cond" ? "text-[oklch(0.72_0.14_295)]" : n.kind === "js" ? "text-[oklch(0.83_0.16_85)]" : "text-[oklch(0.7_0.14_250)]"}>
+          <span className={n.kind === "cond" ? "text-(--var)" : n.kind === "js" ? "text-(--warn-fg)" : "text-(--data)"}>
             {n.kind === "cond" ? "⑂" : n.kind === "js" ? "JS" : "✦"}
           </span>
           <span className="text-[13px] font-medium text-(--ui-text)">
@@ -425,14 +425,14 @@ export function AgentBuilder({ className }: { className?: string }) {
             {beat.code && (
               <div className="mt-1 flex gap-2 rounded bg-(--ui-raised) px-2 py-1 font-mono text-[10.5px]">
                 <span className="text-(--ui-muted)">{n.kind === "cond" ? "IF" : "fn"}</span>
-                <span className="text-[oklch(0.75_0.12_250)]">{beat.code}</span>
+                <span className="text-(--data)">{beat.code}</span>
               </div>
             )}
           </div>
           {/* Live call: what's happening at this step */}
           <div className="mt-auto flex flex-col gap-1.5 rounded-md border border-(--ui-line) p-3">
             <span className="flex items-center gap-1.5 text-[10px] text-(--ui-muted)">
-              <span className="size-1.5 rounded-full bg-[oklch(0.78_0.15_150)] motion-safe:animate-pulse" />
+              <span className="size-1.5 rounded-full bg-(--ok) motion-safe:animate-pulse" />
               Live call · step {idx + 1} of {BEATS.length}
             </span>
             {beat.say && (

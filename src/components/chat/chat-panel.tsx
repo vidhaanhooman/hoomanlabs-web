@@ -67,7 +67,7 @@ export function ChatPanel({ script, look, className, onClose }: { script: ChatSc
         <span className="flex min-w-0 flex-col">
           <span className="truncate text-small font-medium">{look.title || "Chat"}</span>
           <span className="flex items-center gap-1.5 truncate text-label opacity-85">
-            <span className={cn("size-1.5 shrink-0 rounded-full", live ? "bg-[oklch(0.85_0.17_150)]" : "bg-white/50")} />
+            <span className={cn("size-1.5 shrink-0 rounded-full", live ? "bg-(--ok)" : "bg-white/50")} />
             {live ? look.subtitle : look.ended ? "Chat ended" : "Reconnecting…"}
           </span>
         </span>

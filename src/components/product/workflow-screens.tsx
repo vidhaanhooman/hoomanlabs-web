@@ -18,6 +18,7 @@ import type { Icon } from "@phosphor-icons/react"
 
 import { UiCard, UiLabel, UiPill, UiWindow } from "@/components/product/ui-window"
 import { cn } from "@/lib/utils"
+import { MockAction } from "@/components/product/mock-action"
 
 /**
  * Screens for /platform/workflows, recreated from the console's workflow
@@ -109,7 +110,7 @@ export function HttpStepScreen({ className }: { className: string }) {
     <UiWindow className={className} title="update_crm" aside={<UiPill>API request</UiPill>}>
       <UiCard>
         <div className="flex items-center gap-2 font-mono text-[11.5px]">
-          <span className="rounded bg-(--ui-raised) px-1.5 py-0.5 text-[oklch(0.8_0.12_150)]">POST</span>
+          <span className="rounded bg-(--ui-raised) px-1.5 py-0.5 text-(--ok-fg)">POST</span>
           <span className="truncate">https://crm.halden.example/v2/notes</span>
         </div>
         <span className="flex items-center gap-2 text-[11px] text-(--ui-muted)">
@@ -175,10 +176,10 @@ export function CodeStepScreen({ className }: { className: string }) {
     <UiWindow className={className} title="plan_reminder" aside={<UiPill>Code</UiPill>}>
       <UiCard className="gap-0 p-0">
         <div className="flex items-center gap-2 border-b border-(--ui-line) px-3.5 py-2 text-[11px] text-(--ui-muted)">
-          <span className="rounded-[3px] bg-[oklch(0.83_0.16_85)] px-1 font-mono text-[9px] font-bold text-black">JS</span>
+          <span className="rounded-[3px] bg-(--warn) px-1 font-mono text-[9px] font-bold text-black">JS</span>
           JavaScript
           <span className="ml-auto flex items-center gap-1.5 rounded-md bg-(--ui-raised) px-2 py-0.5 text-(--ui-text)">
-            <SparkleIcon weight="fill" className="size-3 text-[oklch(0.72_0.14_295)]" />
+            <SparkleIcon weight="fill" className="size-3 text-(--var)" />
             Write with AI
           </span>
         </div>
@@ -205,10 +206,10 @@ export function TestStepScreen({ className }: { className: string }) {
           {`{ "outcome": "promise_to_pay", "pay_by": "2026-03-04" }`}
         </pre>
         <span className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 rounded-md bg-(--ui-text) px-2.5 py-1 text-[12px] text-(--ui-bg)">
+          <MockAction done="Ran · 200 in 240ms" className="rounded-md bg-(--ui-text) px-2.5 py-1 text-[12px] text-(--ui-bg)">
             <PlayIcon weight="fill" className="size-3" />
             Run step
-          </span>
+          </MockAction>
           <span className="rounded-md border border-(--ui-line) px-2.5 py-1 text-[12px]">Set as start</span>
         </span>
       </UiCard>
@@ -220,7 +221,7 @@ export function TestStepScreen({ className }: { className: string }) {
         <pre className="font-mono text-[11.5px] leading-relaxed">{`{ "note_id": "N-77Q2", "status": "saved" }`}</pre>
       </UiCard>
       <span className="flex items-center gap-1.5 px-1 text-[11px] text-(--ui-muted)">
-        <SparkleIcon weight="fill" className="size-3 text-[oklch(0.72_0.14_295)]" />
+        <SparkleIcon weight="fill" className="size-3 text-(--var)" />
         Request written by AI from &ldquo;save the outcome as a note on the account&rdquo;
       </span>
     </UiWindow>

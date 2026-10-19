@@ -103,15 +103,15 @@ export function ReplayScreen({ className, focus, type = "Simulation" }: { classN
               {tools.map(([I, label, on]) => (
                 <span key={label} className={cn("relative grid size-6 place-items-center rounded", on ? "bg-(--ui-raised) text-(--ui-text)" : "text-(--ui-muted)")}>
                   <I className="size-3.5" />
-                  {on && step !== "act" && <span className="absolute bottom-full mb-1.5 rounded-md bg-white px-2 py-0.5 text-[10.5px] whitespace-nowrap text-black">{label}</span>}
+                  {on && step !== "act" && <span className="absolute bottom-full mb-1.5 rounded-md bg-(--ui-text) px-2 py-0.5 text-[10.5px] whitespace-nowrap text-(--ui-bg)">{label}</span>}
                 </span>
               ))}
-              <span className={cn("grid size-6 place-items-center rounded", step === "find" && "bg-[oklch(0.62_0.2_25/0.18)]")}>
-                <FlagIcon weight={step === "find" ? "fill" : "regular"} className="size-3.5 text-[oklch(0.68_0.2_25)]" />
+              <span className={cn("grid size-6 place-items-center rounded", step === "find" && "bg-(--fail)/18")}>
+                <FlagIcon weight={step === "find" ? "fill" : "regular"} className="size-3.5 text-(--fail)" />
               </span>
             </div>
             <Line t="0:22" who="Agent">
-              <span className="underline decoration-[oklch(0.68_0.2_25)] decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
+              <span className="underline decoration-(--fail) decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
             </Line>
           </div>
           <span className={cn("flex items-center gap-2 rounded-md px-1 py-1.5 text-[11px]", step === "actions" && "bg-(--ui-raised) ring-1 ring-white/15")}>
@@ -125,7 +125,7 @@ export function ReplayScreen({ className, focus, type = "Simulation" }: { classN
               <span className="text-(--ui-muted)">sent</span>
               <span>{`{ "amount": 62.10, "card": "4271" }`}</span>
               <span className="text-(--ui-muted)">returned</span>
-              <span className="text-[oklch(0.75_0.16_25)]">{`{ "error": "card_number_incomplete" }`}</span>
+              <span className="text-(--fail)">{`{ "error": "card_number_incomplete" }`}</span>
               <span className="text-(--ui-muted)">took</span>
               <span>312ms</span>
             </div>
@@ -271,7 +271,7 @@ function TurnDebug() {
             <span className="rounded bg-(--ui-raised) px-2 py-0.5">Thanks. And the expiry date?</span>
             <span className="text-(--ui-muted)">Response spoken</span>
             <span className="rounded bg-(--ui-raised) px-2 py-0.5">
-              Thanks. And the<span className="text-[oklch(0.75_0.16_25)]"> —</span>
+              Thanks. And the<span className="text-(--fail)"> —</span>
             </span>
           </div>
 
@@ -281,7 +281,7 @@ function TurnDebug() {
               <span>Timeline and latency</span>
               <span className="font-mono text-[10.5px] text-(--ui-muted)">Turn latency 1.00s</span>
             </span>
-            <span className="text-[10.5px] text-[oklch(0.78_0.14_25)]">Decision: ended the turn after a 0.38s pause, mid card number</span>
+            <span className="text-[10.5px] text-(--fail)">Decision: ended the turn after a 0.38s pause, mid card number</span>
             <span className="relative mb-0.5 flex h-3.5 font-mono text-[9.5px] text-(--ui-muted)">
               {[0, 1, 2, 3, 4].map((t) => (
                 <span key={t} className="absolute" style={{ left: at(t) }}>
@@ -301,7 +301,7 @@ function TurnDebug() {
             ))}
             <span className="relative h-4">
               <span
-                className="absolute inset-y-0 flex items-center rounded-sm border border-[oklch(0.62_0.2_25/0.45)] bg-[oklch(0.62_0.2_25/0.16)] px-1.5 font-mono text-[10px] whitespace-nowrap text-[oklch(0.78_0.14_25)]"
+                className="absolute inset-y-0 flex items-center rounded-sm border border-(--fail)/40 bg-(--fail)/18 px-1.5 font-mono text-[10px] whitespace-nowrap text-(--fail)"
                 style={{ left: at(3.8), right: 0 }}
               >
                 Interrupted
@@ -326,9 +326,9 @@ function Line({ t, who, children }: { t: string; who: string; children: React.Re
 
 function Pill({ tone, children }: { tone: "ok" | "fail"; children: React.ReactNode }) {
   return (
-    <span className={cn("rounded-md px-1.5 py-px text-[10.5px]", tone === "ok" ? "bg-[oklch(0.74_0.16_150/0.16)] text-(--ui-live)" : "bg-[oklch(0.62_0.2_25/0.18)] text-[oklch(0.75_0.16_25)]")}>
+    <UiPill tone={tone} dot={false} className="px-1.5 py-px text-[10.5px]">
       {children}
-    </span>
+    </UiPill>
   )
 }
 
@@ -348,7 +348,7 @@ export function AbScreen({ className, focus }: { className: string; focus: strin
         ))}
       </div>
       {arms.map((a) => (
-        <UiCard key={a.name} className={cn(a.lead && "border-[oklch(0.74_0.16_150/0.35)]")}>
+        <UiCard key={a.name} className={cn(a.lead && "border-(--ok)/40")}>
           <div className="flex items-center justify-between">
             <span className="flex flex-col">
               <span className="text-[13px]">{a.name}</span>

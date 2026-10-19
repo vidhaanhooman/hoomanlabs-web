@@ -33,7 +33,7 @@ const VISUALS: Record<string, () => React.ReactNode> = {
     <div aria-hidden className={INSET}>
       {["call.ended", "form.submitted", "payment.missed"].map((e, i) => (
         <span key={e} className={cn("flex items-center gap-2 font-mono text-label", i === 0 ? "text-foreground" : "text-ink-muted")}>
-          <LightningIcon weight="fill" className={cn("size-3.5", i === 0 ? "text-[oklch(0.7_0.15_70)]" : "text-ink-muted")} />
+          <LightningIcon weight="fill" className={cn("size-3.5", i === 0 ? "text-(--warn)" : "text-ink-muted")} />
           {e}
         </span>
       ))}

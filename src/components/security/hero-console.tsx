@@ -146,8 +146,8 @@ export function SecurityConsole() {
               }
             >
               {slow ? (
-                <span className="flex items-center gap-1.5 rounded-full border border-[oklch(0.8_0.14_75/0.45)] bg-[oklch(0.8_0.14_75/0.12)] px-2.5 py-0.5 text-[12px] text-(--ui-text) motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]">
-                  <WarningIcon weight="fill" className="size-3 text-[oklch(0.82_0.14_75)]" />
+                <span className="flex items-center gap-1.5 rounded-full border border-(--warn)/40 bg-(--warn)/10 px-2.5 py-0.5 text-[12px] text-(--ui-text) motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]">
+                  <WarningIcon weight="fill" className="size-3 text-(--warn-fg)" />
                   Slow (2.4s)
                 </span>
               ) : switched ? (

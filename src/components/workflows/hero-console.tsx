@@ -58,9 +58,9 @@ type Node = {
   skip?: boolean
 }
 
-const AMBER = "text-[oklch(0.8_0.13_80)]"
-const VIOLET = "text-[oklch(0.78_0.12_295)]"
-const BLUE = "text-[oklch(0.8_0.1_245)]"
+const AMBER = "text-(--warn-fg)"
+const VIOLET = "text-(--var)"
+const BLUE = "text-(--data)"
 
 const NODES: Node[] = [
   { id: "trigger", x: 0, y: 215, w: 150, h: 70, kind: "Trigger", icon: PhoneCallIcon, tint: AMBER, name: "call.ended", sub: "Billing line · 3:42", took: "0.0s", run: 0, done: 0 },
@@ -229,7 +229,7 @@ export function WorkflowConsole() {
                     {n.id === "ai" && (
                       <span className={cn("flex flex-wrap gap-1 pt-0.5 transition-opacity duration-500", s >= 2 ? "opacity-100" : "opacity-0")}>
                         {["promise_to_pay", "4 Mar", "$86.40"].map((t) => (
-                          <span key={t} className="rounded bg-[oklch(0.78_0.12_295/0.18)] px-1.5 font-mono text-[10.5px] text-[oklch(0.86_0.08_295)]">
+                          <span key={t} className="rounded bg-(--var)/18 px-1.5 font-mono text-[10.5px] text-(--var-fg)">
                             {t}
                           </span>
                         ))}
@@ -258,7 +258,7 @@ export function WorkflowConsole() {
                 <span className={LABEL}>From the call · 3:42</span>
                 <p className="rounded-lg border border-(--ui-line) bg-(--ui-panel) px-3.5 py-2.5 text-[12.5px] leading-relaxed">
                   <span className="text-(--ui-muted)">Maya: </span>I get paid on the 3rd, so{" "}
-                  <span className={cn("rounded px-0.5 transition-colors duration-500", s >= 1 ? "bg-[oklch(0.78_0.12_295/0.28)] text-white" : "")}>I&apos;ll pay the $86.40 on the 4th</span>.
+                  <span className={cn("rounded px-0.5 transition-colors duration-500", s >= 1 ? "bg-(--var)/18 text-white" : "")}>I&apos;ll pay the $86.40 on the 4th</span>.
                 </p>
               </div>
 

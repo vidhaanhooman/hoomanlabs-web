@@ -187,7 +187,7 @@ export function TelecomScreen({ className }: { className: string }) {
       </UiCard>
       <UiCard>
         <div className="flex items-center gap-3">
-          <SealCheckIcon weight="fill" className="size-5 text-[oklch(0.8_0.12_150)]" />
+          <SealCheckIcon weight="fill" className="size-5 text-(--ok-fg)" />
           <span className="flex flex-col">
             <span className="text-[13px]">Halden Energy</span>
             <span className="text-[11px] text-(--ui-muted)">+1 555 0100 · business verified</span>

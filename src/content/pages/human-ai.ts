@@ -6,8 +6,8 @@ import type { MenuPageId } from "@/content/platform"
  * transfer with context, QA of human calls, and learning from transferred
  * calls to improve the AI. Facts reuse what the site already states (warm
  * handoff inside office hours, a callback outside them; human recordings
- * scored with the same metrics). Suggested fixes from transfers are in
- * development (shown as Coming soon). Sample data on the screens.
+ * scored with the same metrics). Learning from transfers ranks fixes by
+ * the transfers they would remove. Sample data on the screens.
  * TO CONFIRM: transfer targets (phone numbers, queues, teams) and how human
  * recordings arrive (upload, telephony connection).
  */
@@ -37,9 +37,9 @@ export const humanAiPage = {
     label: "QA of human calls",
     title: "One standard for your AI and your team.",
     rows: [
-      { id: "same", title: "Same metrics", body: "Score your human agents' calls with the same judges and scorecards as your Hoomans." },
-      { id: "side", title: "Side by side", body: "Compare pass rates and top issues for every agent, AI or human, in one view." },
-      { id: "review", title: "Team review", body: "Reviewers tag issues and coach from the exact moment, on any call." },
+      { id: "same", title: "Same metrics", body: "Score your human agents' calls with the same scorecard as your Hoomans, each metric checked by AI, an audio rule or code." },
+      { id: "side", title: "Side by side", body: "Compare scores and the biggest gap for every agent, AI or human, in one view." },
+      { id: "coach", title: "Coach first where it counts", body: "See which agents to coach first, with short clips of the exact moments to go through together." },
     ],
   },
 
@@ -47,9 +47,9 @@ export const humanAiPage = {
     label: "Learn from transfers",
     title: "Every transfer teaches the AI something.",
     rows: [
-      { id: "why", title: "Why calls were transferred", body: "See the reasons behind every handoff, grouped, so you know what the AI couldn't handle yet." },
-      { id: "what", title: "What your team did", body: "See how your people resolved each one, and save the moment as a scenario for testing." },
-      { id: "improve", title: "Improve the AI · Coming soon", body: "Turn what your team did into prompt and playbook changes, with you approving each one." },
+      { id: "fixes", title: "What your AI can do more", body: "Fixes ranked by the transfers each would remove: knowledge, a tool, the prompt, a policy or speech." },
+      { id: "why", title: "Why calls were transferred", body: "The reasons behind every handoff, grouped by AI agent, so you know what it couldn't handle yet." },
+      { id: "act", title: "Fix it from what your team did", body: "Each fix shows how your people handled it, with the action to take: add to the library, create a tool or edit the prompt." },
     ],
   },
 
@@ -68,7 +68,7 @@ export const humanAiPage = {
     },
     {
       q: "How does the AI learn from transfers?",
-      a: "You see why calls were transferred and how your team resolved them, and can save any moment as a scenario. Suggested prompt and playbook changes, approved by you, are coming soon.",
+      a: "Every transfer is grouped by why it happened, and turned into fixes ranked by how many transfers each would remove. Each fix shows how your team handled it, with the action to take: add to the library, create a tool, edit the prompt or review a policy.",
     },
   ],
 

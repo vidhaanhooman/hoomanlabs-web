@@ -2,11 +2,12 @@
  * Login, sign in (new account) and onboarding. UI only for now: not wired
  * to auth. The header's "Platform" button opens Login (email and password);
  * new users go to Sign in, which creates the account and continues to
- * onboarding; the last onboarding step and a login hand off to the console.
- * TO CONFIRM: the console URL, the password rule, the Terms and Privacy
- * links, and whether invites carry a role.
+ * onboarding; "Forgot password?" logs in with an emailed one-time code
+ * instead. The last onboarding step and a login hand off to the console.
+ * TO CONFIRM: the console URL, the password rule, the code length (6) and
+ * resend wait (30s), and whether invites carry a role.
  */
-const TERMS = { before: "By continuing, you agree to our", terms: { label: "Terms", href: "#" }, privacy: { label: "Privacy Policy", href: "#" } }
+const TERMS = { before: "By continuing, you agree to our", terms: { label: "Terms", href: "/terms" }, privacy: { label: "Privacy Policy", href: "/privacy-policy" } }
 
 export const auth = {
   /** Where a login (and the end of onboarding) lands. TO CONFIRM. */
@@ -23,12 +24,18 @@ export const auth = {
     line: "Build, test and run your voice and chat agents.",
     submit: "Log in",
     forgot: "Forgot password?",
-    reset: {
-      title: "Reset your password",
-      line: "Enter your work email and we'll send you a link to set a new one.",
-      submit: "Send reset link",
-      sentTitle: "Check your email",
-      sent: "If there's an account for {email}, a reset link is on its way.",
+    /** Forgot password: log in with a one-time code sent to the email instead. */
+    otp: {
+      title: "Log in with a code",
+      line: "Enter your work email and we'll send you a one-time code.",
+      send: "Send OTP",
+      enterTitle: "Enter the code",
+      enterLine: "We sent a 6-digit code to {email}.",
+      field: "One-time code",
+      submit: "Log in",
+      resend: "Resend code",
+      resendIn: "Resend in {s}s",
+      change: "Use a different email",
       back: "Back to log in",
     },
     switch: { before: "New to HoomanLabs?", label: "Sign in", href: "/sign-in" },

@@ -42,7 +42,7 @@ export type MenuMedia =
   | { type: "image"; src: string; alt: string }
   | { type: "video"; src: string; poster?: string; alt: string }
 
-export const menuMedia: MenuMedia | null = null
+export const menuMedia: MenuMedia | null = { type: "image", src: "/art/product/human-ai-backdrop.webp", alt: "" }
 
 /**
  * The Platform menu (nav, mobile nav, footer), from the "Platform pages" tab

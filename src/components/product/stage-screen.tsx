@@ -10,7 +10,7 @@ import type { StageVisual } from "@/content/products";
 /** Window position inside the painted backdrop (same as the home split panels). */
 const WINDOW = "absolute inset-x-[7%] top-[9%] bottom-[12%] z-10";
 const CHROME =
-  "rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]";
+  "rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)]";
 
 /** Renders a stage visual (recreated screen or placeholder) at the given position. */
 export function StageScreen({

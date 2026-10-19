@@ -48,16 +48,9 @@ export function CampaignOverviewScreen({ className }: { className: string }) {
           <div key={r.name} className="flex items-center gap-3 border-b border-(--ui-line) px-3.5 py-2.5 last:border-0">
             <PhoneCallIcon weight="fill" className="size-3.5 text-(--ui-muted)" />
             <span className="w-32">{r.name}</span>
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5 text-[11px]",
-                r.tone === "good" && "bg-[oklch(0.74_0.16_150/0.18)] text-[oklch(0.85_0.12_150)]",
-                r.tone === "warn" && "bg-[oklch(0.8_0.12_75/0.18)] text-[oklch(0.86_0.1_80)]",
-                r.tone === "muted" && "bg-(--ui-raised) text-(--ui-muted)"
-              )}
-            >
+            <UiPill tone={r.tone === "good" ? "ok" : r.tone === "warn" ? "warn" : undefined} dot={false} className={cn(r.tone === "muted" && "text-(--ui-muted)")}>
               {r.outcome}
-            </span>
+            </UiPill>
           </div>
         ))}
       </UiCard>
@@ -103,9 +96,9 @@ export function ListUploadScreen({ className }: { className: string }) {
       <UiCard>
         <UiLabel>In every call&apos;s briefing</UiLabel>
         <p className="text-[12.5px]">
-          Hi <span className="rounded bg-[oklch(0.72_0.14_295/0.2)] px-1 font-mono text-[11.5px]">{"{{name}}"}</span>, a quick reminder that{" "}
-          <span className="rounded bg-[oklch(0.72_0.14_295/0.2)] px-1 font-mono text-[11.5px]">{"{{balance}}"}</span> is due on{" "}
-          <span className="rounded bg-[oklch(0.72_0.14_295/0.2)] px-1 font-mono text-[11.5px]">{"{{due_date}}"}</span>.
+          Hi <span className="rounded bg-(--var)/18 px-1 font-mono text-[11.5px]">{"{{name}}"}</span>, a quick reminder that{" "}
+          <span className="rounded bg-(--var)/18 px-1 font-mono text-[11.5px]">{"{{balance}}"}</span> is due on{" "}
+          <span className="rounded bg-(--var)/18 px-1 font-mono text-[11.5px]">{"{{due_date}}"}</span>.
         </p>
       </UiCard>
     </UiWindow>

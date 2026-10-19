@@ -108,7 +108,7 @@ function Diagram({ mode, pick }: { mode: Mode; pick: number }) {
                   mode !== "skills" && mode !== "builder" && !on && "opacity-45"
                 )}
               >
-                <LightningIcon weight="fill" className={cn("size-3.5 shrink-0", on ? "text-[oklch(0.7_0.15_70)]" : "text-ink-muted")} />
+                <LightningIcon weight="fill" className={cn("size-3.5 shrink-0", on ? "text-(--tool)" : "text-ink-muted")} />
                 <span className="font-mono text-label">{s.name}</span>
                 <span className="ml-auto flex items-center gap-1.5 text-label">
                   {on && running && (
@@ -207,7 +207,7 @@ function Diagram({ mode, pick }: { mode: Mode; pick: number }) {
         <span className="flex items-center justify-between text-label text-ink-muted">
           Live call · Maya Patel
           <span className="flex items-center gap-1.5 text-foreground">
-            <span className="size-1.5 rounded-full bg-[oklch(0.6_0.15_150)]" />
+            <span className="size-1.5 rounded-full bg-(--ok)" />
             00:42
           </span>
         </span>

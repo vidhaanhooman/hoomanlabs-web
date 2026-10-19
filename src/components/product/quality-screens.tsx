@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
  * the hovered row as `focus` where it reacts). Static otherwise. Fictional data (Halden Energy, Ria, Maya Patel).
  */
 
-const FAIL = "text-[oklch(0.72_0.17_25)]"
+const FAIL = "text-(--fail)"
 
 function Pass({ children = "Pass" }: { children?: React.ReactNode }) {
   return (
@@ -61,7 +61,7 @@ export function AnalyticsScreen({ className, focus }: { className: string; focus
       <UiCard className={fade(focus, ["classify"])}>
         <UiLabel>Classified</UiLabel>
         <div className="flex flex-wrap gap-1.5 text-[11.5px]">
-          <span className="rounded-full bg-[oklch(0.74_0.16_150/0.2)] px-2.5 py-0.5 text-[oklch(0.85_0.12_150)]">Outcome · Promise to pay</span>
+          <span className="rounded-full bg-(--ok)/18 px-2.5 py-0.5 text-(--ok-fg)">Outcome · Promise to pay</span>
           <span className="rounded-full bg-(--ui-raised) px-2.5 py-0.5">Category · Billing</span>
           <span className="rounded-full bg-(--ui-raised) px-2.5 py-0.5">Sentiment · Improved</span>
         </div>
@@ -172,7 +172,7 @@ export function FailureModesScreen({ className, focus }: { className: string; fo
           <span className="text-[11px] text-(--ui-muted)">Maya</span>
           <span className="text-(--ui-muted)">It&apos;s four, two, seven… one…</span>
           <span className="text-[11px] text-(--ui-muted)">Ria</span>
-          <span className="underline decoration-[oklch(0.72_0.17_25)] decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
+          <span className="underline decoration-(--fail) decoration-wavy underline-offset-4">Thanks. And the expiry date?</span>
         </span>
       </UiCard>
       <UiCard className={cn("flex-row flex-wrap items-center gap-2 py-3", fade(focus, ["fix"]))}>

@@ -44,7 +44,7 @@ export function DeployMeasure() {
             </div>
             <div className="relative isolate flex flex-1 flex-col overflow-hidden rounded-md p-4 sm:p-6 lg:p-7">
               <Image src={item.backdrop} alt="" fill sizes={item.sizes} className="-z-10 object-cover" />
-              <item.Screen className="min-h-72 flex-1 rounded-md border border-black/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)] sm:min-h-80" />
+              <item.Screen className="min-h-72 flex-1 rounded-md border border-black/10 dark:border-white/10 shadow-[0_20px_50px_-24px_oklch(0.25_0.03_150/0.55)] sm:min-h-80" />
             </div>
           </Panel>
         ))}

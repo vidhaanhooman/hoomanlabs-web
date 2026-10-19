@@ -69,8 +69,8 @@ function ResultChip({ s, running }: { s: Scenario; running: boolean }) {
     )
   if (s.result === "failed")
     return (
-      <span className="flex items-center gap-1.5 rounded-full border border-[oklch(0.8_0.14_70)]/40 bg-[oklch(0.8_0.14_70)]/12 px-2.5 py-0.5 text-[12px] text-(--ui-text)">
-        <XIcon weight="bold" className="size-3 text-[oklch(0.8_0.14_70)]" />
+      <span className="flex items-center gap-1.5 rounded-full border border-(--fail)/40 bg-(--fail)/10 px-2.5 py-0.5 text-[12px] text-(--ui-text)">
+        <XIcon weight="bold" className="size-3 text-(--fail-fg)" />
         Failed · {s.note}
       </span>
     )
@@ -173,7 +173,7 @@ export function TestingConsole() {
             <span>Test run · v13</span>
             {finished ? (
               <span className="flex items-center gap-1.5 text-[12px] text-(--ui-text)">
-                <WarningCircleIcon className="size-3.5 text-[oklch(0.8_0.14_70)]" />
+                <WarningCircleIcon className="size-3.5 text-(--fail-fg)" />
                 {failed} to fix before publishing
               </span>
             ) : (

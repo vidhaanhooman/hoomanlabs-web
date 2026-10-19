@@ -24,7 +24,7 @@ export function Platform({ title = platform.title, more }: { title?: string; mor
               {lead.title}
               <span className="block text-ink-secondary">{lead.body}</span>
             </h3>
-            <KnowledgeScreen className="mt-auto aspect-[4/3] rounded-md border border-black/10 lg:aspect-auto lg:min-h-96 lg:flex-1" />
+            <KnowledgeScreen className="mt-auto aspect-[4/3] rounded-md border border-black/10 dark:border-white/10 lg:aspect-auto lg:min-h-96 lg:flex-1" />
           </Panel>
           {rest.map((item, i) => (
             <Panel key={item.title} className="grid gap-6 p-4 sm:grid-cols-2 sm:items-end sm:p-6 lg:col-span-5">
@@ -33,9 +33,9 @@ export function Platform({ title = platform.title, more }: { title?: string; mor
                 <span className="block text-ink-secondary">{item.body}</span>
               </h3>
               {i === 0 ? (
-                <VoicesScreen className="rounded-md border border-black/10 sm:aspect-square" />
+                <VoicesScreen className="rounded-md border border-black/10 dark:border-white/10 sm:aspect-square" />
               ) : (
-                <ToolsScreen className="rounded-md border border-black/10 sm:aspect-square" />
+                <ToolsScreen className="rounded-md border border-black/10 dark:border-white/10 sm:aspect-square" />
               )}
             </Panel>
           ))}

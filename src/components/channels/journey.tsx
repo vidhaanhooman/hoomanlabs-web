@@ -121,7 +121,7 @@ export function Journey() {
   const memory = LIVE.slice(0, Math.max(1, Math.min(step, LAST) + 1))
 
   return (
-    <Section id="channels-journey">
+    <Section id="channels-journey" className="ui-scope">
       <Container>
         <div className="flex max-w-[44rem] flex-col gap-3">
           <span className="font-mono text-label text-ink-muted">{label}</span>
@@ -131,7 +131,7 @@ export function Journey() {
 
         <div ref={ref} className="relative mt-10 hidden lg:block" style={{ height: DESIGN_H * scale }}>
           <div className="absolute top-0 left-0 px-[55px] py-8" style={{ width: DESIGN_W, transform: `scale(${scale})`, transformOrigin: "0 0" }}>
-            <div className="relative aspect-[1000/400] overflow-hidden rounded-xl border border-black/10 bg-[oklch(0.23_0.005_260)] bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
+            <div className="relative aspect-[1000/400] overflow-hidden rounded-xl border border-black/10 dark:border-(--ui-line) bg-(--ui-panel) bg-[radial-gradient(circle,oklch(1_0_0/0.09)_1px,transparent_1px)] [background-size:18px_18px] shadow-[0_40px_80px_-40px_oklch(0.2_0.02_260/0.45)]">
               {/* The thread between channels: the same memory carried along */}
               <svg aria-hidden viewBox={`0 0 ${VW} ${VH}`} className="absolute inset-0 size-full" preserveAspectRatio="xMidYMid meet">
                 {STEPS.slice(0, -1).map((s, i) => {
@@ -148,7 +148,7 @@ export function Journey() {
                         y1={y}
                         x2={x2}
                         y2={y}
-                        stroke="oklch(0.95 0 0)"
+                        stroke="var(--ui-text)"
                         strokeWidth={1.5}
                         pathLength={1}
                         strokeDasharray="1 1"
@@ -158,7 +158,7 @@ export function Journey() {
                   )
                 })}
               </svg>
-              <span className="absolute font-mono text-[10.5px] text-white/45" style={{ left: `${(nx(0) / VW) * 100}%`, top: `${((NY - 40) / VH) * 100}%` }}>
+              <span className="absolute font-mono text-[10.5px] text-(--ui-muted)/60" style={{ left: `${(nx(0) / VW) * 100}%`, top: `${((NY - 40) / VH) * 100}%` }}>
                 One memory · Maya Patel
               </span>
 
@@ -170,7 +170,7 @@ export function Journey() {
                     onMouseEnter={() => !s.soon && setHover(i)}
                     onMouseLeave={() => setHover(null)}
                     className={cn(
-                      "absolute flex flex-col justify-center gap-2 rounded-xl border bg-[oklch(0.28_0.005_260)] px-4 text-[12px] leading-none text-[oklch(0.95_0_0)] transition-[opacity,border-color,box-shadow] duration-500 ease-(--ease-out)",
+                      "absolute flex flex-col justify-center gap-2 rounded-xl border bg-(--ui-raised) px-4 text-[12px] leading-none text-(--ui-text) transition-[opacity,border-color,box-shadow] duration-500 ease-(--ease-out)",
                       state === "active" ? "border-white/85 shadow-[0_0_0_3px_oklch(1_0_0/0.12),0_0_40px_-6px_oklch(1_0_0/0.25)]" : "border-white/15",
                       state === "idle" && "opacity-50",
                       state === "soon" && "border-dashed opacity-45"
@@ -178,15 +178,15 @@ export function Journey() {
                     style={{ left: `${(nx(i) / VW) * 100}%`, top: `${(NY / VH) * 100}%`, width: `${(NW / VW) * 100}%`, height: `${(NH / VH) * 100}%` }}
                   >
                     <span className="flex items-center gap-2">
-                      <s.icon weight="fill" className="size-4 shrink-0 text-[oklch(0.75_0.12_245)]" />
+                      <s.icon weight="fill" className="size-4 shrink-0 text-(--data)" />
                       <span className="text-[12.5px]">{s.channel}</span>
                       <span className="ml-auto">
-                        {state === "done" && <CheckIcon weight="bold" className="size-3 text-[oklch(0.78_0.15_150)]" />}
-                        {state === "active" && <span className="block size-1.5 rounded-full bg-[oklch(0.78_0.15_150)] motion-safe:animate-pulse" />}
+                        {state === "done" && <CheckIcon weight="bold" className="size-3 text-(--ok)" />}
+                        {state === "active" && <span className="block size-1.5 rounded-full bg-(--ok) motion-safe:animate-pulse" />}
                       </span>
                     </span>
-                    <span className="font-mono text-[10.5px] text-white/50">{s.when}</span>
-                    <span className="text-white/80">{s.title}</span>
+                    <span className="font-mono text-[10.5px] text-(--ui-muted)">{s.when}</span>
+                    <span className="text-(--ui-text)">{s.title}</span>
                   </div>
                 )
               })}
@@ -195,7 +195,7 @@ export function Journey() {
                   <span
                     key={`o-${s.id}`}
                     className={cn(
-                      "absolute rounded-full bg-[oklch(0.74_0.16_150/0.2)] px-2 py-0.5 text-[10.5px] whitespace-nowrap text-[oklch(0.85_0.12_150)] transition-[opacity,translate] duration-500",
+                      "absolute rounded-full bg-(--ok)/18 px-2 py-0.5 text-[10.5px] whitespace-nowrap text-(--ok-fg) transition-[opacity,translate] duration-500",
                       i <= step ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
                     )}
                     style={{ left: `${(nx(i) / VW) * 100}%`, top: `${((NY + NH + 14) / VH) * 100}%` }}
@@ -205,7 +205,7 @@ export function Journey() {
                 ) : (
                   <span
                     key={`o-${s.id}`}
-                    className="absolute rounded-full border border-white/20 px-2 py-0.5 text-[10.5px] text-white/60"
+                    className="absolute rounded-full border border-white/20 px-2 py-0.5 text-[10.5px] text-(--ui-muted)"
                     style={{ left: `${(nx(i) / VW) * 100}%`, top: `${((NY + NH + 14) / VH) * 100}%` }}
                   >
                     Coming soon
@@ -251,13 +251,13 @@ export function Journey() {
         {/* Below lg: the journey as a list */}
         <ol className="mt-8 flex flex-col gap-3 lg:hidden">
           {STEPS.map((s) => (
-            <li key={s.id} className={cn("flex flex-col gap-1.5 rounded-xl bg-[oklch(0.23_0.005_260)] p-4 text-small text-[oklch(0.95_0_0)]", s.soon && "opacity-60")}>
-              <span className="flex items-center justify-between font-mono text-label text-white/55">
+            <li key={s.id} className={cn("flex flex-col gap-1.5 rounded-xl bg-(--ui-panel) p-4 text-small text-(--ui-text)", s.soon && "opacity-60")}>
+              <span className="flex items-center justify-between font-mono text-label text-(--ui-muted)">
                 {s.channel}
                 <span>{s.when}</span>
               </span>
               <span>{s.title}</span>
-              {s.outcome && <span className="text-white/60">{s.outcome}</span>}
+              {s.outcome && <span className="text-(--ui-muted)">{s.outcome}</span>}
             </li>
           ))}
         </ol>

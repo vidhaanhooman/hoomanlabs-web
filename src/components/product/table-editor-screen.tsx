@@ -1,6 +1,7 @@
 import { CaretLeftIcon, CopyIcon, DownloadSimpleIcon, MagnifyingGlassIcon, PencilSimpleIcon, PlusIcon, RocketLaunchIcon, ArrowCounterClockwiseIcon, UploadSimpleIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { cn } from "@/lib/utils"
+import { UiPill } from "@/components/product/ui-window"
 
 /**
  * Live data tables, recreated from the console's table editor: a published
@@ -33,7 +34,9 @@ export function TableEditorScreen({ className }: { className: string }) {
         <CaretLeftIcon className="size-3.5 text-(--ui-muted)" />
         <span className="text-[13px]">billing_rules · billing_rules.csv</span>
         <PencilSimpleIcon className="size-3.5 text-(--ui-muted)" />
-        <span className="ml-auto rounded-full bg-[oklch(0.74_0.16_150/0.18)] px-2 py-0.5 text-[11px] text-[oklch(0.8_0.12_150)]">Published</span>
+        <UiPill tone="ok" dot={false} className="ml-auto">
+          Published
+        </UiPill>
         <span className="flex items-center gap-1 text-[11px] text-(--ui-muted)">
           <CopyIcon className="size-3" />
           TBL-7Q2HALDEN

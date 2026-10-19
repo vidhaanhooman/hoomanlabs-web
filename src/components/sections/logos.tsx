@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Customer logos (public/logos), grey and faded at rest (greyscale, lower
- * opacity), full colour on hover. White-only files use a dark copy
+ * opacity), full colour on hover; white silhouettes in dark mode. White-only files use a dark copy
  * (giva-dark.svg), the festive StayVista file a wordmark-only copy, and
  * ShopDeck / Mosaic copies whose letter holes are real cut-outs, not pale
  * fills (shopdeck-mono.svg, mosaic-mono.svg), so they grey cleanly. `crop` is the logo's drawn area in its own
@@ -49,10 +49,12 @@ const width = (w: number, h: number, scale = 1) => Math.round(50 * scale * Math.
  * are greyed by tone instead, and a little darker so they match the rest.
  */
 // Class names are written out in full so Tailwind can find them.
+// In dark mode the silhouettes are inverted to white, and stay white on hover
+// (most files are dark ink, so their own colours would vanish on black).
 const BASE =
-  "transition-[opacity,filter] duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:[filter:none]"
-const TONE = cn("opacity-45 [filter:grayscale(1)_brightness(0)]", BASE)
-const TONE_DETAIL = cn("opacity-60 [filter:grayscale(1)_contrast(1.15)_brightness(0.7)]", BASE)
+  "transition-[opacity,filter] duration-200 ease-out [@media(hover:hover)_and_(pointer:fine)]:group-hover/logo:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:[:root:not(.dark)_&]:group-hover/logo:[filter:none]"
+const TONE = cn("opacity-45 [filter:grayscale(1)_brightness(0)] dark:opacity-55 dark:[filter:grayscale(1)_brightness(0)_invert(1)]", BASE)
+const TONE_DETAIL = cn("opacity-60 [filter:grayscale(1)_contrast(1.15)_brightness(0.7)] dark:opacity-65 dark:[filter:grayscale(1)_contrast(1.15)_brightness(0.7)_invert(1)]", BASE)
 
 function Logo({ c, size = 1, className = c.detail ? TONE_DETAIL : TONE }: { c: Customer; size?: number; className?: string }) {
   if (!c.src || !c.crop || !c.full) {
@@ -61,14 +63,7 @@ function Logo({ c, size = 1, className = c.detail ? TONE_DETAIL : TONE }: { c: C
   const [x, y, w, h] = c.crop
   const px = width(w, h, (c.scale ?? 1) * size)
   return (
-    <svg
-      role="img"
-      aria-label={c.name}
-      viewBox={`${x} ${y} ${w} ${h}`}
-      width={px}
-      height={Math.round((px * h) / w)}
-      className={className}
-    >
+    <svg role="img" aria-label={c.name} viewBox={`${x} ${y} ${w} ${h}`} width={px} height={Math.round((px * h) / w)} className={className}>
       {/* The file is drawn at its own size; the viewBox crops to the logo. */}
       <image href={c.src} x={0} y={0} width={c.full[0]} height={c.full[1]} />
     </svg>
@@ -84,18 +79,23 @@ export function CustomerLogo({ name, size, className }: { name: string; size?: n
   return c ? <Logo c={c} size={size} className={className} /> : null
 }
 
-/** Logo row, directly under the hero. */
+/** Logo grid, directly under the hero. */
 export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
         <p className="text-center text-small text-ink-muted">{label}</p>
-        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6 xl:flex-nowrap xl:justify-between xl:gap-x-6">
+        {/* A hairline grid: the logos, then a closing "100+" cell, so it fills 5 × 2 (2 columns on phones) */}
+        <ul className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-5">
           {CUSTOMERS.map((c) => (
-            <li key={c.name} className="group/logo flex h-12 shrink-0 items-center">
+            <li key={c.name} className="group/logo flex h-24 items-center justify-center bg-background transition-colors duration-200 hover:bg-surface sm:h-28">
               <Logo c={c} />
             </li>
           ))}
+          <li className="flex h-24 flex-col items-center justify-center gap-0.5 bg-background sm:h-28">
+            <span className="text-h3 leading-none font-normal tabular-nums">100+</span>
+            <span className="text-small text-ink-muted">teams and counting</span>
+          </li>
         </ul>
       </Container>
     </Section>

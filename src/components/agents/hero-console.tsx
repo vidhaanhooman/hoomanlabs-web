@@ -66,7 +66,7 @@ const SKILLS: [string, string][] = [
 ]
 
 function Var({ children }: { children: React.ReactNode }) {
-  return <span className="rounded bg-[oklch(0.75_0.12_245/0.18)] px-1 font-mono text-[12px] text-[oklch(0.82_0.1_245)]">{children}</span>
+  return <span className="rounded bg-(--data)/18 px-1 font-mono text-[12px] text-(--data)">{children}</span>
 }
 
 export function AgentConsole() {
@@ -104,14 +104,14 @@ export function AgentConsole() {
             <PlayIcon weight="fill" className="size-3" />
             Test call
           </span>
-          <span className="rounded-md bg-white px-3 py-1 text-[12px] text-black">Publish</span>
+          <span className="rounded-md bg-(--ui-text) px-3 py-1 text-[12px] text-(--ui-bg)">Publish</span>
         </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-[200px_1fr_360px]">
           {/* The agent's sections */}
           <div className="flex flex-col gap-1 border-r border-(--ui-line) p-3">
             <span className="flex items-center gap-2.5 px-2 pt-1 pb-3">
-              <span className="grid size-8 place-items-center rounded-full bg-[oklch(0.74_0.16_150/0.2)] text-[12px] text-[oklch(0.85_0.12_150)]">R</span>
+              <span className="grid size-8 place-items-center rounded-full bg-(--ok)/18 text-[12px] text-(--ok-fg)">R</span>
               <span className="flex flex-col leading-tight">
                 <span>Ria</span>
                 <span className="text-[11px] text-(--ui-muted)">Billing · Halden Energy</span>
@@ -180,7 +180,7 @@ export function AgentConsole() {
                       i === 0 && skillOn ? "border-white/70 bg-white/10 shadow-[0_0_24px_-6px_oklch(1_0_0/0.35)]" : "border-(--ui-line) bg-(--ui-panel)"
                     )}
                   >
-                    <LightningIcon weight="fill" className="size-3.5 text-[oklch(0.8_0.13_80)]" />
+                    <LightningIcon weight="fill" className="size-3.5 text-(--warn-fg)" />
                     <span className="flex min-w-0 flex-col leading-tight">
                       <span className="font-mono text-[12px]">{name}</span>
                       <span className="text-[11px] text-(--ui-muted)">{via}</span>
@@ -218,7 +218,7 @@ export function AgentConsole() {
                         </>
                       ) : (
                         <>
-                          <LightningIcon weight="fill" className="size-3.5 text-[oklch(0.8_0.13_80)]" />
+                          <LightningIcon weight="fill" className="size-3.5 text-(--warn-fg)" />
                           <span className="font-mono">take_payment</span> · $86.40
                           <CheckIcon weight="bold" className="size-3 text-(--ui-live)" />
                           1.2s
@@ -232,7 +232,7 @@ export function AgentConsole() {
                     className={cn(
                       cls,
                       "max-w-[85%] rounded-2xl px-3.5 py-2 text-[12.5px]",
-                      c.who === "maya" ? "self-end rounded-br-sm bg-white text-black" : "self-start rounded-bl-sm bg-(--ui-raised)"
+                      c.who === "maya" ? "self-end rounded-br-sm bg-(--ui-text) text-(--ui-bg)" : "self-start rounded-bl-sm bg-(--ui-raised)"
                     )}
                   >
                     {c.text}

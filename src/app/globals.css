@@ -52,7 +52,7 @@
   --muted-foreground: var(--ink-muted);
   --accent: var(--gray-100);
   --accent-foreground: var(--foreground);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: var(--fail);
   --border: var(--line);
   --input: var(--line-strong);
   --ring: var(--gray-900);
@@ -67,6 +67,22 @@
   --ai: oklch(0.6 0.15 295);
   --highlight-warm: oklch(0.95 0.04 70);
   --highlight-cool: oklch(0.95 0.03 245);
+
+  /* Status and accents, one set for the whole site: on the page (light here,
+     dark in .dark), and in product UI (.ui-dark, below). Use them as
+     text-(--fail), bg-(--ok)/18, and so on; -fg is for text on a tint.
+     ok = live/pass, fail = error, warn = needs a look, var = {{variables}},
+     data = context/API, tool = tools and skills. */
+  --ok: oklch(0.55 0.13 150);
+  --ok-fg: oklch(0.45 0.12 150);
+  --fail: oklch(0.58 0.2 25);
+  --fail-fg: oklch(0.5 0.19 25);
+  --warn: oklch(0.66 0.14 70);
+  --warn-fg: oklch(0.5 0.12 70);
+  --var: oklch(0.58 0.16 295);
+  --var-fg: oklch(0.48 0.15 295);
+  --data: oklch(0.55 0.13 245);
+  --tool: oklch(0.62 0.13 75);
 }
 
 /* Dark grey scale: the whole page in dark mode (class="dark" on <html>), and
@@ -85,6 +101,16 @@
   --ai: oklch(0.78 0.12 295);
   --highlight-warm: oklch(0.34 0.05 70);
   --highlight-cool: oklch(0.32 0.04 245);
+  --ok: oklch(0.74 0.16 150);
+  --ok-fg: oklch(0.85 0.12 150);
+  --fail: oklch(0.7 0.18 25);
+  --fail-fg: oklch(0.82 0.12 25);
+  --warn: oklch(0.8 0.14 80);
+  --warn-fg: oklch(0.87 0.1 80);
+  --var: oklch(0.72 0.14 295);
+  --var-fg: oklch(0.86 0.08 295);
+  --data: oklch(0.78 0.11 245);
+  --tool: oklch(0.82 0.12 80);
 }
 /* Graphite: a lighter dark for small UI cards on light sections, so several
    dark cards don't read as heavy black blocks. Use with .dark. */
@@ -232,7 +258,10 @@
    tokens are scoped to `.ui-dark` and never leak into the page theme.
    Approximation until matched against real platform screenshots.
    -------------------------------------------------------------------------- */
-.ui-dark {
+/* .ui-scope gives a subtree the product-UI tokens without painting its text
+   or background (for dark story canvases that sit beside light page cards). */
+.ui-dark,
+.ui-scope {
   --ui-bg: oklch(0.17 0.004 270);
   --ui-panel: oklch(0.205 0.004 270);
   --ui-raised: oklch(0.245 0.004 270);
@@ -240,6 +269,18 @@
   --ui-text: oklch(0.95 0 0);
   --ui-muted: oklch(0.68 0.004 270);
   --ui-live: oklch(0.74 0.16 150);
+  --ok: oklch(0.74 0.16 150);
+  --ok-fg: oklch(0.85 0.12 150);
+  --fail: oklch(0.7 0.18 25);
+  --fail-fg: oklch(0.82 0.12 25);
+  --warn: oklch(0.8 0.14 80);
+  --warn-fg: oklch(0.87 0.1 80);
+  --var: oklch(0.72 0.14 295);
+  --var-fg: oklch(0.86 0.08 295);
+  --data: oklch(0.78 0.11 245);
+  --tool: oklch(0.82 0.12 80);
+}
+.ui-dark {
   color: var(--ui-text);
   background: var(--ui-bg);
 }
@@ -254,6 +295,16 @@
   --ui-text: oklch(0.2 0 0);
   --ui-muted: oklch(0.5 0 0);
   --ui-live: oklch(0.58 0.15 150);
+  --ok: oklch(0.55 0.13 150);
+  --ok-fg: oklch(0.45 0.12 150);
+  --fail: oklch(0.58 0.2 25);
+  --fail-fg: oklch(0.5 0.19 25);
+  --warn: oklch(0.66 0.14 70);
+  --warn-fg: oklch(0.5 0.12 70);
+  --var: oklch(0.58 0.16 295);
+  --var-fg: oklch(0.48 0.15 295);
+  --data: oklch(0.55 0.13 245);
+  --tool: oklch(0.62 0.13 75);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -325,6 +376,8 @@
 }
 
 @keyframes blink { 50% { opacity: 0; } }
+/* Signal arcs in the industry illustrations: each arc brightens in turn. */
+@keyframes signal { 0%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
 /* A line filling left to right (autoplay progress). */
 @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
