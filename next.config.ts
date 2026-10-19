@@ -16,12 +16,15 @@ const nextConfig: NextConfig = {
       // The Product Designer role closed; send old links to the open careers list.
       { source: "/careers/product-designer", destination: "/careers", permanent: false },
       { source: "/privacy", destination: "/privacy-policy", permanent: false },
-      // Use cases no longer have their own pages: send old links to their card on /solutions.
-      ...["payment-collections", "appointment-booking", "lead-qualification", "support", "renewals", "surveys"].map((slug) => ({
+      // Use cases no longer have their own pages; old links go to /solutions.
+      // Renamed industries go to their new page.
+      ...["payment-collections", "appointment-booking", "lead-qualification", "support", "renewals", "surveys", "travel"].map((slug) => ({
         source: `/solutions/${slug}`,
-        destination: `/solutions#${slug}`,
+        destination: "/solutions",
         permanent: false,
       })),
+      { source: "/solutions/retail", destination: "/solutions/e-commerce", permanent: false },
+      { source: "/solutions/financial-services", destination: "/solutions/bfsi", permanent: false },
     ]
   },
   partialPrefetching: true,

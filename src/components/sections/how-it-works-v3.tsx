@@ -204,10 +204,12 @@ export function AgentBuilderScreen({ className, focus }: { className: string; fo
    panel's right edge, so the grid fills the window and the graph sits in
    its visible left part. */
 function WorkflowScreen({ className, focus }: { className: string; focus: string }) {
+  /* Three bands, left to right, in the rows' order: what starts the run,
+     the rule steps it runs, and the follow-up it finishes. */
   const nodes: Record<string, string[]> = {
     triggers: ["in", "auth"],
-    branches: ["cb", "cbp"],
-    actions: ["det", "push", "end", "rec", "sum", "summ", "out"],
+    branches: ["det", "cb", "end", "rec", "sum"],
+    actions: ["push", "cbp", "summ", "out"],
   }
   return (
     <div aria-hidden className={cn("ui-dark flex flex-col overflow-hidden bg-[oklch(0.13_0_0)]", className)}>
@@ -247,8 +249,8 @@ export function ProductPanel({
   label: string
   title: string
   rows: Row[]
-  link: string
-  linkHref: string
+  link?: string
+  linkHref?: string
   media?: "start" | "end"
   screen: (className: string, focus: string) => React.ReactNode
 }) {
@@ -328,7 +330,7 @@ export function ProductPanel({
                 )
               })}
             </ul>
-            <TextLink href={linkHref}>{link}</TextLink>
+            {link && linkHref && <TextLink href={linkHref}>{link}</TextLink>}
           </div>
           {/* Grey stage with a hairline: the screen runs past the panel edge, as if the app is open. */}
           <div className={cn(STAGE, "aspect-[4/3] lg:col-span-2 lg:aspect-auto", media === "start" && "lg:order-1")}>
@@ -350,9 +352,9 @@ export function HowItWorksV3() {
         label="Agents"
         title="Agents that handle the conversation."
         rows={[
-          { id: "tools", title: "Resolves the call", body: "Handles customer calls end to end: answers questions, takes payments, books appointments and raises tickets." },
-          { id: "context", title: "Knows before hello", body: "Before the call it pulls the customer's details from your systems, then replies in real time using your prompt." },
           { id: "playbook", title: "Runs your playbook", body: "You write your process once in plain language. Each rule becomes a condition the agent follows on every call." },
+          { id: "context", title: "Knows before hello", body: "Before the call it pulls the customer's details from your systems, then replies in real time using your prompt." },
+          { id: "tools", title: "Resolves the call", body: "Handles customer calls end to end: answers questions, takes payments, books appointments and raises tickets." },
         ]}
         link="Explore Agents"
         linkHref="/platform/agents"
@@ -363,9 +365,9 @@ export function HowItWorksV3() {
         label="Workflow"
         title="Workflows that handle everything around it."
         rows={[
-          { id: "actions", title: "Finishes the follow-up", body: "Handles the work around calls end to end: updates your CRM, books callbacks and sends summaries." },
           { id: "triggers", title: "Starts on its own", body: "An event like a call ending starts a run, then each step runs on its own and writes back in seconds." },
           { id: "branches", title: "Runs your playbook", body: "You map your process once as steps. Each rule becomes a branch the workflow follows on every run." },
+          { id: "actions", title: "Finishes the follow-up", body: "Handles the work around calls end to end: updates your CRM, books callbacks and sends summaries." },
         ]}
         link="Explore Workflow"
         linkHref="/platform#platform-workflow-anatomy"

@@ -1,14 +1,12 @@
 import type { MenuPageId } from "@/content/platform"
 
 /**
- * /solutions: use cases and industries as one matrix. Every use case lists
- * the industries it serves and every industry lists its use cases (with a
- * line on how it plays out there), so the hub, the detail pages and every
- * cross-link are generated from this file.
+ * /solutions: the hub copy and the use cases behind the hero's call player
+ * (the industries themselves are in content/industries.ts).
  *
- * PLACEHOLDER CONTENT throughout: the industry list, every metric (marked
- * `sample`), the systems per industry and the companies in the calls are
- * fictional until real ones are approved. No client content.
+ * PLACEHOLDER CONTENT throughout: every metric (marked `sample`) and the
+ * companies in the calls are fictional until real ones are approved. No
+ * client content.
  *
  * Calls: `audio` is set only where a real, consented recording exists (the
  * survey call, public/audio/calls/feedback-en.mp3). Every other call is a
@@ -49,26 +47,10 @@ export type UseCase = {
   faq: { q: string; a: string }[]
 }
 
-export type Industry = {
-  kind: "industry"
-  slug: string
-  name: string
-  short: string
-  title: string
-  line: string
-  /** The work, in this industry's words, keyed by use-case slug. */
-  jobs: { useCase: string; how: string }[]
-  story: { day: string; title: string; body: string }[]
-  systems: string[]
-  compliance: { title: string; body: string }[]
-  proof: { value: string; label: string; sample: true }
-  faq: { q: string; a: string }[]
-}
-
 export const solutionsHub = {
   seo: {
     title: "AI Voice Agent Solutions by Use Case and Industry",
-    description: "AI voice agents for collections, bookings, lead qualification, support, renewals and surveys, across healthcare, education, retail, travel and financial services.",
+    description: "AI voice agents for education, BFSI, logistics, e-commerce, healthcare and consumer AI: collections, bookings, lead follow-up, support, renewals and surveys.",
   },
   crumb: "Solutions",
   title: "Put a Hooman on the calls that matter most.",
@@ -317,159 +299,4 @@ export const useCases: UseCase[] = [
   },
 ]
 
-export const industries: Industry[] = [
-  {
-    kind: "industry",
-    slug: "healthcare",
-    name: "Healthcare",
-    short: "Bookings, reminders and follow-ups for clinics and hospitals.",
-    title: "Every patient call answered, every slot filled.",
-    line: "Hoomans book and remind, answer common questions and follow up after visits, so your front desk can focus on patients in front of them.",
-    jobs: [
-      { useCase: "appointment-booking", how: "Books, moves and confirms consultations in your calendar." },
-      { useCase: "support", how: "Answers timings, directions, prices and reports questions." },
-      { useCase: "surveys", how: "Calls after a visit to check in and log feedback." },
-      { useCase: "payment-collections", how: "Reminds patients about pending bills and payment plans." },
-    ],
-    story: [
-      { day: "Day 1", title: "Booked", body: "A patient calls at 9pm; the Hooman books Thursday at 10." },
-      { day: "Day 3", title: "Reminded", body: "A reminder call the day before, with directions by SMS." },
-      { day: "Day 4", title: "Visited", body: "The patient arrives; no-show avoided." },
-      { day: "Day 6", title: "Followed up", body: "A check-in call logs how they're feeling and books a review." },
-    ],
-    systems: ["Practice management", "Google Calendar", "Your CRM", "WhatsApp (soon)"],
-    compliance: [
-      { title: "Consent and privacy", body: "Calls follow your consent rules, and sensitive details stay out of summaries you share." },
-      { title: "Human handoff", body: "Clinical questions go straight to your staff with the context." },
-    ],
-    proof: { value: "−30%", label: "no-shows", sample: true },
-    faq: [
-      { q: "Can it give medical advice?", a: "No. It handles bookings and admin questions and hands anything clinical to your staff." },
-      { q: "Which languages can patients use?", a: "English and major Indian languages, switching mid-call if they do." },
-    ],
-  },
-  {
-    kind: "industry",
-    slug: "education",
-    name: "Education",
-    short: "Enquiries, counselling bookings, fee reminders and renewals.",
-    title: "Call every enquiry while it's still warm.",
-    line: "Hoomans call new enquiries in minutes, book counselling sessions, remind about fees and keep learners enrolled.",
-    jobs: [
-      { useCase: "lead-qualification", how: "Calls course enquiries in minutes and books a counsellor." },
-      { useCase: "payment-collections", how: "Reminds about instalments and sets up fee plans." },
-      { useCase: "renewals", how: "Calls ahead of renewal and keeps learners on track." },
-      { useCase: "appointment-booking", how: "Schedules demos, classes and counselling slots." },
-    ],
-    story: [
-      { day: "Day 1", title: "Enquired", body: "A form fills at 8pm; the Hooman calls within two minutes." },
-      { day: "Day 1", title: "Qualified", body: "Weekend batch, starting this month; counselling booked." },
-      { day: "Day 3", title: "Enrolled", body: "The counsellor closes; the first instalment is due on the 5th." },
-      { day: "Day 34", title: "Reminded", body: "A friendly fee reminder and a payment link." },
-    ],
-    systems: ["Your CRM", "Lead forms and ads", "Google Calendar", "Payment links"],
-    compliance: [
-      { title: "Calling hours", body: "Calls only go out within the hours you allow, in the learner's time zone." },
-      { title: "Do-not-call", body: "Numbers on DND lists are skipped automatically." },
-    ],
-    proof: { value: "2 min", label: "from enquiry to first call", sample: true },
-    faq: [
-      { q: "Can it talk to parents as well as learners?", a: "Yes. The same Hooman adapts its script to who answers." },
-      { q: "Does it work with our CRM?", a: "Zoho CRM natively, and any CRM with an API as a skill." },
-    ],
-  },
-  {
-    kind: "industry",
-    slug: "retail",
-    name: "Retail & D2C",
-    short: "Order support, COD confirmation, feedback and repeat purchase.",
-    title: "Support every order without growing the team.",
-    line: "Hoomans answer where-is-my-order calls, confirm orders, collect feedback and bring customers back.",
-    jobs: [
-      { useCase: "support", how: "Tracks orders, fixes addresses and handles returns." },
-      { useCase: "surveys", how: "Calls after delivery to ask how it went." },
-      { useCase: "lead-qualification", how: "Follows up on abandoned carts and new sign-ups." },
-      { useCase: "renewals", how: "Brings customers back for subscriptions and repeat orders." },
-    ],
-    story: [
-      { day: "Day 1", title: "Ordered", body: "A cash-on-delivery order; the Hooman calls to confirm the address." },
-      { day: "Day 2", title: "Tracked", body: "The customer calls to ask where it is; answered in seconds." },
-      { day: "Day 3", title: "Delivered", body: "A short feedback call logs a 9 out of 10." },
-      { day: "Day 30", title: "Reordered", body: "A reminder before the refill runs out." },
-    ],
-    systems: ["Your store and order system", "Helpdesk", "Your CRM", "SMS"],
-    compliance: [
-      { title: "Verified calling", body: "Calls come from verified business numbers, so more customers pick up." },
-      { title: "Opt-outs", body: "Anyone who opts out is never called again." },
-    ],
-    proof: { value: "70%", label: "of order calls resolved", sample: true },
-    faq: [
-      { q: "Can it confirm cash-on-delivery orders?", a: "Yes. It calls, confirms the order and address, and updates your system." },
-      { q: "Can it handle returns?", a: "It explains your policy, starts the return and books the pickup through your system." },
-    ],
-  },
-  {
-    kind: "industry",
-    slug: "travel",
-    name: "Travel & hospitality",
-    short: "Bookings, pre-arrival calls, guest support and post-stay feedback.",
-    title: "Look after every guest, before and after the stay.",
-    line: "Hoomans take bookings, call before arrival, answer guest questions and ask about the stay afterwards.",
-    jobs: [
-      { useCase: "appointment-booking", how: "Takes and changes bookings, day or night." },
-      { useCase: "support", how: "Answers check-in, directions and amenities questions." },
-      { useCase: "surveys", how: "Calls after checkout to ask about the stay." },
-    ],
-    story: [
-      { day: "Day 1", title: "Booked", body: "A late-night call books two nights for the weekend." },
-      { day: "Day 6", title: "Pre-arrival", body: "A call the day before confirms timing and shares directions." },
-      { day: "Day 7", title: "Stayed", body: "Guest questions answered on the phone and in chat." },
-      { day: "Day 9", title: "Feedback", body: "A post-stay call logs the rating and what to improve." },
-    ],
-    systems: ["Booking engine", "Your CRM", "Google Calendar", "SMS"],
-    compliance: [
-      { title: "Calling hours", body: "Guests are only called at sensible local times." },
-      { title: "Human handoff", body: "Complaints go straight to your team with the details." },
-    ],
-    proof: { value: "4×", label: "more guest feedback", sample: true },
-    faq: [
-      { q: "Can it take bookings at night?", a: "Yes. It answers every call, 24/7, and books straight into your system." },
-      { q: "Can it upsell?", a: "It can offer the add-ons you set, such as late checkout or meals." },
-    ],
-  },
-  {
-    kind: "industry",
-    slug: "financial-services",
-    name: "Financial services",
-    short: "Collections, renewals, lead follow-up and verification calls.",
-    title: "Collections and renewals that follow the rules.",
-    line: "Hoomans remind, collect, renew and follow up on applications, inside your calling rules and with every disclosure read.",
-    jobs: [
-      { useCase: "payment-collections", how: "Early-stage reminders, promises to pay and plans." },
-      { useCase: "renewals", how: "Policy and plan renewals, with objections handled." },
-      { useCase: "lead-qualification", how: "Follows up on applications and books an advisor." },
-    ],
-    story: [
-      { day: "Day −3", title: "Reminded", body: "A friendly call before the due date." },
-      { day: "Day 1", title: "Promised", body: "The customer asks for the 4th; promise logged, link sent." },
-      { day: "Day 3", title: "Nudged", body: "A reminder the day before the promise." },
-      { day: "Day 4", title: "Paid", body: "Payment lands; the account is updated automatically." },
-    ],
-    systems: ["Loan or core system", "Your CRM", "Payment links", "Call events to your database"],
-    compliance: [
-      { title: "Disclosures on every call", body: "Required lines are read and checked by a code judge on every call." },
-      { title: "DND and calling hours", body: "DND numbers are skipped and calls stay within allowed hours." },
-    ],
-    proof: { value: "+18%", label: "on-time payments", sample: true },
-    faq: [
-      { q: "How do we know every call was compliant?", a: "Every call is scored, including a check that each disclosure was read, and any miss points to the exact turn." },
-      { q: "Can it handle hardship cases?", a: "It follows your rules, offers plans you allow and hands sensitive cases to your team." },
-    ],
-  },
-]
 
-export const caseBySlug = (slug: string) => useCases.find((u) => u.slug === slug)
-export const industryBySlug = (slug: string) => industries.find((i) => i.slug === slug)
-export const solutionHref = (slug: string) => `/solutions/${slug}`
-/** Use cases have no page of their own: they live as cards on /solutions, each with its slug as the anchor. */
-export const caseHref = (slug: string) => `/solutions#${slug}`

@@ -1,80 +1,73 @@
 import Link from "next/link"
 import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
 
-import { Panel } from "@/components/layout/panel"
-import { IndustryArt } from "@/components/solutions/industry-art"
-import { caseHref, caseBySlug, industries, solutionHref, type Industry } from "@/content/solutions"
+import { MeshStage } from "@/components/layout/art-stage"
+import { LiveCard } from "@/components/solutions/live-card"
+import { industries, industryHref } from "@/content/industries"
+import { industryArt } from "@/lib/industry-art"
 import { cn } from "@/lib/utils"
 
 /**
- * Industries on /solutions as large cards, two to a row, in the homepage
- * platform cards' style (grey panel, light inset): a boxy illustration of
- * the industry's objects (industry-art.tsx), its promise and sample proof figure, its top three use cases
- * (each linking to its page) and a link to the industry page. The last card
- * of an odd count spans the row, illustration beside the copy.
+ * The hub's industries: one big card per industry, full width, the photo on
+ * one side (alternating) and on the other the industry, its one line, its
+ * use cases with one described as an example. The whole
+ * card links to the industry page. On the photo, the example call in the
+ * centre (live-card.tsx), which plays out on hover or focus while the photo
+ * eases in.
+ * Photo: public/art/solutions/<slug>.webp
+ * (the painted gradient until it's added).
  */
-
-function Art({ ind, wide }: { ind: Industry; wide: boolean }) {
-  return (
-    <div className={cn("h-48 overflow-hidden rounded-md bg-background p-4 sm:h-52 sm:p-5", wide && "lg:h-full lg:min-h-52 lg:p-10")}>
-      <IndustryArt slug={ind.slug} className="size-full" />
-    </div>
-  )
-}
-
-function Card({ ind, wide }: { ind: Industry; wide: boolean }) {
-  return (
-    <Panel className={cn("group/ind grid w-full gap-6 p-4 sm:p-5", wide && "lg:grid-cols-2 lg:gap-10")}>
-      <Art ind={ind} wide={wide} />
-      <div className={cn("flex flex-col gap-6 px-2 pb-3 sm:px-3", wide && "lg:py-4")}>
-        <div className="flex flex-col gap-2">
-          <span className="font-mono text-label text-ink-muted">{ind.name}</span>
-          <h3 className="text-h3 font-normal">{ind.title}</h3>
-          <p className="text-body text-ink-secondary">{ind.short}</p>
-        </div>
-        <span className="flex items-baseline gap-2">
-          <span className="text-h2 leading-none font-normal tabular-nums">{ind.proof.value}</span>
-          <span className="text-small text-ink-secondary">{ind.proof.label}</span>
-          <span className="font-mono text-label text-ink-muted">Sample</span>
-        </span>
-        <div className="flex flex-col overflow-hidden rounded-md border border-line bg-background text-small">
-          <span className="border-b border-line px-3.5 py-2 text-label text-ink-muted">Top use cases</span>
-          {ind.jobs.slice(0, 3).map((j) => {
-            const u = caseBySlug(j.useCase)
-            if (!u) return null
-            return (
-              <Link
-                key={j.useCase}
-                href={caseHref(u.slug)}
-                className="group flex items-center justify-between gap-3 border-b border-line px-3.5 py-3 transition-colors last:border-0 hover:bg-surface"
-              >
-                <span className="flex min-w-0 flex-col gap-0.5 leading-tight">
-                  <span>{u.name}</span>
-                  <span className="text-label text-ink-muted">{j.how}</span>
-                </span>
-                <ArrowRightIcon className="size-3.5 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
-              </Link>
-            )
-          })}
-        </div>
-        <Link href={solutionHref(ind.slug)} className="group mt-auto inline-flex w-fit items-center gap-1.5 text-small font-medium">
-          Explore {ind.name}
-          <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-      </div>
-    </Panel>
-  )
-}
-
 export function IndustryCards() {
-  const odd = industries.length % 2 === 1
   return (
-    <ul className="mt-10 grid gap-3 lg:grid-cols-2">
-      {industries.map((ind, i) => {
-        const wide = odd && i === industries.length - 1
+    <ul className="mt-10 flex flex-col gap-3 lg:mt-12">
+      {industries.map((x, i) => {
+        const [main, ...rest] = x.jobs
         return (
-          <li key={ind.slug} className={cn("flex min-w-0", wide && "lg:col-span-2")}>
-            <Card ind={ind} wide={wide} />
+          <li key={x.slug} id={`industry-${x.slug}`} className="scroll-mt-24">
+            <Link
+              href={industryHref(x.slug)}
+              className="group grid gap-6 rounded-md bg-surface p-3 transition-colors outline-none hover:bg-placeholder focus-visible:ring-2 focus-visible:ring-ring lg:grid-cols-2 lg:gap-0"
+            >
+              <MeshStage
+                image={industryArt(x.slug)}
+                className={cn(
+                  "aspect-[4/5] rounded-md sm:aspect-[4/3] lg:aspect-auto lg:min-h-[32rem] [&_img]:transition-[scale] [&_img]:duration-[1200ms] [&_img]:ease-(--ease-out) group-hover:[&_img]:scale-[1.05]",
+                  i % 2 === 1 && "lg:order-2",
+                )}
+              >
+                <LiveCard industry={x} />
+              </MeshStage>
+              <div className="flex flex-col justify-between gap-10 px-3 pb-3 sm:px-5 lg:px-12 lg:py-12">
+                <div className="flex flex-col gap-3">
+                  <span className="flex items-center justify-between gap-4">
+                    <span className="text-small text-ink-muted">{x.name}</span>
+                    <ArrowRightIcon aria-hidden className="size-4 text-ink-muted transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                  <h3 className="max-w-[20ch] text-h2 font-normal text-balance">{x.title}</h3>
+                  <p className="max-w-[48ch] text-body text-ink-secondary">{x.line}</p>
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-1.5 rounded-md border border-line bg-background p-5">
+                    <span className="font-mono text-label text-ink-muted">For example</span>
+                    <span className="text-h4 font-normal">{main.name}</span>
+                    <span className="text-small text-ink-secondary">{main.body}</span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="font-mono text-label text-ink-muted">Other use cases</span>
+                    <ul className="flex flex-col border-t border-line">
+                      {rest.map((j) => (
+                        <li key={j.name} className="flex items-baseline justify-between gap-4 border-b border-line py-2.5 text-small">
+                          <span className="shrink-0">{j.name}</span>
+                          <span className="hidden text-right text-ink-muted sm:block">{j.body}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <span className="text-small font-medium underline-offset-4 group-hover:underline">See {x.name}</span>
+                </div>
+              </div>
+            </Link>
           </li>
         )
       })}

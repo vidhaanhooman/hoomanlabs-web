@@ -317,6 +317,10 @@
   .ui-wave span:nth-child(4) { animation-delay: -450ms; }
   .ui-wave span:nth-child(5) { animation-delay: -600ms; }
   .ui-wave[data-idle] span { animation-play-state: paused; }
+  /* Plays only while its card (a .group) is hovered or focused. */
+  .ui-wave[data-hover] span { animation-play-state: paused; }
+  .group:hover .ui-wave[data-hover] span,
+  .group:focus-visible .ui-wave[data-hover] span { animation-play-state: running; }
 }
 /* Lab: visual directions (/lab/directions). */
 @media (prefers-reduced-motion: no-preference) {

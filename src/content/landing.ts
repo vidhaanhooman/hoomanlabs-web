@@ -73,7 +73,7 @@ export const startPaths = {
         { k: "Time to live", v: "4–8 weeks per flow, faster after the first" },
         { k: "Support", v: "Dedicated FDE, co-built with your team, full handover" },
       ],
-      cta: { label: "Book a demo", href: "https://cal.com/vidhan-dubey-rfmt3g/30min" },
+      cta: { label: "Book a demo", href: "https://app.cal.com/tarun-rathore/30min/embed?layout=month_view&embedType=modal&ui.color-scheme=dark&embed=30min&overlayCalendar=true" },
       more: { label: "How an enterprise build runs", href: "/enterprise" },
     },
   ] as {

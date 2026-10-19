@@ -44,8 +44,8 @@ export const observabilityPage = {
     title: "Every turn, and everything the agent did.",
     rows: [
       { id: "turns", title: "Turn deep dive", body: "Debug any turn: what was said, what the agent generated and actually spoke, and a timeline of every step with its latency." },
-      { id: "act", title: "Act from the log", body: "Change the agent, then replay the turn and simulate the conversation to check the fix, without leaving the log." },
       { id: "actions", title: "Actions on every turn", body: "Every tool, API and lookup, shown on the turn it ran, with what was sent, what came back and how long it took." },
+      { id: "act", title: "Act from the log", body: "Change the agent, then replay the turn and simulate the conversation to check the fix, without leaving the log." },
     ],
   },
   faq: [

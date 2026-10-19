@@ -26,8 +26,8 @@ export const testingPage = {
     label: "Try it now",
     title: "Build an agent and talk to it in minutes.",
     rows: [
-      { id: "talk", title: "Talk to it on the web", body: "Start a web call or chat with your Hooman from the editor, with sample customer data." },
       { id: "loop", title: "Build-test loop", body: "Edit, talk and check the logs in one screen, without leaving the agent." },
+      { id: "talk", title: "Talk to it on the web", body: "Start a web call or chat with your Hooman from the editor, with sample customer data." },
     ],
   },
 

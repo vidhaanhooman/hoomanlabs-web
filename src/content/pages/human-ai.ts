@@ -37,8 +37,8 @@ export const humanAiPage = {
     label: "QA of human calls",
     title: "One standard for your AI and your team.",
     rows: [
-      { id: "same", title: "Same metrics", body: "Score your human agents' calls with the same scorecard as your Hoomans, each metric checked by AI, an audio rule or code." },
       { id: "side", title: "Side by side", body: "Compare scores and the biggest gap for every agent, AI or human, in one view." },
+      { id: "same", title: "Same metrics", body: "Score your human agents' calls with the same scorecard as your Hoomans, each metric checked by AI, an audio rule or code." },
       { id: "coach", title: "Coach first where it counts", body: "See which agents to coach first, with short clips of the exact moments to go through together." },
     ],
   },

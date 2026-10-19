@@ -66,7 +66,7 @@ export function CalBooking() {
     Cal("init", CAL.namespace, { origin: "https://app.cal.com" })
     Cal.config = Cal.config || {}
     Cal.config.forwardQueryParams = true
-    Cal.ns[CAL.namespace]("ui", { hideEventTypeDetails: false, layout: "month_view" })
+    Cal.ns[CAL.namespace]("ui", { hideEventTypeDetails: false, layout: "month_view", theme: "dark" })
 
     // Capture phase, so the modal opens before the link would navigate.
     const onClick = (e: MouseEvent) => {
@@ -76,7 +76,7 @@ export function CalBooking() {
       const open = window.Cal?.ns?.[CAL.namespace]
       if (!open) return
       e.preventDefault()
-      open("modal", { calLink: CAL.link, config: { layout: "month_view", useSlotsViewOnSmallScreen: "true" } })
+      open("modal", { calLink: CAL.link, config: { layout: "month_view", "ui.color-scheme": "dark", overlayCalendar: "true", useSlotsViewOnSmallScreen: "true" } })
     }
     document.addEventListener("click", onClick, true)
     return () => document.removeEventListener("click", onClick, true)

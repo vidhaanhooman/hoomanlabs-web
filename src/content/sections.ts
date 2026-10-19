@@ -122,20 +122,15 @@ export type SectionId =
   | "role-body"
   | "role-process"
   | "solutions-hero"
-  | "solutions-hear"
-  | "solutions-browse"
   | "solutions-industries"
+  | "solutions-everywhere"
+  | "industry-hero"
+  | "industry-jobs"
+  | "industry-story"
+  | "industry-needs"
+  | "industry-everywhere"
+  | "industry-faq"
   | "solutions-faq"
-  | "solution-hero"
-  | "solution-steps"
-  | "solution-outcomes"
-  | "solution-matrix"
-  | "solution-story"
-  | "solution-powered"
-  | "solution-systems"
-  | "solution-compliance"
-  | "solution-faq"
-  | "solution-next"
   | "ds-definition"
   | "ds-faq"
   | "ds-next"
@@ -347,20 +342,15 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "role-body", name: "Role: details", status: "draft" },
   { id: "role-process", name: "Role: hiring process", status: "draft" },
   { id: "solutions-hero", name: "Solutions: hero", status: "draft" },
-  { id: "solutions-hear", name: "Solutions: hear a call", status: "draft" },
-  { id: "solutions-browse", name: "Solutions: use cases", status: "draft" },
-  { id: "solutions-industries", name: "Solutions: industries and their use cases", status: "draft" },
+  { id: "solutions-industries", name: "Solutions: industry grid", status: "draft" },
+  { id: "solutions-everywhere", name: "Solutions: in every industry", status: "draft" },
+  { id: "industry-hero", name: "Industry: hero", status: "draft" },
+  { id: "industry-jobs", name: "Industry: other use cases", status: "draft" },
+  { id: "industry-story", name: "Industry: case study", status: "draft" },
+  { id: "industry-needs", name: "Industry: what it gets right", status: "draft" },
+  { id: "industry-everywhere", name: "Industry: in every industry", status: "draft" },
+  { id: "industry-faq", name: "Industry: FAQ", status: "draft" },
   { id: "solutions-faq", name: "Solutions: FAQ", status: "draft" },
-  { id: "solution-hero", name: "Solution page: hero", status: "draft" },
-  { id: "solution-steps", name: "Solution page: how it works", status: "draft" },
-  { id: "solution-outcomes", name: "Solution page: outcomes", status: "draft" },
-  { id: "solution-matrix", name: "Solution page: use cases or industries", status: "draft" },
-  { id: "solution-story", name: "Solution page: day-by-day story", status: "draft" },
-  { id: "solution-powered", name: "Solution page: what powers it", status: "draft" },
-  { id: "solution-systems", name: "Solution page: systems", status: "draft" },
-  { id: "solution-compliance", name: "Solution page: compliance", status: "draft" },
-  { id: "solution-faq", name: "Solution page: FAQ", status: "draft" },
-  { id: "solution-next", name: "Solution page: next step", status: "draft" },
   { id: "ds-definition", name: "Components: definition demo", status: "draft" },
   { id: "ds-faq", name: "Components: FAQ demo", status: "draft" },
   { id: "ds-next", name: "Components: next step demo", status: "draft" },

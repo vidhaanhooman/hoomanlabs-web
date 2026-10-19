@@ -3,26 +3,25 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { IndustryPage } from "@/components/solutions/industry-page"
-import { industries, industryBySlug } from "@/content/solutions"
+import { industries, industryBySlug } from "@/content/industries"
 
 /**
- * /solutions/[slug]: one page per industry, all prerendered. Use cases have
- * no page of their own (they are cards on /solutions; old links redirect).
- * The params read sits inside Suspense so navigations stay instant (Cache
- * Components' instant validation); the known slugs prerender in full.
+ * /solutions/[slug]: one page per industry, all prerendered. The params read
+ * sits inside Suspense so navigations stay instant (Cache Components'
+ * instant validation); the known slugs prerender in full.
  */
 
 type Props = { params: Promise<{ slug: string }> }
 
 export function generateStaticParams() {
-  return industries.map((s) => ({ slug: s.slug }))
+  return industries.map((x) => ({ slug: x.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const s = industryBySlug(slug)
-  if (!s) return {}
-  return { title: s.title, description: s.line }
+  const x = industryBySlug(slug)
+  if (!x) return {}
+  return { title: x.seo.title, description: x.seo.description }
 }
 
 export default function Solution({ params }: Props) {
@@ -35,7 +34,7 @@ export default function Solution({ params }: Props) {
 
 async function SolutionContent({ params }: Props) {
   const { slug } = await params
-  const s = industryBySlug(slug)
-  if (!s) notFound()
-  return <IndustryPage industry={s} />
+  const x = industryBySlug(slug)
+  if (!x) notFound()
+  return <IndustryPage industry={x} />
 }
