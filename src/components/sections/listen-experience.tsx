@@ -401,7 +401,7 @@ function Callback({ call, ringing, onCall }: { call: UseCaseCall; ringing: boole
         <Select value={country} onValueChange={(v) => v && setCountry(v)}>
           <SelectTrigger
             aria-label="Country code"
-            className="shrink-0 rounded-none border-0 bg-transparent py-0 pr-1.5 pl-3.5 text-small focus-visible:ring-0 focus-visible:outline-none data-[size=default]:h-full"
+            className="shrink-0 rounded-l-full rounded-r-none border-0 bg-transparent py-0 pr-1.5 pl-3.5 text-small focus-visible:ring-0 focus-visible:outline-none data-[size=default]:h-full cursor-pointer transition-colors hover:bg-foreground/[0.04] dark:bg-transparent dark:hover:bg-white/[0.06]"
           >
             <SelectValue>
               {(v: string) => {
@@ -442,7 +442,7 @@ function Callback({ call, ringing, onCall }: { call: UseCaseCall; ringing: boole
         type="submit"
         disabled={sending}
         aria-busy={sending || undefined}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-body font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-70"
+        className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-primary disabled:cursor-wait px-5 text-body font-medium text-primary-foreground transition-[transform,opacity] duration-150 ease-(--ease-out) active:scale-[0.97] disabled:opacity-70"
       >
         <PhoneCallIcon weight="fill" className="size-4" aria-hidden />
         {sending ? "Requesting call…" : `Call me with ${call.agent}`}

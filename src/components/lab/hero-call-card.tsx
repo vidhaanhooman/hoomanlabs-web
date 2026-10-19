@@ -123,7 +123,8 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (sending || !valid) return
+    if (sending) return
+    if (!valid) return setError(digits.length ? "Enter your full phone number." : "Enter your phone number.")
     if (!consent) return setError("Tick the box to get the call.")
     setError(null)
     setSending(true)
@@ -246,7 +247,7 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
             >
               <SelectTrigger
                 aria-label="Country code"
-                className="shrink-0 rounded-none border-0 bg-transparent py-0 pr-1.5 pl-5 text-body focus-visible:ring-0 data-[size=default]:h-full"
+                className="shrink-0 rounded-l-full rounded-r-none border-0 bg-transparent py-0 pr-1.5 pl-5 text-body focus-visible:ring-0 data-[size=default]:h-full cursor-pointer transition-colors hover:bg-foreground/[0.04] dark:bg-transparent dark:hover:bg-white/[0.06]"
               >
                 <SelectValue>
                   {(v: string) => {
@@ -498,11 +499,11 @@ function CallButton({ className, sending, ready }: { className?: string; sending
   return (
     <button
       type="submit"
-      disabled={sending || !ready}
+      disabled={sending}
       aria-busy={sending || undefined}
       className={cn(
-        "shrink-0 items-center justify-center gap-2 rounded-full text-body font-medium transition-[transform,background-color,color] duration-200 ease-(--ease-out) active:scale-[0.97]",
-        ready ? "bg-primary text-primary-foreground" : "border border-line-strong bg-background text-ink-muted",
+        "shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full disabled:cursor-wait text-body font-medium transition-[transform,background-color,color] duration-200 ease-(--ease-out) active:scale-[0.97]",
+        ready ? "bg-primary text-primary-foreground" : "border border-line-strong bg-background text-ink-muted hover:border-foreground/40 hover:text-foreground",
         className
       )}
     >
