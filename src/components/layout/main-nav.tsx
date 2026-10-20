@@ -1,36 +1,70 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRightIcon } from "@phosphor-icons/react"
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { nav } from "@/content/draft"
+import { industries, industryHref } from "@/content/industries"
 import { menuHref, menuMedia, platformFeatured, platformMenu } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
-const ITEM =
-  "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
+const ITEM = "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
 
 /**
  * Desktop nav. "Platform" opens the menu from the content sheet: the
  * overview link on top, then three groups (Build, Reach, Trust), each with
  * one line and its pages as chips, and the featured page (Human + AI) with
- * the image slot on the right.
+ * the image slot on the right. "Solutions" opens the six industries, each
+ * with its photo and one line, under a link to the hub.
+ *
+ * The menu never stays stuck open: however it was opened (hover, click or
+ * keyboard), it closes once the mouse has been outside both the trigger and
+ * the panel for a moment (time to cross the gap) and as soon as the page
+ * scrolls. Escape and clicking outside close it as before.
  */
+const LEAVE_MS = 180
+const SLACK = 16
+
 export function MainNav() {
+  const [value, setValue] = useState<string | null>(null)
+  const root = useRef<HTMLElement>(null)
+
+  // While open: close once a mouse has been outside the trigger and the
+  // panel for LEAVE_MS, and as soon as the page scrolls.
+  useEffect(() => {
+    if (!value) return
+    let timer: ReturnType<typeof setTimeout> | null = null
+    // Inside = over the trigger or the panel, with a little slack around each.
+    const over = (el: Element | null | undefined, x: number, y: number) => {
+      const r = el?.getBoundingClientRect()
+      return !!r && x >= r.left - SLACK && x <= r.right + SLACK && y >= r.top - SLACK && y <= r.bottom + SLACK
+    }
+    const move = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return
+      const open = root.current?.querySelector('[data-slot="navigation-menu-trigger"][data-popup-open]')
+      const content = document.querySelector('[data-slot="navigation-menu-content"]')
+      if (over(open, e.clientX, e.clientY) || over(content, e.clientX, e.clientY)) {
+        if (timer) clearTimeout(timer)
+        timer = null
+      } else if (!timer) timer = setTimeout(() => setValue(null), LEAVE_MS)
+    }
+    const close = () => setValue(null)
+    document.addEventListener("pointermove", move, { passive: true })
+    window.addEventListener("scroll", close, { passive: true })
+    return () => {
+      if (timer) clearTimeout(timer)
+      document.removeEventListener("pointermove", move)
+      window.removeEventListener("scroll", close)
+    }
+  }, [value])
 
   return (
-    <NavigationMenu aria-label="Main" className="hidden flex-1 justify-start lg:flex">
+    <NavigationMenu ref={root} aria-label="Main" value={value} onValueChange={(v) => setValue((v as string | null) ?? null)} className="hidden flex-1 justify-start lg:flex">
       <NavigationMenuList className="justify-start gap-1">
-        <NavigationMenuItem>
+        <NavigationMenuItem value="platform">
           <NavigationMenuTrigger className="h-9 rounded-full bg-transparent px-3 text-small font-normal text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent data-open:bg-transparent data-open:text-foreground data-popup-open:bg-transparent data-popup-open:text-foreground">
             Platform
           </NavigationMenuTrigger>
@@ -66,10 +100,7 @@ export function MainNav() {
 
                 {/* Featured: Human + AI, with the image slot */}
                 <div className="border-l border-line pl-6">
-                  <NavigationMenuLink
-                    render={<Link href={menuHref(platformFeatured)} />}
-                    className="group/feat flex-col items-stretch gap-2 rounded-md p-0 hover:bg-transparent focus:bg-transparent"
-                  >
+                  <NavigationMenuLink render={<Link href={menuHref(platformFeatured)} />} className="group/feat flex-col items-stretch gap-2 rounded-md p-0 hover:bg-transparent focus:bg-transparent">
                     <MenuMediaSlot />
                     <span className="flex items-center justify-between gap-2 text-body text-foreground">
                       {platformFeatured.name}
@@ -83,13 +114,47 @@ export function MainNav() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        {nav.links.map((link) => (
-          <NavigationMenuItem key={link.label}>
-            <Link href={link.href} className={ITEM}>
-              {link.label}
-            </Link>
-          </NavigationMenuItem>
-        ))}
+        <NavigationMenuItem value="solutions">
+          <NavigationMenuTrigger className="h-9 rounded-full bg-transparent px-3 text-small font-normal text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent data-open:bg-transparent data-open:text-foreground data-popup-open:bg-transparent data-popup-open:text-foreground">
+            Solutions
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <div className="flex w-[min(60rem,calc(100vw-3rem))] flex-col p-6">
+              <NavigationMenuLink
+                render={<Link href="/solutions" />}
+                className="group/ov w-fit flex-row items-center gap-2 p-0 text-h4 font-normal text-foreground hover:bg-transparent focus:bg-transparent"
+              >
+                All solutions
+                <ArrowRightIcon className="size-4 transition-transform group-hover/ov:translate-x-0.5" aria-hidden />
+              </NavigationMenuLink>
+              <ul className="mt-5 grid grid-cols-3 gap-x-6 gap-y-2 border-t border-line-strong pt-5">
+                {industries.map((x) => (
+                  <li key={x.slug}>
+                    <NavigationMenuLink render={<Link href={industryHref(x.slug)} />} className="group/ind flex-row items-center gap-3 rounded-md p-2 hover:bg-secondary focus:bg-secondary">
+                      <span className="relative size-14 shrink-0 overflow-hidden rounded-md bg-surface">
+                        <Image src={`/art/solutions/${x.slug}.webp`} alt="" fill sizes="56px" className="object-cover transition-[scale] duration-500 group-hover/ind:scale-105" />
+                      </span>
+                      <span className="flex min-w-0 flex-col gap-0.5">
+                        <span className="text-body text-foreground">{x.name}</span>
+                        <span className="line-clamp-2 text-small leading-snug text-ink-muted">{x.card}</span>
+                      </span>
+                    </NavigationMenuLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        {nav.links
+          .filter((link) => link.href !== "/solutions")
+          .map((link) => (
+            <NavigationMenuItem key={link.label}>
+              <Link href={link.href} className={ITEM}>
+                {link.label}
+              </Link>
+            </NavigationMenuItem>
+          ))}
       </NavigationMenuList>
     </NavigationMenu>
   )
@@ -107,16 +172,7 @@ function MenuMediaSlot() {
   if (menuMedia.type === "video")
     return (
       <div className={frame}>
-        <video
-          src={menuMedia.src}
-          poster={menuMedia.poster}
-          aria-label={menuMedia.alt}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="size-full object-cover motion-reduce:hidden"
-        />
+        <video src={menuMedia.src} poster={menuMedia.poster} aria-label={menuMedia.alt} autoPlay muted loop playsInline className="size-full object-cover motion-reduce:hidden" />
       </div>
     )
   return (

@@ -12,9 +12,7 @@ import type { MenuPageId } from "@/content/platform"
  */
 
 export type Tone = "ok" | "warn" | "fail" | "live"
-/** A small piece of product for a use-case card: one record with a status. Sample. */
-export type JobUi = { label: string; title: string; rows: [string, string][]; pill: { text: string; tone: Tone } }
-export type Job = { name: string; body: string; ui?: JobUi }
+export type Job = { name: string; body: string }
 export type ScreenRow = { name: string; detail: string; status: string; tone: Tone }
 
 export type Industry = {
@@ -38,7 +36,31 @@ export type Industry = {
     call: { line: string; length: string }
     result: { outcome: string; system: string }
   }
-  needs: { title: string; body: string }[]
+  /** The kinds of customer in this industry, each with its use cases (tabs). */
+  segments: { name: string; cases: { name: string; body: string }[] }[]
+  /** One call followed through five stages, for the detailed funnel. Sample. */
+  funnel: {
+    trigger: { at: string; title: string; detail: string }
+    /** What the agent knows before it says hello. */
+    context: [string, string][]
+    turns: { who: "agent" | "caller"; text: string }[]
+    /** The action taken during the call, shown inline after the turns. */
+    tool: { name: string; args: string }
+    length: string
+    /** What gets written back after the call. */
+    after: string[]
+    result: { title: string; detail: string }
+    /** The same call told in plain words, one sentence per stage, for non-technical readers. */
+    story: { start: string; ready: string; action: string; result: string }
+  }
+  /** The story in two short paragraphs: what goes wrong today, and what changes with Ria. Sample. */
+  narrative: { before: string; after: string }
+  /** The three problems this industry has, and how a Hooman solves each (same order). */
+  problems: { title: string; body: string }[]
+  /** Each with one moment from a call: who said it, when, and the words to highlight. Sample. */
+  solves: { title: string; body: string; moment: { who: string; at: string; text: string; mark: string[] }; done: { title: string; detail: string } }[]
+  /** A customer quote; hidden until an approved one exists. */
+  quote?: { text: string; name: string; role: string }
   faq: { q: string; a: string }[]
 }
 
@@ -56,41 +78,14 @@ export const industries: Industry[] = [
       {
         name: "Fee reminders",
         body: "Reminds families before each fee is due and sends the payment link.",
-        ui: {
-          label: "Fee reminder",
-          title: "Term 2 fee · ₹48,000",
-          rows: [
-            ["Parent", "Asha Menon"],
-            ["Due", "10 Apr"],
-          ],
-          pill: { text: "Link sent", tone: "ok" },
-        },
       },
       {
         name: "Course renewals",
         body: "Calls before access ends and renews the plan on the call.",
-        ui: {
-          label: "Renewal",
-          title: "Annual plan · ends in 7 days",
-          rows: [
-            ["Learner", "Omar Haddad"],
-            ["Plan", "Data science"],
-          ],
-          pill: { text: "Renewed", tone: "ok" },
-        },
       },
       {
         name: "Admission documents",
         body: "Chases missing documents before the deadline and sends the upload link.",
-        ui: {
-          label: "Documents",
-          title: "2 of 4 uploaded",
-          rows: [
-            ["Student", "Sara Kim"],
-            ["Deadline", "Fri 5 pm"],
-          ],
-          pill: { text: "Reminder set", tone: "warn" },
-        },
       },
     ],
     story: {
@@ -124,10 +119,89 @@ export const industries: Industry[] = [
       call: { line: "Shall I book you a call with a counsellor this week?", length: "2:14" },
       result: { outcome: "Counsellor booked · Thu 5 pm", system: "CRM updated" },
     },
-    needs: [
-      { title: "Speed to first call", body: "Enquiries are called while the student is still deciding, not days later." },
-      { title: "Their language", body: "Students and parents talk in the language they're comfortable with, and can switch mid-call." },
-      { title: "Counsellors' calendars", body: "Sessions are booked straight into the right counsellor's calendar." },
+    segments: [
+      {
+        name: "Universities & colleges",
+        cases: [
+          { name: "Admissions enquiry follow-up", body: "Calls each enquiry within minutes and books a counsellor." },
+          { name: "Application documents", body: "Chases missing documents before the deadline and sends the upload link." },
+          { name: "Fee reminders", body: "Reminds families before each fee is due and sends the payment link." },
+          { name: "Alumni outreach", body: "Invites alumni to events and updates their details." },
+        ],
+      },
+      {
+        name: "Test prep & coaching",
+        cases: [
+          { name: "Lead qualification", body: "Asks about the exam, goals and timing, and scores every lead." },
+          { name: "Demo class booking", body: "Books a free demo class at a time that suits the student." },
+          { name: "Batch reminders", body: "Reminds students before each class and reschedules missed ones." },
+          { name: "Course renewals", body: "Calls before access ends and renews the plan on the call." },
+        ],
+      },
+      {
+        name: "Online learning",
+        cases: [
+          { name: "Onboarding calls", body: "Welcomes new learners and helps them start their first lesson." },
+          { name: "Completion nudges", body: "Checks in when a learner falls behind and books a mentor session." },
+          { name: "Subscription renewals", body: "Reminds learners before renewal and keeps the plan going." },
+          { name: "Course feedback", body: "Asks what worked and what didn't, and logs every answer." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "9:02 pm", title: "New enquiry from the website", detail: "Maya Patel · Data science course" },
+      context: [
+        ["Course", "Data science · weekend batch"],
+        ["Source", "Website form, 2 min ago"],
+        ["Counsellor", "Priya Shah · free Thu 5 pm"],
+      ],
+      turns: [
+        { who: "agent", text: "Hi Maya, this is Ria from Kestrel Learning. You asked about our data science course?" },
+        { who: "caller", text: "Yes, is there a weekend batch?" },
+        { who: "agent", text: "There is, on Saturdays and Sundays. Shall I book a call with a counsellor?" },
+        { who: "caller", text: "Thursday evening works." },
+      ],
+      tool: { name: "book_counsellor", args: "Thu 5 pm, Priya Shah" },
+      length: "2:14",
+      after: ["Session booked in Priya's calendar", "Lead marked qualified in the CRM", "Confirmation sent by SMS", "Summary added to the lead"],
+      result: { title: "Counsellor booked", detail: "Within 3 minutes of the enquiry" },
+      story: {
+        start: "It's 9 pm. Maya fills in an enquiry form for the data science course.",
+        ready: "A few minutes later Ria calls her, already knowing which course she asked about and when a counsellor is free.",
+        action: "While they talk, Ria books Maya a counsellor session for Thursday at 5 pm.",
+        result: "Maya has a session booked three minutes after asking, and nobody on your team had to pick up the phone.",
+      },
+    },
+    narrative: {
+      before:
+        "Kestrel Learning gets most of its enquiries after 8 pm, when students finally have time to look. Counsellors call back the next morning, often the next afternoon. By then many students have already signed up somewhere else, and the ones who haven't are harder to reach.",
+      after:
+        "Now every enquiry gets a call within minutes, from Ria. She knows which course the student asked about, answers their questions in their language, and books them straight into a counsellor's calendar. Counsellors spend their day on the conversations that need them.",
+    },
+    problems: [
+      { title: "Enquiries go cold", body: "Students enquire at night and on weekends. By the time a counsellor calls back, many have signed up elsewhere." },
+      { title: "Counsellors stuck on routine calls", body: "Reminders and follow-ups eat the hours meant for real conversations with students." },
+      { title: "Learners drop off quietly", body: "Missed fees and lapsed renewals go unnoticed until the learner has already left." },
+    ],
+    solves: [
+      {
+        title: "Called within minutes",
+        body: "A Hooman calls every new enquiry within minutes, answers course questions and books a counsellor.",
+        moment: { who: "Student", at: "0:06", text: "I just filled in the form for the data science course. Is there a weekend batch?", mark: ["data science course", "weekend batch"] },
+        done: { title: "Counsellor booked · Thu 5 pm", detail: "Added to Priya's calendar" },
+      },
+      {
+        title: "Routine calls run themselves",
+        body: "Fee reminders, document chasers and class reminders go out on their own, in the family's language.",
+        moment: { who: "Parent", at: "0:09", text: "Can you send me the link for the term 2 fee? I'll pay it tonight.", mark: ["term 2 fee", "pay it tonight"] },
+        done: { title: "Payment link sent", detail: "Term 2 fee · by SMS" },
+      },
+      {
+        title: "Check-ins before they leave",
+        body: "Check-in and renewal calls reach learners before access ends, and renew the plan on the call.",
+        moment: { who: "Learner", at: "0:12", text: "My access ends next week. I'd like to renew for another year.", mark: ["access ends", "renew"] },
+        done: { title: "Plan renewed", detail: "Annual · data science" },
+      },
     ],
     faq: [
       { q: "Can it call enquiries that come in late at night?", a: "Yes. It calls within your calling hours and books counsellors into the next free slot." },
@@ -150,41 +224,14 @@ export const industries: Industry[] = [
       {
         name: "Policy renewals",
         body: "Calls before a policy lapses and renews it with the same cover.",
-        ui: {
-          label: "Renewal",
-          title: "Motor policy · lapses 12 Apr",
-          rows: [
-            ["Customer", "Omar Haddad"],
-            ["Cover", "Same as last year"],
-          ],
-          pill: { text: "Renewed", tone: "ok" },
-        },
       },
       {
         name: "KYC reminders",
         body: "Asks for updated documents and sends the upload link.",
-        ui: {
-          label: "KYC",
-          title: "Address proof needed",
-          rows: [
-            ["Customer", "Priya Shah"],
-            ["Sent", "Upload link"],
-          ],
-          pill: { text: "Awaiting upload", tone: "warn" },
-        },
       },
       {
         name: "Loan application follow-up",
         body: "Calls applicants who stopped halfway and helps them finish.",
-        ui: {
-          label: "Application",
-          title: "Personal loan · step 3 of 5",
-          rows: [
-            ["Applicant", "Daniel Brooks"],
-            ["Stopped at", "Income details"],
-          ],
-          pill: { text: "Completed", tone: "ok" },
-        },
       },
     ],
     story: {
@@ -218,10 +265,89 @@ export const industries: Industry[] = [
       call: { line: "This call is recorded. I'll note Friday and text you a link to pay.", length: "1:48" },
       result: { outcome: "Promise to pay · Friday", system: "Loan system updated" },
     },
-    needs: [
-      { title: "Disclosures, word for word", body: "Fixed steps read your required wording exactly, every time." },
-      { title: "Only allowed offers", body: "It offers only the plans your policy allows, and hands anything else to your team." },
-      { title: "A record of every call", body: "Every call is recorded and transcribed, with what was said and done." },
+    segments: [
+      {
+        name: "Lending",
+        cases: [
+          { name: "Payment collections", body: "Calls before and after the due date and takes or logs the payment." },
+          { name: "Loan application follow-up", body: "Calls applicants who stopped halfway and helps them finish." },
+          { name: "KYC reminders", body: "Asks for updated documents and sends the upload link." },
+          { name: "Repayment plans", body: "Offers only the plans your policy allows and records the choice." },
+        ],
+      },
+      {
+        name: "Insurance",
+        cases: [
+          { name: "Policy renewals", body: "Calls before a policy lapses and renews it with the same cover." },
+          { name: "Premium reminders", body: "Reminds customers before each premium is due." },
+          { name: "Claim status updates", body: "Tells customers where their claim stands and what's next." },
+          { name: "Lead qualification", body: "Qualifies new leads and books the ones ready to buy." },
+        ],
+      },
+      {
+        name: "Payments & cards",
+        cases: [
+          { name: "Card activation", body: "Helps new cardholders activate and set up their card." },
+          { name: "Failed payment recovery", body: "Calls when a payment fails and helps it go through." },
+          { name: "Dispute intake", body: "Takes the details of a disputed charge and opens the case." },
+          { name: "Transaction checks", body: "Confirms unusual transactions with the customer." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "6 Mar, 10:00", title: "Instalment missed", detail: "Maya Patel · $240 due 5 Mar" },
+      context: [
+        ["Balance", "$240 · 1 day overdue"],
+        ["History", "Paid on time 11 of 12 months"],
+        ["Allowed", "New date within 7 days"],
+      ],
+      turns: [
+        { who: "agent", text: "Hi Maya, this is Ria from Halden Finance. This call is recorded. Your $240 instalment was due yesterday." },
+        { who: "caller", text: "I get paid on Friday. Can I pay then?" },
+        { who: "agent", text: "Of course. I'll note Friday the 8th and text you a link to pay." },
+        { who: "caller", text: "Great, thank you." },
+      ],
+      tool: { name: "log_promise_to_pay", args: "$240, Fri 8 Mar" },
+      length: "1:48",
+      after: ["Promise to pay logged in the loan system", "Payment link sent by SMS", "Reminder set for Thu 7 Mar", "Disclosure read, call recorded"],
+      result: { title: "Promise to pay · Friday", detail: "No agent needed, fully compliant" },
+      story: {
+        start: "Maya's $240 instalment was due yesterday and hasn't come in.",
+        ready: "Before calling, Ria checks Maya's balance, her payment history and which new dates your policy allows.",
+        action: "Ria reads the required disclosure, agrees Friday with Maya and texts her a link to pay.",
+        result: "A promise to pay is logged, the disclosure was read word for word, and no one on your team had to make the call.",
+      },
+    },
+    narrative: {
+      before:
+        "Halden Finance's collections team calls by hand, working through yesterday's missed payments. Customers are reached late, disclosures are read differently by every caller, and renewals slip because there are never enough hands.",
+      after:
+        "Now Ria calls before and after every due date. She reads the required disclosure word for word, offers only what the policy allows, logs every promise to pay and sends the link. The team steps in only for disputes and difficult cases.",
+    },
+    problems: [
+      { title: "Collections start too late", body: "Manual calling reaches customers days after the due date, when payments are harder to recover." },
+      { title: "Compliance depends on the caller", body: "Disclosures and offers vary from one agent to the next, and every slip is a risk." },
+      { title: "Renewals slip through", body: "Policies lapse and KYC goes stale because there aren't enough hands to call everyone." },
+    ],
+    solves: [
+      {
+        title: "Calls before and after every due date",
+        body: "A Hooman reminds each customer on time, takes or logs the payment and sends the link.",
+        moment: { who: "Customer", at: "0:14", text: "I missed the payment, but I get paid on Friday. Can I pay then?", mark: ["missed the payment", "pay then"] },
+        done: { title: "Promise to pay logged", detail: "Friday · loan system updated" },
+      },
+      {
+        title: "The same words on every call",
+        body: "Fixed steps read your disclosures word for word, and it offers only what your policy allows.",
+        moment: { who: "Ria", at: "0:03", text: "Before we start, this call is recorded for quality and compliance.", mark: ["recorded", "compliance"] },
+        done: { title: "Disclosure read", detail: "Word for word · call recorded" },
+      },
+      {
+        title: "Every customer reached",
+        body: "Renewal and KYC calls run at any volume, in each customer's language.",
+        moment: { who: "Customer", at: "0:21", text: "Yes, renew it with the same cover as last year, please.", mark: ["renew", "same cover"] },
+        done: { title: "Policy renewed", detail: "Same cover · documents emailed" },
+      },
     ],
     faq: [
       { q: "Can it read our exact compliance script?", a: "Yes. Fixed conversation steps read your wording word for word, and branches decide when they apply." },
@@ -241,41 +367,14 @@ export const industries: Industry[] = [
       {
         name: "Failed delivery rescheduling",
         body: "Calls after a missed delivery and books the next attempt.",
-        ui: {
-          label: "Missed delivery",
-          title: "Order 7764 · attempt 1 failed",
-          rows: [
-            ["Customer", "Sara Kim"],
-            ["Next attempt", "Tomorrow, 9–12"],
-          ],
-          pill: { text: "Rebooked", tone: "ok" },
-        },
       },
       {
         name: "Cash-on-delivery confirmation",
         body: "Confirms COD orders before they ship, so fewer come back.",
-        ui: {
-          label: "Cash on delivery",
-          title: "Order 7790 · ₹2,350",
-          rows: [
-            ["Customer", "Daniel Brooks"],
-            ["Ships", "Today"],
-          ],
-          pill: { text: "Confirmed", tone: "ok" },
-        },
       },
       {
         name: "Pickup booking",
         body: "Books return and reverse pickups at a time the customer is home.",
-        ui: {
-          label: "Pickup",
-          title: "Return · 1 parcel",
-          rows: [
-            ["Customer", "Asha Menon"],
-            ["Slot", "Sat, 10–1"],
-          ],
-          pill: { text: "Pickup booked", tone: "ok" },
-        },
       },
     ],
     story: {
@@ -309,10 +408,88 @@ export const industries: Industry[] = [
       call: { line: "I've moved it to 3 to 6 pm and added your flat number, 4B.", length: "1:12" },
       result: { outcome: "Slot and address confirmed", system: "Route updated" },
     },
-    needs: [
-      { title: "Volume, on time", body: "Thousands of calls go out in the hours before dispatch." },
-      { title: "Clean addresses", body: "Missing flat numbers and landmarks are fixed on the call." },
-      { title: "Back into your system", body: "Every confirmed slot and address lands in your delivery system." },
+    segments: [
+      {
+        name: "Last-mile delivery",
+        cases: [
+          { name: "Delivery confirmation", body: "Confirms the slot and the address the day before dispatch." },
+          { name: "Failed delivery rescheduling", body: "Calls after a missed delivery and books the next attempt." },
+          { name: "Address correction", body: "Adds missing flat numbers and landmarks on the call." },
+          { name: "Cash-on-delivery confirmation", body: "Confirms COD orders before they ship, so fewer come back." },
+        ],
+      },
+      {
+        name: "Freight & B2B",
+        cases: [
+          { name: "Pickup booking", body: "Books pickups with the sender at a time that suits them." },
+          { name: "Shipment status updates", body: "Tells customers where their shipment is and when it lands." },
+          { name: "Proof of delivery follow-up", body: "Chases missing delivery confirmations." },
+          { name: "Driver check-ins", body: "Checks in with drivers on the road and logs their updates." },
+        ],
+      },
+      {
+        name: "Returns",
+        cases: [
+          { name: "Return pickup booking", body: "Books return pickups at a time the customer is home." },
+          { name: "Exchange coordination", body: "Arranges the pickup and the replacement in one call." },
+          { name: "Refund status updates", body: "Tells customers when their refund will arrive." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "Day before, 4:00 pm", title: "Delivery tomorrow", detail: "Order 7731 · Priya Shah" },
+      context: [
+        ["Slot", "Tomorrow, 10 am – 2 pm"],
+        ["Address", "Missing flat number"],
+        ["Payment", "Prepaid"],
+      ],
+      turns: [
+        { who: "agent", text: "Hi Priya, this is Ria from Corvo Logistics. Your parcel arrives tomorrow between 10 and 2." },
+        { who: "caller", text: "I won't be home then. Can it come in the evening?" },
+        { who: "agent", text: "I've moved it to 3 to 6 pm. Which flat number should I add?" },
+        { who: "caller", text: "It's 4B." },
+      ],
+      tool: { name: "update_delivery", args: "3–6 pm, flat 4B" },
+      length: "1:12",
+      after: ["Slot moved in the delivery system", "Flat 4B added to the address", "Route re-planned for the evening", "Confirmation sent by SMS"],
+      result: { title: "Slot and address confirmed", detail: "First attempt saved" },
+      story: {
+        start: "Priya's parcel is due tomorrow, but her address is missing a flat number.",
+        ready: "The afternoon before, Ria calls Priya, already knowing the delivery slot and what's missing from the address.",
+        action: "Priya won't be home, so Ria moves the delivery to the evening and adds flat 4B.",
+        result: "The van arrives when Priya is home, at the right door, first time.",
+      },
+    },
+    narrative: {
+      before:
+        "Corvo Logistics loses money on every failed first attempt. Drivers arrive to locked doors and addresses without a flat number, and cash-on-delivery orders get refused at the door and shipped back.",
+      after:
+        "Now Ria calls each customer the afternoon before. She confirms the slot, moves it if they won't be home, adds the missing details and confirms cash-on-delivery orders. Every change goes straight into the route for the next day.",
+    },
+    problems: [
+      { title: "Failed first attempts", body: "Drivers arrive to locked doors, and every failed delivery costs a second trip." },
+      { title: "Addresses that don't work", body: "Missing flat numbers and landmarks send vans to the wrong door." },
+      { title: "COD orders come back", body: "Unconfirmed cash-on-delivery orders are refused at the door and shipped back." },
+    ],
+    solves: [
+      {
+        title: "Confirmed the day before",
+        body: "A Hooman calls ahead to confirm the slot, and moves it if the customer won't be home.",
+        moment: { who: "Customer", at: "0:10", text: "I won't be home tomorrow morning. Can it come in the evening?", mark: ["won't be home", "evening"] },
+        done: { title: "Slot moved", detail: "Tomorrow, 3–6 pm" },
+      },
+      {
+        title: "Fixed on the call",
+        body: "Missing details are added before dispatch and written straight back to your delivery system.",
+        moment: { who: "Customer", at: "0:17", text: "It's flat 4B, second floor, next to the pharmacy.", mark: ["flat 4B", "next to the pharmacy"] },
+        done: { title: "Address fixed", detail: "Flat 4B added to the route" },
+      },
+      {
+        title: "Confirmed before it ships",
+        body: "Cash-on-delivery orders are confirmed with the customer before they leave the warehouse.",
+        moment: { who: "Customer", at: "0:08", text: "Yes, I'll pay cash on delivery. Please send it today.", mark: ["cash on delivery", "send it today"] },
+        done: { title: "COD confirmed", detail: "Ships today" },
+      },
     ],
     faq: [
       { q: "Can it update our delivery system?", a: "Yes, through tools that call your system's API, so the route reflects every change." },
@@ -332,41 +509,14 @@ export const industries: Industry[] = [
       {
         name: "Abandoned cart follow-up",
         body: "Calls shoppers who left items behind and helps them check out.",
-        ui: {
-          label: "Abandoned cart",
-          title: "2 items · $86",
-          rows: [
-            ["Shopper", "Priya Shah"],
-            ["Left", "Yesterday"],
-          ],
-          pill: { text: "Checked out", tone: "ok" },
-        },
       },
       {
         name: "Returns and exchanges",
         body: "Books the pickup and arranges the replacement in the same call.",
-        ui: {
-          label: "Return",
-          title: "Lamp · wrong colour",
-          rows: [
-            ["Customer", "Omar Haddad"],
-            ["Pickup", "Thu, 9–12"],
-          ],
-          pill: { text: "Exchange sent", tone: "ok" },
-        },
       },
       {
         name: "Post-delivery feedback",
         body: "Calls after delivery to ask how it went and log the answers.",
-        ui: {
-          label: "Feedback",
-          title: "Delivered yesterday",
-          rows: [
-            ["Customer", "Asha Menon"],
-            ["Rating", "5 of 5"],
-          ],
-          pill: { text: "Logged", tone: "ok" },
-        },
       },
     ],
     story: {
@@ -400,10 +550,87 @@ export const industries: Industry[] = [
       call: { line: "It arrives by 6 pm. Which flat number should I add?", length: "1:36" },
       result: { outcome: "Resolved · address fixed", system: "Ticket closed" },
     },
-    needs: [
-      { title: "No queues on sale days", body: "Every call is picked up, however busy it gets." },
-      { title: "Answers from the order", body: "It finds the order from the caller's number and acts on it." },
-      { title: "A person when needed", body: "Unusual cases go to your team with the full context." },
+    segments: [
+      {
+        name: "Marketplaces & D2C",
+        cases: [
+          { name: "Order support", body: "Tracks the order, fixes the address or starts a return, and closes the ticket." },
+          { name: "Abandoned cart follow-up", body: "Calls shoppers who left items behind and helps them check out." },
+          { name: "Returns and exchanges", body: "Books the pickup and arranges the replacement in one call." },
+          { name: "Post-delivery feedback", body: "Asks how the delivery went and logs the answers." },
+        ],
+      },
+      {
+        name: "Quick commerce",
+        cases: [
+          { name: "Order status", body: "Tells customers where their order is, in seconds." },
+          { name: "Substitution approval", body: "Asks before replacing an out-of-stock item." },
+          { name: "Delivery issue resolution", body: "Handles missing or damaged items and issues the fix." },
+        ],
+      },
+      {
+        name: "Subscriptions",
+        cases: [
+          { name: "Renewal reminders", body: "Reminds subscribers before renewal." },
+          { name: "Payment failure recovery", body: "Calls when a renewal payment fails and helps it go through." },
+          { name: "Win-back calls", body: "Calls customers who cancelled and offers a way back." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "11:40 pm", title: "Inbound call", detail: "Number matched to Maya Patel" },
+      context: [
+        ["Order", "7731 · out for delivery"],
+        ["Due", "Today by 6 pm"],
+        ["Address", "Missing flat number"],
+      ],
+      turns: [
+        { who: "caller", text: "Hi, where's my order? It was due today." },
+        { who: "agent", text: "I've found it. It arrives by 6 pm. Which flat number should I add?" },
+        { who: "caller", text: "Flat 12, second floor." },
+        { who: "agent", text: "Added. You'll get a text when it's out for delivery." },
+      ],
+      tool: { name: "update_address", args: "flat 12, floor 2" },
+      length: "1:36",
+      after: ["Ticket closed in the helpdesk", "Delivery note added to the order", "Tracking link sent by SMS", "Summary saved to the customer"],
+      result: { title: "Resolved in one call", detail: "No agent needed" },
+      story: {
+        start: "It's 11:40 pm. Maya calls to ask where her order is.",
+        ready: "Ria recognises Maya's number and pulls up her order before saying hello: it's out for delivery, but the address is missing a flat number.",
+        action: "Ria tells Maya it arrives by 6 pm and adds her flat number to the order while they talk.",
+        result: "Maya's question is answered in under two minutes, and your team didn't have to pick up.",
+      },
+    },
+    narrative: {
+      before:
+        "On sale days Lumen Home's support line queues for half an hour. Most callers ask the same thing, where their order is, and agents spend the day looking orders up instead of solving real problems.",
+      after:
+        "Now Ria picks up every call on the first ring. She finds the order from the caller's number, fixes what needs fixing and closes the ticket with a summary. The team handles the unusual cases, with the full story in front of them.",
+    },
+    problems: [
+      { title: "Queues on sale days", body: "Support lines back up for half an hour as soon as volume spikes." },
+      { title: "The same question, all day", body: "Most calls are “where is my order?”, and agents spend the day looking orders up." },
+      { title: "Carts left behind", body: "Shoppers leave items in their cart, and nobody follows up." },
+    ],
+    solves: [
+      {
+        title: "Every call picked up",
+        body: "A Hooman answers on the first ring, however busy it gets.",
+        moment: { who: "Customer", at: "0:02", text: "Hi, where's my order? It was supposed to arrive today.", mark: ["where's my order", "arrive today"] },
+        done: { title: "Ticket closed", detail: "Arriving by 6 pm · flat added" },
+      },
+      {
+        title: "Answers from the order",
+        body: "It finds the order from the caller's number, fixes it and closes the ticket with a summary.",
+        moment: { who: "Customer", at: "0:15", text: "The lamp is the wrong colour. Can I swap it for the white one?", mark: ["wrong colour", "swap it"] },
+        done: { title: "Exchange booked", detail: "Pickup Thu · white lamp sent" },
+      },
+      {
+        title: "A call to finish checkout",
+        body: "Shoppers who left items behind get a call that helps them check out.",
+        moment: { who: "Customer", at: "0:11", text: "I left it in my cart because delivery looked slow. Is there a faster option?", mark: ["left it in my cart", "faster option"] },
+        done: { title: "Checked out", detail: "Faster delivery added" },
+      },
     ],
     faq: [
       { q: "Does it work with our helpdesk?", a: "Yes. It connects to your helpdesk and anything else with an API." },
@@ -423,41 +650,14 @@ export const industries: Industry[] = [
       {
         name: "Appointment reminders",
         body: "Calls the day before each visit and reschedules if needed.",
-        ui: {
-          label: "Reminder",
-          title: "Dr Rao · tomorrow 10 am",
-          rows: [
-            ["Patient", "Omar Haddad"],
-            ["Reply", "Can't make it"],
-          ],
-          pill: { text: "Moved to Fri", tone: "warn" },
-        },
       },
       {
         name: "Post-visit check-ins",
         body: "Calls after a visit to see how the patient feels and book a review.",
-        ui: {
-          label: "Check-in",
-          title: "3 days after visit",
-          rows: [
-            ["Patient", "Asha Menon"],
-            ["Feeling", "Better"],
-          ],
-          pill: { text: "Review booked", tone: "ok" },
-        },
       },
       {
         name: "Lab report notifications",
         body: "Lets patients know their report is ready and books a follow-up.",
-        ui: {
-          label: "Lab report",
-          title: "Blood test · ready",
-          rows: [
-            ["Patient", "Priya Shah"],
-            ["Follow-up", "Mon 11 am"],
-          ],
-          pill: { text: "Booked", tone: "ok" },
-        },
       },
     ],
     story: {
@@ -491,10 +691,87 @@ export const industries: Industry[] = [
       call: { line: "Dr Rao has Thursday at 10 or Friday at 3. Which suits you?", length: "1:20" },
       result: { outcome: "Visit booked · Thu 10 am", system: "Calendar updated" },
     },
-    needs: [
-      { title: "Admin, not advice", body: "It handles bookings and admin questions, and hands anything clinical to your staff." },
-      { title: "The patient's language", body: "Patients speak the language they're comfortable with." },
-      { title: "Fewer missed visits", body: "Reminder calls confirm or move visits before the slot is lost." },
+    segments: [
+      {
+        name: "Hospitals",
+        cases: [
+          { name: "Appointment booking", body: "Books visits after hours too, straight into the doctors' calendars." },
+          { name: "Pre-visit instructions", body: "Calls before a visit with what to bring and how to prepare." },
+          { name: "Discharge follow-up", body: "Checks in after discharge and books a review." },
+          { name: "Billing questions", body: "Explains bills and sends the payment link." },
+        ],
+      },
+      {
+        name: "Clinics",
+        cases: [
+          { name: "Appointment reminders", body: "Calls the day before each visit and reschedules if needed." },
+          { name: "Rescheduling", body: "Moves visits to the next free slot in one call." },
+          { name: "Post-visit check-ins", body: "Asks how the patient feels and books a review." },
+        ],
+      },
+      {
+        name: "Diagnostics & labs",
+        cases: [
+          { name: "Home sample collection", body: "Books a home collection slot and confirms the address." },
+          { name: "Report notifications", body: "Lets patients know their report is ready." },
+          { name: "Follow-up consults", body: "Books a consult to go over the results." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "8:15 pm", title: "After-hours call", detail: "Omar Haddad · existing patient" },
+      context: [
+        ["Patient", "Omar Haddad · last visit March"],
+        ["Doctor", "Dr Rao · 2 slots this week"],
+        ["Language", "English"],
+      ],
+      turns: [
+        { who: "caller", text: "Hi, I'd like to see Dr Rao this week." },
+        { who: "agent", text: "Dr Rao has Thursday at 10 or Friday at 3. Which suits you?" },
+        { who: "caller", text: "Thursday at 10." },
+        { who: "agent", text: "Booked. I'll text you the address and time." },
+      ],
+      tool: { name: "book_appointment", args: "Dr Rao, Thu 10 am" },
+      length: "1:20",
+      after: ["Visit booked in Dr Rao's calendar", "Address and time sent by SMS", "Reminder call set for Wed", "Note added for the front desk"],
+      result: { title: "Visit booked · Thu 10 am", detail: "Booked while the clinic was closed" },
+      story: {
+        start: "It's 8:15 pm and the clinic is closed. Omar calls to see Dr Rao this week.",
+        ready: "Ria recognises Omar as a patient and checks Dr Rao's calendar before answering.",
+        action: "Ria offers two times, Omar picks Thursday at 10, and Ria books it.",
+        result: "Omar's visit is booked after hours, and the front desk finds it in the calendar in the morning.",
+      },
+    },
+    narrative: {
+      before:
+        "Rao Family Clinics misses calls every evening after 6 pm, and patients book somewhere else. During the day the front desk juggles phones and patients, and forgotten visits leave empty slots that can't be filled in time.",
+      after:
+        "Now Ria answers every call, day or night, in the patient's language. She books visits straight into the doctors' calendars, calls the day before to confirm, and hands anything clinical to the staff.",
+    },
+    problems: [
+      { title: "Missed calls after hours", body: "Patients call when the front desk is closed, and book somewhere else." },
+      { title: "No-shows leave gaps", body: "Forgotten visits leave empty slots that can't be filled in time." },
+      { title: "A front desk stretched thin", body: "Staff juggle ringing phones and the patients in front of them." },
+    ],
+    solves: [
+      {
+        title: "Every call answered",
+        body: "A Hooman books visits after hours, straight into the doctors' calendars, in the patient's language.",
+        moment: { who: "Patient", at: "0:04", text: "I know it's late, but can I see Dr Rao this week?", mark: ["see Dr Rao", "this week"] },
+        done: { title: "Visit booked", detail: "Dr Rao · Thu 10 am" },
+      },
+      {
+        title: "Reminders that move visits",
+        body: "It calls the day before, and moves the visit if the patient can't make it.",
+        moment: { who: "Patient", at: "0:09", text: "I can't make tomorrow at 10. Is Friday afternoon free?", mark: ["can't make tomorrow", "Friday afternoon"] },
+        done: { title: "Visit moved", detail: "Fri 3 pm · reminder set" },
+      },
+      {
+        title: "Admin off the desk",
+        body: "It handles bookings and admin questions, and hands anything clinical to your staff.",
+        moment: { who: "Patient", at: "0:13", text: "What time does the clinic open on Saturday?", mark: ["clinic open", "Saturday"] },
+        done: { title: "Question answered", detail: "Sat hours sent by SMS" },
+      },
     ],
     faq: [
       { q: "Can it give medical advice?", a: "No. It handles bookings and admin questions and hands anything clinical to your staff." },
@@ -514,41 +791,14 @@ export const industries: Industry[] = [
       {
         name: "Onboarding calls",
         body: "Walks new users through setup in their first week.",
-        ui: {
-          label: "Onboarding",
-          title: "Day 2 · setup 60% done",
-          rows: [
-            ["User", "Sara Kim"],
-            ["Next", "Connect calendar"],
-          ],
-          pill: { text: "Set up", tone: "ok" },
-        },
       },
       {
         name: "Subscription renewals",
         body: "Reminds users before renewal and keeps the plan going.",
-        ui: {
-          label: "Renewal",
-          title: "Pro plan · renews 3 May",
-          rows: [
-            ["User", "Daniel Brooks"],
-            ["Plan", "$9.99 a month"],
-          ],
-          pill: { text: "Kept", tone: "ok" },
-        },
       },
       {
         name: "Win-back calls",
         body: "Calls users who cancelled to understand why and offer a way back.",
-        ui: {
-          label: "Win-back",
-          title: "Cancelled 2 weeks ago",
-          rows: [
-            ["User", "Priya Shah"],
-            ["Reason", "Too expensive"],
-          ],
-          pill: { text: "Offer accepted", tone: "ok" },
-        },
       },
     ],
     story: {
@@ -582,10 +832,86 @@ export const industries: Industry[] = [
       call: { line: "I can see two charges of $9.99. I've refunded the second one.", length: "0:58" },
       result: { outcome: "Refund issued", system: "Billing updated" },
     },
-    needs: [
-      { title: "Inside the app", body: "Voice works in your app and on the web, not only by phone." },
-      { title: "Knows the account", body: "It sees the user's plan and recent activity before it answers." },
-      { title: "Acts, then logs", body: "It fixes billing or access, then logs the conversation for your team." },
+    segments: [
+      {
+        name: "Consumer apps",
+        cases: [
+          { name: "In-app voice support", body: "Users tap to talk and get help without leaving the app." },
+          { name: "Onboarding calls", body: "Walks new users through setup in their first week." },
+          { name: "Account and billing help", body: "Fixes billing and access in the conversation." },
+        ],
+      },
+      {
+        name: "Subscriptions",
+        cases: [
+          { name: "Subscription renewals", body: "Reminds users before renewal and keeps the plan going." },
+          { name: "Payment failure recovery", body: "Helps a failed renewal go through." },
+          { name: "Win-back calls", body: "Calls users who cancelled to understand why and offer a way back." },
+        ],
+      },
+      {
+        name: "Voice-first products",
+        cases: [
+          { name: "Voice conversations at scale", body: "Runs natural voice conversations inside your product." },
+          { name: "Proactive check-ins", body: "Reaches out at the right moment, in the user's language." },
+          { name: "Feedback collection", body: "Asks users what they think and logs every answer." },
+        ],
+      },
+    ],
+    funnel: {
+      trigger: { at: "In the app", title: "User taps to talk", detail: "Sara Kim · Pro plan" },
+      context: [
+        ["Plan", "Pro · $9.99 a month"],
+        ["Billing", "2 charges this month"],
+        ["Account", "Active, 14 months"],
+      ],
+      turns: [
+        { who: "caller", text: "I've been charged twice this month." },
+        { who: "agent", text: "I can see two charges of $9.99. I've refunded the second one." },
+        { who: "caller", text: "Thanks, that was quick." },
+        { who: "agent", text: "It'll show in 3 to 5 days. Anything else?" },
+      ],
+      tool: { name: "issue_refund", args: "$9.99, charge #2" },
+      length: "0:58",
+      after: ["Refund issued in billing", "Receipt sent by email", "Conversation logged for the team", "Tagged: duplicate charge"],
+      result: { title: "Refund issued", detail: "Resolved inside the app" },
+      story: {
+        start: "Sara notices she's been charged twice and taps to talk in the app.",
+        ready: "Ria already sees Sara's plan and both charges before she says a word.",
+        action: "Ria refunds the second charge while they talk.",
+        result: "Sara's money is on its way in under a minute, and nobody had to open a ticket.",
+      },
+    },
+    narrative: {
+      before:
+        "Tandem's users email support when something goes wrong with billing or access, and wait a day for an answer. Every new user adds more tickets, and people cancel without anyone asking why.",
+      after:
+        "Now users tap to talk inside the app. Ria sees their plan and recent activity, fixes billing or access in the conversation and logs it for the team. Before renewals, and after a cancellation, she calls to keep them on board.",
+    },
+    problems: [
+      { title: "Help means leaving the app", body: "Billing and access questions go to email, and users wait a day for an answer." },
+      { title: "Support doesn't scale with growth", body: "Every new user adds tickets your team has to answer." },
+      { title: "Users leave quietly", body: "Subscribers cancel without anyone asking why." },
+    ],
+    solves: [
+      {
+        title: "Voice inside the app",
+        body: "Users tap to talk and get help without leaving your product.",
+        moment: { who: "User", at: "0:03", text: "I've been charged twice this month for the same plan.", mark: ["charged twice"] },
+        done: { title: "Refund issued", detail: "$9.99 · back in 3–5 days" },
+      },
+      {
+        title: "One agent, any scale",
+        body: "The same agent handles one conversation or thousands at once, and fixes billing and access as it goes.",
+        moment: { who: "User", at: "0:05", text: "I can't sign in on my new phone. Can you help?", mark: ["can't sign in", "new phone"] },
+        done: { title: "Access restored", detail: "New phone signed in" },
+      },
+      {
+        title: "Renewal and win-back calls",
+        body: "Calls before renewal and after a cancellation keep subscribers on board.",
+        moment: { who: "User", at: "0:16", text: "I cancelled because it felt expensive. Is there a cheaper plan?", mark: ["cancelled", "cheaper plan"] },
+        done: { title: "Plan kept", detail: "Switched to Basic" },
+      },
     ],
     faq: [
       { q: "Can users talk to it inside our app?", a: "Yes. Add a talk button to your app or website and users speak to the same agent." },
@@ -604,3 +930,9 @@ export const everywhere: { title: string; body: string; page: MenuPageId }[] = [
   { title: "A person when needed", body: "Warm handoff to your team, with the full context.", page: "human-ai" },
   { title: "Security", body: "How data is handled, stored and protected.", page: "security" },
 ]
+
+/**
+ * Compliance badges for the industry pages' trust row. Empty on purpose:
+ * the row stays hidden until each certification is confirmed (TO CONFIRM).
+ */
+export const trustBadges: { name: string; detail: string }[] = []

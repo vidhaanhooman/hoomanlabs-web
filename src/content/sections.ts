@@ -125,10 +125,19 @@ export type SectionId =
   | "solutions-industries"
   | "solutions-everywhere"
   | "industry-hero"
-  | "industry-jobs"
-  | "industry-story"
-  | "industry-needs"
-  | "industry-everywhere"
+  | "industry-segments"
+  | "industry-definition"
+  | "industry-problem"
+  | "industry-problem-list"
+  | "industry-moment-1"
+  | "industry-moment-2"
+  | "industry-moment-3"
+  | "industry-next"
+  | "industry-meet"
+  | "industry-solve"
+  | "industry-outcome"
+  | "industry-quote"
+  | "industry-trust"
   | "industry-faq"
   | "solutions-faq"
   | "ds-definition"
@@ -345,10 +354,19 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "solutions-industries", name: "Solutions: industry grid", status: "draft" },
   { id: "solutions-everywhere", name: "Solutions: in every industry", status: "draft" },
   { id: "industry-hero", name: "Industry: hero", status: "draft" },
-  { id: "industry-jobs", name: "Industry: other use cases", status: "draft" },
-  { id: "industry-story", name: "Industry: case study", status: "draft" },
-  { id: "industry-needs", name: "Industry: what it gets right", status: "draft" },
-  { id: "industry-everywhere", name: "Industry: in every industry", status: "draft" },
+  { id: "industry-segments", name: "Industry: everything it takes on", status: "draft" },
+  { id: "industry-definition", name: "Industry: today (definition)", status: "draft" },
+  { id: "industry-problem", name: "Industry: problems heading", status: "draft" },
+  { id: "industry-problem-list", name: "Industry: problems", status: "draft" },
+  { id: "industry-moment-1", name: "Industry: moment 1", status: "draft" },
+  { id: "industry-moment-2", name: "Industry: moment 2", status: "draft" },
+  { id: "industry-moment-3", name: "Industry: moment 3", status: "draft" },
+  { id: "industry-next", name: "Industry: next step", status: "draft" },
+  { id: "industry-meet", name: "Industry: meet Ria", status: "draft" },
+  { id: "industry-solve", name: "Industry: follow one call", status: "draft" },
+  { id: "industry-outcome", name: "Industry: results", status: "draft" },
+  { id: "industry-quote", name: "Industry: customer quote", status: "draft" },
+  { id: "industry-trust", name: "Industry: trust badges", status: "draft" },
   { id: "industry-faq", name: "Industry: FAQ", status: "draft" },
   { id: "solutions-faq", name: "Solutions: FAQ", status: "draft" },
   { id: "ds-definition", name: "Components: definition demo", status: "draft" },

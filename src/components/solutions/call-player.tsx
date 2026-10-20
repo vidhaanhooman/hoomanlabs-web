@@ -20,15 +20,15 @@ import { cn } from "@/lib/utils"
  * (arrows step 5s, Home/End) and the current line is announced politely.
  */
 
-type Playback = { on: boolean; time: number; toggle: () => void; seek: (t: number) => void; restart: () => void }
+export type Playback = { on: boolean; time: number; toggle: () => void; seek: (t: number) => void; restart: () => void }
 
-const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
+export const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
 /** Simple, even-looking level bars (a pattern, not the recording's peaks). */
 const BARS = Array.from({ length: 72 }, (_, i) => Math.round(28 + 62 * Math.abs(Math.sin(i * 1.31) * Math.cos(i * 0.23))))
 
 /** The real recording, through the shared sample player. */
-function useAudioPlayback(id: string, src: string, duration: number, autoPlay: boolean): Playback {
+export function useAudioPlayback(id: string, src: string, duration: number, autoPlay: boolean): Playback {
   const { playing, time, toggle, seek } = useSample(src)
   const on = playing === id
   // Start on mount when asked (a click elsewhere chose this call). After
@@ -50,7 +50,7 @@ function useAudioPlayback(id: string, src: string, duration: number, autoPlay: b
 }
 
 /** A silent clock through the transcript, paused by any other player starting. */
-function usePreviewPlayback(duration: number, autoPlay: boolean): Playback {
+export function usePreviewPlayback(duration: number, autoPlay: boolean): Playback {
   const [on, setOn] = useState(autoPlay)
   const [time, setTime] = useState(0)
   const token = useRef({})
@@ -110,11 +110,7 @@ function usePreviewPlayback(duration: number, autoPlay: boolean): Playback {
 }
 
 export function CallPlayer({ call, id, autoPlay = false, className }: { call: SolutionCall; id: string; autoPlay?: boolean; className?: string }) {
-  return call.audio ? (
-    <AudioCall call={call} id={id} src={call.audio} autoPlay={autoPlay} className={className} />
-  ) : (
-    <PreviewCall call={call} autoPlay={autoPlay} className={className} />
-  )
+  return call.audio ? <AudioCall call={call} id={id} src={call.audio} autoPlay={autoPlay} className={className} /> : <PreviewCall call={call} autoPlay={autoPlay} className={className} />
 }
 
 function AudioCall({ call, id, src, autoPlay, className }: { call: SolutionCall; id: string; src: string; autoPlay: boolean; className?: string }) {

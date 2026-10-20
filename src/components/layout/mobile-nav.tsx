@@ -7,6 +7,7 @@ import { ListIcon, SignInIcon } from "@phosphor-icons/react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ctas, nav } from "@/content/draft"
+import { industries, industryHref } from "@/content/industries"
 import { menuHref, platformFeatured, platformMenu } from "@/content/platform"
 
 export function MobileNav() {
@@ -15,9 +16,7 @@ export function MobileNav() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}
-      >
+      <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu" />}>
         <ListIcon className="size-5" />
       </SheetTrigger>
       <SheetContent side="right" className="w-full max-w-sm gap-0 p-0">
@@ -44,18 +43,28 @@ export function MobileNav() {
               </div>
             ))}
           </div>
-          <ul className="flex flex-col pt-3">
-            {nav.links.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.href}
-                  onClick={close}
-                  className="flex h-12 items-center text-body-lg"
-                >
-                  {link.label}
+          <Link href="/solutions" onClick={close} className="flex h-8 items-center pt-3 text-small text-ink-muted">
+            Solutions
+          </Link>
+          <ul className="flex flex-col border-b border-line pb-4">
+            {industries.map((x) => (
+              <li key={x.slug}>
+                <Link href={industryHref(x.slug)} onClick={close} className="flex h-10 items-center text-body-lg">
+                  {x.name}
                 </Link>
               </li>
             ))}
+          </ul>
+          <ul className="flex flex-col pt-3">
+            {nav.links
+              .filter((link) => link.href !== "/solutions")
+              .map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} onClick={close} className="flex h-12 items-center text-body-lg">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </nav>
         <div className="mt-auto flex flex-col gap-2 p-(--gutter)">

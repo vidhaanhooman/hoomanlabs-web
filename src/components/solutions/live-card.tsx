@@ -41,7 +41,7 @@ export function LiveCard({ industry: x }: { industry: Industry }) {
       <div
         className={cn(
           FROSTED,
-          "flex w-full max-w-[24rem] flex-col gap-4 p-5 transition-[translate,scale] duration-500 ease-(--ease-out) group-hover:-translate-y-1 group-hover:scale-[1.02] group-focus-visible:-translate-y-1"
+          "flex w-full max-w-[24rem] flex-col gap-4 p-5 transition-[translate,scale] duration-500 ease-(--ease-out) group-hover:-translate-y-1 group-hover:scale-[1.02] group-focus-visible:-translate-y-1",
         )}
       >
         {/* Who, and the call's status */}
