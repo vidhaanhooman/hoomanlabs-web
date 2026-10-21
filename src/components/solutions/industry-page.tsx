@@ -1,4 +1,5 @@
 import {
+  ArrowRightIcon,
   ArrowsClockwiseIcon,
   ArrowUUpLeftIcon,
   BellIcon,
@@ -24,27 +25,28 @@ import type { Icon } from "@phosphor-icons/react"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { FeatureGrid, Pillars } from "@/components/product-page/blocks"
+import { FeatureGrid } from "@/components/product-page/blocks"
 import { Faq } from "@/components/product-page/faq"
 import { HeroConsole } from "@/components/product-page/hero-console"
 import { Definition, HeroCopy, NextStep } from "@/components/product-page/page-bits"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
-import { ChartCollage, PhotoCollage } from "@/components/solutions/collages"
-import { TranscriptCard } from "@/components/solutions/moment"
+import { ChangesPanel } from "@/components/solutions/changes-panel"
+import { OutcomeCard } from "@/components/solutions/collages"
+import { StepCard, StepsReveal } from "@/components/solutions/motion"
 import { trustBadges, type Industry } from "@/content/industries"
-import { industryArt, momentArt } from "@/lib/industry-art"
+import { industryArt } from "@/lib/industry-art"
 import { cn } from "@/lib/utils"
 
 /**
  * /solutions/[slug], built from the site's own blocks so it reads like the
  * Platform pages: the same hero (copy, then a card centred on the industry's
  * backdrop, here the first lines of the call), the Definition band (what
- * goes wrong today, with a sample result as proof), the problems as Pillars,
+ * goes wrong today), the problems as linked cards,
  * meeting Ria and her three changes, each a split section, sides
  * alternating: the change on one side, on the other its moment from a call
  * (the phone on the call with what was said and what got done, on the
  * plain grey stage), one call as a numbered
- * timeline with Ria's line as a pull quote, the results on a dark band, the
+ * timeline with Ria's line as a pull quote, the
  * use cases as a FeatureGrid, the shared FAQ, the next step and the Book a
  * demo. Everything reads top to bottom. Content in content/industries.ts
  * (sample).
@@ -98,93 +100,113 @@ export function IndustryPage({ industry: x }: { industry: Industry }) {
       {/* The hero, as on every product page: copy, then one card on the backdrop */}
       <Section id="industry-hero" spacing="none" className="pt-10 pb-(--section-pad) md:pt-16">
         <Container>
-          <HeroCopy parent={{ label: "Solutions", href: "/solutions" }} crumb={x.name} title={x.title} line={x.line} link={{ label: "Follow one call", href: "#industry-solve" }} />
+          <HeroCopy parent={null} crumb={`Solutions / ${x.name}`} title={x.title} line={x.line} link={{ label: "Follow one call", href: "#industry-solve" }} />
         </Container>
         <Container className="reveal mt-10 md:mt-14">
           <HeroConsole image={industryArt(x.slug)} designH={420}>
             <div className="flex size-full items-end justify-end">
-              <TranscriptCard lines={f.turns.slice(0, 2).map((t, i) => ({ who: t.who === "agent" ? "Ria" : "Customer", at: `0:0${i * 4 + 2}`, text: t.text }))} />
+              <OutcomeCard outcome={f.result} items={f.after} />
             </div>
           </HeroConsole>
         </Container>
       </Section>
 
-      {/* Today, as the Definition band, with a sample result as its proof */}
-      <Definition
-        id="industry-definition"
-        text={x.narrative.before}
-        proof={x.quote ? { quote: x.quote.text, by: `${x.quote.name}, ${x.quote.role}` } : { quote: x.story.title, by: `${x.story.company}, a sample ${x.name} team` }}
-        placeholder={!x.quote}
-      />
+      {/* Today, as the Definition band (with a customer quote once one is approved) */}
+      <Definition id="industry-definition" text={x.narrative.before} proof={x.quote ? { quote: x.quote.text, by: `${x.quote.name}, ${x.quote.role}` } : undefined} />
 
-      {/* The three problems */}
-      <Section id="industry-problem" spacing="tight">
+      {/* The three problems, each a card that points to the change that fixes it (same order) */}
+      <Section id="industry-problem">
         <Container>
           <Header title={`What gets in the way for ${x.name} teams.`} line="Three things that come up again and again." />
-        </Container>
-      </Section>
-      <Pillars id="industry-problem-list" items={x.problems.map((p, i) => ({ icon: [HourglassIcon, WarningCircleIcon, XCircleIcon][i] ?? WarningCircleIcon, title: p.title, body: p.body }))} />
-
-      {/* Meet Ria, then the three changes, each shown as one moment from a call */}
-      <Section id="industry-meet" spacing="tight">
-        <Container>
-          <Header title="Meet Ria." line={x.narrative.after} />
-        </Container>
-      </Section>
-      {x.solves.map((sv, i) => {
-        const flip = i % 2 === 1
-        return (
-          <Section key={sv.title} id={(["industry-moment-1", "industry-moment-2", "industry-moment-3"] as const)[i]}>
-            {/* Floating on the page, as PolyAI does: the change on one side, its visual on the other, sides alternating */}
-            <Container className={cn("grid items-center gap-12 lg:gap-20", flip ? "lg:grid-cols-[1.25fr_1fr]" : "lg:grid-cols-[1fr_1.25fr]")}>
-              <div className={cn("flex flex-col gap-4", flip && "lg:order-2")}>
-                <span className="font-mono text-label text-ink-muted">0{i + 1}</span>
-                <h3 className="text-h2 font-normal text-balance">{sv.title}</h3>
-                <p className="text-body-lg text-ink-secondary">{sv.body}</p>
-                <p className="mt-2 flex items-start gap-2 border-t border-line pt-5 text-body">
-                  <CheckIcon aria-hidden className="mt-1 size-4 shrink-0 text-(--ok)" />
-                  <span>
-                    {sv.done.title} <span className="text-ink-muted">· {sv.done.detail}</span>
+          <ol className="mt-10 grid gap-4 lg:mt-12 lg:grid-cols-3">
+            {x.problems.map((p, i) => {
+              const I = [HourglassIcon, WarningCircleIcon, XCircleIcon][i] ?? WarningCircleIcon
+              const fix = x.solves[i]
+              return (
+                <li key={p.title} className="flex flex-col gap-6 rounded-md bg-surface p-7 sm:p-8">
+                  <span className="flex items-center justify-between">
+                    <span className="grid size-11 place-items-center rounded-md bg-background">
+                      <I aria-hidden className="size-5" />
+                    </span>
+                    <span className="font-mono text-label text-ink-muted">0{i + 1}</span>
                   </span>
-                </p>
-              </div>
-              {i === 1 ? (
-                <ChartCollage reasons={x.jobs.map((j) => j.name)} stats={x.screen.stats} />
-              ) : (
-                <PhotoCollage image={momentArt(x.slug, i + 1)} line={sv.moment} done={i === 2 ? sv.done : undefined} side={i === 2 ? "left" : "right"} />
-              )}
-            </Container>
-          </Section>
-        )
-      })}
+                  <span className="flex flex-col gap-3">
+                    <h3 className="text-h3 font-normal text-balance">{p.title}</h3>
+                    <p className="text-body text-ink-secondary">{p.body}</p>
+                  </span>
+                  {fix && (
+                    <a href="#industry-changes" className="group mt-auto flex items-center justify-between gap-4 border-t border-line pt-5 text-body">
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-small text-ink-muted">How Ria fixes it</span>
+                        {fix.title}
+                      </span>
+                      <ArrowRightIcon aria-hidden className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                    </a>
+                  )}
+                </li>
+              )
+            })}
+          </ol>
+        </Container>
+      </Section>
 
-      {/* Follow one call: a numbered timeline, Ria's key line as a pull quote */}
+      {/* Meet Ria: on the page, wider than the usual text column */}
+      <Section id="industry-meet">
+        <div>
+          <Container className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] lg:gap-20">
+            <div className="flex flex-col gap-4">
+              <h2 className="text-display font-normal">Meet Ria.</h2>
+              <p className="text-h3 font-normal text-balance text-ink-secondary">The teammate who makes every {x.name} call.</p>
+            </div>
+            <div className="flex flex-col gap-8">
+              <p className="text-h3 leading-snug font-normal text-balance">{x.narrative.after}</p>
+              <p className="text-body-lg text-ink-secondary">
+                Ria is a Hooman, an AI voice agent set up for your {x.name} team. She speaks your customers&apos; language, works inside the systems you already run, and hands a call to your team with
+                a summary whenever it needs a person.
+              </p>
+              <ul className="flex flex-wrap gap-2 border-t border-line pt-8">
+                {x.jobs.map((j) => (
+                  <li key={j.name} className="rounded-full border border-line px-4 py-2 text-body">
+                    {j.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Container>
+        </div>
+      </Section>
+
+      {/* The three changes, as a product panel: rows on the left, the call log on the right */}
+      <ChangesPanel industry={x} />
+
+      {/* Follow one call: the story told left to right, one step per column */}
       <Section id="industry-solve" className="scroll-mt-20">
         <Container>
-          <Header title="Follow one call, start to finish." line={`A sample ${x.jobs[0].name.toLowerCase()} call, step by step.`} />
-          <ol className="relative mt-10 flex flex-col">
-            <span aria-hidden className="absolute top-5 bottom-5 left-5 w-px bg-line-strong" />
+          <Header title="Follow one call, start to finish." line={`One ${x.jobs[0].name.toLowerCase()} call, told step by step.`} />
+          <StepsReveal count={4}>
             {[
-              { title: "It starts", body: f.story.start },
-              { title: "Ria gets ready", body: f.story.ready, extra: <Chips items={f.context} /> },
+              { at: f.trigger.title, title: "It starts", body: f.story.start },
+              { at: "Before hello", title: "Ria gets ready", body: f.story.ready, extra: <Chips items={f.context} /> },
               {
+                at: "On the call",
                 title: "They talk",
                 body: f.story.action,
                 extra: line && (
-                  <figure className="rounded-md bg-surface p-6 sm:p-8">
-                    <blockquote className="text-h3 font-normal text-balance">“{line}”</blockquote>
-                    <figcaption className="mt-3 text-small text-ink-muted">Ria, on the call · {f.length}</figcaption>
+                  <figure className="flex flex-col gap-2 rounded-md bg-background p-5">
+                    <blockquote className="text-body-lg text-balance">“{line}”</blockquote>
+                    <figcaption className="font-mono text-label text-ink-muted">Ria</figcaption>
                   </figure>
                 ),
               },
               {
+                at: "After the call",
                 title: "Everything's updated",
                 body: f.story.result,
                 extra: (
-                  <ul className="flex flex-wrap gap-x-8 gap-y-3">
+                  <ul className="flex flex-col gap-2.5">
                     {f.after.map((a) => (
-                      <li key={a} className="flex items-center gap-2 text-body">
-                        <CheckIcon aria-hidden className="size-4 shrink-0 text-(--ok)" />
+                      <li key={a} className="flex items-start gap-2 text-body">
+                        <CheckIcon aria-hidden className="mt-1 size-4 shrink-0 text-foreground" />
                         {a}
                       </li>
                     ))}
@@ -192,36 +214,17 @@ export function IndustryPage({ industry: x }: { industry: Industry }) {
                 ),
               },
             ].map((st, i) => (
-              <li key={st.title} className="relative grid grid-cols-[2.5rem_1fr] gap-6 pb-10 last:pb-0 sm:gap-10">
-                <span className="relative z-10 grid size-10 place-items-center rounded-full bg-foreground text-body text-background tabular-nums">{i + 1}</span>
-                <div className="flex flex-col gap-3 pt-1.5">
-                  <h3 className="text-h4 font-normal">{st.title}</h3>
-                  <p className="text-body text-ink-secondary">{st.body}</p>
-                  {st.extra}
-                </div>
-              </li>
+              <StepCard key={st.title} i={i} className="flex flex-col gap-4 rounded-md bg-surface p-6 sm:p-7">
+                <span className="flex items-center justify-between gap-3">
+                  <span className="grid size-9 place-items-center rounded-full bg-foreground text-small text-background tabular-nums">{i + 1}</span>
+                  <span className="font-mono text-label text-ink-muted">{st.at}</span>
+                </span>
+                <h3 className="text-h4 font-normal">{st.title}</h3>
+                <p className="text-body text-ink-secondary">{st.body}</p>
+                {st.extra}
+              </StepCard>
             ))}
-          </ol>
-        </Container>
-      </Section>
-
-      {/* What it adds up to: the results on a dark band */}
-      <Section id="industry-outcome">
-        <Container>
-          <div className="flex flex-col gap-10 rounded-md bg-foreground px-6 py-12 text-background sm:px-12 sm:py-16">
-            <div className="flex max-w-[44rem] flex-col gap-3">
-              <h2 className="text-h2 font-normal">What it adds up to.</h2>
-              <p className="text-body opacity-70">{`Call after call, here is what changed for ${x.story.company}, a sample ${x.name} team.`}</p>
-            </div>
-            <ul className="grid gap-10 border-t border-background/20 pt-10 sm:grid-cols-3">
-              {x.story.results.map((r) => (
-                <li key={r.label} className="flex flex-col gap-3">
-                  <span className="text-display leading-none font-normal tabular-nums">{r.value}</span>
-                  <span className="text-body opacity-70">{r.label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </StepsReveal>
         </Container>
       </Section>
 
@@ -254,9 +257,9 @@ export function IndustryPage({ industry: x }: { industry: Industry }) {
 /** What Ria looked up, as quiet chips. */
 function Chips({ items }: { items: [string, string][] }) {
   return (
-    <ul className="flex flex-wrap gap-2">
+    <ul className="flex flex-col gap-2">
       {items.map(([k, v]) => (
-        <li key={k} className="rounded-full border border-line px-4 py-2 text-body">
+        <li key={k} className="w-fit rounded-md border border-line bg-background px-3 py-2 text-small">
           <span className="text-ink-muted">{k}: </span>
           {v}
         </li>

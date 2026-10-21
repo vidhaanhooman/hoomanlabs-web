@@ -28,6 +28,8 @@ export type SolutionCall = {
   audio?: string
   outcome: string
   lines: CallLine[]
+  /** Lines to show on cards when `lines` is only a placeholder. */
+  preview?: CallLine[]
 }
 
 export type UseCase = {
@@ -45,16 +47,6 @@ export type UseCase = {
   industries: string[]
   call: SolutionCall
   faq: { q: string; a: string }[]
-}
-
-export const solutionsHub = {
-  seo: {
-    title: "AI Voice Agent Solutions by Use Case and Industry",
-    description: "AI voice agents for education, BFSI, logistics, e-commerce, healthcare and consumer AI: collections, bookings, lead follow-up, support, renewals and surveys.",
-  },
-  crumb: "Solutions",
-  title: "Put a Hooman on the calls that matter most.",
-  line: "Start from the job you need done, or from your industry. Every use case ends in a result you can count.",
 }
 
 export const useCases: UseCase[] = [
@@ -291,6 +283,11 @@ export const useCases: UseCase[] = [
       outcome: "Feedback logged to the CRM",
       // Real recording; the timed transcript is still to come.
       lines: [{ t: 0, who: "agent", text: "A real post-stay feedback call. Press play to listen." }],
+      // Sample lines for the use-case card until the transcript is in.
+      preview: [
+        { t: 0, who: "agent", text: "Hi Sara, it's Ria from Halden. How was your stay, out of 10?" },
+        { t: 4, who: "caller", text: "A nine. The room was great, check-in was slow." },
+      ],
     },
     faq: [
       { q: "Can it run surveys in Hindi and other languages?", a: "Yes, in English and major Indian languages, switching if the customer does." },

@@ -121,14 +121,18 @@ export type SectionId =
   | "role-hero"
   | "role-body"
   | "role-process"
-  | "solutions-hero"
-  | "solutions-industries"
-  | "solutions-everywhere"
+  | "pricing-hero"
+  | "pricing-plans"
+  | "pricing-compare"
+  | "pricing-included"
+  | "pricing-platform"
+  | "pricing-faq"
   | "industry-hero"
   | "industry-segments"
   | "industry-definition"
   | "industry-problem"
   | "industry-problem-list"
+  | "industry-changes"
   | "industry-moment-1"
   | "industry-moment-2"
   | "industry-moment-3"
@@ -139,7 +143,6 @@ export type SectionId =
   | "industry-quote"
   | "industry-trust"
   | "industry-faq"
-  | "solutions-faq"
   | "ds-definition"
   | "ds-faq"
   | "ds-next"
@@ -350,14 +353,18 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "role-hero", name: "Role: hero", status: "draft" },
   { id: "role-body", name: "Role: details", status: "draft" },
   { id: "role-process", name: "Role: hiring process", status: "draft" },
-  { id: "solutions-hero", name: "Solutions: hero", status: "draft" },
-  { id: "solutions-industries", name: "Solutions: industry grid", status: "draft" },
-  { id: "solutions-everywhere", name: "Solutions: in every industry", status: "draft" },
+  { id: "pricing-hero", name: "Pricing: hero", status: "draft" },
+  { id: "pricing-plans", name: "Pricing: plans", status: "draft" },
+  { id: "pricing-compare", name: "Pricing: compare", status: "draft" },
+  { id: "pricing-included", name: "Pricing: platform heading", status: "draft" },
+  { id: "pricing-platform", name: "Pricing: platform pages", status: "draft" },
+  { id: "pricing-faq", name: "Pricing: FAQ", status: "draft" },
   { id: "industry-hero", name: "Industry: hero", status: "draft" },
   { id: "industry-segments", name: "Industry: everything it takes on", status: "draft" },
   { id: "industry-definition", name: "Industry: today (definition)", status: "draft" },
   { id: "industry-problem", name: "Industry: problems heading", status: "draft" },
   { id: "industry-problem-list", name: "Industry: problems", status: "draft" },
+  { id: "industry-changes", name: "Industry: the three changes (panel)", status: "draft" },
   { id: "industry-moment-1", name: "Industry: moment 1", status: "draft" },
   { id: "industry-moment-2", name: "Industry: moment 2", status: "draft" },
   { id: "industry-moment-3", name: "Industry: moment 3", status: "draft" },
@@ -368,7 +375,6 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "industry-quote", name: "Industry: customer quote", status: "draft" },
   { id: "industry-trust", name: "Industry: trust badges", status: "draft" },
   { id: "industry-faq", name: "Industry: FAQ", status: "draft" },
-  { id: "solutions-faq", name: "Solutions: FAQ", status: "draft" },
   { id: "ds-definition", name: "Components: definition demo", status: "draft" },
   { id: "ds-faq", name: "Components: FAQ demo", status: "draft" },
   { id: "ds-next", name: "Components: next step demo", status: "draft" },

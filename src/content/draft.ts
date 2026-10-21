@@ -7,7 +7,7 @@ export const nav = {
   /** "Product" is a menu built from src/content/products.ts. */
   links: [
     { label: "Solutions", href: "/solutions" },
-    { label: "Pricing", href: "#" },
+    { label: "Pricing", href: "/pricing" },
     { label: "Docs", href: "#" },
   ],
   signIn: { label: "Platform", href: "/login" },

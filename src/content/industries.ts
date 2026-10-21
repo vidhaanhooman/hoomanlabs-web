@@ -151,30 +151,30 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "9:02 pm", title: "New enquiry from the website", detail: "Maya Patel · Data science course" },
       context: [
-        ["Course", "Data science · weekend batch"],
-        ["Source", "Website form, 2 min ago"],
-        ["Counsellor", "Priya Shah · free Thu 5 pm"],
+        ["Course", "The one they asked about"],
+        ["Source", "Website form, minutes ago"],
+        ["Counsellor", "Next free slot"],
       ],
       turns: [
-        { who: "agent", text: "Hi Maya, this is Ria from Kestrel Learning. You asked about our data science course?" },
+        { who: "agent", text: "Hi, this is Ria from the admissions team. You asked about our data science course?" },
         { who: "caller", text: "Yes, is there a weekend batch?" },
         { who: "agent", text: "There is, on Saturdays and Sundays. Shall I book a call with a counsellor?" },
         { who: "caller", text: "Thursday evening works." },
       ],
       tool: { name: "book_counsellor", args: "Thu 5 pm, Priya Shah" },
       length: "2:14",
-      after: ["Session booked in Priya's calendar", "Lead marked qualified in the CRM", "Confirmation sent by SMS", "Summary added to the lead"],
-      result: { title: "Counsellor booked", detail: "Within 3 minutes of the enquiry" },
+      after: ["Session booked in the counsellor's calendar", "Lead marked qualified in the CRM", "Confirmation sent by SMS", "Summary added to the lead"],
+      result: { title: "Counsellor booked", detail: "Minutes after the enquiry" },
       story: {
-        start: "It's 9 pm. Maya fills in an enquiry form for the data science course.",
-        ready: "A few minutes later Ria calls her, already knowing which course she asked about and when a counsellor is free.",
-        action: "While they talk, Ria books Maya a counsellor session for Thursday at 5 pm.",
-        result: "Maya has a session booked three minutes after asking, and nobody on your team had to pick up the phone.",
+        start: "Late in the evening, a student fills in an enquiry form for a course.",
+        ready: "Within minutes Ria calls, already knowing which course they asked about and when a counsellor is free.",
+        action: "While they talk, Ria answers their questions and books a counsellor session.",
+        result: "The student has a session booked minutes after asking, and nobody on your team had to pick up the phone.",
       },
     },
     narrative: {
       before:
-        "Kestrel Learning gets most of its enquiries after 8 pm, when students finally have time to look. Counsellors call back the next morning, often the next afternoon. By then many students have already signed up somewhere else, and the ones who haven't are harder to reach.",
+        "Most enquiries arrive in the evening, when students finally have time to look. Counsellors call back the next morning, often later. By then many students have signed up somewhere else, and the rest are harder to reach.",
       after:
         "Now every enquiry gets a call within minutes, from Ria. She knows which course the student asked about, answers their questions in their language, and books them straight into a counsellor's calendar. Counsellors spend their day on the conversations that need them.",
     },
@@ -188,19 +188,19 @@ export const industries: Industry[] = [
         title: "Called within minutes",
         body: "A Hooman calls every new enquiry within minutes, answers course questions and books a counsellor.",
         moment: { who: "Student", at: "0:06", text: "I just filled in the form for the data science course. Is there a weekend batch?", mark: ["data science course", "weekend batch"] },
-        done: { title: "Counsellor booked · Thu 5 pm", detail: "Added to Priya's calendar" },
+        done: { title: "Counsellor booked", detail: "Added to the counsellor's calendar" },
       },
       {
         title: "Routine calls run themselves",
         body: "Fee reminders, document chasers and class reminders go out on their own, in the family's language.",
         moment: { who: "Parent", at: "0:09", text: "Can you send me the link for the term 2 fee? I'll pay it tonight.", mark: ["term 2 fee", "pay it tonight"] },
-        done: { title: "Payment link sent", detail: "Term 2 fee · by SMS" },
+        done: { title: "Payment link sent", detail: "Fee reminder · by SMS" },
       },
       {
         title: "Check-ins before they leave",
         body: "Check-in and renewal calls reach learners before access ends, and renew the plan on the call.",
         moment: { who: "Learner", at: "0:12", text: "My access ends next week. I'd like to renew for another year.", mark: ["access ends", "renew"] },
-        done: { title: "Plan renewed", detail: "Annual · data science" },
+        done: { title: "Plan renewed", detail: "Before access ended" },
       },
     ],
     faq: [
@@ -297,30 +297,30 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "6 Mar, 10:00", title: "Instalment missed", detail: "Maya Patel · $240 due 5 Mar" },
       context: [
-        ["Balance", "$240 · 1 day overdue"],
-        ["History", "Paid on time 11 of 12 months"],
-        ["Allowed", "New date within 7 days"],
+        ["Balance", "Amount and days overdue"],
+        ["History", "Past payments"],
+        ["Allowed", "New dates your policy allows"],
       ],
       turns: [
-        { who: "agent", text: "Hi Maya, this is Ria from Halden Finance. This call is recorded. Your $240 instalment was due yesterday." },
+        { who: "agent", text: "Hi, this is Ria from your lender. This call is recorded. Your instalment was due yesterday." },
         { who: "caller", text: "I get paid on Friday. Can I pay then?" },
         { who: "agent", text: "Of course. I'll note Friday the 8th and text you a link to pay." },
         { who: "caller", text: "Great, thank you." },
       ],
       tool: { name: "log_promise_to_pay", args: "$240, Fri 8 Mar" },
       length: "1:48",
-      after: ["Promise to pay logged in the loan system", "Payment link sent by SMS", "Reminder set for Thu 7 Mar", "Disclosure read, call recorded"],
-      result: { title: "Promise to pay · Friday", detail: "No agent needed, fully compliant" },
+      after: ["Promise to pay logged in the loan system", "Payment link sent by SMS", "Reminder set before the new date", "Disclosure read, call recorded"],
+      result: { title: "Promise to pay logged", detail: "Disclosure read, no agent needed" },
       story: {
-        start: "Maya's $240 instalment was due yesterday and hasn't come in.",
-        ready: "Before calling, Ria checks Maya's balance, her payment history and which new dates your policy allows.",
-        action: "Ria reads the required disclosure, agrees Friday with Maya and texts her a link to pay.",
+        start: "A customer's instalment was due yesterday and hasn't come in.",
+        ready: "Before calling, Ria checks the balance, the payment history and which new dates your policy allows.",
+        action: "Ria reads the required disclosure, agrees a new date with the customer and texts a link to pay.",
         result: "A promise to pay is logged, the disclosure was read word for word, and no one on your team had to make the call.",
       },
     },
     narrative: {
       before:
-        "Halden Finance's collections team calls by hand, working through yesterday's missed payments. Customers are reached late, disclosures are read differently by every caller, and renewals slip because there are never enough hands.",
+        "Collections teams call by hand, working through yesterday's missed payments. Customers are reached late, disclosures are read differently by every caller, and renewals slip because there are never enough hands.",
       after:
         "Now Ria calls before and after every due date. She reads the required disclosure word for word, offers only what the policy allows, logs every promise to pay and sends the link. The team steps in only for disputes and difficult cases.",
     },
@@ -334,7 +334,7 @@ export const industries: Industry[] = [
         title: "Calls before and after every due date",
         body: "A Hooman reminds each customer on time, takes or logs the payment and sends the link.",
         moment: { who: "Customer", at: "0:14", text: "I missed the payment, but I get paid on Friday. Can I pay then?", mark: ["missed the payment", "pay then"] },
-        done: { title: "Promise to pay logged", detail: "Friday · loan system updated" },
+        done: { title: "Promise to pay logged", detail: "New date agreed · loan system updated" },
       },
       {
         title: "The same words on every call",
@@ -439,30 +439,30 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "Day before, 4:00 pm", title: "Delivery tomorrow", detail: "Order 7731 · Priya Shah" },
       context: [
-        ["Slot", "Tomorrow, 10 am – 2 pm"],
-        ["Address", "Missing flat number"],
-        ["Payment", "Prepaid"],
+        ["Slot", "Tomorrow's delivery window"],
+        ["Address", "What's missing"],
+        ["Payment", "Prepaid or cash on delivery"],
       ],
       turns: [
-        { who: "agent", text: "Hi Priya, this is Ria from Corvo Logistics. Your parcel arrives tomorrow between 10 and 2." },
+        { who: "agent", text: "Hi, this is Ria calling about your parcel. It arrives tomorrow. Will you be home?" },
         { who: "caller", text: "I won't be home then. Can it come in the evening?" },
         { who: "agent", text: "I've moved it to 3 to 6 pm. Which flat number should I add?" },
         { who: "caller", text: "It's 4B." },
       ],
       tool: { name: "update_delivery", args: "3–6 pm, flat 4B" },
       length: "1:12",
-      after: ["Slot moved in the delivery system", "Flat 4B added to the address", "Route re-planned for the evening", "Confirmation sent by SMS"],
+      after: ["Slot moved in the delivery system", "Missing details added to the address", "Route re-planned", "Confirmation sent by SMS"],
       result: { title: "Slot and address confirmed", detail: "First attempt saved" },
       story: {
-        start: "Priya's parcel is due tomorrow, but her address is missing a flat number.",
-        ready: "The afternoon before, Ria calls Priya, already knowing the delivery slot and what's missing from the address.",
-        action: "Priya won't be home, so Ria moves the delivery to the evening and adds flat 4B.",
-        result: "The van arrives when Priya is home, at the right door, first time.",
+        start: "A parcel is due tomorrow, but the address is missing a flat number.",
+        ready: "The afternoon before, Ria calls the customer, already knowing the delivery slot and what's missing from the address.",
+        action: "The customer won't be home, so Ria moves the delivery to a time that works and adds the missing details.",
+        result: "The van arrives when the customer is home, at the right door, first time.",
       },
     },
     narrative: {
       before:
-        "Corvo Logistics loses money on every failed first attempt. Drivers arrive to locked doors and addresses without a flat number, and cash-on-delivery orders get refused at the door and shipped back.",
+        "Every failed first attempt costs money. Drivers arrive to locked doors and addresses without a flat number, and cash-on-delivery orders get refused at the door and shipped back.",
       after:
         "Now Ria calls each customer the afternoon before. She confirms the slot, moves it if they won't be home, adds the missing details and confirms cash-on-delivery orders. Every change goes straight into the route for the next day.",
     },
@@ -476,19 +476,19 @@ export const industries: Industry[] = [
         title: "Confirmed the day before",
         body: "A Hooman calls ahead to confirm the slot, and moves it if the customer won't be home.",
         moment: { who: "Customer", at: "0:10", text: "I won't be home tomorrow morning. Can it come in the evening?", mark: ["won't be home", "evening"] },
-        done: { title: "Slot moved", detail: "Tomorrow, 3–6 pm" },
+        done: { title: "Slot moved", detail: "To a time they'll be home" },
       },
       {
         title: "Fixed on the call",
         body: "Missing details are added before dispatch and written straight back to your delivery system.",
         moment: { who: "Customer", at: "0:17", text: "It's flat 4B, second floor, next to the pharmacy.", mark: ["flat 4B", "next to the pharmacy"] },
-        done: { title: "Address fixed", detail: "Flat 4B added to the route" },
+        done: { title: "Address fixed", detail: "Added to the route" },
       },
       {
         title: "Confirmed before it ships",
         body: "Cash-on-delivery orders are confirmed with the customer before they leave the warehouse.",
         moment: { who: "Customer", at: "0:08", text: "Yes, I'll pay cash on delivery. Please send it today.", mark: ["cash on delivery", "send it today"] },
-        done: { title: "COD confirmed", detail: "Ships today" },
+        done: { title: "Cash on delivery confirmed", detail: "Cleared to ship" },
       },
     ],
     faq: [
@@ -580,13 +580,13 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "11:40 pm", title: "Inbound call", detail: "Number matched to Maya Patel" },
       context: [
-        ["Order", "7731 · out for delivery"],
-        ["Due", "Today by 6 pm"],
+        ["Order", "Found from the caller's number"],
+        ["Status", "Out for delivery"],
         ["Address", "Missing flat number"],
       ],
       turns: [
         { who: "caller", text: "Hi, where's my order? It was due today." },
-        { who: "agent", text: "I've found it. It arrives by 6 pm. Which flat number should I add?" },
+        { who: "agent", text: "I've found your order. It arrives today. Which flat number should I add?" },
         { who: "caller", text: "Flat 12, second floor." },
         { who: "agent", text: "Added. You'll get a text when it's out for delivery." },
       ],
@@ -595,15 +595,15 @@ export const industries: Industry[] = [
       after: ["Ticket closed in the helpdesk", "Delivery note added to the order", "Tracking link sent by SMS", "Summary saved to the customer"],
       result: { title: "Resolved in one call", detail: "No agent needed" },
       story: {
-        start: "It's 11:40 pm. Maya calls to ask where her order is.",
-        ready: "Ria recognises Maya's number and pulls up her order before saying hello: it's out for delivery, but the address is missing a flat number.",
-        action: "Ria tells Maya it arrives by 6 pm and adds her flat number to the order while they talk.",
-        result: "Maya's question is answered in under two minutes, and your team didn't have to pick up.",
+        start: "Late at night, a customer calls to ask where their order is.",
+        ready: "Ria recognises the number and pulls up the order before saying hello: it's out for delivery, but the address is missing a flat number.",
+        action: "Ria tells them when it arrives and adds the flat number to the order while they talk.",
+        result: "The question is answered in a couple of minutes, and your team didn't have to pick up.",
       },
     },
     narrative: {
       before:
-        "On sale days Lumen Home's support line queues for half an hour. Most callers ask the same thing, where their order is, and agents spend the day looking orders up instead of solving real problems.",
+        "On sale days the support line queues for half an hour. Most callers ask the same thing, where their order is, and agents spend the day looking orders up instead of solving real problems.",
       after:
         "Now Ria picks up every call on the first ring. She finds the order from the caller's number, fixes what needs fixing and closes the ticket with a summary. The team handles the unusual cases, with the full story in front of them.",
     },
@@ -617,13 +617,13 @@ export const industries: Industry[] = [
         title: "Every call picked up",
         body: "A Hooman answers on the first ring, however busy it gets.",
         moment: { who: "Customer", at: "0:02", text: "Hi, where's my order? It was supposed to arrive today.", mark: ["where's my order", "arrive today"] },
-        done: { title: "Ticket closed", detail: "Arriving by 6 pm · flat added" },
+        done: { title: "Ticket closed", detail: "Delivery time shared · address fixed" },
       },
       {
         title: "Answers from the order",
         body: "It finds the order from the caller's number, fixes it and closes the ticket with a summary.",
         moment: { who: "Customer", at: "0:15", text: "The lamp is the wrong colour. Can I swap it for the white one?", mark: ["wrong colour", "swap it"] },
-        done: { title: "Exchange booked", detail: "Pickup Thu · white lamp sent" },
+        done: { title: "Exchange booked", detail: "Pickup scheduled" },
       },
       {
         title: "A call to finish checkout",
@@ -688,7 +688,7 @@ export const industries: Industry[] = [
     },
     flow: {
       trigger: { title: "After-hours call", detail: "Wants Dr Rao this week · 8:15 pm" },
-      call: { line: "Dr Rao has Thursday at 10 or Friday at 3. Which suits you?", length: "1:20" },
+      call: { line: "The doctor has two times free this week. Which suits you?", length: "1:20" },
       result: { outcome: "Visit booked · Thu 10 am", system: "Calendar updated" },
     },
     segments: [
@@ -721,30 +721,30 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "8:15 pm", title: "After-hours call", detail: "Omar Haddad · existing patient" },
       context: [
-        ["Patient", "Omar Haddad · last visit March"],
-        ["Doctor", "Dr Rao · 2 slots this week"],
-        ["Language", "English"],
+        ["Patient", "Recognised from their number"],
+        ["Doctor", "Open slots this week"],
+        ["Language", "The patient's own"],
       ],
       turns: [
         { who: "caller", text: "Hi, I'd like to see Dr Rao this week." },
-        { who: "agent", text: "Dr Rao has Thursday at 10 or Friday at 3. Which suits you?" },
+        { who: "agent", text: "The doctor has two times free this week. Which suits you?" },
         { who: "caller", text: "Thursday at 10." },
         { who: "agent", text: "Booked. I'll text you the address and time." },
       ],
       tool: { name: "book_appointment", args: "Dr Rao, Thu 10 am" },
       length: "1:20",
-      after: ["Visit booked in Dr Rao's calendar", "Address and time sent by SMS", "Reminder call set for Wed", "Note added for the front desk"],
-      result: { title: "Visit booked · Thu 10 am", detail: "Booked while the clinic was closed" },
+      after: ["Visit booked in the doctor's calendar", "Address and time sent by SMS", "Reminder call set for the day before", "Note added for the front desk"],
+      result: { title: "Visit booked", detail: "While the clinic was closed" },
       story: {
-        start: "It's 8:15 pm and the clinic is closed. Omar calls to see Dr Rao this week.",
-        ready: "Ria recognises Omar as a patient and checks Dr Rao's calendar before answering.",
-        action: "Ria offers two times, Omar picks Thursday at 10, and Ria books it.",
-        result: "Omar's visit is booked after hours, and the front desk finds it in the calendar in the morning.",
+        start: "It's evening and the clinic is closed. A patient calls to book a visit this week.",
+        ready: "Ria recognises the patient and checks the doctor's calendar before answering.",
+        action: "Ria offers two times, the patient picks one, and Ria books it.",
+        result: "The visit is booked after hours, and the front desk finds it in the calendar in the morning.",
       },
     },
     narrative: {
       before:
-        "Rao Family Clinics misses calls every evening after 6 pm, and patients book somewhere else. During the day the front desk juggles phones and patients, and forgotten visits leave empty slots that can't be filled in time.",
+        "Clinics miss calls every evening after closing, and patients book somewhere else. During the day the front desk juggles phones and patients, and forgotten visits leave empty slots that can't be filled in time.",
       after:
         "Now Ria answers every call, day or night, in the patient's language. She books visits straight into the doctors' calendars, calls the day before to confirm, and hands anything clinical to the staff.",
     },
@@ -757,20 +757,20 @@ export const industries: Industry[] = [
       {
         title: "Every call answered",
         body: "A Hooman books visits after hours, straight into the doctors' calendars, in the patient's language.",
-        moment: { who: "Patient", at: "0:04", text: "I know it's late, but can I see Dr Rao this week?", mark: ["see Dr Rao", "this week"] },
-        done: { title: "Visit booked", detail: "Dr Rao · Thu 10 am" },
+        moment: { who: "Patient", at: "0:04", text: "I know it's late, but can I see the doctor this week?", mark: ["see the doctor", "this week"] },
+        done: { title: "Visit booked", detail: "Straight into the doctor's calendar" },
       },
       {
         title: "Reminders that move visits",
         body: "It calls the day before, and moves the visit if the patient can't make it.",
         moment: { who: "Patient", at: "0:09", text: "I can't make tomorrow at 10. Is Friday afternoon free?", mark: ["can't make tomorrow", "Friday afternoon"] },
-        done: { title: "Visit moved", detail: "Fri 3 pm · reminder set" },
+        done: { title: "Visit moved", detail: "New time · reminder set" },
       },
       {
         title: "Admin off the desk",
         body: "It handles bookings and admin questions, and hands anything clinical to your staff.",
         moment: { who: "Patient", at: "0:13", text: "What time does the clinic open on Saturday?", mark: ["clinic open", "Saturday"] },
-        done: { title: "Question answered", detail: "Sat hours sent by SMS" },
+        done: { title: "Question answered", detail: "Opening hours sent by SMS" },
       },
     ],
     faq: [
@@ -829,7 +829,7 @@ export const industries: Industry[] = [
     },
     flow: {
       trigger: { title: "User taps to talk", detail: "Charged twice this month" },
-      call: { line: "I can see two charges of $9.99. I've refunded the second one.", length: "0:58" },
+      call: { line: "I can see both charges. I've refunded the second one.", length: "0:58" },
       result: { outcome: "Refund issued", system: "Billing updated" },
     },
     segments: [
@@ -861,13 +861,13 @@ export const industries: Industry[] = [
     funnel: {
       trigger: { at: "In the app", title: "User taps to talk", detail: "Sara Kim · Pro plan" },
       context: [
-        ["Plan", "Pro · $9.99 a month"],
-        ["Billing", "2 charges this month"],
-        ["Account", "Active, 14 months"],
+        ["Plan", "Their current plan"],
+        ["Billing", "Recent charges"],
+        ["Account", "Status and history"],
       ],
       turns: [
         { who: "caller", text: "I've been charged twice this month." },
-        { who: "agent", text: "I can see two charges of $9.99. I've refunded the second one." },
+        { who: "agent", text: "I can see both charges. I've refunded the second one." },
         { who: "caller", text: "Thanks, that was quick." },
         { who: "agent", text: "It'll show in 3 to 5 days. Anything else?" },
       ],
@@ -876,15 +876,15 @@ export const industries: Industry[] = [
       after: ["Refund issued in billing", "Receipt sent by email", "Conversation logged for the team", "Tagged: duplicate charge"],
       result: { title: "Refund issued", detail: "Resolved inside the app" },
       story: {
-        start: "Sara notices she's been charged twice and taps to talk in the app.",
-        ready: "Ria already sees Sara's plan and both charges before she says a word.",
+        start: "A user notices they've been charged twice and taps to talk in the app.",
+        ready: "Ria already sees their plan and both charges before they say a word.",
         action: "Ria refunds the second charge while they talk.",
-        result: "Sara's money is on its way in under a minute, and nobody had to open a ticket.",
+        result: "The money is on its way in under a minute, and nobody had to open a ticket.",
       },
     },
     narrative: {
       before:
-        "Tandem's users email support when something goes wrong with billing or access, and wait a day for an answer. Every new user adds more tickets, and people cancel without anyone asking why.",
+        "Users email support when something goes wrong with billing or access, and wait a day for an answer. Every new user adds more tickets, and people cancel without anyone asking why.",
       after:
         "Now users tap to talk inside the app. Ria sees their plan and recent activity, fixes billing or access in the conversation and logs it for the team. Before renewals, and after a cancellation, she calls to keep them on board.",
     },
@@ -898,7 +898,7 @@ export const industries: Industry[] = [
         title: "Voice inside the app",
         body: "Users tap to talk and get help without leaving your product.",
         moment: { who: "User", at: "0:03", text: "I've been charged twice this month for the same plan.", mark: ["charged twice"] },
-        done: { title: "Refund issued", detail: "$9.99 · back in 3–5 days" },
+        done: { title: "Refund issued", detail: "Duplicate charge reversed" },
       },
       {
         title: "One agent, any scale",
@@ -910,7 +910,7 @@ export const industries: Industry[] = [
         title: "Renewal and win-back calls",
         body: "Calls before renewal and after a cancellation keep subscribers on board.",
         moment: { who: "User", at: "0:16", text: "I cancelled because it felt expensive. Is there a cheaper plan?", mark: ["cancelled", "cheaper plan"] },
-        done: { title: "Plan kept", detail: "Switched to Basic" },
+        done: { title: "Plan kept", detail: "Moved to a cheaper plan" },
       },
     ],
     faq: [

@@ -570,3 +570,31 @@ html[data-outline="on"] [data-section] {
   outline-offset: -1px;
 }
 
+
+/* Cal.com booking pop-up: the frame spans the full width and Cal's dark page
+   fills it, which reads as a black strip across the site. Cap it at the
+   booker's width and centre it, so only the calendar card shows. */
+cal-modal-box iframe {
+  display: block;
+  max-width: min(68rem, 100%);
+  margin-inline: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Industry pages: the live call in the changes panel. Each piece rises in on
+   its own delay (--d) when the active call changes; a voice waveform runs
+   while the call is live. Reduced motion shows the finished call. */
+@keyframes call-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes call-out { to { opacity: 0; } }
+@keyframes call-wave { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+@keyframes call-spin { to { transform: rotate(360deg); } }
+.call-in { animation: call-in 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both; }
+.call-out { animation: call-out 200ms ease var(--d, 0ms) both; }
+.call-wave { animation: call-wave 900ms ease-in-out calc(var(--i) * -130ms) infinite; transform-origin: center; }
+.call-spin { animation: call-spin 800ms linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .call-in { animation: none; }
+  .call-out { animation: none; opacity: 0; }
+  .call-wave, .call-spin { animation: none; }
+}

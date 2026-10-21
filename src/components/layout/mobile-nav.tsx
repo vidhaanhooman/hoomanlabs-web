@@ -43,9 +43,7 @@ export function MobileNav() {
               </div>
             ))}
           </div>
-          <Link href="/solutions" onClick={close} className="flex h-8 items-center pt-3 text-small text-ink-muted">
-            Solutions
-          </Link>
+          <p className="flex h-8 items-center pt-3 text-small text-ink-muted">Solutions</p>
           <ul className="flex flex-col border-b border-line pb-4">
             {industries.map((x) => (
               <li key={x.slug}>
