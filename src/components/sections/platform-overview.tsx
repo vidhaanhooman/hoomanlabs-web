@@ -197,7 +197,7 @@ function ChannelsMini() {
   )
 }
 
-const LOGO_ROW = ["hubspot", "zendesk", "googlecalendar", "whatsapp", "zapier", "shopify"]
+const LOGO_ROW = ["zoho", "zendesk", "googlecalendar", "calendly", "caldotcom", "mcp"]
 
 function ToolsMini() {
   return (

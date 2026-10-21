@@ -1,19 +1,14 @@
+import Image from "next/image";
+
 import { Container } from "@/components/layout/container";
 import { Section } from "@/components/layout/section";
 import { pad, StageHeader } from "@/components/sections/product-stage-list";
+import { PhoneCallIcon, WebhooksLogoIcon } from "@phosphor-icons/react/dist/ssr";
 import {
   siCaldotcom,
   siCalendly,
   siGooglecalendar,
-  siGooglesheets,
-  siHubspot,
-  siIntercom,
-  siMake,
-  siN8n,
-  siShopify,
-  siVonage,
-  siWhatsapp,
-  siZapier,
+  siModelcontextprotocol,
   siZendesk,
   siZoho,
   type SimpleIcon,
@@ -67,28 +62,23 @@ export function ToolsIntegrations({
 
 /** Brand marks in their own colours (simple-icons, CC0). Keys match `logo` in content. */
 export const LOGOS: Record<string, SimpleIcon> = {
-  hubspot: siHubspot,
   zendesk: siZendesk,
   zoho: siZoho,
-  intercom: siIntercom,
   googlecalendar: siGooglecalendar,
   calendly: siCalendly,
   caldotcom: siCaldotcom,
-  vonage: siVonage,
-  whatsapp: siWhatsapp,
-  zapier: siZapier,
-  make: siMake,
-  n8n: siN8n,
-  googlesheets: siGooglesheets,
-  shopify: siShopify,
+  mcp: siModelcontextprotocol,
 };
+
+/** Plain icons for items that aren't a brand. */
+const ICONS = { sip: PhoneCallIcon, webhooks: WebhooksLogoIcon };
 
 /** Integration groups as logo + name rows. Also used on the homepage. */
 export function IntegrationGroups({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-3 lg:grid-cols-5",
+        "grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4",
         className,
       )}
     >
@@ -100,6 +90,7 @@ export function IntegrationGroups({ className }: { className?: string }) {
           <ul className="flex flex-col gap-1">
             {g.items.map((x) => {
               const icon = x.logo ? LOGOS[x.logo] : undefined;
+              const Plain = x.icon ? ICONS[x.icon] : undefined;
               return (
                 <li
                   key={x.name}
@@ -115,6 +106,10 @@ export function IntegrationGroups({ className }: { className?: string }) {
                       >
                         <path d={icon.path} />
                       </svg>
+                    ) : x.file ? (
+                      <Image src={`/logos/integrations/${x.file}`} alt="" width={20} height={20} unoptimized className={cn("size-5 object-contain", x.file.endsWith(".jpg") && "rounded-full")} />
+                    ) : Plain ? (
+                      <Plain aria-hidden className="size-4 text-foreground" />
                     ) : (
                       <span className="text-label font-medium text-foreground">
                         {x.name.slice(0, 1)}

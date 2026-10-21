@@ -60,6 +60,7 @@ export const pricingPage = {
   },
   compare: {
     title: "Compare plans.",
+    line: "What changes between the two.",
     rows: [
       { k: "Free credits", payg: (c: Currency) => credits[c], ent: () => "Talk to us" },
       { k: "How you pay", payg: () => "For what you use", ent: () => "Call costs + platform fee" },

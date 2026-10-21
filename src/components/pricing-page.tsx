@@ -38,7 +38,7 @@ function CurrencyToggle({ value, onChange }: { value: Currency; onChange: (c: Cu
           onClick={() => onChange(cur)}
           className={cn(
             "cursor-pointer rounded-full px-4 py-1.5 text-small transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            value === cur ? "bg-background text-foreground shadow-[0_1px_2px_oklch(0.2_0_0/0.08)]" : "text-ink-secondary hover:text-foreground"
+            value === cur ? "bg-background text-foreground shadow-[0_1px_2px_oklch(0.2_0_0/0.08)]" : "text-ink-secondary hover:text-foreground",
           )}
         >
           {cur === "INR" ? "₹ INR" : "$ USD"}
@@ -77,7 +77,7 @@ export function PricingPage() {
       {/* The two plans */}
       <Section id="pricing-plans" spacing="tight">
         <Container>
-          <ul className="mx-auto grid max-w-[64rem] gap-4 md:grid-cols-2">
+          <ul className="grid gap-4 md:grid-cols-2">
             {c.plans.map((p) => {
               const price = p.price(cur)
               const featured = p.id === "enterprise"
@@ -118,38 +118,63 @@ export function PricingPage() {
         </Container>
       </Section>
 
-      {/* Compare plans */}
+      {/* Compare plans: the heading sits in the table's corner; Enterprise is a tinted column; the demo closes it */}
       <Section id="pricing-compare">
         <Container>
-          <div className="mx-auto max-w-[64rem]">
-            <h2 className="text-h2 font-normal">{c.compare.title}</h2>
-            <div className="mt-10 overflow-x-auto">
-              <table className="w-full min-w-[34rem] border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-line-strong text-small text-ink-muted">
-                    <th scope="col" className="py-4 pr-6 font-normal">
-                      <span className="sr-only">Feature</span>
-                    </th>
-                    {c.plans.map((p) => (
-                      <th key={p.id} scope="col" className="py-4 pr-6 text-body font-normal text-foreground">
-                        {p.name}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[40rem] table-fixed border-collapse text-left">
+              <colgroup>
+                <col className="w-[30%] sm:w-[28%]" />
+                <col />
+                <col />
+              </colgroup>
+              <thead>
+                <tr className="align-bottom">
+                  <th scope="col" className="pr-6 pb-6 font-normal">
+                    <h2 className="text-h2 font-normal">{c.compare.title}</h2>
+                    <p className="mt-2 text-body text-ink-secondary">{c.compare.line}</p>
+                  </th>
+                  {c.plans.map((p) => {
+                    const price = p.price(cur)
+                    return (
+                      <th key={p.id} scope="col" className={cn("px-6 pt-7 pb-6 font-normal", p.id === "enterprise" && "rounded-t-md bg-surface")}>
+                        <span className="block text-h4 font-normal text-foreground">{p.name}</span>
+                        <span className="mt-1 block text-small text-ink-muted">
+                          {price.big} {price.small}
+                        </span>
                       </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {c.compare.rows.map((r) => (
-                    <tr key={r.k} className="border-b border-line">
-                      <th scope="row" className="py-4 pr-6 text-body font-normal text-ink-secondary">
+                    )
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {c.compare.rows.map((r) => {
+                  const payg = r.payg(cur)
+                  return (
+                    <tr key={r.k}>
+                      <th scope="row" className="border-t border-line py-5 pr-6 text-body font-normal text-ink-secondary">
                         {r.k}
                       </th>
-                      <td className="py-4 pr-6 text-body">{r.payg(cur)}</td>
-                      <td className="py-4 pr-6 text-body">{r.ent()}</td>
+                      <td className={cn("border-t border-line px-6 py-5 text-body", payg === "—" && "text-ink-muted")}>{payg}</td>
+                      <td className="border-t border-line bg-surface px-6 py-5 text-body">{r.ent()}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  )
+                })}
+                <tr>
+                  <td className="border-t border-line" />
+                  <td className="border-t border-line px-6 pt-6 pb-2">
+                    <Link data-demo href={ctas.demo.href} className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+                      {ctas.demo.label}
+                    </Link>
+                  </td>
+                  <td className="rounded-b-md border-t border-line bg-surface px-6 pt-6 pb-7">
+                    <Link data-demo href={ctas.demo.href} className={cn(buttonVariants(), "w-full")}>
+                      {ctas.demo.label}
+                    </Link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Container>
       </Section>

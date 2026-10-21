@@ -111,19 +111,19 @@ export function Definition({
   )
 }
 
-/** The sheet's next step (first) and a related page, as two link cards. */
+/** The sheet's next step (the first related page), as one link card. */
 export function NextStep({ id, related }: { id: SectionId; related: MenuPageId[] }) {
   return (
     <Section id={id} spacing="tight">
       <Container>
-        <ul className={cn("grid gap-3", related.length > 2 ? "md:grid-cols-3" : "md:grid-cols-2")}>
-          {related.map((pid, i) => {
+        <ul className="grid gap-3">
+          {related.slice(0, 1).map((pid) => {
             const p = allPages().find((x) => x.id === pid)!
             return (
               <li key={pid} className="flex">
                 <Link href={menuHref(p)} className="group flex w-full items-center justify-between gap-6 rounded-md bg-surface p-6 transition-colors hover:bg-placeholder sm:p-7">
                   <span className="flex flex-col gap-1">
-                    <span className="text-small text-ink-muted">{i === 0 ? "Next step" : "Also see"}</span>
+                    <span className="text-small text-ink-muted">Next step</span>
                     <span className="text-h4 font-normal">{p.name}</span>
                     <span className="text-small text-ink-secondary">{p.blurb}</span>
                   </span>

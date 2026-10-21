@@ -57,7 +57,7 @@ export const integrationsPage = {
     systems: {
       label: "Already integrated",
       title: "Works with the systems you already use.",
-      line: "Common CRMs, helpdesks, calendars, phone systems and automation tools, ready to connect. Anything else connects through its API.",
+      line: "CRMs, helpdesks, phone systems and calendars, ready to connect. Anything else connects through its API.",
     },
   },
 
@@ -76,7 +76,7 @@ export const integrationsPage = {
     },
     {
       q: "Which systems are already integrated?",
-      a: "Common CRMs, helpdesks, calendars, phone systems and automation tools. Anything else with an API connects as a tool your Hooman can use, or from a workflow.",
+      a: "Zoho CRM, Freshdesk and Zendesk; Plivo, Twilio, Exotel, Ozonetel, Tata Tele, Acefone and any SIP trunk; Google Calendar, Calendly and Cal.com; plus webhooks and the HoomanLabs MCP server. Anything else with an API connects as a tool your Hooman can use, or from a workflow.",
     },
     {
       q: "Which AI assistants work with the MCP server?",

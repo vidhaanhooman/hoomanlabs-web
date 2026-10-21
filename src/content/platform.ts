@@ -388,18 +388,29 @@ export const tools = {
       body: "Index your documents and policies so answers come from your sources, with citations.",
     },
   ],
-  // DRAFT: confirm which integrations are real before launch. `logo` keys map
-  // to monochrome brand marks in IntegrationGroups; items without one show
-  // their name only.
+  // The systems already integrated (confirmed list). `logo` keys map to brand
+  // marks in IntegrationGroups, `file` to a logo in public/logos/integrations,
+  // `icon` to a plain icon; items with none show their initial. Automation & data is still
+  // to be decided, so it isn't listed.
   groups: [
     {
       label: "CRM & helpdesk",
       items: [
-        { name: "HubSpot", logo: "hubspot" },
+        { name: "Zoho CRM", logo: "zoho" },
+        { name: "Freshdesk", file: "freshdesk.svg" },
         { name: "Zendesk", logo: "zendesk" },
-        { name: "Zoho", logo: "zoho" },
-        { name: "Intercom", logo: "intercom" },
-        { name: "Salesforce" },
+      ],
+    },
+    {
+      label: "Telephony",
+      items: [
+        { name: "Plivo", file: "plivo.svg" },
+        { name: "Twilio", file: "twilio.svg" },
+        { name: "Exotel", file: "exotel.svg" },
+        { name: "Ozonetel", file: "ozonetel.jpg" },
+        { name: "Tata Tele", file: "tata-tele.svg" },
+        { name: "Acefone", file: "acefone.svg" },
+        { name: "Custom SIP", icon: "sip" },
       ],
     },
     {
@@ -411,28 +422,11 @@ export const tools = {
       ],
     },
     {
-      label: "Telephony",
-      items: [
-        { name: "Vonage", logo: "vonage" },
-        { name: "WhatsApp", logo: "whatsapp" },
-        { name: "Twilio" },
-        { name: "Plivo" },
-        { name: "Any SIP trunk" },
-      ],
-    },
-    {
-      label: "Automation & data",
-      items: [
-        { name: "Zapier", logo: "zapier" },
-        { name: "Make", logo: "make" },
-        { name: "n8n", logo: "n8n" },
-        { name: "Google Sheets", logo: "googlesheets" },
-        { name: "Shopify", logo: "shopify" },
-      ],
-    },
-    {
       label: "Developer",
-      items: [{ name: "HoomanLabs MCP" }, { name: "Webhooks" }, { name: "REST API" }, { name: "CEL" }],
+      items: [
+        { name: "HoomanLabs MCP", logo: "mcp" },
+        { name: "Webhooks", icon: "webhooks" },
+      ],
     },
-  ] as { label: string; items: { name: string; logo?: string }[] }[],
+  ] as { label: string; items: { name: string; logo?: string; file?: string; icon?: "sip" | "webhooks" }[] }[],
 }
