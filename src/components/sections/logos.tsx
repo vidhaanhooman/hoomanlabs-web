@@ -28,7 +28,7 @@ type Customer = {
 }
 
 const CUSTOMERS: Customer[] = [
-  { name: "Vedantu", src: "/logos/Vedantu_idqes6hbls_0.svg", full: [210.8, 80], crop: [19, 6.5, 172.5, 47] },
+  { name: "Lenskart", src: "/logos/Lenskart.svg", full: [159.56, 22.11], crop: [0, 0, 159.56, 22.11] },
   { name: "GIVA", src: "/logos/giva-dark.svg", full: [848, 273], crop: [10.6, 16.9, 826.6, 239.5] },
   { name: "Pristyn Care", src: "/logos/Pristyn.svg", full: [3840, 950], crop: [0, 0, 3840, 946.2], scale: 1.2 },
   { name: "Mosaic Wellness", src: "/logos/mosaic-mono.svg", full: [1969, 1969], crop: [0, 728.5, 1969, 513.5], detail: true },
@@ -36,6 +36,7 @@ const CUSTOMERS: Customer[] = [
   { name: "StayVista", src: "/logos/stayvista-wordmark.svg", full: [187, 85], crop: [0, 0, 187, 85] },
   { name: "SaffronStays", src: "/logos/SaffronStays_vector.svg", full: [410, 120], crop: [24.7, 16.4, 368.1, 85.6], scale: 1.2 },
   { name: "ShopDeck", src: "/logos/shopdeck-mono.svg", full: [2168, 725], crop: [0, 155.8, 2168, 413.7], detail: true },
+  { name: "Vedantu", src: "/logos/Vedantu_idqes6hbls_0.svg", full: [210.8, 80], crop: [19, 6.5, 172.5, 47] },
   { name: "ShareChat", src: "/logos/ShareChat_idbYpuBuC1_0.svg", full: [1390.35, 375.16], crop: [0, 0, 1390.3, 375.2], detail: true },
 ]
 
@@ -86,17 +87,13 @@ export function Logos({ label = logos.label }: { label?: string } = {}) {
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
         <p className="text-center text-small text-ink-muted">{label}</p>
-        {/* A hairline grid: the logos, then a closing "100+" cell, so it fills 5 × 2 (2 columns on phones) */}
+        {/* A hairline grid of ten logos: 5 × 2 (2 columns on phones) */}
         <ul className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-5">
           {CUSTOMERS.map((c) => (
             <li key={c.name} className="group/logo flex h-24 items-center justify-center bg-background transition-colors duration-200 hover:bg-surface sm:h-28">
               <Logo c={c} />
             </li>
           ))}
-          <li className="flex h-24 flex-col items-center justify-center gap-0.5 bg-background sm:h-28">
-            <span className="text-h3 leading-none font-normal tabular-nums">100+</span>
-            <span className="text-small text-ink-muted">teams and counting</span>
-          </li>
         </ul>
       </Container>
     </Section>
