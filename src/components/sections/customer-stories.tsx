@@ -107,8 +107,10 @@ function Gradient({ hex, i }: { hex?: string; i: number }) {
 }
 
 // Hover only where there's a real pointer; keyboard focus gets the same reveal; touch shows the details.
+// The art sits muted (less saturated, a touch darker) so it stays calm next to the site's
+// black-and-white UI; on hover it leans in and warms up a little.
 const LEAN =
-  "transition-[scale] duration-[1200ms] ease-(--ease-out) [@media(hover:hover)_and_(pointer:fine)]:group-hover/story:scale-[1.07] group-focus-visible/story:scale-[1.07] motion-reduce:transition-none motion-reduce:scale-100!"
+  "[filter:saturate(0.55)_brightness(0.94)_contrast(0.96)] transition-[scale,filter] duration-[1200ms] ease-(--ease-out) [@media(hover:hover)_and_(pointer:fine)]:group-hover/story:scale-[1.07] [@media(hover:hover)_and_(pointer:fine)]:group-hover/story:[filter:saturate(0.8)_brightness(0.96)] group-focus-visible/story:scale-[1.07] motion-reduce:transition-none motion-reduce:scale-100!"
 const LIFT =
   "transition-[translate] duration-500 ease-(--ease-out) [@media(hover:hover)_and_(pointer:fine)]:group-hover/story:-translate-y-10 group-focus-visible/story:-translate-y-10 [@media(hover:none)]:-translate-y-10 motion-reduce:transition-none"
 const DETAILS =
