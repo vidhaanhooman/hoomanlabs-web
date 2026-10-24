@@ -62,7 +62,7 @@ export const startPaths = {
         { k: "Time to live", v: "Hours to days" },
         { k: "Support", v: "Docs, MCP and email" },
       ],
-      cta: { label: "Start building", href: "#" },
+      cta: { label: "Start building", href: "/sign-in" },
       more: null,
     },
     {

@@ -33,6 +33,7 @@ type Raw = {
   image?: SanityImage
   seo?: { metaTitle?: string; metaDescription?: string; keywords?: string[] }
   words?: (number | null)[]
+  colorCode?: string
   // Articles
   content?: PortableBlock[]
   // Customer stories saved as blogPost
@@ -79,6 +80,8 @@ const FIELDS = `
   "story": _type == "customerStory" || (_type == "blogPost" && coalesce(count(content), 0) == 0),
   "author": author->{name, bio},
   "image": coalesce(featuredImage, thumbnail, heroImage),
+  colorCode,
+  "industry": coalesce(industry, company.industry),
   seo,
   "words": [${["content", "companyProblem", "companySolution", "companyImpact", "about.body", "problem.body", "solution.body", "impact.body", "howItWorks.body", "implementation.body"].map(words).join(", ")}]
 `
@@ -176,6 +179,9 @@ function toPost(r: Raw, full = false): Post {
     author: { name: r.author?.name ?? "HoomanLabs team" },
     cover: cover && { src: cover.src, width: cover.width, height: cover.height, alt: cover.alt || r.title },
     seo: { title: r.seo?.metaTitle, description: r.seo?.metaDescription, keywords: r.seo?.keywords },
+    // Sanity's colour codes are hex without "#" (a stray seventh digit is dropped).
+    color: r.colorCode?.match(/^#?([0-9a-f]{6})/i)?.[1],
+    industry: r.industry?.trim() || undefined,
     ...(full ? shape(r) : {}),
   }
 }

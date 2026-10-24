@@ -9,8 +9,9 @@ import { HowItWorksV3 } from "@/components/sections/how-it-works-v3"
 import { Logos } from "@/components/sections/logos"
 import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import { HomeFaq, StatHeadline } from "@/components/sections/structure"
+import { CustomerStories, IndustryJobs } from "@/components/sections/customer-stories"
 import { StartResources } from "@/components/sections/start-resources"
-import { TwoWayCta } from "@/components/sections/two-way-cta"
+import { GetStarted } from "@/components/sections/get-started"
 import { VoiceWidget } from "@/components/sections/voice-widget"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { stories } from "@/content/structure"
@@ -122,6 +123,9 @@ export function V3Landing() {
       {/* 2 Customer logos */}
       <Logos />
 
+      {/* 2b Customer stories: the newest three from Sanity */}
+      <CustomerStories />
+
       {/* 3 Customer stories, then the enterprise path in one line. Hidden until
           the stories have real, approved content (see SHOW_STORIES). */}
       {SHOW_STORIES && (
@@ -188,6 +192,9 @@ export function V3Landing() {
       {/* 5c The rest of the platform: simulations, QA, channels, tools */}
       <StartResources />
 
+      {/* 6 Industries, one card per Solutions page, scrolling sideways */}
+      <IndustryJobs />
+
       {/* 7 Talk to an agent */}
       <Section id="v3-talk">
         <Container>
@@ -199,7 +206,9 @@ export function V3Landing() {
       </Section>
 
       <HomeFaq />
-      <TwoWayCta />
+
+      {/* Closing: the two ways to start (self-serve, enterprise) */}
+      <GetStarted />
 
       {/* Floating "Talk to an agent": on from the hero down, stepping aside
           while the full talk-to-an-agent section is on screen. */}

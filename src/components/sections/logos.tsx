@@ -97,6 +97,11 @@ const squash = (t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, "")
  * names the company (or one of its aliases) links that logo. Publishing a
  * story in Sanity is all it takes.
  */
+/** The grid customer a title names (by name or alias), if any. */
+export function customerIn(title: string) {
+  return CUSTOMERS.find((c) => [c.name, ...(c.aliases ?? [])].map(squash).some((n) => squash(title).includes(n)))?.name
+}
+
 function storyLinks(posts: Post[]) {
   const stories = posts.filter((p) => p.category === "Customer stories")
   const links: Record<string, string> = {}

@@ -74,6 +74,9 @@ export type SectionId =
   | "v3-journey"
   | "v3-customers"
   | "v3-deployments"
+  | "v3-stories"
+  | "v3-industries"
+  | "v3-start"
   | "v3-agent"
   | "v3-workflow"
   | "v3-analytics"
@@ -308,6 +311,9 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "v3-journey", name: "v3: hero journey (inbound / outbound)", status: "draft" },
   { id: "v3-customers", name: "v3: customer cards", status: "draft" },
   { id: "v3-deployments", name: "v3: deployments + enterprise", status: "draft" },
+  { id: "v3-stories", name: "v3: customer stories", status: "draft" },
+  { id: "v3-industries", name: "v3: industries", status: "draft" },
+  { id: "v3-start", name: "v3: get started (self-serve + enterprise)", status: "draft" },
   { id: "v3-agent", name: "v3: how it works (3 steps)", status: "draft" },
   { id: "v3-workflow", name: "v3: workflow", status: "draft" },
   { id: "v3-analytics", name: "v3: analytics", status: "draft" },

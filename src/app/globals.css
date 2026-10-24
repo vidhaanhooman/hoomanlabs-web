@@ -348,6 +348,28 @@
   to { transform: scale(1.12) translate(1.2%, -0.8%); }
 }
 
+/* Customer story cards: soft colour blobs that drift slowly (CustomerStories). */
+@media (prefers-reduced-motion: no-preference) {
+  .story-blob { animation: story-blob var(--blob-s, 16s) ease-in-out var(--blob-d, 0s) infinite alternate; }
+}
+@keyframes story-blob {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(var(--blob-x, 12%), var(--blob-y, -8%)) scale(1.15); }
+  100% { transform: translate(calc(var(--blob-x, 12%) * -0.6), calc(var(--blob-y, -8%) * -0.8)) scale(0.95); }
+}
+
+/* Customer story art: it pans slowly along its own motion-blur streaks
+   (--flow-x/--flow-y), leans in on hover, and the card arrives from blur. */
+@media (prefers-reduced-motion: no-preference) {
+  .story-flow { animation: story-flow var(--flow-s, 18s) ease-in-out var(--flow-d, 0s) infinite alternate; }
+  .story-reveal { filter: blur(14px); opacity: 0.5; transform: translateY(12px); transition: filter 900ms var(--ease-out), opacity 900ms var(--ease-out), transform 900ms var(--ease-out); transition-delay: var(--reveal-d, 0ms); }
+  .story-reveal[data-shown] { filter: none; opacity: 1; transform: none; }
+}
+@keyframes story-flow {
+  from { transform: translate(calc(var(--flow-x, 4%) * -1), calc(var(--flow-y, 0%) * -1)); }
+  to { transform: translate(var(--flow-x, 4%), var(--flow-y, 0%)); }
+}
+
 /* Film grain that shifts a few times a second, like running film (MeshStage). */
 @media (prefers-reduced-motion: no-preference) {
   .grain-flicker { animation: grain-flicker 0.9s steps(1) infinite; }
