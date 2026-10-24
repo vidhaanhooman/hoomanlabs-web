@@ -161,7 +161,7 @@ export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
-        <p className="text-center text-small font-semibold text-ink-muted italic">{label}</p>
+        <p className="text-center text-small font-semibold text-ink-muted">{label}</p>
         {/* A hairline grid of ten logos: 5 × 2 (2 columns on phones) */}
         <Suspense fallback={<Grid links={{}} />}>
           <LinkedGrid />

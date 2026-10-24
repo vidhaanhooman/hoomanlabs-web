@@ -69,7 +69,6 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
   // Callback form
   const [country, setCountry] = useState(COUNTRIES[0].code)
   const [digits, setDigits] = useState("")
-  const [consent, setConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [calling, setCalling] = useState<string | null>(null)
@@ -125,14 +124,13 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
     e.preventDefault()
     if (sending) return
     if (!valid) return setError(digits.length ? "Enter your full phone number." : "Enter your phone number.")
-    if (!consent) return setError("Tick the box to get the call.")
     setError(null)
     setSending(true)
     try {
       const res = await fetch("/api/callback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ country, phone: digits, useCase: call.id, consent, website: honeypot.current?.value ?? "" }),
+        body: JSON.stringify({ country, phone: digits, useCase: call.id, consent: true, website: honeypot.current?.value ?? "" }),
       })
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) return setError(data.error ?? "We couldn't place the call. Please try again.")
@@ -233,7 +231,7 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
             className={cn(
               "flex h-14 items-center rounded-full border pr-1.5 transition-colors focus-within:border-foreground/45",
               plain ? "bg-background" : "bg-background/75",
-              error && consent ? "border-destructive/60" : "border-line-strong"
+              error ? "border-destructive/60" : "border-line-strong"
             )}
           >
             <Select
@@ -289,27 +287,12 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
           </div>
           <CallButton className="mt-2 flex h-12 w-full sm:hidden" sending={sending} ready={valid} />
 
-          <label
-            className={cn(
-              "flex cursor-pointer items-center gap-2.5 text-small text-foreground/75",
-              plain ? "px-1 md:col-start-2" : "px-2 pt-3 pb-1"
-            )}
-          >
-            <input
-              type="checkbox"
-              checked={consent}
-              onChange={(e) => {
-                setConsent(e.target.checked)
-                setError(null)
-              }}
-              className="size-4 shrink-0 accent-foreground"
-            />
-            {error ? (
-              <span className="text-destructive">{error}</span>
-            ) : (
-              <span>Call me once with this demo. We won&apos;t call again or share your number.</span>
-            )}
-          </label>
+          {/* Asking for the call is the consent: no separate checkbox. */}
+          {error && (
+            <p role="alert" className={cn("text-small text-destructive", plain ? "px-1 md:col-start-2" : "px-2 pt-3 pb-1")}>
+              {error}
+            </p>
+          )}
         </form>
       )}
     </div>
