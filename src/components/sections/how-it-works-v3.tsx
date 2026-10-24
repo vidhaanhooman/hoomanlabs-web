@@ -225,7 +225,7 @@ function WorkflowScreen({ className, focus }: { className: string; focus: string
 type Row = { id: string; title: string; body: string }
 
 /** How long each row stays selected while the panel cycles on its own. */
-const CYCLE_MS = 5000
+const CYCLE_MS = 2200
 
 /**
  * One product: copy with rows, and its screen. The rows are buttons: hover,
