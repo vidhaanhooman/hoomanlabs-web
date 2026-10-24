@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRightIcon, BagIcon, BankIcon, BookOpenTextIcon, ClockCounterClockwiseIcon, CodeIcon, GraduationCapIcon, NewspaperIcon, PlugsConnectedIcon, SparkleIcon, StethoscopeIcon, TruckIcon } from "@phosphor-icons/react"
+import { ArrowRightIcon, BagIcon, BankIcon, BookOpenTextIcon, CodeIcon, GraduationCapIcon, NewspaperIcon, SparkleIcon, StethoscopeIcon, TruckIcon } from "@phosphor-icons/react"
 import type { Icon } from "@phosphor-icons/react"
 
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 
 const INDUSTRY_ICON: Record<Industry["icon"], Icon> = { graduation: GraduationCapIcon, bank: BankIcon, truck: TruckIcon, bag: BagIcon, stethoscope: StethoscopeIcon, sparkle: SparkleIcon }
 
-const RESOURCE_ICON: Record<(typeof nav.resources)[number]["icon"], Icon> = { docs: BookOpenTextIcon, api: CodeIcon, mcp: PlugsConnectedIcon, blog: NewspaperIcon, changelog: ClockCounterClockwiseIcon }
+const RESOURCE_ICON: Record<(typeof nav.resources)[number]["icon"], Icon> = { docs: BookOpenTextIcon, api: CodeIcon, blog: NewspaperIcon }
 
 // A compact menu row (Solutions, Resources): a small icon tile and the name.
 const MENU_ROW = "flex-row items-center gap-2.5 rounded-md px-2 py-1.5 text-small text-foreground hover:bg-secondary focus:bg-secondary"
@@ -27,9 +27,8 @@ const ITEM = "inline-flex h-9 items-center rounded-full px-3 text-small text-ink
  * overview link on top, then three groups (Build, Reach, Trust), each with
  * one line and its pages as chips, and the featured page (Human + AI) with
  * the image slot on the right. "Solutions" opens the six industries (there
- * is no overview page) and "Resources" opens docs, the API reference, the
- * MCP server, the blog and the changelog, both as compact lists: a small
- * icon and the name.
+ * is no overview page) and "Resources" opens docs, the API reference and
+ * the blog, both as compact lists: a small icon and the name.
  *
  * The menu never stays stuck open: however it was opened (hover, click or
  * keyboard), it closes once the mouse has been outside both the trigger and

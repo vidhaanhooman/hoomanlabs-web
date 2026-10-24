@@ -9,13 +9,11 @@ export const nav = {
     { label: "Solutions", href: "/solutions" },
     { label: "Pricing", href: "/pricing" },
   ],
-  /** "Resources" is a menu: docs, the API, the MCP server, the blog and the changelog. */
+  /** "Resources" is a menu: docs, the API reference and the blog. */
   resources: [
     { icon: "docs", label: "Docs", href: "https://docs.hoomanlabs.com" },
-    { icon: "api", label: "API reference", href: "#" },
-    { icon: "mcp", label: "MCP server", href: "/platform/agents#product-manage" },
+    { icon: "api", label: "API reference", href: "https://docs.hoomanlabs.com/hooman-labs-api-docs-2#description/introduction" },
     { icon: "blog", label: "Blog", href: "/blog" },
-    { icon: "changelog", label: "Changelog", href: "#" },
   ],
   signIn: { label: "Login", href: "/login" },
 }
