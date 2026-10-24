@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
     ]
   },
   partialPrefetching: true,
+  // Blog images come from Sanity's image CDN (this project only).
+  images: {
+    remotePatterns: [new URL("https://cdn.sanity.io/images/zqtjnm8g/**")],
+  },
   turbopack: {
     // Pin the root: a stray lockfile in the home directory confuses detection.
     root: __dirname,

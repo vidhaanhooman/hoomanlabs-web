@@ -64,6 +64,16 @@ export function MobileNav() {
                 </li>
               ))}
           </ul>
+          <p className="flex h-8 items-center border-t border-line pt-3 text-small text-ink-muted">Resources</p>
+          <ul className="flex flex-col pb-4">
+            {nav.resources.map((r) => (
+              <li key={r.label}>
+                <Link href={r.href} onClick={close} className="flex h-10 items-center text-body-lg">
+                  {r.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
         <div className="mt-auto flex flex-col gap-2 p-(--gutter)">
           <Link href={nav.signIn.href} onClick={close} className={buttonVariants({ variant: "outline" })}>

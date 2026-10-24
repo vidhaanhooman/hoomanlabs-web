@@ -1,18 +1,19 @@
 import Link from "next/link"
-import { ArrowRightIcon, RssSimpleIcon } from "@phosphor-icons/react/dist/ssr"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Cover } from "@/components/blog/cover"
 import { PostMeta } from "@/components/blog/post-card"
 import { PostGrid } from "@/components/blog/post-grid"
+import { buttonVariants } from "@/components/ui/button"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import { blogPage as c, postHref, posts } from "@/content/blog"
+import { blogPage as c, postHref, type Post } from "@/content/blog"
 
 /**
- * /blog: the latest post as a wide feature, then every other post in a grid
- * with topic chips, and a quiet subscribe strip (RSS now; the email
- * newsletter is marked as coming). Posts come from content/blog.ts
- * (placeholders until real posts are written).
+ * /blog: the header, the latest post as a feature (cover on the left, its
+ * title, line and meta on the right with the button at the foot), then the
+ * topic chips and every other post in a paged three-column grid. Posts come from Sanity (lib/blog.ts),
+ * newest first.
  */
 
 const ROOMY = {
@@ -20,9 +21,8 @@ const ROOMY = {
   "--section-pad": "calc(var(--section-gap) / 2)",
 } as React.CSSProperties
 
-export function BlogPage() {
-  const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date))
-  const [featured, ...rest] = sorted
+export function BlogPage({ posts }: { posts: Post[] }) {
+  const [featured] = posts
 
   return (
     <div style={ROOMY}>
@@ -41,16 +41,15 @@ export function BlogPage() {
       {featured && (
         <Section id="blog-featured">
           <Container>
-            <Link href={postHref(featured.slug)} className="group grid gap-8 rounded-xl border border-line p-3 transition-colors hover:border-line-strong lg:grid-cols-[1.3fr_1fr] lg:gap-12">
+            <Link href={postHref(featured.slug)} className="group grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:gap-10">
               <Cover post={featured} size="feature" />
-              <span className="flex flex-col justify-center gap-4 px-3 pb-4 lg:py-8 lg:pr-8 lg:pl-0">
-                <span className="font-mono text-label text-ink-muted">Latest</span>
+              <span className="flex flex-col gap-4 border-t border-line pt-6">
                 <span className="text-h2 font-normal group-hover:underline group-hover:underline-offset-4">{featured.title}</span>
                 <span className="text-body text-ink-secondary">{featured.excerpt}</span>
                 <PostMeta post={featured} />
-                <span className="mt-2 inline-flex items-center gap-1 text-small font-medium">
+                <span className={buttonVariants({ className: "mt-4 w-fit lg:mt-auto" })}>
                   Read the post
-                  <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                  <ArrowRightIcon className="transition-transform group-hover:translate-x-0.5" />
                 </span>
               </span>
             </Link>
@@ -58,28 +57,9 @@ export function BlogPage() {
         </Section>
       )}
 
-      <Section id="blog-posts">
+      <Section id="blog-posts" className="pb-(--section-gap)">
         <Container>
-          <div className="mb-8 flex flex-col gap-3">
-            <span className="font-mono text-label text-ink-muted">All posts</span>
-            <h2 className="text-h2 font-normal">Everything we&apos;ve written.</h2>
-          </div>
-          <PostGrid posts={rest} />
-        </Container>
-      </Section>
-
-      <Section id="blog-newsletter">
-        <Container>
-          <div className="flex flex-col gap-6 rounded-xl bg-surface p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
-            <span className="flex max-w-[34rem] flex-col gap-2">
-              <span className="text-h3 font-normal">Get new posts as they land.</span>
-              <span className="text-small text-ink-secondary">Follow along by RSS. An email newsletter is coming soon.</span>
-            </span>
-            <a href="/blog/rss.xml" className="inline-flex shrink-0 items-center gap-2 rounded-full border border-line-strong bg-background px-4 py-2 text-small transition-colors hover:bg-placeholder">
-              <RssSimpleIcon className="size-4" />
-              Subscribe by RSS
-            </a>
-          </div>
+          <PostGrid posts={posts} featured={featured?.slug} />
         </Container>
       </Section>
     </div>

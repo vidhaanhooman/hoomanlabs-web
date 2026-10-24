@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRightIcon, BagIcon, BankIcon, GraduationCapIcon, SparkleIcon, StethoscopeIcon, TruckIcon } from "@phosphor-icons/react"
+import { ArrowRightIcon, BagIcon, BankIcon, BookOpenTextIcon, ClockCounterClockwiseIcon, CodeIcon, GraduationCapIcon, NewspaperIcon, PlugsConnectedIcon, SparkleIcon, StethoscopeIcon, TruckIcon } from "@phosphor-icons/react"
 import type { Icon } from "@phosphor-icons/react"
 
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils"
 
 const INDUSTRY_ICON: Record<Industry["icon"], Icon> = { graduation: GraduationCapIcon, bank: BankIcon, truck: TruckIcon, bag: BagIcon, stethoscope: StethoscopeIcon, sparkle: SparkleIcon }
 
+const RESOURCE_ICON: Record<(typeof nav.resources)[number]["icon"], Icon> = { docs: BookOpenTextIcon, api: CodeIcon, mcp: PlugsConnectedIcon, blog: NewspaperIcon, changelog: ClockCounterClockwiseIcon }
+
 const ITEM = "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
 
 /**
@@ -21,7 +23,9 @@ const ITEM = "inline-flex h-9 items-center rounded-full px-3 text-small text-ink
  * overview link on top, then three groups (Build, Reach, Trust), each with
  * one line and its pages as chips, and the featured page (Human + AI) with
  * the image slot on the right. "Solutions" opens the six industries, each
- * with its icon and one line (there is no overview page).
+ * with its icon and one line (there is no overview page). "Resources"
+ * opens docs, the API reference, the MCP server, the blog and the changelog,
+ * in the same icon-and-line style.
  *
  * The menu never stays stuck open: however it was opened (hover, click or
  * keyboard), it closes once the mouse has been outside both the trigger and
@@ -154,6 +158,32 @@ export function MainNav() {
               </Link>
             </NavigationMenuItem>
           ))}
+
+        <NavigationMenuItem value="resources">
+          <NavigationMenuTrigger className="h-9 rounded-full bg-transparent px-3 text-small font-normal text-ink-secondary hover:bg-transparent hover:text-foreground focus:bg-transparent data-open:bg-transparent data-open:text-foreground data-popup-open:bg-transparent data-popup-open:text-foreground">
+            Resources
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="flex w-[25rem] flex-col gap-1 p-4">
+              {nav.resources.map((r) => {
+                const I = RESOURCE_ICON[r.icon]
+                return (
+                  <li key={r.label}>
+                    <NavigationMenuLink render={<Link href={r.href} />} className="flex-row items-center gap-3 rounded-md p-2 hover:bg-secondary focus:bg-secondary">
+                      <span className="grid size-11 shrink-0 place-items-center rounded-md border border-line text-foreground">
+                        <I aria-hidden className="size-5" />
+                      </span>
+                      <span className="flex min-w-0 flex-col gap-0.5">
+                        <span className="text-body text-foreground">{r.label}</span>
+                        <span className="text-small leading-snug text-ink-muted">{r.body}</span>
+                      </span>
+                    </NavigationMenuLink>
+                  </li>
+                )
+              })}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   )

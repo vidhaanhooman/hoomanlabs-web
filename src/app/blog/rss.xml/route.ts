@@ -1,19 +1,20 @@
-import { blogPage, postHref, posts } from "@/content/blog"
+import { blogPage, postHref } from "@/content/blog"
+import { getPosts } from "@/lib/blog"
 import { SITE_URL } from "@/lib/site"
 
-/** The blog's RSS feed. Static data only, so it prerenders at build time. */
+/** The blog's RSS feed, from Sanity (cached with the blog, refreshed on publish). */
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
-export function GET() {
-  const items = [...posts]
-    .sort((a, b) => b.date.localeCompare(a.date))
+export async function GET() {
+  const posts = await getPosts()
+  const items = posts
     .map(
       (p) => `    <item>
       <title>${esc(p.title)}</title>
       <link>${SITE_URL}${postHref(p.slug)}</link>
       <guid>${SITE_URL}${postHref(p.slug)}</guid>
-      <pubDate>${new Date(`${p.date}T00:00:00Z`).toUTCString()}</pubDate>
+      <pubDate>${new Date(p.date).toUTCString()}</pubDate>
       <category>${esc(p.category)}</category>
       <description>${esc(p.excerpt)}</description>
     </item>`

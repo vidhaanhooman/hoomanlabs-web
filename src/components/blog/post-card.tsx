@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Cover } from "@/components/blog/cover"
 import { formatDate, postHref, type Post } from "@/content/blog"
 
-/** A post in a grid: cover, category · date · reading time, title and excerpt. */
+/** A post in a grid: cover, category · date · reading time, then the title. */
 export function PostMeta({ post }: { post: Post }) {
   return (
     <span className="flex flex-wrap items-center gap-x-2 text-label text-ink-muted">
@@ -24,7 +24,6 @@ export function PostCard({ post }: { post: Post }) {
         <span className="flex flex-col gap-2">
           <PostMeta post={post} />
           <span className="text-h4 font-normal group-hover:underline group-hover:underline-offset-4">{post.title}</span>
-          <span className="line-clamp-2 text-small text-ink-secondary">{post.excerpt}</span>
         </span>
       </Link>
     </li>
