@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
 
 import { ICON_ROW, JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
@@ -53,6 +53,18 @@ export function CalmJourneyWindow({
   // A card is learned once its teaching event has finished.
   const learned = (c: Card) =>
     c.from !== undefined && (done || at.i > c.from || (at.i === c.from && events[c.from].kind === "action" && at.w === 1))
+  // The transcript fills from the top; once it runs out of room it follows
+  // the newest line, and the top edge fades so older lines scroll away.
+  const transcript = useRef<HTMLOListElement>(null)
+  const [overflowing, setOverflowing] = useState(false)
+  useEffect(() => {
+    const el = transcript.current
+    if (!el) return
+    const over = el.scrollHeight > el.clientHeight + 1
+    setOverflowing(over)
+    if (over) el.scrollTo({ top: el.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })
+  }, [lines.length, at.w, done])
+
   return (
     <div ref={ref} className="relative">
       <div className="ui-dark @container relative overflow-hidden rounded-lg text-[13px] leading-[1.6] shadow-[0_50px_120px_-40px_oklch(0.2_0.03_120/0.65)] @3xl:text-[15px]">
@@ -138,12 +150,14 @@ export function CalmJourneyWindow({
           {/* Transcript */}
           <div className="flex min-w-0 flex-col">
             <ol
+              ref={transcript}
               aria-label="Journey transcript"
-              className="flex h-72 flex-col justify-end gap-4 overflow-hidden px-5 pt-7 pb-4 @3xl:h-[30rem] @3xl:px-8"
-              style={{
-                maskImage: "linear-gradient(to bottom, transparent, black 22%)",
-                WebkitMaskImage: "linear-gradient(to bottom, transparent, black 22%)",
-              }}
+              className="flex h-72 flex-col gap-4 overflow-hidden px-5 pt-7 pb-4 @3xl:h-[30rem] @3xl:px-8"
+              style={
+                overflowing
+                  ? { maskImage: "linear-gradient(to bottom, transparent, black 22%)", WebkitMaskImage: "linear-gradient(to bottom, transparent, black 22%)" }
+                  : undefined
+              }
             >
               {lines.map((e, i) => {
                 const live = i === at.i && !done
