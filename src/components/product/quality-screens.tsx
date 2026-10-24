@@ -208,17 +208,22 @@ function ViewTabs({ active }: { active: string }) {
 
 /**
  * Dashboards: a prebuilt view (tabs over the calling funnel and calls over
- * time); hovering "Custom dashboards and widgets" switches to a dashboard
- * of your own, built from widgets of different kinds, with Add widget.
+ * time; "funnel" and "trend" spotlight one of them); hovering "Custom
+ * dashboards and widgets" switches to a dashboard of your own, built from
+ * widgets of different kinds, with Add widget.
  */
 export function DashboardScreen({ className, focus }: { className: string; focus: string }) {
   if (focus === "custom") return <CustomDashboardScreen className={className} />
   return (
     <UiWindow className={className} title="Dashboards · Billing" aside={<UiPill>Last 30 days</UiPill>}>
       <ViewTabs active="Outbound" />
-      <Funnel compact />
-      <OverTime height={92} />
-      <UiCard className="flex-row items-center gap-2 border-dashed py-2.5">
+      <div className={fade(focus, ["prebuilt", "funnel"])}>
+        <Funnel compact />
+      </div>
+      <div className={fade(focus, ["prebuilt", "trend"])}>
+        <OverTime height={92} />
+      </div>
+      <UiCard className={cn("flex-row items-center gap-2 border-dashed py-2.5", fade(focus, ["prebuilt"]))}>
         <PlusIcon className="size-3.5" />
         <span className="text-[12px]">New dashboard · build your own from widgets</span>
       </UiCard>

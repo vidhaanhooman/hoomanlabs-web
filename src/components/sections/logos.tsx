@@ -132,10 +132,6 @@ function Grid({ links }: { links: Record<string, string> }) {
         return (
           <li key={c.name} className="flex">
             <Link href={href} aria-label={`${c.name}: read the customer story`} className={cn(CELL, "w-full outline-none focus-visible:bg-surface")}>
-              <span className="absolute top-2.5 right-3 flex items-center gap-1 font-mono text-[10px] text-ink-muted">
-                <span aria-hidden className="size-1 rounded-full bg-current" />
-                Story
-              </span>
               <span className={LIFT}>
                 <Logo c={c} className={cn(c.detail ? TONE_DETAIL : TONE, "group-focus-visible/logo:opacity-100 group-focus-visible/logo:[filter:none]")} />
               </span>
@@ -159,8 +155,7 @@ async function LinkedGrid() {
 
 /**
  * Logo grid, directly under the hero. Customers with a published story
- * (Sanity) link to it: a small "Story" mark at rest, and on hover the logo
- * lifts and "Read story" slides in.
+ * (Sanity) link to it: on hover the logo lifts and "Read story" slides in.
  */
 export function Logos({ label = logos.label }: { label?: string } = {}) {
   return (

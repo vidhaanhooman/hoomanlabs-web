@@ -20,6 +20,7 @@ import {
 import { Container } from "@/components/layout/container"
 import { TextLink } from "@/components/layout/text-link"
 import { WorkflowCanvas } from "@/components/product/flow-canvas"
+import { DashboardScreen } from "@/components/product/quality-screens"
 import { Panel } from "@/components/layout/panel"
 import { Section } from "@/components/layout/section"
 import type { SectionId } from "@/content/sections"
@@ -373,6 +374,19 @@ export function HowItWorksV3() {
         linkHref="/platform#platform-workflow-anatomy"
         media="start"
         screen={(c, f) => <WorkflowScreen className={c} focus={f} />}
+      />
+      <ProductPanel
+        id="v3-analytics"
+        label="Analytics"
+        title="Analytics that show what's working."
+        rows={[
+          { id: "funnel", title: "Sees every stage", body: "Every call lands in one funnel, from dialled to connected to success, with the drop between each stage." },
+          { id: "trend", title: "Tracks it over time", body: "Each stage is charted day by day, so a dip shows up the morning it starts." },
+          { id: "custom", title: "Measures what you care about", body: "Build your own dashboards from widgets, from QA pass rates to promises to pay." },
+        ]}
+        link="Explore Analytics"
+        linkHref="/platform/observability"
+        screen={(c, f) => <DashboardScreen className={c} focus={f} />}
       />
     </>
   )
