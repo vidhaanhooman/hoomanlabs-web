@@ -16,16 +16,20 @@ const INDUSTRY_ICON: Record<Industry["icon"], Icon> = { graduation: GraduationCa
 
 const RESOURCE_ICON: Record<(typeof nav.resources)[number]["icon"], Icon> = { docs: BookOpenTextIcon, api: CodeIcon, mcp: PlugsConnectedIcon, blog: NewspaperIcon, changelog: ClockCounterClockwiseIcon }
 
+// A compact menu row (Solutions, Resources): a small icon tile and the name.
+const MENU_ROW = "flex-row items-center gap-2.5 rounded-md px-2 py-1.5 text-small text-foreground hover:bg-secondary focus:bg-secondary"
+const MENU_ICON = "grid size-7 shrink-0 place-items-center rounded-md border border-line text-foreground"
+
 const ITEM = "inline-flex h-9 items-center rounded-full px-3 text-small text-ink-secondary transition-colors duration-150 hover:text-foreground"
 
 /**
  * Desktop nav. "Platform" opens the menu from the content sheet: the
  * overview link on top, then three groups (Build, Reach, Trust), each with
  * one line and its pages as chips, and the featured page (Human + AI) with
- * the image slot on the right. "Solutions" opens the six industries, each
- * with its icon and one line (there is no overview page). "Resources"
- * opens docs, the API reference, the MCP server, the blog and the changelog,
- * in the same icon-and-line style.
+ * the image slot on the right. "Solutions" opens the six industries (there
+ * is no overview page) and "Resources" opens docs, the API reference, the
+ * MCP server, the blog and the changelog, both as compact lists: a small
+ * icon and the name.
  *
  * The menu never stays stuck open: however it was opened (hover, click or
  * keyboard), it closes once the mouse has been outside both the trigger and
@@ -126,21 +130,18 @@ export function MainNav() {
             Solutions
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="flex w-[min(60rem,calc(100vw-3rem))] flex-col p-4">
-              <ul className="grid grid-cols-3 gap-x-6 gap-y-2">
+            <div className="flex w-[min(30rem,calc(100vw-3rem))] flex-col p-2">
+              <ul className="grid grid-cols-2 gap-x-2 gap-y-0.5">
                 {industries.map((x) => (
                   <li key={x.slug}>
-                    <NavigationMenuLink render={<Link href={industryHref(x.slug)} />} className="group/ind flex-row items-center gap-3 rounded-md p-2 hover:bg-secondary focus:bg-secondary">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-md border border-line text-foreground">
+                    <NavigationMenuLink render={<Link href={industryHref(x.slug)} />} className={MENU_ROW}>
+                      <span className={MENU_ICON}>
                         {(() => {
                           const I = INDUSTRY_ICON[x.icon]
-                          return <I aria-hidden className="size-5" />
+                          return <I aria-hidden className="size-4" />
                         })()}
                       </span>
-                      <span className="flex min-w-0 flex-col gap-0.5">
-                        <span className="text-body text-foreground">{x.name}</span>
-                        <span className="line-clamp-2 text-small leading-snug text-ink-muted">{x.card}</span>
-                      </span>
+                      {x.name}
                     </NavigationMenuLink>
                   </li>
                 ))}
@@ -164,19 +165,16 @@ export function MainNav() {
             Resources
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-[25rem] flex-col gap-1 p-4">
+            <ul className="flex w-56 flex-col gap-0.5 p-2">
               {nav.resources.map((r) => {
                 const I = RESOURCE_ICON[r.icon]
                 return (
                   <li key={r.label}>
-                    <NavigationMenuLink render={<Link href={r.href} />} className="flex-row items-center gap-3 rounded-md p-2 hover:bg-secondary focus:bg-secondary">
-                      <span className="grid size-11 shrink-0 place-items-center rounded-md border border-line text-foreground">
-                        <I aria-hidden className="size-5" />
+                    <NavigationMenuLink render={<Link href={r.href} />} className={MENU_ROW}>
+                      <span className={MENU_ICON}>
+                        <I aria-hidden className="size-4" />
                       </span>
-                      <span className="flex min-w-0 flex-col gap-0.5">
-                        <span className="text-body text-foreground">{r.label}</span>
-                        <span className="text-small leading-snug text-ink-muted">{r.body}</span>
-                      </span>
+                      {r.label}
                     </NavigationMenuLink>
                   </li>
                 )

@@ -11,11 +11,11 @@ export const nav = {
   ],
   /** "Resources" is a menu: docs, the API, the MCP server, the blog and the changelog. */
   resources: [
-    { icon: "docs", label: "Docs", body: "Guides and concepts", href: "https://docs.hoomanlabs.com" },
-    { icon: "api", label: "API reference", body: "Build on HoomanLabs", href: "#" },
-    { icon: "mcp", label: "MCP server", body: "Manage agents from your editor", href: "/platform/agents#product-manage" },
-    { icon: "blog", label: "Blog", body: "Articles, use cases and customer stories", href: "/blog" },
-    { icon: "changelog", label: "Changelog", body: "What shipped this month", href: "#" },
+    { icon: "docs", label: "Docs", href: "https://docs.hoomanlabs.com" },
+    { icon: "api", label: "API reference", href: "#" },
+    { icon: "mcp", label: "MCP server", href: "/platform/agents#product-manage" },
+    { icon: "blog", label: "Blog", href: "/blog" },
+    { icon: "changelog", label: "Changelog", href: "#" },
   ],
   signIn: { label: "Platform", href: "/login" },
 }
