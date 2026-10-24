@@ -57,7 +57,8 @@ const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60))
  * `plain`: the flat site style, like the outcome cards: one grey surface,
  * mono labels and hairline dividers instead of frosted glass and inner boxes.
  */
-export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
+/** `compact` (with `plain`): a smaller version for the floating widget. */
+export function HeroCallCard({ plain = false, compact = false }: { plain?: boolean; compact?: boolean } = {}) {
   const [index, setIndex] = useState(0)
   const call = useCaseCalls[index]
 
@@ -148,13 +149,13 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
     <div
       className={cn(
         "mx-auto w-full text-left",
-        plain && "rounded-md bg-surface p-5 sm:p-8",
+        plain && (compact ? "rounded-md bg-surface p-4 sm:p-5" : "rounded-md bg-surface p-5 sm:p-8"),
         !plain &&
           "max-w-4xl rounded-[2rem] border border-white/40 bg-[oklch(0.99_0.01_85/0.42)] p-3 shadow-[0_30px_80px_-40px_oklch(0.25_0.04_120/0.55),inset_0_1px_0_oklch(1_0_0/0.6)] backdrop-blur-2xl backdrop-saturate-150 sm:p-4"
       )}
     >
       {/* 1 Pick */}
-      <div className={cn("flex", plain ? "flex-wrap items-center justify-between gap-x-6 gap-y-3 pb-6" : "justify-center px-2 pt-1 pb-3")}>
+      <div className={cn("flex", plain ? cn("flex-wrap items-center justify-between gap-x-6 gap-y-3", compact ? "pb-4" : "pb-6") : "justify-center px-2 pt-1 pb-3")}>
         <div
           role="radiogroup"
           aria-label="Use case"
@@ -174,7 +175,8 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
                 setCalling(null)
               }}
               className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-small whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:outline-none",
+                compact ? "px-2.5 py-1 text-[12.5px]" : "px-3.5 py-1.5 text-small",
+                "flex shrink-0 items-center gap-1.5 rounded-full whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:outline-none",
                 i === index ? "bg-background/90 text-foreground shadow-xs" : "text-foreground/70 hover:text-foreground"
               )}
             >
@@ -183,7 +185,7 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
             </button>
           ))}
         </div>
-        {plain && (
+        {plain && !compact && (
           <span className="font-mono text-label text-ink-muted">
             {call.agent} · {call.useCase} agent · {call.direction} · {call.language}
           </span>
@@ -191,12 +193,12 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
       </div>
 
       {/* 2 Listen (or the calling state) */}
-      <div className={cn("@container", plain ? "border-y border-line py-6" : "rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5")}>
+      <div className={cn("@container", plain ? cn("border-y border-line", compact ? "py-4" : "py-6") : "rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5")}>
         {calling ? (
           <Calling call={call} number={calling} late={late} onReset={() => setCalling(null)} />
         ) : (
           plain ? (
-            <Stage call={call} t={t} playing={playing} onToggle={toggleSample} />
+            <Stage call={call} t={t} playing={playing} onToggle={toggleSample} compact={compact} />
           ) : (
             <Listen call={call} t={t} playing={playing} onToggle={toggleSample} />
           )
@@ -208,7 +210,14 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
         <form
           onSubmit={submit}
           noValidate
-          className={cn("relative", plain ? "grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 gap-y-4 pt-6 md:grid-cols-[1fr_minmax(0,30rem)]" : "px-1 pt-4")}
+          className={cn(
+            "relative",
+            plain
+              ? compact
+                ? "flex flex-col gap-3 pt-4"
+                : "grid grid-cols-[minmax(0,1fr)] items-center gap-x-10 gap-y-4 pt-6 md:grid-cols-[1fr_minmax(0,30rem)]"
+              : "px-1 pt-4"
+          )}
         >
           <input
             ref={honeypot}
@@ -220,8 +229,8 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
             className="absolute -left-[9999px] size-px opacity-0"
           />
           {plain ? (
-            <div className="flex flex-col gap-1 md:row-span-2">
-              <p className="text-body">Get this call on your phone</p>
+            <div className={cn("flex flex-col gap-1", !compact && "md:row-span-2")}>
+              <p className={compact ? "text-small font-medium" : "text-body"}>Get this call on your phone</p>
               <p className="text-small text-ink-secondary">{call.agent} calls you and runs this same call, live.</p>
             </div>
           ) : (
@@ -229,7 +238,8 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
           )}
           <div
             className={cn(
-              "flex h-14 items-center rounded-full border pr-1.5 transition-colors focus-within:border-foreground/45",
+              "flex items-center rounded-full border pr-1.5 transition-colors focus-within:border-foreground/45",
+              compact ? "h-12" : "h-14",
               plain ? "bg-background" : "bg-background/75",
               error ? "border-destructive/60" : "border-line-strong"
             )}
@@ -281,15 +291,15 @@ export function HeroCallCard({ plain = false }: { plain?: boolean } = {}) {
                 setError(null)
               }}
               aria-invalid={error ? true : undefined}
-              className="min-w-0 flex-1 bg-transparent px-2 text-body-lg tabular-nums outline-none placeholder:text-ink-muted"
+              className={cn("min-w-0 flex-1 bg-transparent px-2 tabular-nums outline-none placeholder:text-ink-muted", compact ? "text-body" : "text-body-lg")}
             />
-            <CallButton className="hidden h-11 px-6 sm:inline-flex" sending={sending} ready={valid} />
+            <CallButton className={cn("hidden sm:inline-flex", compact ? "h-9 px-4 text-small" : "h-11 px-6")} sending={sending} ready={valid} />
           </div>
           <CallButton className="mt-2 flex h-12 w-full sm:hidden" sending={sending} ready={valid} />
 
           {/* Asking for the call is the consent: no separate checkbox. */}
           {error && (
-            <p role="alert" className={cn("text-small text-destructive", plain ? "px-1 md:col-start-2" : "px-2 pt-3 pb-1")}>
+            <p role="alert" className={cn("text-small text-destructive", plain ? cn("px-1", !compact && "md:col-start-2") : "px-2 pt-3 pb-1")}>
               {error}
             </p>
           )}
@@ -391,17 +401,20 @@ function Listen({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; 
  * The plain layout's listen area: a compact player bar above large live
  * captions.
  */
-function Stage({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; playing: boolean; onToggle: () => void }) {
+function Stage({ call, t, playing, onToggle, compact = false }: { call: UseCaseCall; t: number; playing: boolean; onToggle: () => void; compact?: boolean }) {
   const progress = playing ? t / call.duration : 0
   const current = playing ? call.lines.findLastIndex((l) => l.t <= t) : -1
   return (
-    <div className="flex min-w-0 flex-col gap-6">
-      <div className="flex items-center gap-4">
+    <div className={cn("flex min-w-0 flex-col", compact ? "gap-4" : "gap-6")}>
+      <div className={cn("flex items-center", compact ? "gap-3" : "gap-4")}>
         <button
           type="button"
           onClick={onToggle}
           aria-label={playing ? "Pause sample" : `Play a sample ${call.useCase.toLowerCase()} call`}
-          className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background outline-none transition-transform duration-150 ease-(--ease-out) hover:scale-105 focus-visible:ring-2 focus-visible:ring-foreground/30 active:scale-95"
+          className={cn(
+            "grid shrink-0 place-items-center rounded-full bg-foreground text-background outline-none transition-transform duration-150 ease-(--ease-out) hover:scale-105 focus-visible:ring-2 focus-visible:ring-foreground/30 active:scale-95",
+            compact ? "size-10" : "size-12"
+          )}
         >
           {playing ? <PauseIcon weight="fill" className="size-4" /> : <PlayIcon weight="fill" className="ml-0.5 size-4" />}
         </button>
@@ -418,18 +431,18 @@ function Stage({ call, t, playing, onToggle }: { call: UseCaseCall; t: number; p
           {clock(playing ? t : 0)} / {clock(call.duration)}
         </span>
       </div>
-      <Captions call={call} current={current} />
+      <Captions call={call} current={current} compact={compact} />
     </div>
   )
 }
 
 /** The line being spoken, large, with the one before it fading out above. */
-function Captions({ call, current }: { call: UseCaseCall; current: number }) {
+function Captions({ call, current, compact = false }: { call: UseCaseCall; current: number; compact?: boolean }) {
   const line = call.lines[Math.max(current, 0)]
   const prev = current > 0 ? call.lines[current - 1] : null
   const who = (l: UseCaseCall["lines"][number]) => (l.speaker === "agent" ? call.agent : "Caller")
   return (
-    <div aria-live="polite" className="flex min-h-36 flex-col justify-start gap-4">
+    <div aria-live="polite" className={cn("flex flex-col justify-start", compact ? "min-h-24 gap-3" : "min-h-36 gap-4")}>
       {prev && (
         <p key={`p-${prev.t}`} className="line-clamp-2 text-small text-ink-muted motion-safe:animate-[reveal-blur_450ms_var(--ease-out)_both]">
           <span className="mr-2 font-mono text-label">{who(prev)}</span>
@@ -439,13 +452,13 @@ function Captions({ call, current }: { call: UseCaseCall; current: number }) {
       {current < 0 ? (
         <div className="flex flex-col gap-2">
           <span className="font-mono text-label text-ink-muted">On this call</span>
-          <p className="text-h3 font-normal">{call.summary}.</p>
+          <p className={cn(compact ? "text-h4" : "text-h3", "font-normal")}>{call.summary}.</p>
           <p className="text-small text-ink-secondary">Press play to hear it, with the transcript as it happens.</p>
         </div>
       ) : (
         <div key={line.t} className="flex flex-col gap-2 motion-safe:animate-[reveal-blur_450ms_var(--ease-out)_both]">
           <span className="font-mono text-label text-ink-muted">{who(line)}</span>
-          <p className="text-h3 font-normal">{line.text}</p>
+          <p className={cn(compact ? "text-h4" : "text-h3", "font-normal")}>{line.text}</p>
           {line.translation && <p className="text-small text-ink-secondary">{line.translation}</p>}
         </div>
       )}

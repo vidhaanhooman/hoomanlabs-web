@@ -11,6 +11,7 @@ import { OutcomeDiagrams } from "@/components/sections/outcome-diagrams"
 import { HomeFaq, StatHeadline } from "@/components/sections/structure"
 import { StartResources } from "@/components/sections/start-resources"
 import { TwoWayCta } from "@/components/sections/two-way-cta"
+import { VoiceWidget } from "@/components/sections/voice-widget"
 import { V3Hero } from "@/components/sections/v3-hero"
 import { stories } from "@/content/structure"
 
@@ -19,7 +20,7 @@ import { stories } from "@/content/structure"
  *
  * hero (journey) · logos + customer cards · deployments + enterprise ·
  * outcomes + stat · agent builder · workflow · everything in one platform ·
- * solutions · talk to an agent · FAQ · closing CTA · voice widget
+ * solutions · talk to an agent · FAQ · closing CTA · floating voice widget
  */
 
 const ROOMY = {
@@ -199,6 +200,10 @@ export function V3Landing() {
 
       <HomeFaq />
       <TwoWayCta />
+
+      {/* Floating "Talk to an agent": on from the hero down, stepping aside
+          while the full talk-to-an-agent section is on screen. */}
+      <VoiceWidget after="" hideOver="v3-talk" />
     </div>
   )
 }

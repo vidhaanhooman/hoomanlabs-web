@@ -12,7 +12,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
  * Outcomes in the site's own language: three panels, each with a static
  * fine-line drawing of the outcome (a noisy wait resolving into one calm
  * wave, reach rippling outward, tasks stepping up to done), a number that
- * counts up once, and a short explanation.
+ * counts up once when it scrolls into view, and a short explanation.
  * Figures are placeholders to confirm.
  */
 
@@ -47,26 +47,28 @@ const ITEMS = [
 ]
 
 /** Counts from 0 to `to` once, when first visible. */
-function CountUp({ to, format, start }: { to: number; format: (v: number) => string; start: boolean }) {
+/** Counts up once, when the number itself has scrolled well into view. */
+function CountUp({ to, format, delay = 0 }: { to: number; format: (v: number) => string; delay?: number }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  // Fully on screen and above the bottom fifth, so it starts as you arrive, not on load.
+  const start = useInView(ref, { amount: 1, once: true, margin: "0px 0px -20% 0px" })
   const [v, setV] = useState(0)
   useEffect(() => {
     if (!start) return
     let raf = 0
-    const t0 = performance.now()
+    const t0 = performance.now() + delay
     const tick = (now: number) => {
-      const p = Math.min(1, (now - t0) / 1200)
+      const p = Math.max(0, Math.min(1, (now - t0) / 1400))
       setV(to * (1 - Math.pow(1 - p, 3)))
       if (p < 1) raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [start, to])
-  return <>{format(v)}</>
+  }, [start, to, delay])
+  return <span ref={ref}>{format(v)}</span>
 }
 
 export function OutcomeDiagrams() {
-  const ref = useRef<HTMLDivElement>(null)
-  const seen = useInView(ref, { amount: 0.4, once: true })
   const reduce = usePrefersReducedMotion()
   return (
     <Section id="sl-outcomes">
@@ -75,8 +77,8 @@ export function OutcomeDiagrams() {
           <h2 className="text-h2 font-normal">What changes when agents take the calls.</h2>
           <p className="text-body text-ink-secondary">Three things teams measure in the first month.</p>
         </div>
-        <div ref={ref} className="mt-10 grid gap-3 md:grid-cols-3">
-          {ITEMS.map(({ key, tag, value, format, label, body, Scene }) => (
+        <div className="mt-10 grid gap-3 md:grid-cols-3">
+          {ITEMS.map(({ key, tag, value, format, label, body, Scene }, i) => (
             <Panel key={key} className="flex flex-col gap-6 p-6">
               <div aria-hidden className="h-44">
                 <Scene />
@@ -84,7 +86,7 @@ export function OutcomeDiagrams() {
               <div className="flex flex-col gap-1">
                 <span className="font-mono text-label text-ink-muted">{tag}</span>
                 <span className="text-display font-normal tabular-nums">
-                  {reduce ? format(value) : <CountUp to={value} format={format} start={seen} />}
+                  {reduce ? format(value) : <CountUp to={value} format={format} delay={i * 150} />}
                 </span>
                 <span className="text-small text-ink-secondary">{label}</span>
               </div>

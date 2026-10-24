@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
 
 /**
  * Floating "Talk to an agent" button, bottom right. Opens the same call card
- * as the hero (play a sample, or get the call) in a panel above it. Appears
+ * as the "Talk to an agent" section (flat layout: play a sample, or get the
+ * call) in a panel above it. Appears
  * once the `after` element (the hero's call card by default) has scrolled out
  * of view, and steps aside while the `hideOver` element is on screen.
  */
@@ -16,13 +17,14 @@ export function VoiceWidget({
   after = "listen",
   hideOver,
 }: {
-  /** Show once this element has scrolled out of view. */
+  /** Show once this element has scrolled out of view; "" shows it from the start. */
   after?: string
   /** Hide while this element (e.g. a full talk-to-an-agent section) is on screen. */
   hideOver?: string
 } = {}) {
   const [open, setOpen] = useState(false)
-  const [past, setPast] = useState(false)
+  // No `after` (empty): shown from the start.
+  const [past, setPast] = useState(!after)
   const [covered, setCovered] = useState(false)
 
   useEffect(() => {
@@ -47,9 +49,9 @@ export function VoiceWidget({
         <div
           role="dialog"
           aria-label="Talk to an agent"
-          className="max-h-[calc(100svh-6rem)] w-[min(calc(100vw-2rem),46rem)] overflow-y-auto rounded-[2rem] bg-background shadow-[0_40px_100px_-30px_oklch(0_0_0/0.45)] motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]"
+          className="max-h-[calc(100svh-6rem)] w-[min(calc(100vw-2rem),36rem)] overflow-y-auto rounded-md border border-line bg-background shadow-[0_40px_100px_-30px_oklch(0_0_0/0.45)] motion-safe:animate-[reveal-blur_300ms_var(--ease-out)_both]"
         >
-          <HeroCallCard />
+          <HeroCallCard plain compact />
         </div>
       )}
       <button
