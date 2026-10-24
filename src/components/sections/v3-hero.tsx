@@ -22,7 +22,7 @@ export function V3Hero() {
     <Section id="hero" spacing="none" className="pt-10 pb-(--section-pad) md:pt-16">
       <Container className="relative">
 
-        <h1 className="reveal text-display font-normal">AI employees for every customer call.</h1>
+        <h1 className="reveal text-display font-normal">AI employees your customers can talk to.</h1>
         <div className="reveal mt-8" style={{ "--i": 1 } as React.CSSProperties}>
           <Link data-demo href={ctas.demo.href} className={buttonVariants()}>
             {ctas.demo.label}
