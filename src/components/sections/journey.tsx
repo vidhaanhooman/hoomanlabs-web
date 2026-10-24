@@ -35,13 +35,14 @@ import { cn } from "@/lib/utils"
  */
 
 export type Event =
-  | { step: number; kind: "action"; pending: string; text: string; detail?: string; done?: boolean }
+  | { step: number; kind: "action"; pending: string; text: string; detail?: string; done?: boolean; marker?: "call-ended" }
   | { step: number; kind: "agent" | "caller"; text: string; channel?: string }
 
 export type Journey = {
   label: string
   title: string
-  steps: { label: string; icon: Icon; branch?: string }[]
+  /** `phase`: the rail group a step sits in (e.g. "On the call", "Follow-up"). */
+  steps: { label: string; icon: Icon; branch?: string; phase?: string }[]
   events: Event[]
   /** Side panel rows; each appears once its step is reached. */
   context: { label: string; value: string; step: number }[]
@@ -436,12 +437,15 @@ export function SpeechLine({
   words,
   live,
   above = false,
+  label,
 }: {
   event: Extract<Event, { kind: "agent" | "caller" }>
   words: number
   live: boolean
   /** Speaker name on its own line above the words. */
   above?: boolean
+  /** Speaker name in place of "Agent" / "Caller". */
+  label?: string
 }) {
   const all = event.text.split(" ")
   const shown = all.slice(0, words).join(" ")
@@ -450,7 +454,7 @@ export function SpeechLine({
   return (
     <div className={cn(stacked ? ICON_ROW : ROW, "items-baseline")}>
       <span className={cn("text-[12px]", speaking ? "text-(--ui-live)" : "text-(--ui-muted)", stacked && "col-start-2")}>
-        {event.kind === "agent" ? "Agent" : "Caller"}
+        {label ?? (event.kind === "agent" ? "Agent" : "Caller")}
       </span>
       <p className={cn("min-h-[1.5em]", stacked ? "col-start-2" : event.kind === "caller" && "text-(--ui-text)/80")}>
         {words === 0 ? (

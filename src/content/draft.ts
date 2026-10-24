@@ -103,7 +103,7 @@ export const listen = {
 }
 
 export const finalCta = {
-  title: "Put your first agent in front of customers.",
+  title: "Try it live.",
 }
 
 /** Footer link columns. Placeholder hrefs until the real pages exist. */

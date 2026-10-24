@@ -43,7 +43,7 @@ export function StartResources() {
                 <h3 className="text-h4 font-normal">Follow-up done</h3>
                 <p className="text-small text-ink-secondary">Done before anyone looks.</p>
               </div>
-              <div aria-hidden className="flex flex-col gap-3 rounded-md border border-line bg-background p-3 text-small">
+              <div aria-hidden className="flex flex-1 flex-col gap-3 rounded-md border border-line bg-background p-3 text-small">
                 <div className="flex items-center justify-between text-label text-ink-muted">
                   <span>Call with Maya · 3:42</span>
                   <span>Post-call</span>
@@ -77,7 +77,7 @@ export function StartResources() {
                 <h3 className="text-h4 font-normal">Your systems</h3>
                 <p className="text-small text-ink-secondary">Agents act on the tools you already run.</p>
               </div>
-              <div aria-hidden className="flex flex-col overflow-hidden rounded-md border border-line bg-background text-small">
+              <div aria-hidden className="flex flex-1 flex-col overflow-hidden rounded-md border border-line bg-background text-small">
                 <div className="grid grid-cols-[1fr_auto] border-b border-line px-3 py-2 text-label text-ink-muted">
                   <span>Integration</span>
                   <span>Used for</span>
@@ -100,7 +100,7 @@ export function StartResources() {
                     <span className="text-ink-muted">{t.d}</span>
                   </div>
                 ))}
-                <div className="flex items-center gap-2 bg-surface px-3 py-2 text-label text-ink-secondary">
+                <div className="mt-auto flex items-center gap-2 bg-surface px-3 py-2 text-label text-ink-secondary">
                   <span className="rounded-[4px] bg-foreground/[0.07] px-1 font-mono text-[11px] text-foreground/85">take_payment</span>
                   your own tools, called by name
                 </div>

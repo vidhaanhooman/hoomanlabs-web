@@ -175,8 +175,11 @@ export function FeatureTrio({ className }: { className?: string }) {
             <h3 className="text-h4 font-normal">{f.title}</h3>
             <p className="text-small text-ink-secondary">{SHORT[f.id]}</p>
           </div>
-          <div aria-hidden>{MINI[f.id]}</div>
-          <TextLink href={f.link.href} className="mt-auto">
+          {/* The graphic grows to fill the card, so the white panels in a row match */}
+          <div aria-hidden className="flex flex-1 flex-col *:flex-1">
+            {MINI[f.id]}
+          </div>
+          <TextLink href={f.link.href}>
             {f.link.label}
           </TextLink>
         </Panel>
