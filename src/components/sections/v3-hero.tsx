@@ -34,7 +34,7 @@ export function V3Hero() {
       <Container className="mt-10 md:mt-12">
         <div id="v3-journey" className="reveal" style={{ "--i": 2 } as React.CSSProperties}>
           <HeroParallaxStage className="rounded-xl">
-            <div className="relative z-10 px-3 py-10 sm:px-10 sm:py-16 lg:px-16 lg:py-24">
+            <div className="relative z-10 px-3 py-8 sm:px-10 sm:py-12 lg:px-16 lg:py-16">
               <CalmJourneyWindow
                 key={journey}
                 id={journey}

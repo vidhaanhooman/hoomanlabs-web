@@ -1,17 +1,18 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { CheckCircleIcon, CheckIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
+import { CheckCircleIcon, CircleNotchIcon, LightningIcon } from "@phosphor-icons/react"
 
 import { ICON_ROW, JOURNEYS, SpeechLine, clock, useJourneyPlayback, type JourneyId } from "@/components/sections/journey"
 import { cn } from "@/lib/utils"
 
 /**
- * Calm hero journey (/lab/v3): step rail, one running transcript of every
- * action and line, and an extracted-data pane that fills in as the agent learns
- * things. Working actions shimmer, then their result
- * slides in; what the agent learns appears as chips under the line and in
- * the extracted-data pane. Green only marks "now". Remount (key) to switch.
+ * Calm hero journey (homepage): a slim step rail, one running transcript of
+ * every action and line, and an extracted-data pane whose cards appear as the
+ * agent learns things. It opens part-way in (never blank); working actions
+ * shimmer, then their result slides in. What the agent learns shows in the
+ * pane, or as chips under the line when the pane is hidden (narrow windows).
+ * Green only marks "now". Remount (key) to switch.
  */
 
 /** `from`: the transcript event that teaches this card (none for the outcome). */
@@ -31,6 +32,8 @@ const CARDS: Record<JourneyId, Partial<Record<number, Card>>> = {
 }
 
 const STEP_PAUSE_MS = 900
+// Open with the first two actions already done, so the window never starts blank.
+const OPEN_AT = 2
 
 export function CalmJourneyWindow({
   id,
@@ -44,7 +47,7 @@ export function CalmJourneyWindow({
   const ref = useRef<HTMLDivElement>(null)
   const journey = JOURNEYS[id]
   const { events, steps } = journey
-  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS, onEnd })
+  const { at, done, step, seconds, speaking, status, jump } = useJourneyPlayback(journey, ref, { stepPause: STEP_PAUSE_MS, onEnd, start: OPEN_AT })
 
   // One running transcript: every action and line so far.
   const lines = events.slice(0, done ? events.length : at.i + 1)
@@ -74,6 +77,14 @@ export function CalmJourneyWindow({
           <span className="font-medium">{done ? "Complete" : "Live"}</span>
           <span className="hidden text-(--ui-muted) @md:inline">{journey.title}</span>
           <span className="font-mono text-(--ui-muted) tabular-nums">{clock(seconds)}</span>
+          <span className="ui-wave flex h-3.5 items-end gap-[3px]" data-idle={speaking ? undefined : ""} aria-hidden>
+            {Array.from({ length: 5 }, (_, i) => (
+              <span key={i} className={cn("block h-full w-[3px] rounded-full", speaking ? "bg-(--ui-text)/80" : "bg-(--ui-text)/30")} />
+            ))}
+          </span>
+          <span aria-live="polite" className="sr-only">
+            {status}
+          </span>
           {onPick && (
             <div role="tablist" aria-label="Journey" className="ml-auto flex gap-0.5 rounded-full border border-(--ui-line) bg-(--ui-raised) p-0.5">
               {(Object.keys(JOURNEYS) as JourneyId[]).map((j) => (
@@ -111,9 +122,9 @@ export function CalmJourneyWindow({
           <span className="text-[12px] whitespace-nowrap">{steps[step].label}</span>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[15rem_minmax(0,1fr)] @5xl:grid-cols-[16rem_minmax(0,1fr)_17rem]">
+        <div className="grid grid-cols-[minmax(0,1fr)] @3xl:grid-cols-[12rem_minmax(0,1fr)] @5xl:grid-cols-[13rem_minmax(0,1fr)_16rem]">
           {/* Step rail */}
-          <ol aria-label="Journey steps" className="hidden flex-col gap-1 border-r border-(--ui-line) p-3 @3xl:flex">
+          <ol aria-label="Journey steps" className="hidden flex-col gap-0.5 border-r border-(--ui-line) p-3 @3xl:flex">
             {steps.map((s, i) => {
               const state = i < step || done ? "done" : i === step ? "active" : "todo"
               return (
@@ -123,23 +134,22 @@ export function CalmJourneyWindow({
                     onClick={() => jump(i)}
                     aria-current={state === "active" ? "step" : undefined}
                     className={cn(
-                      "flex w-full items-center gap-3 rounded-md border px-3.5 py-2.5 text-left transition-[background-color,border-color,color] duration-500",
-                      state === "active" ? "border-(--ui-live)/40 bg-(--ui-live)/[0.07]" : "border-transparent hover:bg-(--ui-raised)"
+                      "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors duration-500",
+                      state === "active" ? "bg-(--ui-raised)" : "hover:bg-(--ui-raised)"
                     )}
                   >
                     <span
+                      aria-hidden
                       className={cn(
-                        "grid size-6 shrink-0 place-items-center rounded-full border transition-colors duration-500",
-                        state === "active" && "border-(--ui-live)/70 text-(--ui-live)",
-                        state === "done" && "border-(--ui-line) bg-(--ui-raised) text-(--ui-text)",
-                        state === "todo" && "border-(--ui-line) text-(--ui-muted)"
+                        "size-1.5 shrink-0 rounded-full transition-colors duration-500",
+                        state === "active" && "bg-(--ui-live)",
+                        state === "done" && "bg-(--ui-text)/45",
+                        state === "todo" && "bg-(--ui-line)"
                       )}
-                    >
-                      {state === "done" ? <CheckIcon weight="bold" className="size-3" /> : <s.icon className="size-3.5" />}
-                    </span>
+                    />
                     <span className="flex min-w-0 flex-col">
                       {s.branch && <span className="font-mono text-[10.5px] text-(--ui-muted)">{s.branch}</span>}
-                      <span className={state === "todo" ? "text-(--ui-muted)" : ""}>{s.label}</span>
+                      <span className={state === "active" ? "" : "text-(--ui-muted)"}>{s.label}</span>
                     </span>
                   </button>
                 </li>
@@ -152,7 +162,7 @@ export function CalmJourneyWindow({
             <ol
               ref={transcript}
               aria-label="Journey transcript"
-              className="flex h-72 flex-col gap-4 overflow-hidden px-5 pt-7 pb-4 @3xl:h-[30rem] @3xl:px-8"
+              className="flex h-72 flex-col gap-4 overflow-hidden px-5 pt-7 pb-4 @3xl:h-[26rem] @3xl:px-8"
               style={
                 overflowing
                   ? { maskImage: "linear-gradient(to bottom, transparent, black 22%)", WebkitMaskImage: "linear-gradient(to bottom, transparent, black 22%)" }
@@ -199,7 +209,7 @@ export function CalmJourneyWindow({
 
                     {/* What this line taught the agent */}
                     {fact && (
-                      <div className={cn(ICON_ROW, "mt-2")}>
+                      <div className={cn(ICON_ROW, "mt-2 @5xl:hidden")}>
                         <span />
                         <span className="flex flex-wrap gap-1.5">
                           {fact.rows.map(([k, v]) => (
@@ -218,18 +228,6 @@ export function CalmJourneyWindow({
               })}
             </ol>
 
-            {/* Status */}
-            <div className="flex h-12 items-center gap-3 border-t border-(--ui-line) px-5 text-(--ui-muted) @3xl:px-8">
-              <span className="ui-wave flex h-4 items-end gap-[3px]" data-idle={speaking ? undefined : ""} aria-hidden>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <span key={i} className={cn("block h-full w-[3px] rounded-full", speaking ? "bg-(--ui-text)/80" : "bg-(--ui-text)/30")} />
-                ))}
-              </span>
-              <span aria-live="polite">{status}</span>
-              <span className="ml-auto font-mono text-[11px] tabular-nums">
-                {step + 1} / {steps.length}
-              </span>
-            </div>
           </div>
 
           {/* Extracted data, filled in as the agent learns it */}
@@ -238,6 +236,8 @@ export function CalmJourneyWindow({
               // The outcome shows only once the journey is done.
               const outcome = c.step === steps.length - 1
               const known = outcome ? done : learned(c)
+              // A card appears once the agent has learned it (no empty placeholders).
+              if (!outcome && !known) return null
               return (
                 <div
                   key={c.title}
@@ -245,7 +245,7 @@ export function CalmJourneyWindow({
                     "flex flex-col gap-2.5 transition-[background-color,border-color] duration-500",
                     // Space is kept from the start so the window doesn't jump when it lands.
                     outcome && "mt-auto rounded-md border border-(--ui-live)/40 bg-(--ui-live)/10 p-3.5",
-                    outcome && (done ? "motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]" : "invisible")
+                    outcome ? (done ? "motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]" : "invisible") : "motion-safe:animate-[reveal-blur_500ms_var(--ease-out)_both]"
                   )}
                 >
                   <span className={cn("flex items-center gap-1.5 font-mono text-[11px]", outcome ? "text-(--ui-live)" : "text-(--ui-muted)")}>
@@ -256,7 +256,7 @@ export function CalmJourneyWindow({
                     {c.rows.map(([k, v]) => (
                       <div key={k} className="flex flex-col">
                         <dt className="text-[11px] text-(--ui-muted)">{k}</dt>
-                        <dd className={cn("transition-colors duration-500", !known && "text-(--ui-muted)")}>{known ? v : "…"}</dd>
+                        <dd>{v}</dd>
                       </div>
                     ))}
                   </dl>

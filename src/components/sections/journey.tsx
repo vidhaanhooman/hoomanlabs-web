@@ -136,15 +136,16 @@ type Head = { i: number; w: number }
 export function useJourneyPlayback(
   journey: Journey,
   ref: React.RefObject<HTMLElement | null>,
-  { stepPause = 0, onEnd }: { stepPause?: number; onEnd?: () => void } = {}
+  { stepPause = 0, onEnd, start = 0 }: { stepPause?: number; onEnd?: () => void; start?: number } = {}
 ) {
+  // `start`: the event to open on, with everything before it already shown (so the window is never blank).
   // Called after the finished journey has held, instead of looping.
   const end = useRef(onEnd)
   useEffect(() => {
     end.current = onEnd
   })
-  const [head, setHead] = useState<Head>({ i: 0, w: 0 })
-  const [seconds, setSeconds] = useState(0)
+  const [head, setHead] = useState<Head>({ i: start, w: 0 })
+  const [seconds, setSeconds] = useState(start ? 3 : 0)
   const reduce = usePrefersReducedMotion()
   const inView = useInView(ref, { amount: 0.3 })
 
@@ -161,7 +162,7 @@ export function useJourneyPlayback(
     let next: Head
     let ms: number
     if (done) {
-      next = { i: 0, w: 0 }
+      next = { i: start, w: 0 }
       ms = HOLD_MS
     } else if (current!.kind === "action") {
       next = head.w === 0 ? { i: head.i, w: 1 } : { i: head.i + 1, w: 0 }
@@ -176,10 +177,10 @@ export function useJourneyPlayback(
     const t = setTimeout(() => {
       if (done && end.current) return end.current()
       setHead(next)
-      if (done) setSeconds(0)
+      if (done) setSeconds(start ? 3 : 0)
     }, ms)
     return () => clearTimeout(t)
-  }, [playing, done, current, head, events, stepPause])
+  }, [playing, done, current, head, events, stepPause, start])
 
   // Call timer while the journey runs.
   useEffect(() => {
@@ -189,8 +190,8 @@ export function useJourneyPlayback(
   }, [playing, done])
 
   const reset = () => {
-    setHead({ i: 0, w: 0 })
-    setSeconds(0)
+    setHead({ i: start, w: 0 })
+    setSeconds(start ? 3 : 0)
   }
   /** Jump to the start of a step. */
   const jump = (s: number) => setHead({ i: events.findIndex((e) => e.step === s), w: 0 })
