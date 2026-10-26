@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { CheckIcon, MapPinIcon, MicrophoneIcon, PhoneIcon } from "@phosphor-icons/react/dist/ssr"
 import { siGooglecalendar, siHubspot, siShopify, siWhatsapp, type SimpleIcon } from "simple-icons"
 
@@ -10,8 +11,8 @@ import { cn } from "@/lib/utils"
  * on cursor.com: each industry shown inside the tool it already lives in (a
  * CRM, a store, WhatsApp, a calendar, our own campaigns, an app), with the
  * agent's work visible in it. Built in HTML on the grey stage, in the
- * product-UI tokens (.ui-dark); windows run past the stage edge as if the app
- * is open. Sample data only.
+ * product-UI tokens (.ui-dark); windows sit centred and run past the stage's
+ * bottom edge as if the app is open, so their title bars stay centred. Sample data only.
  */
 
 const WIN =
@@ -63,7 +64,7 @@ function Initials({ children }: { children: string }) {
 /** Education: a CRM contact, the enquiry and the call that booked a campus visit. */
 function Crm() {
   return (
-    <div className={cn(WIN, "top-6 -right-10 -bottom-10 left-6")}>
+    <div className={cn(WIN, "inset-x-6 top-6 -bottom-10")}>
       <Bar>
         <Brand icon={siHubspot} className="size-3" />
         Contacts
@@ -74,7 +75,7 @@ function Crm() {
           <span className="font-medium">Aarav K.</span>
           <span className={cn("text-[11px]", MUTED)}>Enquiry · B.Des, 2026 intake</span>
         </span>
-        <span className="ml-auto mr-10 rounded-full bg-(--ok)/15 px-2 py-0.5 text-[11px] text-(--ok-fg)">Visit booked</span>
+        <span className="ml-auto rounded-full bg-(--ok)/15 px-2 py-0.5 text-[11px] text-(--ok-fg)">Visit booked</span>
       </div>
       <div className="flex flex-col gap-3 px-4 py-3">
         <span className={cn("flex items-center gap-2 text-[11px]", MUTED)}>
@@ -97,18 +98,18 @@ function Crm() {
 /** E-commerce: a store order, its address confirmed on a call before it ships. */
 function Order() {
   return (
-    <div className={cn(WIN, "top-6 -right-10 -bottom-10 left-6")}>
+    <div className={cn(WIN, "inset-x-6 top-6 -bottom-10")}>
       <Bar>
         <Brand icon={siShopify} className="size-3" />
         Order #1042
       </Bar>
       <div className={cn("flex items-center gap-2.5 px-4 py-3", ROW)}>
-        <span className="size-8 shrink-0 rounded-md bg-[oklch(0.35_0.08_265)]" />
+        <Image src="/art/thumbs/kurta-indigo.webp" alt="" width={32} height={32} className="size-8 shrink-0 rounded-md object-cover" />
         <span className="flex flex-col">
           <span>Indigo cotton kurta</span>
           <span className={cn("text-[11px]", MUTED)}>Size M · Qty 1</span>
         </span>
-        <span className="ml-auto mr-10 rounded-full bg-(--ui-raised) px-2 py-0.5 text-[11px]">Unfulfilled</span>
+        <span className="ml-auto rounded-full bg-(--ui-raised) px-2 py-0.5 text-[11px]">Unfulfilled</span>
       </div>
       <div className="flex flex-col px-4 py-1">
         {[
@@ -162,7 +163,7 @@ function Whatsapp() {
 function Calendar() {
   const hours = ["7 am", "8 am", "9 am", "10 am"]
   return (
-    <div className={cn(WIN, "top-6 -right-10 -bottom-10 left-6")}>
+    <div className={cn(WIN, "inset-x-6 top-6 -bottom-10")}>
       <Bar>
         <Brand icon={siGooglecalendar} className="size-3" />
         Tue · Home collections
@@ -173,17 +174,17 @@ function Calendar() {
             <span className={cn("w-9 text-right text-[10px]", MUTED)}>{h}</span>
           </div>
         ))}
-        <span className="absolute top-1 right-10 left-[3.75rem] flex h-9 flex-col justify-center rounded-md border-l-2 border-(--ui-muted) bg-(--ui-raised) px-2 text-[11px] text-(--ui-muted)">
+        <span className="absolute top-1 right-3 left-[3.75rem] flex h-9 flex-col justify-center rounded-md border-l-2 border-(--ui-muted) bg-(--ui-raised) px-2 text-[11px] text-(--ui-muted)">
           Lipid profile · Sector 14
         </span>
-        <span className="absolute top-[3.9rem] right-10 left-[3.75rem] flex h-[3.4rem] flex-col justify-center gap-0.5 rounded-md border-l-2 border-(--ok) bg-(--ok)/15 px-2">
+        <span className="absolute top-[3.9rem] right-3 left-[3.75rem] flex h-[3.4rem] flex-col justify-center gap-0.5 rounded-md border-l-2 border-(--ok) bg-(--ok)/15 px-2">
           <span className="flex items-center gap-1.5">
             Fasting blood test · Sector 21
             <LogoMark className="size-2.5" />
           </span>
           <span className="text-[11px] text-(--ok-fg)">Booked on call · 8:30 am</span>
         </span>
-        <span className="absolute top-[9.6rem] right-10 left-[3.75rem] flex h-9 flex-col justify-center rounded-md border-l-2 border-(--ui-muted) bg-(--ui-raised) px-2 text-[11px] text-(--ui-muted)">
+        <span className="absolute top-[9.6rem] right-3 left-[3.75rem] flex h-9 flex-col justify-center rounded-md border-l-2 border-(--ui-muted) bg-(--ui-raised) px-2 text-[11px] text-(--ui-muted)">
           Thyroid panel · Sector 9
         </span>
       </div>
@@ -201,7 +202,7 @@ function Campaign() {
     { acct: "Loan ••5517", status: "Promised Fri", tone: "muted" },
   ]
   return (
-    <div className={cn(WIN, "top-6 -right-10 -bottom-10 left-6")}>
+    <div className={cn(WIN, "inset-x-6 top-6 -bottom-10")}>
       <Bar>
         <LogoMark className="size-2.5 text-(--ui-text)" />
         EMI reminders
@@ -219,7 +220,7 @@ function Campaign() {
         ))}
       </div>
       {rows.map((r) => (
-        <div key={r.acct} className={cn("flex items-center justify-between py-2 pr-12 pl-4", ROW)}>
+        <div key={r.acct} className={cn("flex items-center justify-between py-2 pr-4 pl-4", ROW)}>
           <span className="font-mono text-[11px]">{r.acct}</span>
           <span className={cn("flex items-center gap-1.5 text-[11px]", r.tone !== "ok" && MUTED)}>
             {r.tone === "ok" && <CheckIcon weight="bold" className={OK} />}

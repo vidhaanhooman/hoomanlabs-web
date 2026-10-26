@@ -7,7 +7,6 @@ import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
 import { IndustrySurface } from "@/components/sections/industry-surfaces"
 import { CustomerLogo, customerIn } from "@/components/sections/logos"
-import { StorySwitcher, type StoryItem } from "@/components/sections/story-switcher"
 import { postHref, type Post } from "@/content/blog"
 import { industries, industryHref, type Industry } from "@/content/industries"
 import { getPosts } from "@/lib/blog"
@@ -17,9 +16,8 @@ import { cn } from "@/lib/utils"
  * Homepage customer stories and industries, in the site's own language
  * (panels, hairlines, product-style rows; no imagery).
  *
- * CustomerStories: the three newest published stories from Sanity in one
- * panel (StorySwitcher), customers' logos as tabs, each story's quote, result
- * and facts below. Publishing a story in Sanity is all it takes; the block
+ * CustomerStories: the three newest published stories from Sanity as cards:
+ * the customer's logo, the result as a big figure, and the quote. Publishing a story in Sanity is all it takes; the block
  * hides until there is one.
  *
  * IndustryJobs: the six industries as a 3 × 2 grid, each card showing the
@@ -34,37 +32,31 @@ const companyOf = (p: Post) => customerIn(p.title) ?? WORDMARKS.find((n) => squa
 
 /**
  * What each story leads with, until stories carry these fields in Sanity:
- * the result as a figure and what it measures, the quote, and the facts.
- * Anything missing falls back to the story (title, industry, impact quote).
+ * the result as a figure and what it measures, and the quote. Anything
+ * missing falls back to the story (title, impact quote).
  */
-const STORY: Record<string, { value: string; label: string; quote: string; by: string; industry: string; useCase: string }> = {
+const STORY: Record<string, { value: string; label: string; quote: string; by: string }> = {
   GIVA: {
     value: "70%",
     label: "of support queries automated",
     quote: "When I first talked to Hooman, I instantly knew that this was the future of customer calls.",
     by: "Ishendra Agarwal, Founder and CEO, GIVA",
-    industry: "D2C jewellery",
-    useCase: "Support",
   },
   SaffronStays: {
     value: "2%",
     label: "of calls missed, down from 50%",
     quote: "Villa owners specifically mentioned how impressed they were with the voice agent.",
     by: "SaffronStays team",
-    industry: "Villa stays",
-    useCase: "Sales and inbound",
   },
   "Holiday Tribe": {
     value: "Seconds",
     label: "to call a web lead, down from 90 minutes",
     quote: "We were able to scale lead handling without scaling headcount.",
     by: "Narendra B., Product Manager, Holiday Tribe",
-    industry: "Travel",
-    useCase: "Lead qualification",
   },
 }
 
-/** Logo heights in the tabs, tuned so each reads at the same weight as the wordmarks. */
+/** Logo heights on the cards, tuned so each reads at the same weight as the wordmarks. */
 // GIVA's caps fill its box, so it sits smaller; SaffronStays carries an icon and a tagline, so its box runs taller.
 const LOGO_H: Record<string, string> = {
   GIVA: "h-[17px]",
@@ -98,27 +90,45 @@ export function CustomerStories() {
   )
 }
 
+/** A customer story card: logo, the result as a big figure, the quote, and a link to the story. */
+function StoryCard({ post }: { post: Post }) {
+  const company = companyOf(post)
+  const s = company ? STORY[company] : undefined
+  const quote = s?.quote ?? post.quote?.text
+  const by = s?.by ?? post.quote?.by
+  return (
+    <Link
+      href={postHref(post.slug)}
+      aria-label={`${company ?? "Customer"} story: ${post.title}`}
+      className="group/story flex w-full flex-col gap-8 rounded-md bg-surface p-7 outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      <div className="flex h-[30px] items-center justify-between gap-4">
+        <Logo company={company} />
+        <ArrowRightIcon className="size-4 shrink-0 text-ink-muted transition-[translate,color] group-hover/story:translate-x-0.5 group-hover/story:text-foreground" />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {s ? (
+          <>
+            <span className="text-display font-normal tabular-nums">{s.value}</span>
+            <span className="text-body text-ink-secondary">{s.label}</span>
+          </>
+        ) : (
+          <span className="line-clamp-2 text-h3 font-normal text-balance">{post.title}</span>
+        )}
+      </div>
+      {quote && (
+        <figure className="mt-auto flex flex-col gap-2 border-t border-line pt-5">
+          <blockquote className="line-clamp-3 min-h-[3lh] text-small">“{quote}”</blockquote>
+          {by && <figcaption className="truncate text-label text-ink-muted">{by}</figcaption>}
+        </figure>
+      )}
+    </Link>
+  )
+}
+
 async function Stories() {
   const posts = (await getPosts().catch(() => [])).filter((p) => p.category === "Customer stories").slice(0, 3)
   if (!posts.length) return null
-  const items: StoryItem[] = posts.map((p) => {
-    const company = companyOf(p)
-    const s = company ? STORY[company] : undefined
-    return {
-      slug: p.slug,
-      href: postHref(p.slug),
-      company: company ?? "customer",
-      logo: <Logo company={company} />,
-      value: s?.value ?? "",
-      label: s?.label ?? p.title,
-      quote: s?.quote ?? p.quote?.text,
-      by: s?.by ?? p.quote?.by,
-      facts: [
-        ["Industry", s?.industry ?? p.industry ?? "—"],
-        ["Use case", s?.useCase ?? "—"],
-      ],
-    }
-  })
   return (
     <Section id="v3-stories">
       <Container>
@@ -127,9 +137,13 @@ async function Stories() {
           line="Real deployments with the numbers to show for it, from support lines to sales teams."
           link={{ href: "/blog", label: "All customer stories" }}
         />
-        <div className="mt-10">
-          <StorySwitcher items={items} />
-        </div>
+        <ul className="mt-10 grid gap-3 md:grid-cols-3">
+          {posts.map((p) => (
+            <li key={p.slug} className="flex min-w-0">
+              <StoryCard post={p} />
+            </li>
+          ))}
+        </ul>
       </Container>
     </Section>
   )
