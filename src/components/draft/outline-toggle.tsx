@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 
 import { SpacingOverlay } from "@/components/draft/spacing-overlay"
 
@@ -9,9 +9,37 @@ import { SpacingOverlay } from "@/components/draft/spacing-overlay"
  * feedback can reference sections by name, plus the spacing overlay
  * (section padding, container gutters and element gaps against the
  * design-system tokens, mismatches in red; click an element to inspect
- * it). Rendered only while any section is still "draft" (see layout.tsx).
+ * it). Rendered only while any section is still "draft" (see layout.tsx),
+ * and hidden from visitors on the live site: it shows in development, or
+ * after opening any page with ?review (remembered in this browser; ?review=off
+ * forgets it).
  */
+const REVIEW_KEY = "hl-review"
+
+function reviewing() {
+  if (process.env.NODE_ENV !== "production") return true
+  try {
+    const q = new URLSearchParams(window.location.search).get("review")
+    if (q === "off") localStorage.removeItem(REVIEW_KEY)
+    else if (q !== null) localStorage.setItem(REVIEW_KEY, "1")
+    return localStorage.getItem(REVIEW_KEY) === "1"
+  } catch {
+    return false
+  }
+}
+
 export function OutlineToggle() {
+  // Read once on the client; the server renders nothing.
+  const show = useSyncExternalStore(
+    () => () => {},
+    reviewing,
+    () => false
+  )
+  if (!show) return null
+  return <Toggle />
+}
+
+function Toggle() {
   const [on, setOn] = useState(false)
   const [off, setOff] = useState(0)
 

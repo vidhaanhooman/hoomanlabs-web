@@ -210,9 +210,9 @@ export function V3Landing() {
       {/* Closing: the two ways to start (self-serve, enterprise) */}
       <GetStarted />
 
-      {/* Floating "Talk to an agent": on from the hero down, stepping aside
-          while the full talk-to-an-agent section is on screen. */}
-      <VoiceWidget after="" hideOver="v3-talk" />
+      {/* Floating "Talk to an agent": on from the hero down; steps aside over the
+          talk section and the closing section, and shrinks to its icon over the photo rows. */}
+      <VoiceWidget after="" hideOver={["v3-talk", "v3-start"]} />
     </div>
   )
 }

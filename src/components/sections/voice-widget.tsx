@@ -11,35 +11,55 @@ import { cn } from "@/lib/utils"
  * as the "Talk to an agent" section (flat layout: play a sample, or get the
  * call) in a panel above it. Appears
  * once the `after` element (the hero's call card by default) has scrolled out
- * of view, and steps aside while the `hideOver` element is on screen.
+ * of view, steps aside while a `hideOver` element is on screen, and shrinks
+ * to its round icon over `compactOver` elements (e.g. rows of photo cards)
+ * so it doesn't cover them.
  */
 export function VoiceWidget({
   after = "listen",
-  hideOver,
+  hideOver = [],
+  compactOver = [],
 }: {
   /** Show once this element has scrolled out of view; "" shows it from the start. */
   after?: string
-  /** Hide while this element (e.g. a full talk-to-an-agent section) is on screen. */
-  hideOver?: string
+  /** Hide while any of these elements (e.g. a full talk-to-an-agent section) is on screen. */
+  hideOver?: string | string[]
+  /** Shrink to the icon while any of these elements is on screen. */
+  compactOver?: string[]
 } = {}) {
   const [open, setOpen] = useState(false)
   // No `after` (empty): shown from the start.
   const [past, setPast] = useState(!after)
   const [covered, setCovered] = useState(false)
+  const [compact, setCompact] = useState(false)
+  const hide = (Array.isArray(hideOver) ? hideOver : [hideOver]).join(" ")
+  const shrink = compactOver.join(" ")
 
   useEffect(() => {
     const io: IntersectionObserver[] = []
-    const watch = (id: string | undefined, set: (inView: boolean) => void) => {
-      const el = id && document.getElementById(id)
-      if (!el) return
-      const o = new IntersectionObserver(([e]) => set(e.isIntersecting), { threshold: 0 })
-      o.observe(el)
+    /** Calls `set` with whether any of the elements (space-separated ids) is on screen. */
+    const watch = (ids: string, set: (inView: boolean) => void) => {
+      const seen = new Map<Element, boolean>()
+      const els = ids
+        .split(" ")
+        .map((id) => id && document.getElementById(id))
+        .filter((el): el is HTMLElement => !!el)
+      if (!els.length) return
+      const o = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => seen.set(e.target, e.isIntersecting))
+          set([...seen.values()].some(Boolean))
+        },
+        { threshold: 0 }
+      )
+      els.forEach((el) => o.observe(el))
       io.push(o)
     }
     watch(after, (v) => setPast(!v))
-    watch(hideOver, setCovered)
+    watch(hide, setCovered)
+    watch(shrink, setCompact)
     return () => io.forEach((o) => o.disconnect())
-  }, [after, hideOver])
+  }, [after, hide, shrink])
 
   const shown = past && !covered
   if (!shown && !open) return null
@@ -58,9 +78,10 @@ export function VoiceWidget({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
+        aria-label={open ? "Close" : "Talk to an agent"}
         className={cn(
           "flex h-12 items-center gap-2.5 rounded-full bg-foreground pr-5 pl-2 text-small font-medium text-background shadow-[0_16px_40px_-16px_oklch(0_0_0/0.6)] transition-transform duration-150 ease-(--ease-out) active:scale-[0.97]",
-          open && "pr-2"
+          (open || compact) && "pr-2"
         )}
       >
         <span className="grid size-8 place-items-center rounded-full bg-background/15">
@@ -74,7 +95,7 @@ export function VoiceWidget({
             </span>
           )}
         </span>
-        {!open && "Talk to an agent"}
+        {!open && !compact && "Talk to an agent"}
       </button>
     </div>
   )
