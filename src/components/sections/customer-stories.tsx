@@ -17,34 +17,25 @@ import { cn } from "@/lib/utils"
 
 /**
  * Homepage customer stories, under the logo grid: the three newest
- * published stories from Sanity. Each card is the customer's cover art (a
- * motion-blurred landscape in their colour, panning slowly along its streaks
- * and leaning in on hover) with film grain
- * and their logo in white; customers without art get a drifting gradient in
- * their brand colour (Sanity's colour code) pulled towards the site palette.
- * On hover the logo lifts and the story's one-liner and use cases slide up
- * inside the card. On touch screens the details always show. Publishing a
+ * published stories from Sanity. Each card leads with words: the company's
+ * logo (white, sized to the row) and its tags on top, the result, quote and who said it below, over the
+ * customer's cover art (muted, panning slowly, leaning in on hover, with film
+ * grain); customers without art get a drifting gradient in their brand colour
+ * (Sanity's colour code) pulled towards the site palette. Publishing a
  * story in Sanity is all it takes (the stories block hides until there is
  * one). IndustryJobs reuses the same cards for the Solutions pages. Cards
  * come in from blur, one after another, as they scroll into view.
  */
 
-/** What each customer uses agents for, until stories carry a use-case field in Sanity. */
-const USE_CASES: Record<string, string[]> = {
-  "Holiday Tribe": ["Lead qualification", "Inbound sales"],
-  GIVA: ["Customer support", "Order updates"],
-  SaffronStays: ["Guest calls", "Owner engagement"],
-}
-
-/** Each customer's cover art (motion-blurred landscapes in their colour), in public/art/stories. */
+/** Each customer's cover art (editorial film photos of their world), in public/art/stories. */
 const ART: Record<string, { src: string; flow: [string, string]; shade?: number }> = {
-  // `flow`: which way the art pans, following its streaks (sideways, or GIVA's rising diagonal).
-  "Holiday Tribe": { src: "/art/stories/holiday-tribe.webp", flow: ["4%", "0.5%"] },
-  GIVA: { src: "/art/stories/giva.webp", flow: ["3.5%", "-3%"] },
-  SaffronStays: { src: "/art/stories/saffronstays.webp", flow: ["4%", "0%"] },
+  // `flow`: a slow, small pan (the photos are sharp, so they barely drift).
+  "Holiday Tribe": { src: "/art/stories/holiday-tribe-road.webp", flow: ["1.5%", "0.5%"] },
+  GIVA: { src: "/art/stories/giva-studio.webp", flow: ["1.5%", "-0.5%"] },
+  SaffronStays: { src: "/art/stories/saffronstays-villa.webp", flow: ["1.5%", "0%"] },
 }
 
-/** Customers with a story but no logo in the grid, shown as a wordmark. */
+/** Customers with a story who aren't in the logo grid (matched by name). */
 const WORDMARKS = ["Holiday Tribe"]
 
 const squash = (t: string) => t.toLowerCase().replace(/[^a-z0-9]/g, "")
@@ -107,6 +98,7 @@ function Gradient({ hex, i }: { hex?: string; i: number }) {
 }
 
 // Hover only where there's a real pointer; keyboard focus gets the same reveal; touch shows the details.
+// (The story cards always show their words; these reveals are for the industry cards.)
 // The art sits muted (less saturated, a touch darker) so it stays calm next to the site's
 // black-and-white UI; on hover it leans in and warms up a little.
 const LEAN =
@@ -176,31 +168,98 @@ function JobTile({
 
 const WORDMARK = "font-medium tracking-tight text-white drop-shadow-[0_1px_8px_oklch(0_0_0/0.15)]"
 
+/**
+ * What each story card leads with, until stories carry these fields in
+ * Sanity: the result as a headline, the industry and use case as tags, and
+ * a short quote. Anything missing falls back to the story (title, industry,
+ * Sanity's impact quote).
+ */
+const CARD: Record<string, { result: string; tags: string; quote?: string; by?: string }> = {
+  GIVA: {
+    result: "70% of support queries automated",
+    tags: "D2C jewellery · Support",
+    quote: "When I first talked to Hooman, I instantly knew that this was the future of customer calls.",
+    by: "Ishendra Agarwal, Founder and CEO, GIVA",
+  },
+  SaffronStays: {
+    result: "Missed calls down from 50% to 2%",
+    tags: "Villa stays · Sales and inbound",
+    quote: "Villa owners specifically mentioned how impressed they were with the voice agent.",
+    by: "SaffronStays team",
+  },
+  "Holiday Tribe": {
+    result: "Web leads called in seconds, not 90 minutes",
+    tags: "Travel · Lead qualification",
+    quote: "We were able to scale lead handling without scaling headcount.",
+    by: "Narendra B., Product Manager, Holiday Tribe",
+  },
+}
+
+/** Logo heights in the card's top row, tuned so each reads at the same weight as the wordmarks. */
+// Matched by eye to the wordmark's letter height: GIVA's caps fill its box, so it sits smaller;
+// SaffronStays carries an icon and a tagline, so its box runs taller for the same letters.
+const LOGO_H: Record<string, string> = { GIVA: "h-[17px]", SaffronStays: "h-[30px]" }
+
+/**
+ * A customer story card: the art behind, the company and its tags along
+ * the top, and the result, quote and who said it along the bottom. The
+ * words carry the card; the art leans in on hover.
+ */
 function StoryCard({ post, index }: { post: Post; index: number }) {
   const company = companyOf(post)
-  const hasLogo = company && !WORDMARKS.includes(company)
+  const card = company ? CARD[company] : undefined
+  const result = card?.result ?? post.title
+  const tags = card?.tags ?? post.industry
+  const quote = card?.quote ?? post.quote?.text
+  const by = card?.by ?? post.quote?.by
   return (
-    <JobTile
-      href={postHref(post.slug)}
-      label={`${company ?? "Customer"} story: ${post.title}`}
-      mark={
-        hasLogo ? (
-          <CustomerLogo name={company} size={2} className="[filter:brightness(0)_invert(1)] drop-shadow-[0_1px_8px_oklch(0_0_0/0.15)]" />
-        ) : (
-          <span className={cn("text-h2", WORDMARK)}>{company ?? "Customer story"}</span>
-        )
-      }
-      line={post.title}
-      tags={(company && USE_CASES[company]) || (post.industry ? [post.industry] : [])}
-      art={company ? ART[company] : undefined}
-      hex={post.color}
-      index={index}
-    />
+    <StoryReveal index={index}>
+      <Link
+        href={postHref(post.slug)}
+        aria-label={`${company ?? "Customer"} story: ${post.title}`}
+        className="group/story relative isolate flex aspect-[4/5] flex-col justify-between overflow-hidden rounded-lg p-6 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <Backdrop art={company ? ART[company] : undefined} hex={post.color} i={index} />
+        {/* Shade top and bottom so the words always read */}
+        <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/10 via-35% to-black/85" />
+
+        <span className="flex min-h-[30px] items-center justify-between gap-4">
+          {company && !WORDMARKS.includes(company) ? (
+            <CustomerLogo name={company} className={cn("w-auto [filter:brightness(0)_invert(1)]", LOGO_H[company] ?? "h-6")} />
+          ) : (
+            <span className="text-[19px] leading-none font-medium tracking-tight">{company ?? "Customer story"}</span>
+          )}
+          {tags && <span className="max-w-[55%] text-right font-mono text-[11px] leading-snug tracking-wide text-white/80 uppercase">{tags}</span>}
+        </span>
+
+        <span className="flex flex-col gap-4">
+          <span className="text-h3 leading-tight font-normal text-balance">{result}</span>
+          {quote && (
+            <span className="flex flex-col gap-1.5">
+              <span className="line-clamp-3 text-small text-white/85">“{quote}”</span>
+              {by && <span className="text-label text-white/60">{by}</span>}
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1 text-label text-white/70 transition-colors group-hover/story:text-white">
+            Read the story
+            <ArrowRightIcon className="size-3 transition-transform group-hover/story:translate-x-0.5" />
+          </span>
+        </span>
+      </Link>
+    </StoryReveal>
   )
 }
 
-/** Each industry's card art (motion-blurred scenes, public/art/industries), panning sideways along the blur. */
-const industryArt = (slug: string) => ({ src: `/art/industries/${slug}.webp`, flow: ["3%", "0%"] as [string, string], shade: 0.3 })
+/** Each industry's card art (editorial film photos, public/art/industries), drifting gently. */
+const INDUSTRY_ART: Record<string, string> = {
+  education: "education-library",
+  bfsi: "bfsi-street",
+  logistics: "logistics-ship",
+  "e-commerce": "e-commerce-doorstep",
+  healthcare: "healthcare-clinic",
+  "consumer-ai": "consumer-ai-home",
+}
+const industryArt = (slug: string) => ({ src: `/art/industries/${INDUSTRY_ART[slug] ?? slug}.webp`, flow: ["1.5%", "0%"] as [string, string], shade: 0.3 })
 
 export function CustomerStories() {
   return (
@@ -247,12 +306,15 @@ async function Stories() {
   if (!stories.length) return null
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-        <div className="flex max-w-[44rem] flex-col gap-3">
-          <h2 className="text-h2 font-normal">Already on the job.</h2>
-          <p className="text-body text-ink-secondary">How teams put agents on their busiest calls, and what changed.</p>
+      <div className="grid gap-x-10 gap-y-5 md:grid-cols-[1fr_minmax(0,24rem)] md:items-end">
+        <div className="flex flex-col gap-3">
+          <span className="font-mono text-label text-ink-muted uppercase">Customer stories</span>
+          <h2 className="text-display font-normal">Already on the job.</h2>
         </div>
-        <TextLink href="/blog">All stories</TextLink>
+        <div className="flex flex-col gap-3">
+          <p className="text-body text-ink-secondary">Real deployments with the numbers to show for it, from support lines to sales teams.</p>
+          <TextLink href="/blog">All customer stories</TextLink>
+        </div>
       </div>
       <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {stories.map((p, i) => (

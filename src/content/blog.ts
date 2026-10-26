@@ -39,6 +39,8 @@ export type Post = {
   /** Customer stories: the brand colour from Sanity (hex, no #) and the industry. */
   color?: string
   industry?: string
+  /** Customer stories: the customer's quote and who said it (Sanity's impact quote). */
+  quote?: { text: string; by?: string }
   /** Stories and use cases: the panel beside the text (company facts, results, a call to action). */
   aside?: PostAside
 }

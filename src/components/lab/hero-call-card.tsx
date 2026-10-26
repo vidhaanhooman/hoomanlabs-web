@@ -29,6 +29,9 @@ const FORMAT: Record<string, { length: number; groups: number[] }> = {
 
 const LANG: Record<string, string> = { English: "EN", Hindi: "HI", Spanish: "ES" }
 
+/** "Call me" always reaches the same one demo agent, whichever sample is selected. */
+const CALLBACK = useCaseCalls[0]
+
 /** Deterministic bar heights (no hydration drift). */
 const bars = (n: number) =>
   Array.from({ length: n }, (_, i) => {
@@ -131,7 +134,7 @@ export function HeroCallCard({ plain = false, compact = false }: { plain?: boole
       const res = await fetch("/api/callback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ country, phone: digits, useCase: call.id, consent: true, website: honeypot.current?.value ?? "" }),
+        body: JSON.stringify({ country, phone: digits, useCase: CALLBACK.id, consent: true, website: honeypot.current?.value ?? "" }),
       })
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string }
       if (!res.ok || !data.ok) return setError(data.error ?? "We couldn't place the call. Please try again.")
@@ -195,7 +198,7 @@ export function HeroCallCard({ plain = false, compact = false }: { plain?: boole
       {/* 2 Listen (or the calling state) */}
       <div className={cn("@container", plain ? cn("border-y border-line", compact ? "py-4" : "py-6") : "rounded-[1.5rem] border border-white/50 bg-background/70 p-4 sm:p-5")}>
         {calling ? (
-          <Calling call={call} number={calling} late={late} onReset={() => setCalling(null)} />
+          <Calling call={CALLBACK} number={calling} late={late} onReset={() => setCalling(null)} />
         ) : (
           plain ? (
             <Stage call={call} t={t} playing={playing} onToggle={toggleSample} compact={compact} />
@@ -230,11 +233,11 @@ export function HeroCallCard({ plain = false, compact = false }: { plain?: boole
           />
           {plain ? (
             <div className={cn("flex flex-col gap-1", !compact && "md:row-span-2")}>
-              <p className={compact ? "text-small font-medium" : "text-body"}>Get this call on your phone</p>
-              <p className="text-small text-ink-secondary">{call.agent} calls you and runs this same call, live.</p>
+              <p className={compact ? "text-small font-medium" : "text-body"}>Get a call on your phone</p>
+              <p className="text-small text-ink-secondary">{CALLBACK.agent} calls you for a live demo.</p>
             </div>
           ) : (
-            <p className="px-1 pb-2 text-small text-foreground/75">Or get this call on your phone</p>
+            <p className="px-1 pb-2 text-small text-foreground/75">Or get a call on your phone</p>
           )}
           <div
             className={cn(

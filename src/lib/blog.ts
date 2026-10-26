@@ -82,6 +82,8 @@ const FIELDS = `
   "image": coalesce(featuredImage, thumbnail, heroImage),
   colorCode,
   "industry": coalesce(industry, company.industry),
+  impactQuote,
+  impactQuoteAuthor,
   seo,
   "words": [${["content", "companyProblem", "companySolution", "companyImpact", "about.body", "problem.body", "solution.body", "impact.body", "howItWorks.body", "implementation.body"].map(words).join(", ")}]
 `
@@ -182,6 +184,7 @@ function toPost(r: Raw, full = false): Post {
     // Sanity's colour codes are hex without "#" (a stray seventh digit is dropped).
     color: r.colorCode?.match(/^#?([0-9a-f]{6})/i)?.[1],
     industry: r.industry?.trim() || undefined,
+    quote: r.impactQuote?.trim() ? { text: r.impactQuote.trim().replace(/^["“]|["”]$/g, ""), by: r.impactQuoteAuthor?.trim() || undefined } : undefined,
     ...(full ? shape(r) : {}),
   }
 }
