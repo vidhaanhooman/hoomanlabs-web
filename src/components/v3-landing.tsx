@@ -25,8 +25,12 @@ import { stories } from "@/content/structure"
  */
 
 const ROOMY = {
-  "--section-gap": "clamp(3.25rem, 2.25rem + 3vw, 5rem)",
+  // Between sections: 80px on a phone to 144px on desktop.
+  "--section-gap": "clamp(5rem, 3rem + 5vw, 9rem)",
   "--section-pad": "calc(var(--section-gap) / 2)",
+  // A section's heading to its content, and the gap between cards or panels in one section.
+  "--heading-gap": "clamp(2.5rem, 2rem + 1.5vw, 3.5rem)",
+  "--card-gap": "1rem",
 } as React.CSSProperties
 
 function Header({ title, body, aside }: { title: string; body?: string; aside?: React.ReactNode }) {
@@ -135,9 +139,7 @@ export function V3Landing() {
               <h2 className="text-h2 font-normal">
                 Deployed on <span className="text-ink-muted">real customer lines.</span>
               </h2>
-              <p className="max-w-[38ch] text-small text-ink-secondary">
-                Live on billing, booking and support calls, with the exceptions and stakes that come with them.
-              </p>
+              <p className="max-w-[38ch] text-small text-ink-secondary">Live on billing, booking and support calls, with the exceptions and stakes that come with them.</p>
             </div>
             <ul className="mt-8 grid gap-px overflow-hidden rounded-md border border-line bg-line md:grid-cols-3">
               {CUSTOMERS.map((c) => (
@@ -186,11 +188,13 @@ export function V3Landing() {
       <OutcomeDiagrams />
       <StatHeadline />
 
-      {/* 5 How it works: three calm steps (the detailed editor and canvas live on /platform) */}
-      <HowItWorksV3 />
-
-      {/* 5c The rest of the platform: simulations, QA, channels, tools */}
-      <StartResources />
+      {/* 5 The platform, as one group: Agents, Workflow, Analytics, the rest of the platform,
+          then integrations and developers. Panels in the group sit a small gap apart; the
+          group as a whole gets a section's spacing above and below. */}
+      <div className="py-(--section-pad)">
+        <HowItWorksV3 />
+        <StartResources />
+      </div>
 
       {/* 6 Industries, one card per Solutions page, scrolling sideways */}
       <IndustryJobs />
@@ -199,7 +203,7 @@ export function V3Landing() {
       <Section id="v3-talk">
         <Container>
           <Header title="Talk to an agent." body="Play a real call, or have one of our agents call you now." />
-          <div className="mt-10">
+          <div className="mt-(--heading-gap,2.5rem)">
             <HeroCallCard plain />
           </div>
         </Container>

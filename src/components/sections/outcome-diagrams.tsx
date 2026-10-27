@@ -77,7 +77,7 @@ export function OutcomeDiagrams() {
           <h2 className="text-h2 font-normal">What changes when agents take the calls.</h2>
           <p className="text-body text-ink-secondary">Three things teams measure in the first month.</p>
         </div>
-        <div className="mt-10 grid gap-3 md:grid-cols-3">
+        <div className="mt-(--heading-gap,2.5rem) grid gap-(--card-gap,0.75rem) md:grid-cols-3">
           {ITEMS.map(({ key, tag, value, format, label, body, Scene }, i) => (
             <Panel key={key} className="flex flex-col gap-6 p-6">
               <div aria-hidden className="h-44">

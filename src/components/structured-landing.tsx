@@ -43,7 +43,7 @@ function Brand({ icon, className }: { icon: SimpleIcon; className?: string }) {
 const OK = "bg-(--ok)"
 const WARN = "bg-(--warn)"
 
-const MINI: Record<string, React.ReactNode> = {
+export const MINI: Record<string, React.ReactNode> = {
   /* Channels: one tile per surface, with its logo and the modes it supports */
   "feature-channels": (
     <div className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-background">

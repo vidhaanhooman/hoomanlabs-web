@@ -85,6 +85,29 @@ export const startPaths = {
   }[],
 }
 
+/** The homepage's closing (GetStarted): the two ways to start, in the copy given for it. */
+export const getStarted = {
+  headline: "Put your first agent to work.",
+  paths: [
+    {
+      label: "Self-serve",
+      title: "Build it yourself",
+      body: "Sign up, build an agent, test it against simulated callers and go live, often the same day.",
+      cta: { label: "Start building", href: "/sign-in" },
+      more: null,
+      docs: true,
+    },
+    {
+      label: "Enterprise",
+      title: "Build it with our team",
+      body: "Our engineers build your first flow with you, test it on your systems and hand it over, in 4 to 8 weeks.",
+      cta: { label: "Book a demo", href: "https://app.cal.com/tarun-rathore/30min/embed?layout=month_view&embedType=modal&ui.color-scheme=dark&embed=30min&overlayCalendar=true" },
+      more: { label: "How an enterprise build runs", href: "/enterprise" },
+      docs: false,
+    },
+  ] as { label: string; title: string; body: string; cta: { label: string; href: string }; more: { label: string; href: string } | null; docs: boolean }[],
+}
+
 /**
  * How an enterprise build runs (generalised from our delivery framework; no
  * client specifics). Every step ends at a sign-off gate.
@@ -247,49 +270,79 @@ export const voiceSamples = {
       id: "turn",
       title: "Turn detection",
       body: "Waits until the caller has finished, not just paused.",
-      a: { label: "Without", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "user", text: "Hi, I'm calling about my bill, it's… um…" },
-        { t: 2.5, who: "agent", text: "Sure, I can help with billing. What's your account number?" },
-        { t: 5, who: "action", text: "Interrupted the caller mid-sentence" },
-        { t: 6, who: "user", text: "…sorry, it's about a double charge." },
-      ], note: "The agent cuts in during a pause." },
-      b: { label: "With", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "user", text: "Hi, I'm calling about my bill, it's… um…" },
-        { t: 2.5, who: "action", text: "Pause detected, caller not finished: waited" },
-        { t: 3.5, who: "user", text: "…it's about a double charge in March." },
-        { t: 6, who: "agent", text: "I can see two charges on 4 March. I'll refund the duplicate now." },
-      ], note: "The agent waits, then replies." },
+      a: {
+        label: "Without",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "user", text: "Hi, I'm calling about my bill, it's… um…" },
+          { t: 2.5, who: "agent", text: "Sure, I can help with billing. What's your account number?" },
+          { t: 5, who: "action", text: "Interrupted the caller mid-sentence" },
+          { t: 6, who: "user", text: "…sorry, it's about a double charge." },
+        ],
+        note: "The agent cuts in during a pause.",
+      },
+      b: {
+        label: "With",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "user", text: "Hi, I'm calling about my bill, it's… um…" },
+          { t: 2.5, who: "action", text: "Pause detected, caller not finished: waited" },
+          { t: 3.5, who: "user", text: "…it's about a double charge in March." },
+          { t: 6, who: "agent", text: "I can see two charges on 4 March. I'll refund the duplicate now." },
+        ],
+        note: "The agent waits, then replies.",
+      },
     },
     {
       id: "noise",
       title: "Noise reduction",
       body: "Hears the caller, not the traffic or TV behind them.",
-      a: { label: "Off", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "user", text: "I want to change my delivery [horn] … tomorrow" },
-        { t: 3, who: "agent", text: "Sorry, could you repeat that?" },
-        { t: 5, who: "action", text: "Street noise reached the agent" },
-      ], note: "Street noise reaches the agent." },
-      b: { label: "On", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "action", text: "Background noise filtered (traffic)" },
-        { t: 0.5, who: "user", text: "I want to change my delivery to tomorrow." },
-        { t: 3, who: "agent", text: "Done, it's moved to tomorrow between 10 and 12." },
-      ], note: "Only the caller's voice comes through." },
+      a: {
+        label: "Off",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "user", text: "I want to change my delivery [horn] … tomorrow" },
+          { t: 3, who: "agent", text: "Sorry, could you repeat that?" },
+          { t: 5, who: "action", text: "Street noise reached the agent" },
+        ],
+        note: "Street noise reaches the agent.",
+      },
+      b: {
+        label: "On",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "action", text: "Background noise filtered (traffic)" },
+          { t: 0.5, who: "user", text: "I want to change my delivery to tomorrow." },
+          { t: 3, who: "agent", text: "Done, it's moved to tomorrow between 10 and 12." },
+        ],
+        note: "Only the caller's voice comes through.",
+      },
     },
     {
       id: "voicemail",
       title: "Voicemail detection",
       body: "Spots an answering machine and leaves your message.",
-      a: { label: "Without", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "user", text: "Hi, you've reached Tom. Leave a message after the tone." },
-        { t: 3, who: "agent", text: "Hi Tom! Is now a good time to talk about your renewal?" },
-        { t: 6, who: "action", text: "Kept talking to the machine" },
-      ], note: "The agent talks to the machine." },
-      b: { label: "With", src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */, transcript: [
-        { t: 0, who: "user", text: "Hi, you've reached Tom. Leave a message after the tone." },
-        { t: 3, who: "action", text: "Voicemail detected, waited for the beep" },
-        { t: 4, who: "agent", text: "Hi Tom, it's Ria from Halden. Your plan renews Friday. I'll text you the details." },
-        { t: 9, who: "action", text: "Message left · callback scheduled" },
-      ], note: "Detects the beep, leaves a short message." },
+      a: {
+        label: "Without",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "user", text: "Hi, you've reached Tom. Leave a message after the tone." },
+          { t: 3, who: "agent", text: "Hi Tom! Is now a good time to talk about your renewal?" },
+          { t: 6, who: "action", text: "Kept talking to the machine" },
+        ],
+        note: "The agent talks to the machine.",
+      },
+      b: {
+        label: "With",
+        src: "/audio/calls/feedback-en.mp3" /* TEMPORARY: real recording */,
+        transcript: [
+          { t: 0, who: "user", text: "Hi, you've reached Tom. Leave a message after the tone." },
+          { t: 3, who: "action", text: "Voicemail detected, waited for the beep" },
+          { t: 4, who: "agent", text: "Hi Tom, it's Ria from Halden. Your plan renews Friday. I'll text you the details." },
+          { t: 9, who: "action", text: "Message left · callback scheduled" },
+        ],
+        note: "Detects the beep, leaves a short message.",
+      },
     },
   ],
 }

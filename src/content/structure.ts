@@ -87,7 +87,7 @@ export const resources = {
   title: "Everything in one platform.",
   links: [
     { label: "Docs", body: "Guides and concepts", href: "https://docs.hoomanlabs.com" },
-    { label: "API reference", body: "Build on HoomanLabs", href: "#" },
+    { label: "API reference", body: "Build on HoomanLabs", href: "https://docs.hoomanlabs.com/hooman-labs-api-docs-2#description/introduction" },
     { label: "MCP server", body: "Manage agents from your editor", href: "/platform/agents#product-manage" },
     { label: "Changelog", body: "What shipped this month", href: "#" },
   ],

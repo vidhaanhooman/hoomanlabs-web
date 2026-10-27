@@ -1,27 +1,27 @@
 import { Suspense } from "react"
+import Image from "next/image"
 import Link from "next/link"
-import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
-import { IndustrySurface } from "@/components/sections/industry-surfaces"
+import { IndustryRail, type RailItem } from "@/components/sections/industry-rail"
 import { CustomerLogo, customerIn } from "@/components/sections/logos"
 import { postHref, type Post } from "@/content/blog"
-import { industries, industryHref, type Industry } from "@/content/industries"
+import { industries, industryHref } from "@/content/industries"
 import { getPosts } from "@/lib/blog"
 import { cn } from "@/lib/utils"
 
 /**
  * Homepage customer stories and industries, in the site's own language
- * (panels, hairlines, product-style rows; no imagery).
+ * (one kind of card for both: a darkened photo with white words).
  *
  * CustomerStories: the three newest published stories from Sanity as cards:
- * the customer's logo, the result as a big figure, and the quote. Publishing a story in Sanity is all it takes; the block
+ * the customer's photo, darkened, with their logo and tags and the result as
+ * a headline, like the industry cards. Publishing a story in Sanity is all it takes; the block
  * hides until there is one.
  *
- * IndustryJobs: the six industries as a 3 × 2 grid, each card showing the
- * tool that industry lives in with the agent's work inside it.
+ * IndustryJobs: the six industries as expanding photo strips (IndustryRail).
  */
 
 /** Customers with a story who aren't in the logo grid (matched by name). */
@@ -32,28 +32,13 @@ const companyOf = (p: Post) => customerIn(p.title) ?? WORDMARKS.find((n) => squa
 
 /**
  * What each story leads with, until stories carry these fields in Sanity:
- * the result as a figure and what it measures, and the quote. Anything
- * missing falls back to the story (title, impact quote).
+ * the result as a headline and the industry and use case as a tag. Anything
+ * missing falls back to the story (title, industry).
  */
-const STORY: Record<string, { value: string; label: string; quote: string; by: string }> = {
-  GIVA: {
-    value: "70%",
-    label: "of support queries automated",
-    quote: "When I first talked to Hooman, I instantly knew that this was the future of customer calls.",
-    by: "Ishendra Agarwal, Founder and CEO, GIVA",
-  },
-  SaffronStays: {
-    value: "2%",
-    label: "of calls missed, down from 50%",
-    quote: "Villa owners specifically mentioned how impressed they were with the voice agent.",
-    by: "SaffronStays team",
-  },
-  "Holiday Tribe": {
-    value: "Seconds",
-    label: "to call a web lead, down from 90 minutes",
-    quote: "We were able to scale lead handling without scaling headcount.",
-    by: "Narendra B., Product Manager, Holiday Tribe",
-  },
+const STORY: Record<string, { result: string; tags: string }> = {
+  GIVA: { result: "70% of support queries automated", tags: "D2C jewellery · Support" },
+  SaffronStays: { result: "Missed calls down from 50% to 2%", tags: "Villa stays · Sales and inbound" },
+  "Holiday Tribe": { result: "Web leads called in seconds, not 90 minutes", tags: "Travel · Lead qualification" },
 }
 
 /** Logo heights on the cards, tuned so each reads at the same weight as the wordmarks. */
@@ -63,9 +48,21 @@ const LOGO_H: Record<string, string> = {
   SaffronStays: "h-[30px]",
 }
 
-function Logo({ company }: { company?: string }) {
+/** Each story card's photo: the customer's world (public/art/stories). Stand-ins until the customers' own photos arrive. */
+const PHOTO: Record<string, string> = {
+  GIVA: "/art/stories/giva-band.webp",
+  SaffronStays: "/art/stories/saffronstays-band.webp",
+  "Holiday Tribe": "/art/stories/holiday-tribe-band.webp",
+}
+
+function Logo({ company, onPhoto = false }: { company?: string; onPhoto?: boolean }) {
   if (company && !WORDMARKS.includes(company))
-    return <CustomerLogo name={company} className={cn("w-auto [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]", LOGO_H[company] ?? "h-6")} />
+    return (
+      <CustomerLogo
+        name={company}
+        className={cn("w-auto", onPhoto ? "[filter:brightness(0)_invert(1)]" : "[filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]", LOGO_H[company] ?? "h-6")}
+      />
+    )
   return <span className="text-[19px] leading-none font-medium tracking-tight">{company ?? "Customer"}</span>
 }
 
@@ -90,38 +87,38 @@ export function CustomerStories() {
   )
 }
 
-/** A customer story card: logo, the result as a big figure, the quote, and a link to the story. */
+/** A customer story card, the same kind as the industry cards: the photo darkened, the logo and tags along the top, the result in white at the bottom. */
 function StoryCard({ post }: { post: Post }) {
   const company = companyOf(post)
   const s = company ? STORY[company] : undefined
-  const quote = s?.quote ?? post.quote?.text
-  const by = s?.by ?? post.quote?.by
+  const photo = company ? PHOTO[company] : undefined
   return (
     <Link
       href={postHref(post.slug)}
       aria-label={`${company ?? "Customer"} story: ${post.title}`}
-      className="group/story flex w-full flex-col gap-8 rounded-md bg-surface p-7 outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group/rail relative isolate flex h-[24rem] w-full flex-col justify-between overflow-hidden rounded-lg bg-[#161616] p-7 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <div className="flex h-[30px] items-center justify-between gap-4">
-        <Logo company={company} />
-        <ArrowRightIcon className="size-4 shrink-0 text-ink-muted transition-[translate,color] group-hover/story:translate-x-0.5 group-hover/story:text-foreground" />
-      </div>
-      <div className="flex flex-col gap-1.5">
-        {s ? (
-          <>
-            <span className="text-display font-normal tabular-nums">{s.value}</span>
-            <span className="text-body text-ink-secondary">{s.label}</span>
-          </>
-        ) : (
-          <span className="line-clamp-2 text-h3 font-normal text-balance">{post.title}</span>
-        )}
-      </div>
-      {quote && (
-        <figure className="mt-auto flex flex-col gap-2 border-t border-line pt-5">
-          <blockquote className="line-clamp-3 min-h-[3lh] text-small">“{quote}”</blockquote>
-          {by && <figcaption className="truncate text-label text-ink-muted">{by}</figcaption>}
-        </figure>
+      {/* Built like the industry cards below: the photo darkened, the words in white at the bottom left */}
+      {photo && (
+        <Image
+          src={photo}
+          alt=""
+          fill
+          sizes="(min-width: 768px) 30vw, 90vw"
+          className="-z-20 object-cover [filter:brightness(0.85)_saturate(0.9)] transition-transform duration-[900ms] ease-(--ease-out) group-hover/rail:scale-[1.04] motion-reduce:transition-none"
+        />
       )}
+      <span
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,oklch(0.1_0_0/0.9),oklch(0.1_0_0/0.72)_55%,oklch(0.1_0_0/0.55)),linear-gradient(to_top,oklch(0.1_0_0/0.45),transparent_60%)]"
+      />
+      <span className="flex min-h-[30px] items-start justify-between gap-4">
+        <Logo company={company} onPhoto />
+        {(s?.tags ?? post.industry) && (
+          <span className="max-w-[55%] pt-1 text-right font-mono text-[11px] leading-snug tracking-wide text-white/80">{s?.tags ?? post.industry}</span>
+        )}
+      </span>
+      <span className="line-clamp-3 max-w-[22rem] text-h3 leading-snug font-normal text-balance">{s?.result ?? post.title}</span>
     </Link>
   )
 }
@@ -137,7 +134,7 @@ async function Stories() {
           line="Real deployments with the numbers to show for it, from support lines to sales teams."
           link={{ href: "/blog", label: "All customer stories" }}
         />
-        <ul className="mt-10 grid gap-3 md:grid-cols-3">
+        <ul className="mt-(--heading-gap,2.5rem) grid gap-(--card-gap,0.75rem) md:grid-cols-3">
           {posts.map((p) => (
             <li key={p.slug} className="flex min-w-0">
               <StoryCard post={p} />
@@ -157,44 +154,30 @@ const CARD_LINE: Record<string, string> = {
 
 const ORDER = ["education", "e-commerce", "logistics", "healthcare", "bfsi", "consumer-ai"]
 
-/**
- * An industry card, after the "Everywhere you work" row on cursor.com: the
- * industry and its one-liner, then the tool it already lives in with the
- * agent's work inside it (industry-surfaces.tsx). The whole card links to it.
- */
-function IndustryCard({ industry }: { industry: Industry }) {
-  return (
-    <Link
-      href={industryHref(industry.slug)}
-      aria-label={`${industry.name}: ${industry.card}`}
-      className="group/ind flex w-full flex-col gap-5 rounded-md bg-surface p-3 pt-5 outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-    >
-      <div className="flex flex-col px-2">
-        <h3 className="flex items-center justify-between gap-3 text-body font-normal">
-          {industry.name}
-          <ArrowRightIcon className="size-3.5 text-ink-muted transition-[translate,color] group-hover/ind:translate-x-0.5 group-hover/ind:text-foreground" />
-        </h3>
-        <p className="line-clamp-2 min-h-[2lh] text-body text-ink-secondary">{CARD_LINE[industry.slug] ?? industry.card}</p>
-      </div>
-      <IndustrySurface slug={industry.slug} />
-    </Link>
-  )
+/** Each industry's photo for its rail card (public/art/industries). */
+const RAIL_ART: Record<string, string> = {
+  education: "/art/industries/education-rail.webp",
+  "e-commerce": "/art/industries/e-commerce-rail.webp",
+  logistics: "/art/industries/logistics-rail.webp",
+  healthcare: "/art/industries/healthcare-rail.webp",
+  bfsi: "/art/industries/bfsi-rail.webp",
+  "consumer-ai": "/art/industries/consumer-ai-rail.webp",
 }
 
 export function IndustryJobs() {
-  const list = ORDER.map((slug) => industries.find((x) => x.slug === slug)).filter((x) => x !== undefined)
+  const items: RailItem[] = ORDER.map((slug) => industries.find((x) => x.slug === slug))
+    .filter((x) => x !== undefined)
+    .map((x) => ({
+      slug: x.slug,
+      name: x.name,
+      line: CARD_LINE[x.slug] ?? x.card,
+      tags: x.jobs.slice(0, 2).map((j) => j.name),
+      href: industryHref(x.slug),
+      src: RAIL_ART[x.slug] ?? "",
+    }))
   return (
-    <Section id="v3-industries">
-      <Container>
-        <Heading title="Agents on the job, in every industry." line="The same platform, set up for the calls each industry runs on." />
-        <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((x) => (
-            <li key={x.slug} className="flex min-w-0">
-              <IndustryCard industry={x} />
-            </li>
-          ))}
-        </ul>
-      </Container>
+    <Section id="v3-industries" spacing="none">
+      <IndustryRail title="Agents on the job, in every industry." line="The same platform, set up for the calls each industry runs on." items={items} />
     </Section>
   )
 }

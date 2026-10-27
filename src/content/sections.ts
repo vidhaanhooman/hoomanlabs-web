@@ -61,6 +61,7 @@ export type SectionId =
   | "feature-guardrails"
   | "feature-analytics"
   | "sl-summary"
+  | "sl-connect"
   | "sl-templates"
   | "sl-stories"
   | "sl-faq"
@@ -299,6 +300,7 @@ export const landingSections: { id: SectionId; name: string; status: SectionStat
   { id: "feature-guardrails", name: "Feature: guardrails & testing", status: "draft" },
   { id: "feature-analytics", name: "Feature: analytics", status: "draft" },
   { id: "sl-summary", name: "Platform summary & resources", status: "draft" },
+  { id: "sl-connect", name: "Integrations & developers", status: "draft" },
   { id: "sl-templates", name: "Use-case templates", status: "draft" },
   { id: "sl-stories", name: "Customer stories", status: "draft" },
   { id: "sl-faq", name: "FAQ", status: "draft" },
