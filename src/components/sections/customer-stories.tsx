@@ -16,9 +16,10 @@ import { cn } from "@/lib/utils"
  * Homepage customer stories and industries, in the site's own language
  * (one kind of card for both: a darkened photo with white words).
  *
- * CustomerStories: the three newest published stories from Sanity as cards:
- * the customer's photo, darkened, with their logo and tags and the result as
- * a headline, like the industry cards. Publishing a story in Sanity is all it takes; the block
+ * CustomerStories: the three newest published stories from Sanity in a
+ * staggered grid, with one figure in each open cell; each story card:
+ * the customer's photo dimmed evenly, with their logo large in white, the
+ * and the result (after vapi.ai's case-study cards). Publishing a story in Sanity is all it takes; the block
  * hides until there is one.
  *
  * IndustryJobs: the six industries as expanding photo strips (IndustryRail).
@@ -36,13 +37,28 @@ const companyOf = (p: Post) => customerIn(p.title) ?? WORDMARKS.find((n) => squa
  * missing falls back to the story (title, industry).
  */
 const STORY: Record<string, { result: string; tags: string }> = {
-  GIVA: { result: "70% of support queries automated", tags: "D2C jewellery · Support" },
-  SaffronStays: { result: "Missed calls down from 50% to 2%", tags: "Villa stays · Sales and inbound" },
-  "Holiday Tribe": { result: "Web leads called in seconds, not 90 minutes", tags: "Travel · Lead qualification" },
+  GIVA: {
+    result: "70% of support queries automated",
+    tags: "D2C jewellery · Support",
+  },
+  SaffronStays: {
+    result: "Missed calls down from 50% to 2%",
+    tags: "Villa stays · Sales and inbound",
+  },
+  "Holiday Tribe": {
+    result: "Web leads called in seconds, not 90 minutes",
+    tags: "Travel · Lead qualification",
+  },
 }
 
 /** Logo heights on the cards, tuned so each reads at the same weight as the wordmarks. */
 // GIVA's caps fill its box, so it sits smaller; SaffronStays carries an icon and a tagline, so its box runs taller.
+/** The same, at the story cards' larger size. */
+const LOGO_LG: Record<string, string> = {
+  GIVA: "h-[24px]",
+  SaffronStays: "h-[40px]",
+}
+
 const LOGO_H: Record<string, string> = {
   GIVA: "h-[17px]",
   SaffronStays: "h-[30px]",
@@ -55,28 +71,19 @@ const PHOTO: Record<string, string> = {
   "Holiday Tribe": "/art/stories/holiday-tribe-band.webp",
 }
 
-function Logo({ company, onPhoto = false }: { company?: string; onPhoto?: boolean }) {
+function Logo({ company, onPhoto = false, large = false }: { company?: string; onPhoto?: boolean; large?: boolean }) {
   if (company && !WORDMARKS.includes(company))
     return (
       <CustomerLogo
         name={company}
-        className={cn("w-auto", onPhoto ? "[filter:brightness(0)_invert(1)]" : "[filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]", LOGO_H[company] ?? "h-6")}
+        className={cn(
+          "w-auto",
+          onPhoto ? "[filter:brightness(0)_invert(1)]" : "[filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]",
+          large ? (LOGO_LG[company] ?? "h-8") : (LOGO_H[company] ?? "h-6"),
+        )}
       />
     )
-  return <span className="text-[19px] leading-none font-medium tracking-tight">{company ?? "Customer"}</span>
-}
-
-/** A section heading in the site's pattern: title and line on the left, a link on the right. */
-function Heading({ title, line, link }: { title: string; line: string; link?: { href: string; label: string } }) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-      <div className="flex max-w-[44rem] flex-col gap-3">
-        <h2 className="text-h2 font-normal">{title}</h2>
-        <p className="text-body text-ink-secondary">{line}</p>
-      </div>
-      {link && <TextLink href={link.href}>{link.label}</TextLink>}
-    </div>
-  )
+  return <span className={cn("leading-none font-medium tracking-tight", large ? "text-[28px]" : "text-[19px]")}>{company ?? "Customer"}</span>
 }
 
 export function CustomerStories() {
@@ -87,7 +94,7 @@ export function CustomerStories() {
   )
 }
 
-/** A customer story card, the same kind as the industry cards: the photo darkened, the logo and tags along the top, the result in white at the bottom. */
+/** A customer story card, after vapi.ai's case-study cards: the photo dimmed, a large white logo, and the result. */
 function StoryCard({ post }: { post: Post }) {
   const company = companyOf(post)
   const s = company ? STORY[company] : undefined
@@ -96,30 +103,53 @@ function StoryCard({ post }: { post: Post }) {
     <Link
       href={postHref(post.slug)}
       aria-label={`${company ?? "Customer"} story: ${post.title}`}
-      className="group/rail relative isolate flex h-[24rem] w-full flex-col justify-between overflow-hidden rounded-lg bg-[#161616] p-7 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group/story relative isolate flex aspect-[4/3] w-full flex-col justify-end overflow-hidden rounded-lg bg-[#121212] p-7 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      {/* Built like the industry cards below: the photo darkened, the words in white at the bottom left */}
+      {/* After the case-study cards on vapi.ai: the photo dimmed evenly and softened by a light blur, the words in white over it */}
       {photo && (
         <Image
           src={photo}
           alt=""
           fill
           sizes="(min-width: 768px) 30vw, 90vw"
-          className="-z-20 object-cover [filter:brightness(0.85)_saturate(0.9)] transition-transform duration-[900ms] ease-(--ease-out) group-hover/rail:scale-[1.04] motion-reduce:transition-none"
+          className="-z-20 object-cover transition-transform duration-[900ms] ease-(--ease-out) group-hover/story:scale-[1.04] motion-reduce:transition-none"
         />
       )}
       <span
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,oklch(0.1_0_0/0.9),oklch(0.1_0_0/0.72)_55%,oklch(0.1_0_0/0.55)),linear-gradient(to_top,oklch(0.1_0_0/0.45),transparent_60%)]"
+        className="absolute inset-0 -z-10 bg-[oklch(0.12_0_0/0.58)] backdrop-blur-[3px] transition-colors duration-500 group-hover/story:bg-[oklch(0.12_0_0/0.5)]"
       />
-      <span className="flex min-h-[30px] items-start justify-between gap-4">
-        <Logo company={company} onPhoto />
-        {(s?.tags ?? post.industry) && (
-          <span className="max-w-[55%] pt-1 text-right font-mono text-[11px] leading-snug tracking-wide text-white/80">{s?.tags ?? post.industry}</span>
-        )}
+      <span className="flex flex-col gap-3">
+        <span className="mb-1 flex h-9 items-center">
+          <Logo company={company} onPhoto large />
+        </span>
+        <span className="line-clamp-2 text-h3 leading-snug font-normal text-balance">{s?.result ?? post.title}</span>
       </span>
-      <span className="line-clamp-3 max-w-[22rem] text-h3 leading-snug font-normal text-balance">{s?.result ?? post.title}</span>
     </Link>
+  )
+}
+
+/** The grid's open cells: one figure each, kept minimal (a number and what it measures). */
+const FIGURES = [
+  { who: "Holiday Tribe", value: "35%", label: "of the sales team's time saved" },
+  { who: "GIVA", value: "90%", label: "customer satisfaction, kept while automating" },
+  { who: "Across customers", value: "1.5M", label: "conversations handled every week" },
+]
+
+/** Where each story card and each figure sits in the staggered 3 × 2 grid (desktop). */
+const STORY_SLOT = ["md:col-start-1 md:row-start-1", "md:col-start-3 md:row-start-1", "md:col-start-2 md:row-start-2"]
+const FIGURE_SLOT = ["md:col-start-2 md:row-start-1", "md:col-start-1 md:row-start-2", "md:col-start-3 md:row-start-2"]
+
+/** One figure in an outlined cell. */
+function FigureCell({ figure, className }: { figure: (typeof FIGURES)[number]; className?: string }) {
+  return (
+    <li className={cn("hidden aspect-[4/3] flex-col justify-between rounded-lg border border-line p-7 md:flex", className)}>
+      <span className="font-mono text-label text-ink-muted">{figure.who}</span>
+      <span className="flex flex-col gap-1.5">
+        <span className="text-display leading-none font-normal tabular-nums">{figure.value}</span>
+        <span className="text-body text-ink-secondary">{figure.label}</span>
+      </span>
+    </li>
   )
 }
 
@@ -134,15 +164,32 @@ async function Stories() {
           line="Real deployments with the numbers to show for it, from support lines to sales teams."
           link={{ href: "/blog", label: "All customer stories" }}
         />
+        {/* A staggered 3 × 2 grid: the three stories, with one figure in each open cell */}
         <ul className="mt-(--heading-gap,2.5rem) grid gap-(--card-gap,0.75rem) md:grid-cols-3">
-          {posts.map((p) => (
-            <li key={p.slug} className="flex min-w-0">
+          {posts.map((p, i) => (
+            <li key={p.slug} className={cn("flex min-w-0", STORY_SLOT[i])}>
               <StoryCard post={p} />
             </li>
+          ))}
+          {FIGURES.map((f, i) => (
+            <FigureCell key={f.label} figure={f} className={FIGURE_SLOT[i]} />
           ))}
         </ul>
       </Container>
     </Section>
+  )
+}
+
+/** A section heading in the site's pattern: title and line on the left, a link on the right. */
+function Heading({ title, line, link }: { title: string; line: string; link?: { href: string; label: string } }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+      <div className="flex max-w-[44rem] flex-col gap-3">
+        <h2 className="text-h2 font-normal">{title}</h2>
+        <p className="text-body text-ink-secondary">{line}</p>
+      </div>
+      {link && <TextLink href={link.href}>{link.label}</TextLink>}
+    </div>
   )
 }
 

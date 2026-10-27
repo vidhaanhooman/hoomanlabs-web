@@ -85,9 +85,7 @@ export function OutcomeDiagrams() {
               </div>
               <div className="flex flex-col gap-1">
                 <span className="font-mono text-label text-ink-muted">{tag}</span>
-                <span className="text-display font-normal tabular-nums">
-                  {reduce ? format(value) : <CountUp to={value} format={format} delay={i * 150} />}
-                </span>
+                <span className="text-display font-normal tabular-nums">{reduce ? format(value) : <CountUp to={value} format={format} delay={i * 150} />}</span>
                 <span className="text-small text-ink-secondary">{label}</span>
               </div>
               <p className="border-t border-line pt-4 text-small text-ink-secondary">{body}</p>
@@ -119,9 +117,15 @@ function CallsScene() {
       <path d="M140,90 C160,90 165,60 185,60 C205,60 210,120 230,120 C250,120 255,90 275,90 L300,90" {...STROKE} />
       <circle cx={140} cy={90} r={4} className="fill-background" stroke="currentColor" strokeWidth={1.3} />
       <circle cx={300} cy={90} r={3.5} fill="currentColor" />
-      <text x={18} y={150} fontSize={10.5} className="fill-ink-muted">Waiting</text>
-      <text x={126} y={150} fontSize={10.5} className="fill-ink-muted">0.8s</text>
-      <text x={266} y={150} fontSize={10.5} className="fill-foreground">Answered</text>
+      <text x={18} y={150} fontSize={10.5} className="fill-ink-muted">
+        Waiting
+      </text>
+      <text x={126} y={150} fontSize={10.5} className="fill-ink-muted">
+        0.8s
+      </text>
+      <text x={266} y={150} fontSize={10.5} className="fill-foreground">
+        Answered
+      </text>
       <line x1={140} y1={100} x2={140} y2={138} {...DOTTED} />
     </svg>
   )
@@ -133,7 +137,15 @@ function LeadsScene() {
   const cy = 85
   const rings = [22, 44, 66]
   const leads = [
-    [0, -0.6], [0, 2.1], [1, 0.3], [1, 1.5], [1, -2.2], [2, -0.9], [2, 0.6], [2, 2.6], [2, -2.6],
+    [0, -0.6],
+    [0, 2.1],
+    [1, 0.3],
+    [1, 1.5],
+    [1, -2.2],
+    [2, -0.9],
+    [2, 0.6],
+    [2, 2.6],
+    [2, -2.6],
   ] as const
   return (
     <svg viewBox="0 0 320 170" className="h-full w-full text-foreground">
@@ -153,8 +165,12 @@ function LeadsScene() {
         />
       ))}
       <line x1={cx + 66} y1={cy} x2={300} y2={cy} {...DOTTED} />
-      <text x={200} y={cy - 8} fontSize={10.5} className="fill-ink-muted">within 5 min</text>
-      <text x={200} y={cy + 18} fontSize={10.5} className="fill-foreground">3× leads reached</text>
+      <text x={200} y={cy - 8} fontSize={10.5} className="fill-ink-muted">
+        within 5 min
+      </text>
+      <text x={200} y={cy + 18} fontSize={10.5} className="fill-foreground">
+        3× leads reached
+      </text>
     </svg>
   )
 }
@@ -180,11 +196,21 @@ function TasksScene() {
           <circle cx={p.x} cy={p.y} r={4} className={p.done ? "fill-foreground" : "fill-background"} stroke="currentColor" strokeWidth={1.3} />
         </g>
       ))}
-      <text x={22} y={164} fontSize={10} className="fill-ink-muted">Pay</text>
-      <text x={84} y={164} fontSize={10} className="fill-ink-muted">Book</text>
-      <text x={150} y={164} fontSize={10} className="fill-ink-muted">CRM</text>
-      <text x={210} y={164} fontSize={10} className="fill-ink-muted">Notify</text>
-      <text x={272} y={164} fontSize={10} className="fill-ink-muted">Close</text>
+      <text x={22} y={164} fontSize={10} className="fill-ink-muted">
+        Pay
+      </text>
+      <text x={84} y={164} fontSize={10} className="fill-ink-muted">
+        Book
+      </text>
+      <text x={150} y={164} fontSize={10} className="fill-ink-muted">
+        CRM
+      </text>
+      <text x={210} y={164} fontSize={10} className="fill-ink-muted">
+        Notify
+      </text>
+      <text x={272} y={164} fontSize={10} className="fill-ink-muted">
+        Close
+      </text>
     </svg>
   )
 }

@@ -47,13 +47,13 @@ function Strip({ item, on, onOpen }: { item: RailItem; on: boolean; onOpen: () =
         href={item.href}
         aria-label={`${item.name}: ${item.line}`}
         onFocus={onOpen}
-        className="group/rail relative isolate flex h-80 flex-col justify-end overflow-hidden rounded-lg p-7 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:h-full"
+        className="group/rail relative isolate flex h-80 flex-col justify-end overflow-hidden rounded-lg p-7 text-white [text-shadow:0_1px_12px_oklch(0_0_0/0.35)] outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:h-full"
       >
-        <Image src={item.src} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="-z-20 object-cover [filter:brightness(0.85)_saturate(0.9)]" />
-        {/* Darkened well: most at the left and the bottom, where the words sit */}
+        <Image src={item.src} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="-z-20 object-cover" />
+        {/* Like the customer story cards above (after vapi.ai): the photo dimmed evenly and softened by a light blur */}
         <span
           aria-hidden
-          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,oklch(0.1_0_0/0.9),oklch(0.1_0_0/0.72)_55%,oklch(0.1_0_0/0.55)),linear-gradient(to_top,oklch(0.1_0_0/0.45),transparent_60%)]"
+          className="absolute inset-0 -z-10 bg-[oklch(0.12_0_0/0.58)] backdrop-blur-[3px] transition-colors duration-500 group-hover/rail:bg-[oklch(0.12_0_0/0.5)]"
         />
 
         {/* Closed (desktop only): the name, sideways, at the foot of the strip */}
