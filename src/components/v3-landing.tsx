@@ -31,6 +31,8 @@ const ROOMY = {
   // A section's heading to its content, and the gap between cards or panels in one section.
   "--heading-gap": "clamp(2.5rem, 2rem + 1.5vw, 3.5rem)",
   "--card-gap": "1rem",
+  // Between the big product panels stacked in one group.
+  "--panel-gap": "clamp(3.25rem, 2.5rem + 2.5vw, 4.75rem)",
 } as React.CSSProperties
 
 function Header({ title, body, aside }: { title: string; body?: string; aside?: React.ReactNode }) {

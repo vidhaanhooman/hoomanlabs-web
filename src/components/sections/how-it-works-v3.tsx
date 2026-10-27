@@ -283,7 +283,7 @@ export function ProductPanel({
   }, [cycling, paused, shown, rows])
 
   return (
-    <Section id={id} spacing={grouped ? "none" : "tight"} className={grouped ? "py-[calc(var(--card-gap,0.75rem)/2)]" : undefined}>
+    <Section id={id} spacing={grouped ? "none" : "tight"} className={grouped ? "py-[calc(var(--panel-gap,0.75rem)/2)]" : undefined}>
       <Container>
         <Panel ref={ref} className={cn("grid gap-8 lg:grid-cols-3 lg:items-stretch lg:gap-0", compact ? "p-5 sm:p-8 lg:p-4" : "p-4 sm:p-6 lg:p-3")}>
           <div className={cn("flex flex-col px-2 pt-4 sm:px-4 lg:self-center", compact ? "gap-7 lg:px-14 lg:py-16" : "gap-5 lg:px-10 lg:py-10", media === "start" && "lg:order-2")}>

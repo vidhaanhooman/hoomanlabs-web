@@ -64,13 +64,16 @@ const isDark = (hex: string) => {
 }
 
 /** A tool named inline: its logo and name in a small chip. Brand marks from simple-icons. */
-function Tool({ n, i }: { n: string; i: SimpleIcon }) {
+function Tool({ n, i, after = "" }: { n: string; i: SimpleIcon; after?: string }) {
   return (
-    <span className="mx-[0.15em] inline-flex items-center gap-[0.4em] rounded-md border border-line bg-background px-[0.5em] py-[0.15em] align-[0.05em] text-[0.88em] leading-none whitespace-nowrap">
-      <svg viewBox="0 0 24 24" aria-hidden className={cn("size-[0.9em] shrink-0", isDark(i.hex) && "fill-foreground")} style={isDark(i.hex) ? undefined : { fill: `#${i.hex}` }}>
-        <path d={i.path} />
-      </svg>
-      {n}
+    <span className="whitespace-nowrap">
+      <span className="mx-[0.15em] inline-flex items-center gap-[0.4em] rounded-md border border-line bg-background px-[0.5em] py-[0.15em] align-[0.05em] text-[0.88em] leading-none whitespace-nowrap">
+        <svg viewBox="0 0 24 24" aria-hidden className={cn("size-[0.9em] shrink-0", isDark(i.hex) && "fill-foreground")} style={isDark(i.hex) ? undefined : { fill: `#${i.hex}` }}>
+          <path d={i.path} />
+        </svg>
+        {n}
+      </span>
+      {after}
     </span>
   )
 }
@@ -82,7 +85,7 @@ function Tool({ n, i }: { n: string; i: SimpleIcon }) {
  */
 function Connect() {
   return (
-    <Section id="sl-connect" spacing="none" className="py-[calc(var(--card-gap,0.75rem)/2)]">
+    <Section id="sl-connect" spacing="none" className="pt-[calc(var(--panel-gap,0.75rem)/2)] pb-[calc(var(--card-gap,0.75rem)/2)]">
       <Container>
         <div className="grid gap-(--card-gap,0.75rem) lg:grid-cols-3">
           <Panel className="flex min-w-0 flex-col gap-6 p-8 sm:p-10 lg:col-span-2">
@@ -92,8 +95,9 @@ function Connect() {
             </h3>
             {/* What the agent does in each tool, said in one sentence with the tools inline */}
             <p className="max-w-[44rem] text-[1.125rem] leading-[2.1] font-normal">
-              Agents update <Tool n="HubSpot" i={siHubspot} />, raise tickets in <Tool n="Zendesk" i={siZendesk} />, check orders in <Tool n="Shopify" i={siShopify} />, book visits
-              in <Tool n="Google Calendar" i={siGooglecalendar} />, take payments with <Tool n="Razorpay" i={siRazorpay} /> and send links on <Tool n="WhatsApp" i={siWhatsapp} />.
+              Agents update <Tool n="HubSpot" i={siHubspot} after="," /> raise tickets in <Tool n="Zendesk" i={siZendesk} after="," /> check orders in{" "}
+              <Tool n="Shopify" i={siShopify} after="," /> book visits in <Tool n="Google Calendar" i={siGooglecalendar} after="," /> take payments with{" "}
+              <Tool n="Razorpay" i={siRazorpay} /> and send links on <Tool n="WhatsApp" i={siWhatsapp} after="." />
             </p>
             <TextLink href={componentHref("tools")} className="mt-auto">
               See integrations
