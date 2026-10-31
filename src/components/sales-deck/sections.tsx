@@ -1,11 +1,8 @@
-import { Arcs, Eyebrow, Slide } from "@/components/sales-deck/kit"
-import { cn } from "@/lib/utils"
+import { At, Mark, Pill, Slide, Tag, Wall } from "@/components/sales-deck/kit"
 
 /**
  * Section structure for the decks: the story's sections (from the content
- * doc), an agenda slide that lays them out as a bento grid, and a divider
- * slide that opens each section with its number, its name and the slides in
- * it.
+ * doc), an agenda slide and a divider that opens each section.
  */
 
 export type Section = { n: string; title: string; items: string[] }
@@ -33,82 +30,90 @@ export const SECTIONS_A: Section[] = [
   { n: "05", title: "Your path", items: ["Live in days", "The ask"] },
 ]
 
+/** The agenda's geometry (slide pixels): the mark at the centre, a column of sections either side. */
+const HUB = { cx: 960, cy: 560, tile: 200 }
+const CARD = { w: 440, h: 112, leftX: 260, rightX: 1220 }
+
 /**
- * The agenda: the sections as a bento grid. The first tile is the large dark
- * one; the rest sit round it, each with its number, name and slides.
+ * The agenda as a hub: the HoomanLabs mark embossed at the centre, the
+ * sections in two even columns either side, each joined to the mark by a thin
+ * line. Each card gives the section's number, name and how many slides it holds.
  */
 export function Agenda({ sections }: { sections: Section[] }) {
-  // Two rows: one large tile (two columns, both rows), the rest filling in; six sections need five columns, five need four
-  const six = sections.length === 6
-  const spans = six ? ["col-span-2 row-span-2", "", "", "", "", "col-span-2"] : ["col-span-2 row-span-2", "", "", "", ""]
+  const left = sections.slice(0, Math.ceil(sections.length / 2))
+  const right = sections.slice(left.length)
+  const rowsY = (n: number) => Array.from({ length: n }, (_, i) => HUB.cy + (i - (n - 1) / 2) * 190)
+  const place = [
+    ...left.map((s, i) => ({ s, x: CARD.leftX, y: rowsY(left.length)[i], side: "left" as const })),
+    ...right.map((s, i) => ({ s, x: CARD.rightX, y: rowsY(right.length)[i], side: "right" as const })),
+  ]
   return (
-    <Slide tone="grey">
-      <Eyebrow>Contents</Eyebrow>
-      <div className={cn("mt-[40px] grid flex-1 grid-rows-2 gap-[20px]", six ? "grid-cols-5" : "grid-cols-4")}>
-        {sections.map((s, i) => {
-          const big = i === 0
+    <Slide className="items-center">
+      <Pill>Contents</Pill>
+      {/* Connectors from each card to the mark */}
+      <svg aria-hidden viewBox="0 0 1920 1080" className="deck-anim pointer-events-none absolute inset-0 size-full" style={{ "--i": 1 } as React.CSSProperties} fill="none">
+        {place.map(({ s, x, y, side }) => {
+          const from = side === "left" ? x + CARD.w : x
+          const to = side === "left" ? HUB.cx - HUB.tile / 2 : HUB.cx + HUB.tile / 2
+          const mid = (from + to) / 2
           return (
-            <div
-              key={s.n}
-              className={cn(
-                "deck-anim relative isolate flex flex-col justify-between overflow-hidden rounded-[14px] border p-[32px]",
-                big ? "border-transparent bg-(--d-dark) text-white" : "border-(--d-line) bg-white",
-                spans[i] ?? "",
-              )}
-              style={{ "--i": i + 1 } as React.CSSProperties}
-            >
-              {big && <Arcs corner="br" rings={5} thickness={26} gap={30} inner={70} className="right-0 bottom-0 -z-10 text-white/[0.07]" />}
-              <span className={cn("leading-[0.8] tracking-[-0.05em] tabular-nums", big ? "text-[200px] text-white" : "text-[88px] text-(--d-ink)/15")}>{s.n}</span>
-              <span className="flex flex-col gap-[12px]">
-                <span className={cn("leading-[1.1] tracking-[-0.02em]", big ? "text-[64px]" : "text-[34px]")}>{s.title}</span>
-                <span className={cn("font-mono leading-[1.5]", big ? "max-w-[620px] text-[18px] text-white/55" : "text-[15px] text-(--d-grey)")}>{s.items.join(" · ")}</span>
-              </span>
-            </div>
+            <g key={s.n}>
+              <path d={`M${from} ${y} C ${mid} ${y}, ${mid} ${HUB.cy}, ${to} ${HUB.cy}`} stroke="rgb(0 0 0 / 0.14)" strokeWidth="1.5" />
+              <circle cx={from} cy={y} r="4" fill="rgb(0 0 0 / 0.3)" />
+            </g>
           )
         })}
+      </svg>
+      {/* The mark, embossed in the surface */}
+      <div
+        className="deck-anim absolute grid place-items-center rounded-[56px] border border-white/70 bg-[linear-gradient(145deg,#F4F4F4,#E3E3E3)] text-(--d-ink) shadow-[-12px_-12px_26px_rgb(255_255_255/0.9),16px_20px_40px_rgb(0_0_0/0.12)]"
+        style={{ left: HUB.cx - HUB.tile / 2, top: HUB.cy - HUB.tile / 2, width: HUB.tile, height: HUB.tile }}
+      >
+        <Mark className="h-[86px] w-auto" />
       </div>
+      {place.map(({ s, x, y }, i) => (
+        <div
+          key={s.n}
+          className="deck-anim absolute flex items-center gap-[22px] rounded-[20px] bg-white px-[26px] shadow-[0_2px_0_rgb(0_0_0/0.03),0_20px_40px_-22px_rgb(0_0_0/0.28)]"
+          style={{ left: x, top: y - CARD.h / 2, width: CARD.w, height: CARD.h, "--i": i + 2 } as React.CSSProperties}
+        >
+          <span className="grid size-[56px] shrink-0 place-items-center rounded-[14px] bg-(--d-ink) font-mono text-[18px] text-white">{s.n}</span>
+          <span className="flex min-w-0 flex-col gap-[4px]">
+            <span className="text-[28px] leading-[1.1] tracking-[-0.015em]">{s.title}</span>
+            <span className="text-[16px] text-(--d-grey)">
+              {s.items.length} {s.items.length === 1 ? "slide" : "slides"}
+            </span>
+          </span>
+        </div>
+      ))}
     </Slide>
   )
 }
 
-/**
- * A section divider: the number set huge, the section's name, and its slides
- * listed down the right like a table of contents (the current section's
- * place shown by the row of all sections along the top).
- */
-export function Divider({ section, sections }: { section: Section; sections: Section[] }) {
+/** Where a divider's slide tags float among the pills, away from the centre. */
+const AROUND = [
+  { x: 210, y: 190, r: -4 },
+  { x: 1380, y: 170, r: 3 },
+  { x: 160, y: 800, r: 3 },
+  { x: 1400, y: 820, r: -3 },
+  { x: 760, y: 880, r: 2 },
+  { x: 900, y: 130, r: -2 },
+]
+
+/** A section divider: dark, a wall of pressed-in pills, the number and name centred, its slides as tags among the pills. */
+export function Divider({ section }: { section: Section; sections?: Section[] }) {
   return (
-    <Slide tone="dark" className="pt-[96px]">
-      <Arcs corner="br" rings={7} thickness={34} gap={40} inner={120} className="right-0 bottom-0 -z-10 text-white/[0.045]" />
-      {/* Where this section sits among the rest */}
-      <ol className="flex gap-[10px] font-mono text-[16px]">
-        {sections.map((s) => (
-          <li key={s.n} className={cn("flex flex-1 flex-col gap-[10px]", s.n === section.n ? "text-white" : "text-white/35")}>
-            <span className={cn("h-[2px]", s.n === section.n ? "bg-white" : "bg-white/15")} />
-            {s.n} {s.title}
-          </li>
-        ))}
-      </ol>
-      <div className="mt-auto flex items-end justify-between gap-[80px]">
-        <div className="flex flex-col">
-          <span className="deck-anim text-[400px] leading-[0.78] tracking-[-0.06em] text-white tabular-nums">{section.n}</span>
-          <h2 className="deck-anim mt-[40px] text-[120px] leading-[1] font-normal tracking-[-0.04em]" style={{ "--i": 1 } as React.CSSProperties}>
-            {section.title}
-          </h2>
-        </div>
-        <ol className="mb-[14px] flex w-[560px] flex-col">
-          {section.items.map((it, i) => (
-            <li
-              key={it}
-              className="deck-anim flex items-baseline gap-[24px] border-t border-white/12 py-[18px] text-[26px] last:border-b"
-              style={{ "--i": i + 2 } as React.CSSProperties}
-            >
-              <span className="font-mono text-[16px] text-white/40">{String(i + 1).padStart(2, "0")}</span>
-              {it}
-            </li>
-          ))}
-        </ol>
-      </div>
+    <Slide tone="dark" className="items-center justify-center text-center">
+      <Wall dark />
+      <Pill dark>{section.n}</Pill>
+      <h2 className="deck-anim mt-[32px] text-[150px] leading-[0.95] font-normal tracking-[-0.045em]" style={{ "--i": 1 } as React.CSSProperties}>
+        {section.title}
+      </h2>
+      {section.items.map((it, i) => (
+        <At key={it} x={AROUND[i].x} y={AROUND[i].y} r={AROUND[i].r} i={i + 2}>
+          <Tag dark>{it}</Tag>
+        </At>
+      ))}
     </Slide>
   )
 }
