@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
       // The Product Designer role closed; send old links to the open careers list.
       { source: "/careers/product-designer", destination: "/careers", permanent: false },
       { source: "/privacy", destination: "/privacy-policy", permanent: false },
+      { source: "/SalesDeck", destination: "/sales-deck", permanent: false },
       // Solutions has no overview pages; old hub and use-case links go home.
       // Renamed industries go to their new page.
       ...["payment-collections", "appointment-booking", "lead-qualification", "support", "renewals", "surveys"].map((slug) => ({
