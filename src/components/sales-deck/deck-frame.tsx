@@ -81,6 +81,11 @@ export function DeckFrame({ story, children }: { story: "a" | "b"; children: Rea
           .deck-page { width: ${W}px !important; height: ${H}px !important; border: 0 !important; border-radius: 0 !important; break-after: page; break-inside: avoid; }
           .deck-scale { transform: none !important; }
           .deck-anim { animation: none !important; opacity: 1 !important; }
+          /* Chrome's PDF output draws soft shadows on rounded (and tilted) shapes as square
+             bitmaps, so on paper every shadow becomes a hairline edge, and blurs are dropped */
+          .deck-page [class*="shadow-"] { box-shadow: 0 0 0 1px rgb(0 0 0 / 0.07) !important; }
+          .deck-page [class*="backdrop-blur"] { backdrop-filter: none !important; }
+          .deck-page [class*="drop-shadow"] { filter: none !important; }
         }
       `}</style>
 
