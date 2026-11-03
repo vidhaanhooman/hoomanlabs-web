@@ -24,9 +24,7 @@ export function MobileNav() {
           <SheetTitle className="text-small font-medium">Menu</SheetTitle>
         </div>
         <nav aria-label="Mobile" className="px-(--gutter)">
-          <Link href="/platform/agents" onClick={close} className="flex h-8 items-center text-small text-ink-muted">
-            Platform
-          </Link>
+          <p className="flex h-8 items-center text-small text-ink-muted">Platform</p>
           <div className="flex flex-col gap-3 border-b border-line pb-4">
             {[...platformMenu, { group: "Featured", pages: [platformFeatured] }].map(({ group, pages }) => (
               <div key={group} className="flex flex-col">

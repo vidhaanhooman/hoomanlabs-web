@@ -87,15 +87,7 @@ export function MainNav() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="flex w-[min(68rem,calc(100vw-3rem))] flex-col p-6">
-              <NavigationMenuLink
-                render={<Link href="/platform/agents" />}
-                className="group/ov w-fit flex-row items-center gap-2 p-0 text-h4 font-normal text-foreground hover:bg-transparent focus:bg-transparent"
-              >
-                Platform overview
-                <ArrowRightIcon className="size-4 transition-transform group-hover/ov:translate-x-0.5" aria-hidden />
-              </NavigationMenuLink>
-
-              <div className="mt-5 grid grid-cols-[1fr_1fr_1fr_17rem] border-t border-line-strong pt-6">
+              <div className="grid grid-cols-[1fr_1fr_1fr_17rem]">
                 {platformMenu.map(({ group, line, pages }) => (
                   <div key={group} className="flex flex-col gap-1 pr-6">
                     <p className="text-body text-foreground">{group}</p>

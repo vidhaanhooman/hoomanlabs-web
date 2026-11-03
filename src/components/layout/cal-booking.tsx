@@ -66,7 +66,8 @@ export function CalBooking() {
     Cal("init", CAL.namespace, { origin: "https://app.cal.com" })
     Cal.config = Cal.config || {}
     Cal.config.forwardQueryParams = true
-    Cal.ns[CAL.namespace]("ui", { hideEventTypeDetails: false, layout: "month_view", theme: "dark" })
+    // The booking page's own background off, so only the dialog shows over the modal's backdrop.
+    Cal.ns[CAL.namespace]("ui", { hideEventTypeDetails: false, layout: "month_view", theme: "dark", styles: { body: { background: "transparent" } } })
 
     // Capture phase, so the modal opens before the link would navigate.
     const onClick = (e: MouseEvent) => {

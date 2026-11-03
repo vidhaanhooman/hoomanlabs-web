@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 /**
  * Customer logos (public/logos), grey and faded at rest (greyscale, lower
  * opacity), full colour on hover; white silhouettes in dark mode. White-only files use a dark copy
- * (giva-dark.svg), the festive StayVista file a wordmark-only copy, and
+ * (giva-dark.svg, clickpost-dark.svg, nxtwave-dark.svg), the festive StayVista file a wordmark-only copy, and
  * ShopDeck / Mosaic copies whose letter holes are real cut-outs, not pale
  * fills (shopdeck-mono.svg, mosaic-mono.svg), so they grey cleanly. `crop` is the logo's drawn area in its own
  * viewBox units (several files carry wide empty margins), and the display
@@ -45,7 +45,10 @@ const CUSTOMERS: Customer[] = [
   { name: "SaffronStays", aliases: ["Saffron Stays"], src: "/logos/SaffronStays_vector.svg", full: [410, 120], crop: [21.4, 13.1, 372.4, 92.1], scale: 1.2 },
   { name: "ShopDeck", src: "/logos/shopdeck-mono.svg", full: [2168, 725], crop: [0, 155.8, 2168, 413.7], detail: true },
   { name: "Vedantu", src: "/logos/Vedantu_idqes6hbls_0.svg", full: [210.8, 80], crop: [19, 6.5, 172.5, 47] },
-  { name: "ShareChat", src: "/logos/ShareChat_idbYpuBuC1_0.svg", full: [1390.35, 375.16], crop: [0, 0, 1390.3, 375.2], detail: true },
+  // The crop leaves out the "Winning together" line under the wordmark.
+  { name: "Quess", aliases: ["Quess Corp"], src: "/logos/Quess.svg", full: [1548, 454], crop: [0, 0, 1548, 322] },
+  { name: "ClickPost", aliases: ["Click Post"], src: "/logos/clickpost-dark.svg", full: [350, 75], crop: [3, 13.5, 347, 50] },
+  { name: "NxtWave", aliases: ["Nxt Wave"], src: "/logos/nxtwave-dark.svg", full: [117, 66], crop: [0, 5.1, 115.8, 55.8] },
 ]
 
 /** Display width for a logo of this aspect ratio, in px. */
@@ -124,7 +127,7 @@ const NUDGE = "transition-[translate] duration-300 [@media(hover:hover)_and_(poi
 
 function Grid({ links }: { links: Record<string, string> }) {
   return (
-    <ul className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-5">
+    <ul className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line lg:grid-cols-6">
       {CUSTOMERS.map((c) => {
         const href = links[c.name]
         if (!href)
@@ -167,7 +170,7 @@ export function Logos({ label = logos.label }: { label?: string } = {}) {
     <Section id="logos" spacing="none" className="pb-(--section-pad)">
       <Container>
         <p className="text-center text-small font-semibold text-ink-muted">{label}</p>
-        {/* A hairline grid of ten logos: 5 × 2 (2 columns on phones) */}
+        {/* A hairline grid of twelve logos: 6 × 2 (2 columns on phones) */}
         <Suspense fallback={<Grid links={{}} />}>
           <LinkedGrid />
         </Suspense>
