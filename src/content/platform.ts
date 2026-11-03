@@ -41,10 +41,10 @@ export const components: {
 export type MenuMedia =
   | { type: "image"; src: string; alt: string }
   | { type: "video"; src: string; poster?: string; alt: string }
-  /** The Human + AI handoff, drawn as a small product screen (MenuMediaSlot). */
-  | { type: "handoff" }
+  /** The Human + AI handoff, drawn as a small product screen floating on a photo (MenuMediaSlot). */
+  | { type: "handoff"; src: string }
 
-export const menuMedia: MenuMedia | null = { type: "handoff" }
+export const menuMedia: MenuMedia | null = { type: "handoff", src: "/art/product/human-ai-backdrop.webp" }
 
 /**
  * The Platform menu (nav, mobile nav, footer), from the "Platform pages" tab

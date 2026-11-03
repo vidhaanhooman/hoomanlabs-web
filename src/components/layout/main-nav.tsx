@@ -197,38 +197,37 @@ export function MainNav() {
 }
 
 /**
- * The featured page's visual (Human + AI): a small dark product screen of a
- * handoff. The agent is on the call, hands it to a person on the team, and the
+ * The featured page's visual (Human + AI): the landscape photo with a small
+ * dark product screen of a handoff floating on it (like the homepage cards). The agent is on the call, hands it to a person on the team, and the
  * context goes with it, so nobody asks the customer to repeat themselves. Sample.
  */
-function HandoffVisual({ className }: { className: string }) {
+function HandoffVisual({ src, className }: { src: string; className: string }) {
   return (
-    <div
-      role="img"
-      aria-label="An AI agent handing a call to a person on the team, with the call's context"
-      className={cn(className, "ui-dark flex flex-col justify-between border-(--ui-line) bg-(--ui-bg) p-3 text-[11px] leading-tight")}
-    >
-      <span className="flex items-center gap-1.5">
-        <span className="size-1.5 rounded-full bg-(--ui-live)" />
-        <span>Ria</span>
-        <span className="text-(--ui-muted)">· on the call</span>
-        <span className="ml-auto font-mono text-[10px] text-(--ui-muted) tabular-nums">02:14</span>
-      </span>
-      <span className="flex items-center gap-2 rounded-md border border-(--ui-line) bg-(--ui-panel) px-2 py-1.5">
-        <span className="grid size-5 shrink-0 place-items-center rounded-full bg-(--ui-raised) text-[9px]">PS</span>
-        <span className="flex min-w-0 flex-col">
-          <span className="truncate">Handed to Priya</span>
-          <span className="truncate text-[10px] text-(--ui-muted)">Billing team · joined the call</span>
+    <div role="img" aria-label="An AI agent handing a call to a person on the team, with the call's context" className={cn(className, "isolate grid place-items-center p-4")}>
+      <Image src={src} alt="" fill sizes="22rem" className="-z-10 object-cover" />
+      <div className="ui-dark flex w-full max-w-[15rem] flex-col gap-2 rounded-md border border-(--ui-line) bg-(--ui-bg) p-2.5 text-[11px] leading-tight shadow-[0_12px_32px_-12px_oklch(0_0_0/0.5)]">
+        <span className="flex items-center gap-1.5">
+          <span className="size-1.5 rounded-full bg-(--ui-live)" />
+          <span>Ria</span>
+          <span className="text-(--ui-muted)">· on the call</span>
+          <span className="ml-auto font-mono text-[10px] text-(--ui-muted) tabular-nums">02:14</span>
         </span>
-        <span className="ml-auto font-mono text-[10px] text-(--ok-fg)">Live</span>
-      </span>
-      <span className="flex flex-wrap gap-1">
-        {["Balance ₹2,480", "Promised Friday", "Wants a plan"].map((t) => (
-          <span key={t} className="rounded-sm bg-(--ui-raised) px-1.5 py-0.5 text-[10px] text-(--ui-text)/85">
-            {t}
+        <span className="flex items-center gap-2 rounded-md border border-(--ui-line) bg-(--ui-panel) px-2 py-1.5">
+          <span className="grid size-5 shrink-0 place-items-center rounded-full bg-(--ui-raised) text-[9px]">PS</span>
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate">Handed to Priya</span>
+            <span className="truncate text-[10px] text-(--ui-muted)">Billing team · joined the call</span>
           </span>
-        ))}
-      </span>
+          <span className="ml-auto font-mono text-[10px] text-(--ok-fg)">Live</span>
+        </span>
+        <span className="flex flex-wrap gap-1">
+          {["Balance ₹2,480", "Promised Friday", "Wants a plan"].map((t) => (
+            <span key={t} className="rounded-sm bg-(--ui-raised) px-1.5 py-0.5 text-[10px] text-(--ui-text)/85">
+              {t}
+            </span>
+          ))}
+        </span>
+      </div>
     </div>
   )
 }
@@ -242,7 +241,7 @@ function MenuMediaSlot() {
         Image or video, 16:9
       </div>
     )
-  if (menuMedia.type === "handoff") return <HandoffVisual className={frame} />
+  if (menuMedia.type === "handoff") return <HandoffVisual src={menuMedia.src} className={frame} />
   if (menuMedia.type === "video")
     return (
       <div className={frame}>

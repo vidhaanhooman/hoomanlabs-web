@@ -1,10 +1,10 @@
 import { Suspense } from "react"
+import Image from "next/image"
+import Link from "next/link"
 
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { TextLink } from "@/components/layout/text-link"
-import { LogoMark } from "@/components/layout/wordmark"
-import { FloatCard, FloatPanel } from "@/components/sections/float-card"
 import { IndustryRail, type RailItem } from "@/components/sections/industry-rail"
 import { CustomerLogo, customerIn } from "@/components/sections/logos"
 import { postHref, type Post } from "@/content/blog"
@@ -13,18 +13,16 @@ import { getPosts } from "@/lib/blog"
 import { cn } from "@/lib/utils"
 
 /**
- * Homepage customer stories and industries, one kind of card for both
- * (FloatCard): a soft, blurred photo with a piece of product UI on it and
- * the words below.
+ * Homepage customer stories and industries, in the site's own language
+ * (one kind of card for both: a darkened photo with white words).
  *
  * CustomerStories: the three newest published stories from Sanity in a
- * staggered grid, with one figure in each open cell; each card floats a panel
- * with the customer's logo and their headline figure.
- * Publishing a story in Sanity is all it takes; the block hides until there
- * is one.
+ * staggered grid, with one figure in each open cell; each story card:
+ * the customer's photo dimmed evenly, with their logo large in white, the
+ * and the result (after vapi.ai's case-study cards). Publishing a story in Sanity is all it takes; the block
+ * hides until there is one.
  *
- * IndustryJobs: the six industries as expanding strips (IndustryRail), each
- * floating its day's figures from the industry page's product screen.
+ * IndustryJobs: the six industries as expanding photo strips (IndustryRail).
  */
 
 /** Customers with a story who aren't in the logo grid (matched by name). */
@@ -55,22 +53,37 @@ const STORY: Record<string, { result: string; tags: string }> = {
 
 /** Logo heights on the cards, tuned so each reads at the same weight as the wordmarks. */
 // GIVA's caps fill its box, so it sits smaller; SaffronStays carries an icon and a tagline, so its box runs taller.
+/** The same, at the story cards' larger size. */
+const LOGO_LG: Record<string, string> = {
+  GIVA: "h-[24px]",
+  SaffronStays: "h-[40px]",
+}
+
 const LOGO_H: Record<string, string> = {
   GIVA: "h-[17px]",
   SaffronStays: "h-[30px]",
 }
 
-/** Each story card's photo, blurred behind its panel (public/art/stories). Stand-ins until the customers' own photos arrive. */
+/** Each story card's photo: the customer's world (public/art/stories). Stand-ins until the customers' own photos arrive. */
 const PHOTO: Record<string, string> = {
   GIVA: "/art/stories/giva-band.webp",
   SaffronStays: "/art/stories/saffronstays-band.webp",
   "Holiday Tribe": "/art/stories/holiday-tribe-band.webp",
 }
 
-/** A customer's logo in black, for the white panels (a wordmark for those without a logo file). */
-function Logo({ company }: { company?: string }) {
-  if (company && !WORDMARKS.includes(company)) return <CustomerLogo name={company} className={cn("w-auto [filter:brightness(0)]", LOGO_H[company] ?? "h-6")} />
-  return <span className="text-[17px] leading-none font-medium tracking-tight">{company ?? "Customer"}</span>
+function Logo({ company, onPhoto = false, large = false }: { company?: string; onPhoto?: boolean; large?: boolean }) {
+  if (company && !WORDMARKS.includes(company))
+    return (
+      <CustomerLogo
+        name={company}
+        className={cn(
+          "w-auto",
+          onPhoto ? "[filter:brightness(0)_invert(1)]" : "[filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]",
+          large ? (LOGO_LG[company] ?? "h-8") : (LOGO_H[company] ?? "h-6"),
+        )}
+      />
+    )
+  return <span className={cn("leading-none font-medium tracking-tight", large ? "text-[28px]" : "text-[19px]")}>{company ?? "Customer"}</span>
 }
 
 export function CustomerStories() {
@@ -81,54 +94,38 @@ export function CustomerStories() {
   )
 }
 
-/** Each story's headline figure, shown on its card's panel. */
-const STAT: Record<string, { value: string; label: string }> = {
-  GIVA: { value: "70%", label: "of support queries automated" },
-  SaffronStays: { value: "2%", label: "of calls missed, down from 50%" },
-  "Holiday Tribe": { value: "35%", label: "of the sales team's time saved" },
-}
-
-/** Each card's own colour, washed over its blurred photo: muted and mid-toned, so white panels and words both read on them. */
-const STORY_TINT: Record<string, string> = {
-  GIVA: "#a08478",
-  SaffronStays: "#7f8a5c",
-  "Holiday Tribe": "#6f8295",
-}
-
-/** A customer story: the customer's photo blurred, a panel with their logo and figure, the result and tags below. */
+/** A customer story card, after vapi.ai's case-study cards: the photo dimmed, a large white logo, and the result. */
 function StoryCard({ post }: { post: Post }) {
   const company = companyOf(post)
   const s = company ? STORY[company] : undefined
-  const stat = company ? STAT[company] : undefined
+  const photo = company ? PHOTO[company] : undefined
   return (
-    <FloatCard
+    <Link
       href={postHref(post.slug)}
-      label={`${company ?? "Customer"} story: ${post.title}`}
-      src={(company && PHOTO[company]) || ""}
-      tint={(company && STORY_TINT[company]) || "#8a8a8a"}
-      className="aspect-[4/3]"
-      title={s?.result ?? post.title}
-      line={s?.tags ?? post.title}
+      aria-label={`${company ?? "Customer"} story: ${post.title}`}
+      className="group/story relative isolate flex aspect-[4/3] w-full flex-col justify-end overflow-hidden rounded-lg bg-[#121212] p-7 text-white outline-none focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <FloatPanel className="gap-3 p-3">
-        <span className="flex items-center justify-between px-1 pt-1">
-          <span className="flex h-6 items-center text-[#111]">
-            <Logo company={company} />
-          </span>
-          <span className="grid size-5 place-items-center rounded-full bg-[#111] text-white">
-            <svg viewBox="0 0 12 12" className="size-2.5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <path d="M2.5 6.2 5 8.5l4.5-5" />
-            </svg>
-          </span>
+      {/* After the case-study cards on vapi.ai: the photo dimmed evenly and softened by a light blur, the words in white over it */}
+      {photo && (
+        <Image
+          src={photo}
+          alt=""
+          fill
+          sizes="(min-width: 768px) 30vw, 90vw"
+          className="-z-20 object-cover transition-transform duration-[900ms] ease-(--ease-out) group-hover/story:scale-[1.04] motion-reduce:transition-none"
+        />
+      )}
+      <span
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[oklch(0.12_0_0/0.58)] backdrop-blur-[3px] transition-colors duration-500 group-hover/story:bg-[oklch(0.12_0_0/0.5)]"
+      />
+      <span className="flex flex-col gap-3">
+        <span className="mb-1 flex h-9 items-center">
+          <Logo company={company} onPhoto large />
         </span>
-        {stat && (
-          <span className="flex flex-col gap-1.5 rounded-md bg-[#f3f3f3] px-4 py-4">
-            <span className="text-[34px] leading-none tracking-tight tabular-nums">{stat.value}</span>
-            <span className="text-[12px] leading-snug text-[#666]">{stat.label}</span>
-          </span>
-        )}
-      </FloatPanel>
-    </FloatCard>
+        <span className="line-clamp-2 text-h3 leading-snug font-normal text-balance">{s?.result ?? post.title}</span>
+      </span>
+    </Link>
   )
 }
 
@@ -143,14 +140,14 @@ const FIGURES = [
 const STORY_SLOT = ["md:col-start-1 md:row-start-1", "md:col-start-3 md:row-start-1", "md:col-start-2 md:row-start-2"]
 const FIGURE_SLOT = ["md:col-start-2 md:row-start-1", "md:col-start-1 md:row-start-2", "md:col-start-3 md:row-start-2"]
 
-/** One figure in an outlined cell, as tall as the story card beside it. */
+/** One figure in an outlined cell. */
 function FigureCell({ figure, className }: { figure: (typeof FIGURES)[number]; className?: string }) {
   return (
-    <li className={cn("hidden flex-col justify-between rounded-xl border border-line p-7 md:flex", className)}>
+    <li className={cn("hidden aspect-[4/3] flex-col justify-between rounded-lg border border-line p-7 md:flex", className)}>
       <span className="font-mono text-label text-ink-muted">{figure.who}</span>
-      <span className="flex flex-col gap-2">
+      <span className="flex flex-col gap-1.5">
         <span className="text-display leading-none font-normal tabular-nums">{figure.value}</span>
-        <span className="text-h4 text-ink-secondary">{figure.label}</span>
+        <span className="text-body text-ink-secondary">{figure.label}</span>
       </span>
     </li>
   )
@@ -168,7 +165,7 @@ async function Stories() {
           link={{ href: "/blog", label: "All customer stories" }}
         />
         {/* A staggered 3 × 2 grid: the three stories, with one figure in each open cell */}
-        <ul className="mt-(--heading-gap,2.5rem) grid gap-(--card-gap,0.75rem) gap-y-10 md:grid-cols-3 md:gap-y-(--card-gap,0.75rem)">
+        <ul className="mt-(--heading-gap,2.5rem) grid gap-(--card-gap,0.75rem) md:grid-cols-3">
           {posts.map((p, i) => (
             <li key={p.slug} className={cn("flex min-w-0", STORY_SLOT[i])}>
               <StoryCard post={p} />
@@ -204,7 +201,7 @@ const CARD_LINE: Record<string, string> = {
 
 const ORDER = ["education", "e-commerce", "logistics", "healthcare", "bfsi", "consumer-ai"]
 
-/** Each industry's photo, blurred behind its card's panel (public/art/industries). */
+/** Each industry's photo for its rail card (public/art/industries). */
 const RAIL_ART: Record<string, string> = {
   education: "/art/industries/education-rail.webp",
   "e-commerce": "/art/industries/e-commerce-rail.webp",
@@ -212,41 +209,6 @@ const RAIL_ART: Record<string, string> = {
   healthcare: "/art/industries/healthcare-rail.webp",
   bfsi: "/art/industries/bfsi-rail.webp",
   "consumer-ai": "/art/industries/consumer-ai-rail.webp",
-}
-
-/** The industry's day in three rows (after the reference's stacked list): the middle one solid, the others faded behind. */
-function DayStack({ stats }: { stats: { label: string; value: string }[] }) {
-  return (
-    <span className="flex flex-col gap-2">
-      {stats.slice(0, 3).map((st, i) =>
-        i === 1 ? (
-          <FloatPanel key={st.label} className="flex-row items-center gap-3 px-3 py-3.5">
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#111] text-white">
-              <LogoMark className="size-3.5" />
-            </span>
-            <span className="flex-1 text-[13px]">{st.label}</span>
-            <span className="text-[22px] leading-none tabular-nums">{st.value}</span>
-          </FloatPanel>
-        ) : (
-          <span key={st.label} className="flex items-center gap-3 rounded-lg bg-white/35 px-3 py-3 text-[#111]/45 backdrop-blur-sm">
-            <span className="size-8 shrink-0 rounded-full bg-[#111]/12" />
-            <span className="flex-1 text-[13px]">{st.label}</span>
-            <span className="text-[20px] leading-none tabular-nums">{st.value}</span>
-          </span>
-        ),
-      )}
-    </span>
-  )
-}
-
-/** Each industry strip's own colour, washed over its blurred photo. */
-const RAIL_TINT: Record<string, string> = {
-  education: "#6f8295",
-  "e-commerce": "#a08478",
-  logistics: "#8a7f62",
-  healthcare: "#5f857a",
-  bfsi: "#6e6f8f",
-  "consumer-ai": "#7f8a5c",
 }
 
 export function IndustryJobs() {
@@ -259,8 +221,6 @@ export function IndustryJobs() {
       tags: x.jobs.slice(0, 2).map((j) => j.name),
       href: industryHref(x.slug),
       src: RAIL_ART[x.slug] ?? "",
-      tint: RAIL_TINT[x.slug] ?? "#8a8a8a",
-      panel: <DayStack stats={x.screen.stats} />,
     }))
   return (
     <Section id="v3-industries" spacing="none">
