@@ -9,11 +9,11 @@ export const nav = {
     { label: "Solutions", href: "/solutions" },
     { label: "Pricing", href: "/pricing" },
   ],
-  /** "Resources" is a menu: docs, the API reference and the blog. */
+  /** "Resources" is a menu: the blog, docs and the API reference. */
   resources: [
+    { icon: "blog", label: "Blog", href: "/blog" },
     { icon: "docs", label: "Docs", href: "https://docs.hoomanlabs.com" },
     { icon: "api", label: "API reference", href: "https://docs.hoomanlabs.com/hooman-labs-api-docs-2#description/introduction" },
-    { icon: "blog", label: "Blog", href: "/blog" },
   ],
   signIn: { label: "Login", href: "/login" },
 }
