@@ -65,21 +65,21 @@ export const features = [
     eyebrow: "Omnichannel",
     title: "Every channel",
     body: "Deploy the same agent, knowledge and tools to phone, web, app and WhatsApp, and keep the conversation when customers switch.",
-    link: { label: "See channels", href: "/platform#product-channels" },
+    link: { label: "See channels", href: "/platform/channels" },
   },
   {
     id: "feature-guardrails",
     eyebrow: "Guardrails and testing",
     title: "Tested first",
     body: "Simulated callers run every version through your scenarios, with guardrails on what agents can say and do.",
-    link: { label: "See simulations", href: "/platform#product-simulations" },
+    link: { label: "See simulations", href: "/platform/testing" },
   },
   {
     id: "feature-analytics",
     eyebrow: "Analytics",
     title: "Every call measured",
     body: "Outcomes, QA scores and trends in one dashboard, with alerts when something changes.",
-    link: { label: "See QA", href: "/platform#product-qa" },
+    link: { label: "See QA", href: "/platform/quality" },
   },
 ] as const
 

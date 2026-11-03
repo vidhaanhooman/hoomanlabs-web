@@ -132,6 +132,15 @@ function PlayerView({ call, p, className }: { call: SolutionCall; p: Playback; c
   const current = started ? [...call.lines].reverse().find((l) => l.t <= time) : undefined
   const who = (w: "agent" | "caller") => (w === "agent" ? call.agent : "Customer")
 
+  // Long transcripts scroll inside their box; keep the current line in view (without moving the page).
+  const listRef = useRef<HTMLOListElement>(null)
+  useEffect(() => {
+    const list = listRef.current
+    const lit = list?.querySelector<HTMLElement>("[data-lit]")
+    if (!list || !lit) return
+    list.scrollTo({ top: lit.offsetTop - list.offsetTop - list.clientHeight / 3, behavior: "smooth" })
+  }, [current])
+
   const jump = (e: React.PointerEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect()
     seek(((e.clientX - r.left) / r.width) * call.duration)
@@ -213,11 +222,11 @@ function PlayerView({ call, p, className }: { call: SolutionCall; p: Playback; c
         <span aria-hidden className="mb-2.5 block font-mono text-[10.5px] tracking-wide text-(--ui-muted) uppercase">
           Transcript
         </span>
-        <ol className="flex flex-col gap-2.5">
+        <ol ref={listRef} className="flex max-h-72 flex-col gap-2.5 overflow-y-auto pr-1 [scrollbar-width:thin]">
           {call.lines.map((l) => {
             const lit = current === l
             return (
-              <li key={l.t} className={cn("flex flex-col gap-0.5 transition-colors duration-200", lit ? "text-(--ui-text)" : started ? "text-(--ui-muted)/70" : "text-(--ui-muted)")}>
+              <li key={l.t} data-lit={lit || undefined} className={cn("flex flex-col gap-0.5 transition-colors duration-200", lit ? "text-(--ui-text)" : started ? "text-(--ui-muted)/70" : "text-(--ui-muted)")}>
                 <p className="text-[13.5px] leading-[1.5]">
                   <span className={cn("mr-1.5 font-mono text-[11px]", lit ? "text-(--ui-live)" : "text-(--ui-muted)")}>{who(l.who)}</span>
                   {l.text}

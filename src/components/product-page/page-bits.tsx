@@ -29,7 +29,7 @@ export function HeroCopy({
   title,
   line,
   link,
-  parent = { label: "Platform", href: "/platform" },
+  parent = { label: "Platform", href: "/platform/agents" },
 }: {
   crumb: string
   title: string

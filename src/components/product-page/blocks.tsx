@@ -61,7 +61,7 @@ export function PageHero({
     <Section id={id} spacing="none" className="pt-16 pb-(--section-pad) md:pt-24">
       <Container>
         <p className="reveal-blur text-small text-ink-muted">
-          <Link href="/platform" className="hover:text-foreground">
+          <Link href="/platform/agents" className="hover:text-foreground">
             Platform
           </Link>{" "}
           / {crumb}

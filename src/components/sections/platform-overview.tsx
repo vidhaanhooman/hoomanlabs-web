@@ -243,7 +243,7 @@ export function PlatformOverview() {
             <ToolsMini />
           </Tile>
         </div>
-        <TextLink href="/platform" className="mt-8">
+        <TextLink href="/platform/agents" className="mt-8">
           See the full platform
         </TextLink>
       </Container>

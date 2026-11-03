@@ -51,7 +51,7 @@ const CAROUSEL: (typeof useCases)[number]["visual"][] = ["collections", "booking
 
 export function UseCaseCarousel({
   only = CAROUSEL,
-  more = { label: "See all use cases", href: "/platform#product-use-cases" },
+  more = { label: "See all use cases", href: "/platform/agents" },
 }: {
   only?: (typeof useCases)[number]["visual"][]
   more?: { label: string; href: string }
@@ -229,7 +229,7 @@ export function PlatformSummary({
   return (
     <Section id="sl-summary">
       <Container>
-        <Header title={resources.title} aside={<TextLink href="/platform">See the full platform</TextLink>} />
+        <Header title={resources.title} aside={<TextLink href="/platform/agents">See the full platform</TextLink>} />
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.6fr_1fr]">
           {/* Real cell borders (not a gap-px background), so the dividers survive sub-pixel column widths. The list overhangs by 1px so the last row/column borders are clipped. */}
           <div className="flex overflow-hidden rounded-md border border-line">

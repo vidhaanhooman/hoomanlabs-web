@@ -3,16 +3,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
-  // The four product pages were folded into /platform (deprecated, not permanent yet).
+  // The four product pages were folded into the platform pages (deprecated, not permanent yet).
   async redirects() {
     return [
       ...["voice-ai", "chat-agents", "telephony", "qa", "lab/voice-ai"].map((path) => ({
         source: `/${path}`,
-        destination: "/platform",
+        destination: "/platform/agents",
         permanent: false,
       })),
-      // The v3 homepage was promoted to /.
-      { source: "/lab/v3", destination: "/", permanent: false },
+      // The platform overview was removed; its links go to the first platform page.
+      { source: "/platform", destination: "/platform/agents", permanent: false },
+      // The lab pages and the chat playground were removed.
+      { source: "/lab/:path*", destination: "/", permanent: false },
+      { source: "/chat", destination: "/", permanent: false },
       // The Product Designer role closed; send old links to the open careers list.
       { source: "/careers/product-designer", destination: "/careers", permanent: false },
       { source: "/privacy", destination: "/privacy-policy", permanent: false },

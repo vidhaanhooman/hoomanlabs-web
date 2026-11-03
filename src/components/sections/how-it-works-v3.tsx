@@ -455,7 +455,7 @@ export function HowItWorksV3() {
           },
         ]}
         link="Explore Workflow"
-        linkHref="/platform#platform-workflow-anatomy"
+        linkHref="/platform/agents"
         media="start"
         screen={(c, f) => <WorkflowScreen className={c} focus={f} />}
       />

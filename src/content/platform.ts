@@ -34,15 +34,17 @@ export const components: {
 ]
 
 /**
- * Media in the Platform menu (under Connect). Drop a file in public/ and set
- * it here, e.g. { type: "video", src: "/media/platform.mp4", poster: "/media/platform.jpg" }.
+ * Media in the Platform menu (under Connect): the handoff screen, or drop a
+ * file in public/ and set it here, e.g. { type: "video", src: "/media/platform.mp4", poster: "/media/platform.jpg" }.
  * Null shows a placeholder slot. 16:9 works best.
  */
 export type MenuMedia =
   | { type: "image"; src: string; alt: string }
   | { type: "video"; src: string; poster?: string; alt: string }
+  /** The Human + AI handoff, drawn as a small product screen (MenuMediaSlot). */
+  | { type: "handoff" }
 
-export const menuMedia: MenuMedia | null = { type: "image", src: "/art/product/human-ai-backdrop.webp", alt: "" }
+export const menuMedia: MenuMedia | null = { type: "handoff" }
 
 /**
  * The Platform menu (nav, mobile nav, footer), from the "Platform pages" tab
@@ -50,18 +52,7 @@ export const menuMedia: MenuMedia | null = { type: "image", src: "/art/product/h
  * featured page. `url` is the page's planned address; until that page exists
  * the link falls back to the closest section on /platform (see `menuHref`).
  */
-export type MenuPageId =
-  | "agents"
-  | "voice"
-  | "workflows"
-  | "channels"
-  | "campaigns"
-  | "integrations"
-  | "testing"
-  | "quality"
-  | "observability"
-  | "security"
-  | "human-ai"
+export type MenuPageId = "agents" | "voice" | "workflows" | "channels" | "campaigns" | "integrations" | "testing" | "quality" | "observability" | "security" | "human-ai"
 
 export type MenuPage = { id: MenuPageId; name: string; blurb: string; url: string; fallback: string }
 
@@ -70,28 +61,28 @@ export const platformMenu: { group: "Build" | "Reach" | "Trust"; line: string; p
     group: "Build",
     line: "Create your Hooman and how it sounds",
     pages: [
-      { id: "agents", name: "Agents", blurb: "Follows your process, uses your data.", url: "/platform/agents", fallback: "/platform#product-agents" },
-      { id: "voice", name: "Voice", blurb: "Sounds human, in your customers' language.", url: "/platform/voice", fallback: "/platform#product-agents" },
-      { id: "workflows", name: "Workflows", blurb: "Finishes the work after every conversation.", url: "/platform/workflows", fallback: "/platform#product-workflow" },
+      { id: "agents", name: "Agents", blurb: "Follows your process, uses your data.", url: "/platform/agents", fallback: "/platform/agents" },
+      { id: "voice", name: "Voice", blurb: "Sounds human, in your customers' language.", url: "/platform/voice", fallback: "/platform/agents" },
+      { id: "workflows", name: "Workflows", blurb: "Finishes the work after every conversation.", url: "/platform/workflows", fallback: "/platform/agents" },
     ],
   },
   {
     group: "Reach",
     line: "Meet customers and connect your systems",
     pages: [
-      { id: "channels", name: "Channels", blurb: "Phone, web and app. WhatsApp soon.", url: "/platform/channels", fallback: "/platform#product-channels" },
-      { id: "campaigns", name: "Campaigns", blurb: "Thousands of calls, done right.", url: "/platform/campaigns", fallback: "/platform#product-workflow" },
-      { id: "integrations", name: "Integrations & API", blurb: "Your CRM, data and tools, connected.", url: "/platform/integrations", fallback: "/platform#product-tools" },
+      { id: "channels", name: "Channels", blurb: "Phone, web and app. WhatsApp soon.", url: "/platform/channels", fallback: "/platform/channels" },
+      { id: "campaigns", name: "Campaigns", blurb: "Thousands of calls, done right.", url: "/platform/campaigns", fallback: "/platform/agents" },
+      { id: "integrations", name: "Integrations & API", blurb: "Your CRM, data and tools, connected.", url: "/platform/integrations", fallback: "/platform/agents" },
     ],
   },
   {
     group: "Trust",
     line: "Know it works, on every conversation",
     pages: [
-      { id: "testing", name: "Testing", blurb: "Know it's ready before a customer hears it.", url: "/platform/testing", fallback: "/platform#product-simulations" },
-      { id: "quality", name: "QA", blurb: "Score every conversation, fix what fails.", url: "/platform/quality", fallback: "/platform#product-qa" },
-      { id: "observability", name: "Observability", blurb: "Dashboards, alerts and every conversation's log.", url: "/platform/observability", fallback: "/platform#product-qa" },
-      { id: "security", name: "Security & Reliability", blurb: "Always on, compliant, in your control.", url: "/platform/security", fallback: "/platform" },
+      { id: "testing", name: "Testing", blurb: "Know it's ready before a customer hears it.", url: "/platform/testing", fallback: "/platform/testing" },
+      { id: "quality", name: "QA", blurb: "Score every conversation, fix what fails.", url: "/platform/quality", fallback: "/platform/quality" },
+      { id: "observability", name: "Observability", blurb: "Dashboards, alerts and every conversation's log.", url: "/platform/observability", fallback: "/platform/quality" },
+      { id: "security", name: "Security & Reliability", blurb: "Always on, compliant, in your control.", url: "/platform/security", fallback: "/platform/agents" },
     ],
   },
 ]
@@ -102,7 +93,7 @@ export const platformFeatured: MenuPage = {
   name: "Human + AI",
   blurb: "One platform for your AI and human team.",
   url: "/platform/human-ai",
-  fallback: "/platform",
+  fallback: "/platform/agents",
 }
 
 /** Menu pages that exist; add an id here when its page ships. */

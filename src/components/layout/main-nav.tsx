@@ -12,7 +12,14 @@ import { industries, industryHref, type Industry } from "@/content/industries"
 import { menuHref, menuMedia, platformFeatured, platformMenu } from "@/content/platform"
 import { cn } from "@/lib/utils"
 
-const INDUSTRY_ICON: Record<Industry["icon"], Icon> = { graduation: GraduationCapIcon, bank: BankIcon, truck: TruckIcon, bag: BagIcon, stethoscope: StethoscopeIcon, sparkle: SparkleIcon }
+const INDUSTRY_ICON: Record<Industry["icon"], Icon> = {
+  graduation: GraduationCapIcon,
+  bank: BankIcon,
+  truck: TruckIcon,
+  bag: BagIcon,
+  stethoscope: StethoscopeIcon,
+  sparkle: SparkleIcon,
+}
 
 const RESOURCE_ICON: Record<(typeof nav.resources)[number]["icon"], Icon> = { docs: BookOpenTextIcon, api: CodeIcon, blog: NewspaperIcon }
 
@@ -81,7 +88,7 @@ export function MainNav() {
           <NavigationMenuContent>
             <div className="flex w-[min(68rem,calc(100vw-3rem))] flex-col p-6">
               <NavigationMenuLink
-                render={<Link href="/platform" />}
+                render={<Link href="/platform/agents" />}
                 className="group/ov w-fit flex-row items-center gap-2 p-0 text-h4 font-normal text-foreground hover:bg-transparent focus:bg-transparent"
               >
                 Platform overview
@@ -110,7 +117,10 @@ export function MainNav() {
 
                 {/* Featured: Human + AI, with the image slot */}
                 <div className="border-l border-line pl-6">
-                  <NavigationMenuLink render={<Link href={menuHref(platformFeatured)} />} className="group/feat flex-col items-stretch gap-2 rounded-md p-0 hover:bg-transparent focus:bg-transparent">
+                  <NavigationMenuLink
+                    render={<Link href={menuHref(platformFeatured)} />}
+                    className="group/feat flex-col items-stretch gap-2 rounded-md p-0 hover:bg-transparent focus:bg-transparent"
+                  >
                     <MenuMediaSlot />
                     <span className="flex items-center justify-between gap-2 text-body text-foreground">
                       {platformFeatured.name}
@@ -186,7 +196,44 @@ export function MainNav() {
   )
 }
 
-/** Image or video slot in the menu; a placeholder until `menuMedia` is set. */
+/**
+ * The featured page's visual (Human + AI): a small dark product screen of a
+ * handoff. The agent is on the call, hands it to a person on the team, and the
+ * context goes with it, so nobody asks the customer to repeat themselves. Sample.
+ */
+function HandoffVisual({ className }: { className: string }) {
+  return (
+    <div
+      role="img"
+      aria-label="An AI agent handing a call to a person on the team, with the call's context"
+      className={cn(className, "ui-dark flex flex-col justify-between border-(--ui-line) bg-(--ui-bg) p-3 text-[11px] leading-tight")}
+    >
+      <span className="flex items-center gap-1.5">
+        <span className="size-1.5 rounded-full bg-(--ui-live)" />
+        <span>Ria</span>
+        <span className="text-(--ui-muted)">· on the call</span>
+        <span className="ml-auto font-mono text-[10px] text-(--ui-muted) tabular-nums">02:14</span>
+      </span>
+      <span className="flex items-center gap-2 rounded-md border border-(--ui-line) bg-(--ui-panel) px-2 py-1.5">
+        <span className="grid size-5 shrink-0 place-items-center rounded-full bg-(--ui-raised) text-[9px]">PS</span>
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate">Handed to Priya</span>
+          <span className="truncate text-[10px] text-(--ui-muted)">Billing team · joined the call</span>
+        </span>
+        <span className="ml-auto font-mono text-[10px] text-(--ok-fg)">Live</span>
+      </span>
+      <span className="flex flex-wrap gap-1">
+        {["Balance ₹2,480", "Promised Friday", "Wants a plan"].map((t) => (
+          <span key={t} className="rounded-sm bg-(--ui-raised) px-1.5 py-0.5 text-[10px] text-(--ui-text)/85">
+            {t}
+          </span>
+        ))}
+      </span>
+    </div>
+  )
+}
+
+/** The menu's media slot: the handoff screen, an image or a video; a placeholder until `menuMedia` is set. */
 function MenuMediaSlot() {
   const frame = "relative aspect-video overflow-hidden rounded-md border border-line bg-surface"
   if (!menuMedia)
@@ -195,6 +242,7 @@ function MenuMediaSlot() {
         Image or video, 16:9
       </div>
     )
+  if (menuMedia.type === "handoff") return <HandoffVisual className={frame} />
   if (menuMedia.type === "video")
     return (
       <div className={frame}>

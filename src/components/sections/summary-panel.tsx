@@ -22,7 +22,7 @@ export function SummaryPanel({ rows, screens }: { rows: Row[]; screens: Record<s
       rows={rows}
       media="start"
       link="See the full platform"
-      linkHref="/platform"
+      linkHref="/platform/agents"
       screen={(_, focus) => (
         <div
           key={focus}

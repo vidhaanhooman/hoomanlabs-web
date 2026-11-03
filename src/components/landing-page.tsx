@@ -61,7 +61,7 @@ export function LandingPage({ hero = "listen" }: { hero?: "listen" | "call-card"
       <UseCases
         only={["collections", "booking", "support"]}
         resultFirst
-        more={{ label: "See all use cases", href: "/platform#product-use-cases" }}
+        more={{ label: "See all use cases", href: "/platform/agents" }}
       />
 
       {/* 4 Platform: overview of all six components; detail lives on /platform */}

@@ -247,7 +247,7 @@ export const homePlatform = {
   workflow: { title: "Workflow", body: "Campaigns, triggers and follow-ups around every conversation.", link: "Workflow" },
   simulations: { title: "Simulations", body: "Simulated customers test every version before it goes live.", link: "Simulations" },
   qa: { title: "QA", body: "Every conversation scored, with dashboards, alerts and A/B tests.", link: "QA" },
-  tools: { title: "Tools & integrations", more: { label: "See everything on the platform", href: "/platform" } },
+  tools: { title: "Tools & integrations", more: { label: "See everything on the platform", href: "/platform/agents" } },
 }
 
 /** Hero copy for the proposed homepage. Proof figures are placeholders to confirm. */
